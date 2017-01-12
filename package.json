@@ -1,0 +1,20 @@
+{
+  "name": "eplayer",
+  "version": "1.0.0",
+  "description": "Best eplayer of the world",
+  "scripts": {
+    "test": "mocha",
+    "start": "webpack-dev-server --hot"
+  },
+  "author": "Iyappan M",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "webpack": "^1.14.0",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "devDependencies": {
+    "mocha": "^3.2.0"
+  }
+}
