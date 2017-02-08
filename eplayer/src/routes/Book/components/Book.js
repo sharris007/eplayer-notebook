@@ -10,8 +10,8 @@ import { booksdata, pageDetails, tocData } from '../../../../const/Mocdata';
 
 import './Book.scss';
 
-import { PageViewer } from '@pearson-incubator/pxe-pageviewer'
-import { Annotation } from '@pearson-incubator/pxe-annotation'
+import { PageViewer } from 'pxe-pageviewer'
+import { Annotation } from 'pxe-annotation'
 import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation'
 
 export class Book extends Component {

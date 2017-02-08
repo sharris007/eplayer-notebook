@@ -99,7 +99,17 @@ webpackConfig.module.loaders = [{
   exclude: /node_modules/,
   loader: 'babel',
   query: config.compiler_babel
+},{
+  test: /\.(js|jsx)$/,
+  include: path.join(__dirname, '../node_modules/pxe-pageviewer'),
+  loader: 'babel',
+  query: config.compiler_babel
 }, {
+  test: /\.(js|jsx)$/,
+  include: path.join(__dirname, '../node_modules/pxe-annotation'),
+  loader: 'babel',
+  query: config.compiler_babel
+},  {
   test: /\.(js|jsx)$/,
   include: path.join(__dirname, '../node_modules/@pearson-incubator'),
   loader: 'babel',
