@@ -8,3 +8,4 @@ npm-debug.log
 build/dev*
 npm_scripts/*.js
 /.project
+-p
