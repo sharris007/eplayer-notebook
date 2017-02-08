@@ -1,0 +1,68 @@
+//defining constants--bookshelf
+$logo-width: 116px;
+$rightComp-font-size: 13px;
+$rightComp-letter-spacing: -0.2px;
+$rightComp-padding-right: 10px;
+$dropDown-width:16px;
+$dropDown-height:12px;
+$title-height: 41px;
+$title-font-size: 30px;
+$title-letter-spacing: -0.4px;
+
+
+.bookshelfHeader {
+  padding: 2.85% 6.35% 4.25%;
+  width: 100%;
+  .logo {
+    width:$logo-width;
+    height:35px;
+    background-image: url(../assets/ico-pearson-logo.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+  }
+  .rightComp {
+    float: right;
+    vertical-align: top;
+    margin: 1.2% 2.85% 0 0;
+    .label {
+      font-family: Open Sans;
+      font-size: $rightComp-font-size;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      letter-spacing: $rightComp-letter-spacing;
+      text-align: center;
+      color: #252525;
+      padding-right: $rightComp-padding-right;
+    }
+    .dropdown {
+      color: #252525;
+      display: inline-block;
+      cursor:pointer;
+      svg {
+        width:$dropDown-width;
+        height:$dropDown-height
+      }
+    }
+  }
+  .signoutBtn {
+    width: 100%;
+    text-align: right;
+    margin: 0.33% 2.85% 0 0;
+    float: right;
+  }
+  .title {
+    height: $title-height;
+    font-family: "Open Sans";
+    font-size: $title-font-size;
+    font-weight: 300;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: $title-letter-spacing;
+    text-align: center;
+    color: #252525;
+    margin-top: 2.653%;
+    text-align: center;
+  }
+}
