@@ -78,7 +78,6 @@
   "dependencies": {
     "@pearson-incubator/aquila-js-core": "^0.2.8",
     "@pearson-incubator/aquila-js-flashcards": "0.2.13",
-    "@pearson-incubator/aquila-js-quiz": "^0.1.24",
     "@pearson-incubator/aquila-js-timeline": "0.2.6",
     "@pearson-incubator/bookmark-icon": "^0.1.3",
     "@pearson-incubator/bookmarks": "^0.1.17",
