@@ -5,7 +5,7 @@ import { FlashCards } from '@pearson-incubator/aquila-js-flashcards';
 import { AudioPlayer, VideoPlayerPreview, ImageViewerPreview,
         VideoPlayerSlideShow, ImageSlideshowPreview, UCAPreview } from '@pearson-incubator/aquila-js-core';
 import { AquilaTimelinePreview } from '@pearson-incubator/aquila-js-timeline';
-import { TinyQuizModal, QuizPreview } from '@pearson-incubator/aquila-js-quiz';
+//import { TinyQuizModal, QuizPreview } from '@pearson-incubator/aquila-js-quiz';
 import errorCard from '../../../common/errorCard';
 import { injectReducer } from '../../../../store/reducers';
 import widgetActions from '../modules/widgetActions';
@@ -70,43 +70,43 @@ class Widget extends React.Component {
       }
       case 'tinyquiz': {
         const parsedtinyquizData = Utils.parseTinyQuizData(data.tinyquiz);
-        if (parsedtinyquizData !== undefined && parsedtinyquizData.title !== undefined) {
-          component = <TinyQuizModal data={parsedtinyquizData} />;
-        }
+        // if (parsedtinyquizData !== undefined && parsedtinyquizData.title !== undefined) {
+        //   component = <TinyQuizModal data={parsedtinyquizData} />;
+        // }
         break;
       }
       case 'ImageIdentifier': {
         const parsedImageIdentifierData = Utils.parseImageIdentifierData(data.imageIdentifier);
         if (parsedImageIdentifierData !== undefined && parsedImageIdentifierData.title !== undefined) {
-          if (parsedImageIdentifierData && parsedImageIdentifierData.type &&
-            parsedImageIdentifierData.type.length > 0 && parsedImageIdentifierData.type[0] === 'quiz') {
-            component = (<QuizPreview content={parsedImageIdentifierData.content} type={'ImageIdentifier'} />);
-          } else {
-            component = (<QuizPreview
-              content={[parsedImageIdentifierData]}
-              type={'ImageIdentifier'} title={'Identify the Images'}
-            />);
-          }
+          // if (parsedImageIdentifierData && parsedImageIdentifierData.type &&
+          //   parsedImageIdentifierData.type.length > 0 && parsedImageIdentifierData.type[0] === 'quiz') {
+          //   component = (<QuizPreview content={parsedImageIdentifierData.content} type={'ImageIdentifier'} />);
+          // } else {
+          //   component = (<QuizPreview
+          //     content={[parsedImageIdentifierData]}
+          //     type={'ImageIdentifier'} title={'Identify the Images'}
+          //   />);
+          // }
         }
         break;
       }
       case 'mcq': {
         const parsedMCQData = Utils.parseMCQData(data.mcq);
         if (parsedMCQData !== undefined && parsedMCQData.title !== undefined) {
-          if (parsedMCQData && parsedMCQData.type &&
-            parsedMCQData.type.length > 0 && parsedMCQData.type[0] === 'quiz') {
-            component = (<QuizPreview content={parsedMCQData.content} type={'MCQ'} />);
-          } else {
-            component = (<QuizPreview content={[parsedMCQData]} type={'MCQ'} title={'RAPID PRACTICE'} />);
-          }
+          // if (parsedMCQData && parsedMCQData.type &&
+          //   parsedMCQData.type.length > 0 && parsedMCQData.type[0] === 'quiz') {
+          //   component = (<QuizPreview content={parsedMCQData.content} type={'MCQ'} />);
+          // } else {
+          //   component = (<QuizPreview content={[parsedMCQData]} type={'MCQ'} title={'RAPID PRACTICE'} />);
+          // }
         }
         break;
       }
       case 'mti': {
         const parsedMTIData = Utils.parseMTIData(data.mti);
-        if (parsedMTIData !== undefined && parsedMTIData.title !== undefined) {
-          component = <QuizPreview content={parsedMTIData} type={'MatchGame'} />;
-        }
+        // if (parsedMTIData !== undefined && parsedMTIData.title !== undefined) {
+        //   component = <QuizPreview content={parsedMTIData} type={'MatchGame'} />;
+        // }
         break;
       }
       case 'uca': {
@@ -118,9 +118,9 @@ class Widget extends React.Component {
       }
       case 'tia': {
         const parsedTIAData = Utils.parseMTIData(data.tia);
-        if (parsedTIAData !== undefined && parsedTIAData.title !== undefined) {
-          component = <QuizPreview content={parsedTIAData} type={'TextInput'} title={'Type In Answer'} />;
-        }
+        // if (parsedTIAData !== undefined && parsedTIAData.title !== undefined) {
+        //   component = <QuizPreview content={parsedTIAData} type={'TextInput'} title={'Type In Answer'} />;
+        // }
         break;
       }
       default:
