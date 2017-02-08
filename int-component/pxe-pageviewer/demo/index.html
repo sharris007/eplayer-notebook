@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>PageViewer Demo</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="elements.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script src="http://assets.annotateit.org/annotator/v1.1.0/annotator-full.min.js"></script>
+    <link rel="stylesheet" href="http://assets.annotateit.org/annotator/v1.1.0/annotator.min.css"/>
+</head>
+<body>
+    <div id="bookshelf-demo-title">
+        <h1>PageViewer Demo</h1>                    
+    </div>
+    <div id="demo"></div>
+
+    <!-- External dependencies for React -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.1/react-dom.js"></script>
+    <!-- CustomEvent polyfill is for IE, Intl.js polyfill is for Safari -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.js?features=CustomEvent,Intl.~locale.en,Intl.~locale.fr"></script>
+    <!-- Locally hosted demo server -->
+    <script src="http://localhost:4040/webpack-dev-server.js"></script>
+    <!-- Demo build of component -->
+    <script src="../build/dev.pageviewer.js"></script>
+</body>
+</html>
