@@ -62,7 +62,7 @@ class FooterNav extends React.Component {
     } else if (isNext && !this.props.data.isLastPage) {
       this.props.onClickNextCallBack(); 
     }
-    window.scroll(0, 0);
+    //window.scroll(0, 0);
   }
   handleFocus = (section) => {
     console.log(this.refs);
