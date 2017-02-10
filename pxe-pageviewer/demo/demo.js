@@ -34,7 +34,7 @@ function init() {
                     'playOrder': 4, 'title': '1.3 Understanding Statistics'
                   }, { 'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml#data-uuid-fe1f61709ece49bcb4ba8cc1a9377204',
                     'playOrder': 5, 'title': '1.4 Evaluating Scientific Information' }],
-    CurrentPageURL:{'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml', 'playOrder': 1, 'title': 'Chapter 1: Can Science Cure the Common Cold?'}
+    currentPageURL:{'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml', 'playOrder': 1, 'title': 'Chapter 1: Can Science Cure the Common Cold?'}
   });
 }
 function onPageChange(type, data) {

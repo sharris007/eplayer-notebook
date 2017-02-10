@@ -17,7 +17,7 @@ class PageViewer extends React.Component {
     //this.print = this.print.bind(this);
   };
   init = (props) => {
-    const initPage=this.props.src.CurrentPageURL?this.props.src.CurrentPageURL.playOrder:'';
+    const initPage=this.props.src.currentPageURL?this.props.src.currentPageURL.playOrder:'';
     this.state = {
       renderSrc:'', 
       currentPage:initPage?initPage:1, 
@@ -34,8 +34,8 @@ class PageViewer extends React.Component {
     window.scroll(0, 0);
   };
   componentWillReceiveProps(newProps) {
-    if (parseInt(this.props.src.CurrentPageURL.playOrder) !== parseInt(newProps.CurrentPageURL.playOrder)) {
-      this.getResponse(parseInt(newProps.CurrentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
+    if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.currentPageURL.playOrder)) {
+      this.getResponse(parseInt(newProps.currentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
     }   
   };
   getRequestedPageUrl = (playOrder) => {
