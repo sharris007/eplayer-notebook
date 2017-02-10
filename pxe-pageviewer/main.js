@@ -19,7 +19,7 @@ export default class PageViewerComponent {
   init=config=>{
     const App = () => (
       <MuiThemeProvider>
-         <PageViewer src={config.urlsJson} sendPageDetails={config.sendPageDetails} currentPlayList={config.currentPlayList}/>
+         <PageViewer src={config}/>
       </MuiThemeProvider>
      );
     ReactDOM.render(
