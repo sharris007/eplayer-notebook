@@ -1,8 +1,8 @@
 import '../scss/pageviewer.scss';
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
-//import RaisedButton from 'material-ui/RaisedButton';
-//import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
 import renderHTML from 'react-render-html';
 import FooterNav from './FooterNav'
@@ -15,7 +15,6 @@ class PageViewer extends React.Component {
   constructor(props) {
     super(props);
     this.init(props);
-    //this.print = this.print.bind(this);
   };
   init = (props) => {
     const initPage=this.props.src.currentPageURL?this.props.src.currentPageURL.playOrder:'';
@@ -51,7 +50,7 @@ class PageViewer extends React.Component {
   getResponse = (currentPage, isInitOrGo, goToPage, scrollWindowTopCallBack) => {
     const thisRef=this;
     currentPage=currentPage+(isInitOrGo?0:thisRef.state.currentPage);
-    thisRef.props.src.sendPageDetails(goToPage, thisRef.getRequestedPageUrl(currentPage)[0]);
+    thisRef.props.sendPageDetails(goToPage, thisRef.getRequestedPageUrl(currentPage)[0]);
     const url= thisRef.props.src.baseUrl + thisRef.getRequestedPageUrl(currentPage)[0].href;
     const request = new Request(url, {
       headers: new Headers({
@@ -113,7 +112,7 @@ class PageViewer extends React.Component {
   enablePageNo  = () => {
     const pageDetails = document.getElementsByClassName('pagebreak');
     for (let j=0; j< pageDetails.length; j++) {
-      console.log('page details Hypothesis', pageDetails[j]);
+      //console.log('page details Hypothesis', pageDetails[j]);
       pageDetails[j].innerHTML=pageDetails[j].title;
       pageDetails[j].style.position = 'absolute';
       pageDetails[j].style.left = '-77px';
@@ -125,22 +124,21 @@ class PageViewer extends React.Component {
     base.href = this.props.src.baseUrl + this.getRequestedPageUrl(this.state.currentPage)[0].href;
     document.getElementsByTagName('head')[0].appendChild(base);
   }
-  componentDidUpdate() {
+  componentDidUpdate = () => {
     this.enablePageNo();
   };
-  componentDidMount() {
+  componentWillMount = () => {
     this.createHtmlBaseTag();
   };
-
   render() {
     return (
       <div id="book-render-component" tabIndex="0"  onKeyUp={this.arrowNavigation}>
         <div className="book-container">{renderHTML(this.state.renderSrc)}</div>
+        {this.props.src.enableGoToPage?<div className="goto-group"> <TextField hintText="Page No" value={this.state.goTo} onChange={(e) => this.updateGoTo(e)} onKeyDown = {(e) => this.goToKeyUp(e)}/><RaisedButton label="Go.." primary={true} onClick={() => this.handlerGoEvent()}/> </div>:''}
         <FooterNav data={this.state} onClickNextCallBack={this.goToNext} onClickPrevCallBack={this.goToPrev}/>
       </div>
     );
   };
-  //<div className="goto-group"> <TextField hintText="Page No" value={this.state.goTo} onChange={(e) => this.updateGoTo(e)} onKeyDown = {(e) => this.goToKeyUp(e)}/><RaisedButton label="Go.." secondary={true} onClick={() => this.handlerGoEvent()}/> </div>
 };
 
 PageViewer.PropTypes = {

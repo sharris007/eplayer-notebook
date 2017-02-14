@@ -65,7 +65,7 @@ class FooterNav extends React.Component {
     //window.scroll(0, 0);
   }
   handleFocus = (section) => {
-    console.log(this.refs);
+    //console.log(this.refs);
     if (section === 'prevSection') {
       ReactDOM.findDOMNode(this.refs.ps).classList.add('focus');
     }
@@ -77,7 +77,7 @@ class FooterNav extends React.Component {
     }
   }
   removeFocus = (section) => {
-    console.log(this.refs);
+    //console.log(this.refs);
     if (section === 'prevSection') {
       ReactDOM.findDOMNode(this.refs.ps).classList.remove('focus');
     }
