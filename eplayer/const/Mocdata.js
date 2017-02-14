@@ -65,43 +65,57 @@ export const booksdata = [
   }
 ];
 export const pageDetails ={
+  renderId: 'pxeViewer',
+  locale: 'en-us',
+  copyImages: false,
+  copyCharLimit: 0,
+  crossRefSettings: 'lightbox',
+  enablePrintOption: false,
+  showPageNo: true,
+  orientation: 'horizontal',
+  theme: 'black',
+  pageFontSize: '12px',
+  pageZoom: '50%',
+  enableGoToPage: true,
+  includeMathMLLib: false,
+  enableAnnotation: true,
+  annotationShareable: true,
+  clearSearchHighlights: false,
   elementId: 'demo',
-  urlsJson: {
-    baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/52a34c8a-b182-4ce5-8afc-7fab6752ded8/1/file/belk5_pr623/',
-    playList: [
-      {
-        'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
-        'playOrder': 1,
-        'title': '1.2 Hypothesis Testing'
-      },
-      {
-        'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml',
-        'playOrder': 2,
-        'title': '1.1 The Process of Science'
-      },
-
-      {
-        'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml',
-        'playOrder': 3,
-        'title': 'Chapter 1: Can Science Cure the Common Cold?'
-      },
-      
-      {
-        'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000806.xhtml',
-        'playOrder': 4,
-        'title': '1.3 Understanding Statistics'
-      },
-      {
-        'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml',
-        'playOrder': 5,
-        'title': '1.4 Evaluating Scientific Information'
-      }
-    ]
-  },
-  currentPlayList: {
-        'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
-        'playOrder': 1,
-        'title': '1.2 Hypothesis Testing'
+  pdfSearch: false,
+  allowLightboxFullscreen: false,
+  baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/52a34c8a-b182-4ce5-8afc-7fab6752ded8/1/file/belk5_pr623/',
+  playListURL: [
+    {
+      'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
+      'playOrder': 1,
+      'title': '1.2 Hypothesis Testing'
+    },
+    {
+      'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml',
+      'playOrder': 2,
+      'title': '1.1 The Process of Science'
+    },
+    {
+      'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml',
+      'playOrder': 3,
+      'title': 'Chapter 1: Can Science Cure the Common Cold?'
+    },
+    {
+      'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000806.xhtml',
+      'playOrder': 4,
+      'title': '1.3 Understanding Statistics'
+    },
+    {
+      'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml',
+      'playOrder': 5,
+      'title': '1.4 Evaluating Scientific Information'
+    }
+  ],
+  currentPageURL: {
+    'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
+    'playOrder': 1,
+    'title': '1.2 Hypothesis Testing'
   }
 };
 

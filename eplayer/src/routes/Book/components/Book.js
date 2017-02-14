@@ -48,7 +48,7 @@ export class Book extends Component {
     this.props.fetchPreferences();
 
     this.setState({
-      currentPageDetails : this.state.pageDetails.urlsJson.playList[0]
+      currentPageDetails : this.state.pageDetails.playListURL[0]
     });
 
     let pageUrl = this.state.currentPageDetails.playOrder;
@@ -111,7 +111,7 @@ export class Book extends Component {
     });
     let pageId = data.playOrder;
     console.log("currentPage url" , pageId);
-    this.props.dispatch(getAnnCallService(pageId));    
+    this.props.dispatch(getAnnCallService(pageId));
   }
 
   isCurrentPageBookmarked = () => {
@@ -122,8 +122,9 @@ export class Book extends Component {
 
   goToPageCallback = (pageId) => {
     let playListData={
-      urlsJson:pageDetails.urlsJson,
-      currentPlayList:{
+      playListURL:pageDetails.playListURL,
+      baseUrl:pageDetails.baseUrl,
+      currentPageURL:{
         'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
         'playOrder': pageId,
         'title': '1.2 Hypothesis Testing'
@@ -150,7 +151,7 @@ export class Book extends Component {
       default :{
         return eventType;
       }
-    } 
+    }
   }
 
   render() {
@@ -163,9 +164,10 @@ export class Book extends Component {
     callbacks.goToPageCallback = this.goToPageCallback;
     //this.props.book.toc.content = {};
     //this.props.book.toc.content.list = tocData;
-   
+
     return (
       <div>
+
         <Header
           classname={this.state.classname}
           bookData={this.props.book}
@@ -177,10 +179,10 @@ export class Book extends Component {
           this.props.book.viewer.pages &&
           this.props.book.viewer.pages.length > 0 &&
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'} id = "pxe-viewer">
-            <PageViewer src={this.state.pageDetails.urlsJson}  sendPageDetails={this.onPageChange} currentPlayList = {this.state.pageDetails.currentPlayList} />  
-            {loading?<Annotation annotationData = {annotionData} contentId="pxe-viewer" annotationEventHandler = {this.annotationCallBack.bind(this)} currentPageDetails ={this.state.currentPageDetails} /> :""}        
+            <PageViewer src={this.state.pageDetails}  sendPageDetails={this.onPageChange} />
+            {loading?<Annotation annotationData = {annotionData} contentId="pxe-viewer" annotationEventHandler = {this.annotationCallBack.bind(this)} currentPageDetails ={this.state.currentPageDetails} /> :""}
           </div>
-        
+
         }
       </div>
     );
