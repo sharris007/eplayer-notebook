@@ -35,8 +35,8 @@ class PageViewer extends React.Component {
     window.scroll(0, 0);
   };
   componentWillReceiveProps(newProps) {
-    if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.currentPageURL.playOrder)) {
-      this.getResponse(parseInt(newProps.currentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
+    if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
+      this.getResponse(parseInt(newProps.src.currentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
     }
   };
 
@@ -112,7 +112,6 @@ class PageViewer extends React.Component {
   enablePageNo  = () => {
     const pageDetails = document.getElementsByClassName('pagebreak');
     for (let j=0; j< pageDetails.length; j++) {
-      //console.log('page details Hypothesis', pageDetails[j]);
       pageDetails[j].innerHTML=pageDetails[j].title;
       pageDetails[j].style.position = 'absolute';
       pageDetails[j].style.left = '-77px';
@@ -130,6 +129,7 @@ class PageViewer extends React.Component {
   componentWillMount = () => {
     this.createHtmlBaseTag();
   };
+  
   render() {
     return (
       <div id="book-render-component" tabIndex="0"  onKeyUp={this.arrowNavigation}>
