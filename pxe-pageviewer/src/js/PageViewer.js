@@ -1,5 +1,6 @@
 import '../scss/pageviewer.scss';
 import React, {PropTypes} from 'react';
+import ReactDOM from 'react-dom';
 //import RaisedButton from 'material-ui/RaisedButton';
 //import TextField from 'material-ui/TextField';
 
@@ -19,15 +20,16 @@ class PageViewer extends React.Component {
   init = (props) => {
     const initPage=this.props.src.currentPageURL?this.props.src.currentPageURL.playOrder:'';
     this.state = {
-      renderSrc:'', 
-      currentPage:initPage?initPage:1, 
-      goTo:'', 
+      renderSrc:'',
+      currentPage:initPage?initPage:1,
+      goTo:'',
+      pageNoDetails:'',
       isFirstPage:initPage === 1,
       isLastPage: initPage === this.props.src.playListURL[this.props.src.playListURL.length-1].playOrder,
       prevPageTitle:(initPage <= 1)?'':this.props.src.playListURL[initPage-2].title,
       nextPageTitle:(initPage === this.props.src.playListURL[this.props.src.playListURL.length-1].playOrder)?'':this.props.src.playListURL[initPage].title
     };
-    
+
     this.getResponse(this.state.currentPage, true, 'initPage', this.scrollWindowTop);
   };
   scrollWindowTop = () => {
@@ -36,14 +38,15 @@ class PageViewer extends React.Component {
   componentWillReceiveProps(newProps) {
     if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.currentPageURL.playOrder)) {
       this.getResponse(parseInt(newProps.currentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
-    }   
+    }
   };
+
   getRequestedPageUrl = (playOrder) => {
     const thisRef=this;
     return thisRef.props.src.playListURL.filter((el) => {
       return el.playOrder === playOrder;
     });
-  }; 
+  };
 
   getResponse = (currentPage, isInitOrGo, goToPage, scrollWindowTopCallBack) => {
     const thisRef=this;
@@ -61,7 +64,7 @@ class PageViewer extends React.Component {
       return response.text();
     }).then((text) => {
       thisRef.setState({
-        renderSrc:text, 
+        renderSrc:text,
         currentPage:currentPage,
         isFirstPage: currentPage <= 1,
         isLastPage: currentPage >= this.props.src.playListURL[this.props.src.playListURL.length-1].playOrder,
@@ -74,7 +77,7 @@ class PageViewer extends React.Component {
       console.log(err);
     });
   }
-  
+
   goToNext = () => {
     this.getResponse(1, false, 'Next', this.scrollWindowTop);
   };
@@ -107,18 +110,28 @@ class PageViewer extends React.Component {
       //window.scroll(0, 0);
     }
   };
-  prepareImages = () => {
-    const images = document.getElementsByTagName('img');
-    for (let i=0; i<images.length; i++) {
-      let imgSrc=images[i].src;
-      imgSrc=imgSrc.replace('http://', '').replace('https://', '').replace(window.location.host, this.props.src.baseUrl+'OPS/');
-      images[i].src=imgSrc;
+  enablePageNo  = () => {
+    const pageDetails = document.getElementsByClassName('pagebreak');
+    for (let j=0; j< pageDetails.length; j++) {
+      console.log('page details Hypothesis', pageDetails[j]);
+      pageDetails[j].innerHTML=pageDetails[j].title;
+      pageDetails[j].style.position = 'absolute';
+      pageDetails[j].style.left = '-77px';
+      pageDetails[j].style.transform = 'rotate(-90deg)';
     }
-  };
+  }
+  createHtmlBaseTag = () => {
+    const base = document.createElement('base');
+    base.href = this.props.src.baseUrl + this.getRequestedPageUrl(this.state.currentPage)[0].href;
+    document.getElementsByTagName('head')[0].appendChild(base);
+  }
   componentDidUpdate() {
-    //console.log(document.getElementsByTagName('img')[0].src);
-    this.prepareImages();
+    this.enablePageNo();
   };
+  componentDidMount() {
+    this.createHtmlBaseTag();
+  };
+
   render() {
     return (
       <div id="book-render-component" tabIndex="0"  onKeyUp={this.arrowNavigation}>
