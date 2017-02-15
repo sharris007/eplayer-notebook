@@ -34,7 +34,7 @@ class GlossaryPopUp extends Component {
 
     const docBoundingClientRect = document.body.getBoundingClientRect();
     const elementBoundingClientRect = event.target.getBoundingClientRect();
-    const elementTopPosition = -(docBoundingClientRect.top) +  elementBoundingClientRect.top + 81;
+    const elementTopPosition = -(docBoundingClientRect.top) +  elementBoundingClientRect.top + 80;
 
     const bookDivHeight = document.getElementById(this.props.bookDiv).clientHeight + 'px';
     document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
@@ -53,8 +53,10 @@ class GlossaryPopUp extends Component {
           box.style.left = event.clientX + 'px';
           box.style.margin = 0;
           box.style.opacity = 1;
-          console.debug('document.body.getBoundingClientRect()',  document.body.getBoundingClientRect());
+
           console.debug('target.getBoundingClientRect()',  target.getBoundingClientRect())
+          console.debug('event.pageX :- ', event.pageX, 'event.pageY :- ', event.pageY )
+          console.debug('e.pageX - rect.left :- ', event.pageX - target.getBoundingClientRect().left )
         }
       });
     }); 

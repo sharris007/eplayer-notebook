@@ -15,7 +15,7 @@
     "release": "node ./npm_scripts/release.js",
     "verify": "node ./npm_scripts/verify.js"
   },
-  "author": "Aravindan",
+  "author": "Saravanakumar",
   "license": "MIT",
   "repository": {},
   "dependencies": {

@@ -37,11 +37,9 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 }
 .mm-popup__close {
 	position: absolute;
-	top: 15px;
+	top: 9px;
 	right: 20px;
 	padding: 0;
-	width: 20px;
-	height: 20px;
 	cursor: pointer;
 	outline: none;
 	text-align: center;
@@ -100,7 +98,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	color: $white;
 }
 .mm-popup__box {
-	width: 350px;
+	width: 250px;
 	position: absolute;
 	top: 10%;
 	left: 50%;
@@ -115,7 +113,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	z-index: 100;
 }
 .mm-popup__box__header {
-	padding: 15px 20px;
+	padding: 8px 20px;
 	background: $color_catskill_white_approx;
 	color: $color_mako_approx;
 }
@@ -128,7 +126,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 .mm-popup__box__body {
 	padding: 20px;
 	line-height: 1.4;
-	font-size: 14px;
+	font-size: 12px;
 	color: $color_mako_approx;
 	background: $white;
 	position: relative;
