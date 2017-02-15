@@ -164,13 +164,11 @@ class PageViewer extends React.Component {
   };
 
   render() {
-    return ( < div id = "book-render-component"
-      tabIndex = "0"
-      onKeyUp = {this.arrowNavigation} >
-      < div className = "book-container" > {renderHTML(this.state.renderSrc)} < /div> 
+    return ( < div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
+      < div className = "book-container" ref = "book-container" > {renderHTML(this.state.renderSrc)} < /div> 
       {this.props.src.enableGoToPage ? < div className = "goto-group" > 
       < TextField hintText = "Page No" value = {this.state.goTo} onChange = {(e) => this.updateGoTo(e)}  onKeyDown = {(e) => this.goToKeyUp(e)}       /><RaisedButton label="Go.." primary={true} onClick={() => this.handlerGoEvent()}/ > < /div>:''} 
-      < FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev} /> < /div >
+      < FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev} /> < div ref = "drm_block" > < /div >< /div >
     );
   };
 };
