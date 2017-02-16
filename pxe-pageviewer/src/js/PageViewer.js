@@ -3,19 +3,17 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-
 import renderHTML from 'react-render-html';
-import FooterNav from './FooterNav'
+
+import FooterNav from './FooterNav';
 
 class PageViewer extends React.Component {
-  //
-  // Modify or add prop types to validate the properties passed to this component!
-  // This is defined using an ES7 class property (transpiled by Babel Stage 0)
-  //
+  
   constructor(props) {
     super(props);
     this.init(props);
   };
+
   init = (props) => {
     const initPage = this.props.src.currentPageURL ? this.props.src.currentPageURL.playOrder : '';
     this.state = {
@@ -31,13 +29,9 @@ class PageViewer extends React.Component {
 
     this.getResponse(this.state.currentPage, true, 'initPage', this.scrollWindowTop);
   };
+
   scrollWindowTop = () => {
     window.scroll(0, 0);
-  };
-  componentWillReceiveProps(newProps) {
-    if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
-      this.getResponse(parseInt(newProps.src.currentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
-    }
   };
 
   getRequestedPageUrl = (playOrder) => {
@@ -99,6 +93,7 @@ class PageViewer extends React.Component {
       this.getResponse(parseInt(this.state.goTo), true, this.scrollWindowTop);
     }
   };
+
   arrowNavigation = (e) => {
     if (e.keyCode === 37 || e.keyCode === 39) {
       if (e.keyCode === 37 && !this.state.isFirstPage) {
@@ -109,6 +104,8 @@ class PageViewer extends React.Component {
       //window.scroll(0, 0);
     }
   };
+
+  //prints page no in the page rendered
   enablePageNo = () => {
     const pageDetails = document.getElementsByClassName('pagebreak');
     for (let j = 0; j < pageDetails.length; j++) {
@@ -118,18 +115,30 @@ class PageViewer extends React.Component {
       pageDetails[j].style.transform = 'rotate(-90deg)';
       pageDetails[j].style.fontSize = '18px';
     }
-  }
+  };
+
   createHtmlBaseTag = () => {
     const base = document.createElement('base');
     base.href = this.props.src.baseUrl + this.getRequestedPageUrl(this.state.currentPage)[0].href;
     document.getElementsByTagName('head')[0].appendChild(base);
-  }
-    //Common function for disable rightclick
+  };
+  //Common function for disable rightclick
   disableContextMenu = (getElem) => {
     getElem.oncontextmenu = () => {
       return false;
-    }
+    };
   }
+ 
+  componentWillMount = () => {
+    this.createHtmlBaseTag();//inserts base tag with baseUrl as a reference to relative paths
+  };
+
+  componentWillReceiveProps(newProps) {
+    if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
+      this.getResponse(parseInt(newProps.src.currentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
+    }
+  };
+
   componentDidUpdate = () => {
     //Disable contextmenu based on copyCharlimt and copyImage Props
     if ((this.props.src.copyCharLimit < 0 || this.props.src.copyCharLimit > 0) && (!this.props.src.copyImages)) {
@@ -157,18 +166,26 @@ class PageViewer extends React.Component {
         return false;
       }
     };
+    //prints page no in the page rendered
     this.enablePageNo();
   };
-  componentWillMount = () => {
-    this.createHtmlBaseTag();
+
+  getGoToElement = () =>{
+    return (
+      <div className = "goto-group" >
+        < TextField hintText = "Page No" value = {this.state.goTo} onChange = {(e) => this.updateGoTo(e)}  onKeyDown = {(e) => this.goToKeyUp(e)}/><RaisedButton label="Go.." primary={true} onClick={() => this.handlerGoEvent()}/>
+      </div>
+      );
   };
 
   render() {
-    return ( < div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
-      < div className = "book-container" ref = "book-container" > {renderHTML(this.state.renderSrc)} < /div> 
-      {this.props.src.enableGoToPage ? < div className = "goto-group" > 
-      < TextField hintText = "Page No" value = {this.state.goTo} onChange = {(e) => this.updateGoTo(e)}  onKeyDown = {(e) => this.goToKeyUp(e)}       /><RaisedButton label="Go.." primary={true} onClick={() => this.handlerGoEvent()}/ > < /div>:''} 
-      < FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev} /> < div ref = "drm_block" > < /div >< /div >
+    return ( 
+      <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
+        <div className = "book-container" ref = "book-container" > {renderHTML(this.state.renderSrc)} </div>
+        {this.props.src.enableGoToPage ?this.getGoToElement():''} 
+        <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
+        <div ref = "drm_block"> </div >
+      </div>
     );
   };
 };

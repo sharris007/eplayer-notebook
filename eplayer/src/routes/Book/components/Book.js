@@ -1,18 +1,20 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { Viewer } from '@pearson-incubator/viewer';
+import { PageViewer } from 'pxe-pageviewer';
+import { Annotation } from 'pxe-annotation';
+
+// import { Viewer } from '@pearson-incubator/viewer';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
-import { BookList } from '../../../../const/MockData';
-import { booksdata, pageDetails, tocData } from '../../../../const/Mocdata';
+// import { BookList } from '../../../../const/MockData';
+import { pageDetails } from '../../../../const/Mocdata';// booksdata, tocData
 
 import './Book.scss';
 
-import { PageViewer } from 'pxe-pageviewer'
-import { Annotation } from 'pxe-annotation'
-import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation'
+import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
 
 export class Book extends Component {
   constructor(props) {
@@ -20,14 +22,13 @@ export class Book extends Component {
     this.state = {
       classname: 'headerBar',
       viewerContent: true,
-      currentPageDetails: "",
-      pageDetails:pageDetails
+      currentPageDetails: '',
+      pageDetails
     };
     this.onPageChange.bind(this);
     this.nodesToUnMount = [];
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
-
   }
 
   componentDidMount() {
@@ -46,12 +47,13 @@ export class Book extends Component {
     this.props.fetchAnnotations(this.props.params.bookId);
     this.props.fetchBookmarks(this.props.params.bookId);
     this.props.fetchPreferences();
-
+    // eslint-disable-next-line
     this.setState({
-      currentPageDetails : this.state.pageDetails.playListURL[0]
+      currentPageDetails: this.state.pageDetails.playListURL[0]
     });
 
-    let pageUrl = this.state.currentPageDetails.playOrder;
+    // const pageUrl = this.state.currentPageDetails.playOrder;
+    // eslint-disable-next-line
     this.props.dispatch(getAnnCallService(1));
   }
 
@@ -105,12 +107,13 @@ export class Book extends Component {
     this.props.removeBookmark(this.props.params.bookId, targetBookmarkId);
   };
 
-  onPageChange = (type,data) => {
+  onPageChange = (type, data) => {
     this.setState({
-      currentPageDetails :data
+      currentPageDetails: data
     });
-    let pageId = data.playOrder;
-    console.log("currentPage url" , pageId);
+    const pageId = data.playOrder;
+    // console.log('currentPage url', pageId);
+    // eslint-disable-next-line
     this.props.dispatch(getAnnCallService(pageId));
   }
 
@@ -121,17 +124,17 @@ export class Book extends Component {
   };
 
   goToPageCallback = (pageId) => {
-    let playListData={
-      playListURL:pageDetails.playListURL,
-      baseUrl:pageDetails.baseUrl,
-      currentPageURL:{
-        'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
-        'playOrder': pageId,
-        'title': '1.2 Hypothesis Testing'
+    const playListData = {
+      playListURL: pageDetails.playListURL,
+      baseUrl: pageDetails.baseUrl,
+      currentPageURL: {
+        href: 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
+        playOrder: pageId,
+        title: '1.2 Hypothesis Testing'
       }
     };
     this.setState({
-      pageDetails :playListData
+      pageDetails: playListData
     });
   };
 
@@ -139,16 +142,16 @@ export class Book extends Component {
     this.setState({ viewerContent: viewerCallBack });
   }
 
-  annotationCallBack = (eventType, data, viewer) => {
-    console.log("data stack" , eventType)
-    switch (eventType){
-      case 'annotationCreated':{
-        return  this.props.dispatch(postAnnCallService(data));
+  annotationCallBack = (eventType, data) => {
+    // console.log('data stack', eventType);
+    switch (eventType) {
+      case 'annotationCreated': {
+        return this.props.dispatch(postAnnCallService(data));
       }
-      case 'annotationDeleted':{
+      case 'annotationDeleted': {
         return this.props.dispatch(deleteAnnCallService(data));
       }
-      default :{
+      default : {
         return eventType;
       }
     }
@@ -156,18 +159,17 @@ export class Book extends Component {
 
   render() {
     const callbacks = {};
-    const {annotionData,loading} = this.props ;
+    const { annotionData, loading } = this.props;// eslint-disable-line react/prop-types
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback = this.goToPageCallback;
-    //this.props.book.toc.content = {};
-    //this.props.book.toc.content.list = tocData;
+    // this.props.book.toc.content = {};
+    // this.props.book.toc.content.list = tocData;
 
     return (
       <div>
-
         <Header
           classname={this.state.classname}
           bookData={this.props.book}
@@ -178,17 +180,15 @@ export class Book extends Component {
         { !this.props.book.isFetching.viewer &&
           this.props.book.viewer.pages &&
           this.props.book.viewer.pages.length > 0 &&
-          <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'} id = "pxe-viewer">
-            <PageViewer src={this.state.pageDetails}  sendPageDetails={this.onPageChange} />
-            {loading?<Annotation annotationData = {annotionData} contentId="pxe-viewer" annotationEventHandler = {this.annotationCallBack.bind(this)} currentPageDetails ={this.state.currentPageDetails} /> :""}
+          <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'} id="pxe-viewer">
+            <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} />
+            {loading ? <Annotation annotationData={annotionData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
           </div>
-
         }
       </div>
     );
   }
 }
-
 
 
 Book.propTypes = {
@@ -199,9 +199,10 @@ Book.propTypes = {
   addBookmark: React.PropTypes.func,
   removeBookmark: React.PropTypes.func,
   fetchPreferences: React.PropTypes.func,
-  goToPage: React.PropTypes.func,
+  // goToPage: React.PropTypes.func,
   book: React.PropTypes.object,
-  params: React.PropTypes.object
+  params: React.PropTypes.object,
+  dispatch: React.PropTypes.func
 };
 
 Book.contextTypes = {
@@ -209,8 +210,6 @@ Book.contextTypes = {
   muiTheme: React.PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => {
-  return { annotionData: state.annotationReducer.data, loading: state.annotationReducer.loading}
-}
-Book = connect(mapStateToProps )(Book)
+const mapStateToProps = state => ({ annotionData: state.annotationReducer.data, loading: state.annotationReducer.loading });// eslint-disable-line max-len
+Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign
 export default Book;

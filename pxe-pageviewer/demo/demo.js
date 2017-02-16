@@ -16,7 +16,7 @@ function init() {
     theme:'black',
     pageFontSize:'12px',
     pageZoom:'50%', 
-    enableGoToPage:false,
+    enableGoToPage:true,
     includeMathMLLib: false,
     enableAnnotation: true,
     annotationShareable: true,

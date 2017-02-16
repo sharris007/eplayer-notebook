@@ -5,7 +5,7 @@ import { FlashCards } from '@pearson-incubator/aquila-js-flashcards';
 import { AudioPlayer, VideoPlayerPreview, ImageViewerPreview,
         VideoPlayerSlideShow, ImageSlideshowPreview, UCAPreview } from '@pearson-incubator/aquila-js-core';
 import { AquilaTimelinePreview } from '@pearson-incubator/aquila-js-timeline';
-//import { TinyQuizModal, QuizPreview } from '@pearson-incubator/aquila-js-quiz';
+// import { TinyQuizModal, QuizPreview } from '@pearson-incubator/aquila-js-quiz';
 import errorCard from '../../../common/errorCard';
 import { injectReducer } from '../../../../store/reducers';
 import widgetActions from '../modules/widgetActions';
@@ -64,12 +64,12 @@ class Widget extends React.Component {
       case 'timeline': {
         const parsedtimeData = Utils.parseTimelineData(data.timeline);
         if (parsedtimeData !== undefined && parsedtimeData.title !== undefined) {
-          component = <AquilaTimelinePreview action="Explore the timeline" data={parsedtimeData} node={this.props.data.node} />;
+          component = <AquilaTimelinePreview action="Explore the timeline" data={parsedtimeData} node={this.props.data.node} />;// eslint-disable-line max-len
         }
         break;
       }
       case 'tinyquiz': {
-        const parsedtinyquizData = Utils.parseTinyQuizData(data.tinyquiz);
+        // const parsedtinyquizData = Utils.parseTinyQuizData(data.tinyquiz);
         // if (parsedtinyquizData !== undefined && parsedtinyquizData.title !== undefined) {
         //   component = <TinyQuizModal data={parsedtinyquizData} />;
         // }
@@ -103,7 +103,7 @@ class Widget extends React.Component {
         break;
       }
       case 'mti': {
-        const parsedMTIData = Utils.parseMTIData(data.mti);
+        // const parsedMTIData = Utils.parseMTIData(data.mti);
         // if (parsedMTIData !== undefined && parsedMTIData.title !== undefined) {
         //   component = <QuizPreview content={parsedMTIData} type={'MatchGame'} />;
         // }
@@ -117,7 +117,7 @@ class Widget extends React.Component {
         break;
       }
       case 'tia': {
-        const parsedTIAData = Utils.parseMTIData(data.tia);
+        // const parsedTIAData = Utils.parseMTIData(data.tia);
         // if (parsedTIAData !== undefined && parsedTIAData.title !== undefined) {
         //   component = <QuizPreview content={parsedTIAData} type={'TextInput'} title={'Type In Answer'} />;
         // }
