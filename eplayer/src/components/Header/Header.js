@@ -21,7 +21,6 @@ export class Header extends React.Component {
       headerExists: false,
       searchOpen: false
     };
-
   }
 
   componentWillUnmount() {
