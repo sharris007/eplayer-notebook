@@ -31,42 +31,43 @@ class GlossaryPopUp extends Component {
   framePopOver = (event) => {
     event.preventDefault();
     console.clear();
+
+    const docBoundingClientRect = document.body.getBoundingClientRect();
+    const elementBoundingClientRect = event.target.getBoundingClientRect();
+    const elementTopPosition = -(docBoundingClientRect.top) +  elementBoundingClientRect.top + 80;
+
+    const bookDivHeight = document.getElementById(this.props.bookDiv).clientHeight + 'px';
+    document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
+
     const glossaryNode =  document.getElementById(event.target.hash.replace('#', '')); 
     const popOverTitle = glossaryNode.getElementsByTagName('dfn')[0].textContent;
     const popOverDescription = glossaryNode.nextElementSibling.getElementsByTagName('p')[0].textContent;
+
     Popup.registerPlugin('popover', function (target) {
       this.create({
         title: popOverTitle,
         content: popOverDescription,
-        className: 'popover',
         noOverlay: true,
         position: function (box) {
-          /*const bodyRect      = document.body.getBoundingClientRect();
-          const btnRect       = target.getBoundingClientRect();
-          const btnOffsetTop  = btnRect.top - bodyRect.top;
-          const btnOffsetLeft = btnRect.left - bodyRect.left;
-          const scroll        = document.documentElement.scrollTop || document.body.scrollTop;*/
-          box.style.top = (event.clientY + 10) + 'px';
+          box.style.top = elementTopPosition + 'px';
           box.style.left = event.clientX + 'px';
-          /*box.style.top  = (btnOffsetTop - box.offsetHeight - 10) - scroll + 'px';
-          box.style.left = (btnOffsetLeft + (target.offsetWidth / 2) - (box.offsetWidth / 2)) + 'px';*/
           box.style.margin = 0;
           box.style.opacity = 1;
-          console.debug('document.body.getBoundingClientRect()',  document.body.getBoundingClientRect());
+
           console.debug('target.getBoundingClientRect()',  target.getBoundingClientRect())
-            //console.log("box.style.top :- ", box.style.top, "box.style.left :- ", box.style.left)
+          console.debug('event.pageX :- ', event.pageX, 'event.pageY :- ', event.pageY )
+          console.debug('e.pageX - rect.left :- ', event.pageX - target.getBoundingClientRect().left )
         }
       });
     }); 
     Popup.plugins.popover(event.target);
-    //console.log('event.target :- ', event.target,  'popOverTitle :- ', popOverTitle, 'popOverDescription :- ', popOverDescription)
   }
   
   render() {
     return (  <div>
                 <Popup />
                 <div  id = "divGlossary"
-                    style= {{ visibility : 'hidden' }}>
+                    style= {{ display : 'none' }}>
                   {renderHTML(this.state.glossaryResponse)}
                 </div>
               </div>);
