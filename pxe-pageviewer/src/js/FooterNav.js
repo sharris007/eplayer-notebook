@@ -67,25 +67,25 @@ class FooterNav extends React.Component {
   handleFocus = (section) => {
     //console.log(this.refs);
     if (section === 'prevSection') {
-      ReactDOM.findDOMNode(this.ps).classList.add('focus');
+      this.ps.classList.add('focus');
     }
     else if (section === 'currentSection') {
-      ReactDOM.findDOMNode(this.cs).classList.add('focus');
+      this.cs.classList.add('focus');
     }
     else if (section === 'nextSection') {
-      ReactDOM.findDOMNode(this.ns).classList.add('focus');
+      this.ns.classList.add('focus');
     }
   }
   removeFocus = (section) => {
     //console.log(this.refs);
     if (section === 'prevSection') {
-      ReactDOM.findDOMNode(this.ps).classList.remove('focus');
+      this.ps.classList.remove('focus');
     }
     else if (section === 'currentSection') {
-      ReactDOM.findDOMNode(this.cs).classList.remove('focus');
+      this.cs.classList.remove('focus');
     }
     else if (section === 'nextSection') {
-      ReactDOM.findDOMNode(this.ns).classList.remove('focus');
+      this.ns.classList.remove('focus');
     }
   };
 
