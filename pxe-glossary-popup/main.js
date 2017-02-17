@@ -9,26 +9,18 @@ import BookViewer from './demo/BookViewer';
 export default class GlossaryPopUpComponent extends Component {
   constructor(props) {
     super(props); 
-  	//this.state = {renderGlossaryComponent : false};
-    //this.renderGlossary = this.renderGlossary.bind(this);
     this.init(props);
-  }
-
-  renderGlossary()  {
-    /*this.setState({
-      renderGlossaryComponent: true
-    });*/
   }
 
   init=(config)=> {
     ReactDOM.render(
-    	<div>
+      <div>
           
         <div id = "bookDiv">
-    		  <BookViewer renderGlossary = {this.renderGlossary} />
+          <BookViewer bookUrl = "https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/OPS/s9ml/chapter02/why_are_age_structures_and_dependency_ratios_important.xhtml"/>
         </div>
        
-        <GlossaryPopUp glossaryurl = "https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/OPS/s9ml/glossary/filep7000496728000000000000000005a08.xhtml#P7000496728000000000000000005DA2" bookDiv = "bookDiv"/> 
+        <GlossaryPopUp glossaryurl = "https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/OPS/s9ml/glossary.xhtml" bookDiv = "bookDiv"/> 
  
         </div>,
         document.getElementById(config.contentId)

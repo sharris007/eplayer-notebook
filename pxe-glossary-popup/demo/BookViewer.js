@@ -12,17 +12,18 @@ class BookViewer extends Component {
   }
 
   init = () => {
-    axios.get('https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml')
+    axios.get(this.props.bookUrl)
       .then((response) => {
-        this.setState({bookHTML : response.data});
-        this.props.renderGlossary();      
+        this.setState({bookHTML : response.data});      
       });
   }
+
   componentDidMount() {
     const base = document.createElement('base');
-    base.href = 'https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml';
+    base.href = this.props.bookUrl;
     document.getElementsByTagName('head')[0].appendChild(base);
   }
+
   render() {
     return (<div>{renderHTML(this.state.bookHTML)}</div>);
   }
