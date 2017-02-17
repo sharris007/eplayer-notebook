@@ -1,7 +1,6 @@
 {
   "name": "ereader",
   "version": "0.1.0",
-  //npm run lint && npm run test && npm run clean && 
   "description": "Get started with React, Redux, and React-Router!",
   "main": "index.js",
   "engines": {
@@ -33,6 +32,12 @@
       "command": "nodemon bin/server --ignore dist --ignore coverage --ignore tests --ignore src",
       "env": {
         "NODE_ENV": "development",
+        "DEBUG": "app:*"
+      }
+    },
+    "deployold": {
+      "command": "npm run lint && npm run test && npm run clean && npm run compile",
+      "env": {
         "DEBUG": "app:*"
       }
     },
