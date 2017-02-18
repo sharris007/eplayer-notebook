@@ -1,5 +1,4 @@
 import {  Component, PropTypes } from 'react';
-import axios from 'axios';
 import renderHTML from 'react-render-html';
 import Popup from 'react-popup';
 import { GlossaryPopUpClasses } from '../../const/GlossaryPopUpClasses';
@@ -11,29 +10,38 @@ class GlossaryPopUp extends Component {
     super(props); 
     this.state = {
       glossaryResponse : ''
-    }; 
-    setTimeout(() => {
-      this.fetchGlossaryData();
-    }, 2000) 
-    
+    };    
+  }
+
+  componentDidMount() {
+    this.fetchGlossaryData();
   }
 
   fetchGlossaryData = () => {
-    console.log(GlossaryPopUpClasses)
-    axios.get(this.props.glossaryurl)
-      .then((response) => {
-        console.clear();
-        this.setState({ glossaryResponse : response.data});
-        const bookDiv = document.getElementById(this.props.bookDiv);
-
-        GlossaryPopUpClasses.forEach((val) => {
-          bookDiv.querySelectorAll(val).forEach((item) => {
-            const obj = {'className' :  val};
-            item.addEventListener('click', this.framePopOver.bind(this, obj))
-          });
-        });
-
+    const request = new Request(this.props.glossaryurl, {
+      headers: new Headers({
+        'Content-Type': 'text/plain'
       })
+    });
+
+    fetch(request, {
+      method: 'get'
+    }).then((response) => {
+      return response.text();
+    }).then((text) => {
+      console.clear();
+      this.setState({ glossaryResponse : text});
+      const bookDiv = document.getElementById(this.props.bookDiv);
+
+      GlossaryPopUpClasses.forEach((val) => {
+        bookDiv.querySelectorAll(val).forEach((item) => {
+          const obj = {'className' :  val};
+          item.addEventListener('click', this.framePopOver.bind(this, obj))
+        });
+      }); 
+    }).catch((err) => {
+      console.debug(err);
+    });
   }
 
   framePopOver = (args, event) => {

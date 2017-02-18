@@ -1,6 +1,5 @@
 import  {  Component, PropTypes } from 'react';
 import renderHTML from 'react-render-html';
-import axios from 'axios';
 
 class BookViewer extends Component {
   constructor(props) {
@@ -11,15 +10,28 @@ class BookViewer extends Component {
     this.init();
   }
 
-  init = () => {
-    axios.get(this.props.bookUrl)
-      .then((response) => {
-        this.setState({bookHTML : response.data});      
-      });
+  init = () => {  
+    const request = new Request(this.props.bookUrl, {
+      headers: new Headers({
+        'Content-Type': 'text/plain'
+      })
+    });
+
+    fetch(request, {
+      method: 'get'
+    }).then((response) => {
+      return response.text();
+    }).then((text) => {
+      this.setState({bookHTML : text}); 
+      this.props.onBookLoad(); 
+    }).catch((err) => {
+      console.debug(err);
+    });
   }
 
   componentDidMount() {
-    const base = document.createElement('base');
+    let base = {}; 
+    base = document.createElement('base');
     base.href = this.props.bookUrl;
     document.getElementsByTagName('head')[0].appendChild(base);
   }
