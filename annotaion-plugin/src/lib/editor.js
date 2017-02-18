@@ -11,7 +11,8 @@ Annotator.Editor = (function(_super) {
     ".annotator-save click": "submit",
     ".annotator-cancel click": "hide",
     ".annotator-cancel mouseover": "onCancelButtonMouseover",
-    "textarea keydown": "processKeypress"
+    "textarea keydown": "processKeypress",
+    ".annotator-color click":"onColorChange"
   };
 
   Editor.prototype.classes = {
@@ -19,7 +20,7 @@ Annotator.Editor = (function(_super) {
     focus: 'annotator-focus'
   };
 
-  Editor.prototype.html = "<div class=\"annotator-outer annotator-editor\">\n  <form class=\"annotator-widget\">\n    <ul class=\"annotator-listing\"></ul>\n    <div class=\"annotator-controls\">\n      <a href=\"#cancel\" class=\"annotator-cancel\">" + _t('Cancel') + "</a>\n<a href=\"#save\" class=\"annotator-save annotator-focus\">" + _t('Save') + "</a>\n    </div>\n  </form>\n</div>";
+  Editor.prototype.html = "<div class=\"annotator-outer annotator-editor\">\n <form class=\"annotator-widget\">\n    <div class=\"annotator-color-container\"><button class=\"annotator-color annotator-yellow\" value=\"#FCF37F\"></button> <button class=\"annotator-color annotator-green\" value=\"#55DF49\"></button> <button class=\"annotator-color annotator-pink\" value=\"#FC92CF\"></button> </div>\n<ul class=\"annotator-listing\"></ul>\n    <div class=\"annotator-controls\">\n      <a href=\"#cancel\" class=\"annotator-cancel\">" + _t('Cancel') + "</a>\n<a href=\"#save\" class=\"annotator-save annotator-focus\">" + _t('Save') + "</a>\n    </div>\n  </form>\n</div>";
 
   Editor.prototype.options = {};
 
@@ -30,14 +31,26 @@ Annotator.Editor = (function(_super) {
     this.load = __bind(this.load, this);
     this.hide = __bind(this.hide, this);
     this.show = __bind(this.show, this);
+    this.onColorChange=__bind(this.onColorChange, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
     this.annotation = {};
+  }
+  
+  Editor.prototype.onColorChange=function(event) {
+    event.preventDefault();
+    this.annotation.color=event.target.value;
+    $('.annotator-color').removeClass('active');
+    $(event.target).addClass('active');
+    $(this.annotation.highlights).css('background', event.target.value);
   }
 
   Editor.prototype.show = function(event) {
     Annotator.Util.preventEventDefault(event);
     this.element.removeClass(this.classes.hide);
+    this.annotation.color=''; 
+    $('.annotator-color').removeClass('active');
+    $('.annotator-color:first').addClass('active');
     this.element.find('.annotator-save').addClass(this.classes.focus);
     this.checkOrientation();
     this.element.find(":input:first").focus();
@@ -64,6 +77,7 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.submit = function(event) {
+    debugger;
     var field, _i, _len, _ref;
     Annotator.Util.preventEventDefault(event);
     _ref = this.fields;
@@ -122,7 +136,7 @@ Annotator.Editor = (function(_super) {
     list = this.element.find('ul');
     controls = this.element.find('.annotator-controls');
     if (this.element.hasClass(this.classes.invert.y)) {
-      controls.insertBefore(list);
+      controls.insertAfter(list);
     } else if (controls.is(':first-child')) {
       controls.insertAfter(list);
     }

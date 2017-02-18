@@ -10,10 +10,10 @@ Annotator = (function(_super) {
   __extends(Annotator, _super);
 
   Annotator.prototype.events = {
-    ".annotator-adder button click": "onAdderClick",
-    ".annotator-adder button mousedown": "onAdderMousedown",
-    ".annotator-hl mouseover": "onHighlightMouseover",
-    ".annotator-hl mouseout": "startViewerHideTimer"
+    ".annotator-adder click": "onAdderClick",
+    ".annotator-adder mousedown": "onAdderMousedown",
+    // ".annotator-hl mouseover": "onHighlightMouseover",
+    // ".annotator-hl mouseout": "startViewerHideTimer"
   };
 
   Annotator.prototype.html = {
@@ -239,6 +239,7 @@ Annotator = (function(_super) {
     annotation.highlights = [];
     for (_j = 0, _len1 = normedRanges.length; _j < _len1; _j++) {
       normed = normedRanges[_j];
+      normed.color=annotation.color;
       annotation.quote.push($.trim(normed.text()));
       annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
       $.merge(annotation.highlights, this.highlightRange(normed));
@@ -318,7 +319,8 @@ Annotator = (function(_super) {
       cssClass = 'annotator-hl';
     }
     white = /^\s*$/;
-    hl = $("<span class='" + cssClass + "'></span>");
+    normedRange.color=normedRange.color||'#FCF37F';
+    hl = $("<span class='" + cssClass + "' style=background:" + normedRange.color + "></span>");
     _ref = normedRange.textNodes();
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -418,7 +420,9 @@ Annotator = (function(_super) {
       }
     }
     if (event && this.selectedRanges.length) {
-      return this.adder.css(Util.mousePosition(event, this.wrapper[0])).show();
+      this.onAdderClick(event);
+      this.onAdderMousedown();
+      return this.adder;
     } else {
       return this.adder.hide();
     }
@@ -450,14 +454,27 @@ Annotator = (function(_super) {
     return this.ignoreMouseup = true;
   };
 
+  Annotator.prototype.clearTextSelection =function (){
+    if (window.getSelection) {
+      if (window.getSelection().empty) {  // Chrome
+        window.getSelection().empty();
+      } else if (window.getSelection().removeAllRanges) {  // Firefox
+        window.getSelection().removeAllRanges();
+      }
+    } else if (document.selection) {  // IE?
+      document.selection.empty();
+    }
+  }
+
   Annotator.prototype.onAdderClick = function(event) {
     var annotation, cancel, cleanup, position, save;
     if (event != null) {
       event.preventDefault();
     }
-    position = this.adder.position();
+    position = Util.mousePosition(event, this.wrapper[0]);
     this.adder.hide();
     annotation = this.setupAnnotation(this.createAnnotation());
+    this.clearTextSelection();
     $(annotation.highlights).addClass('annotator-hl-temporary');
     save = (function(_this) {
       return function() {
