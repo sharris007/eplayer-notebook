@@ -6,7 +6,7 @@
 
 //import '../scss/component-specific.scss';
 
-import React from 'react';
+import React, {PropTypes} from 'react';
 import {injectIntl} from 'react-intl';
 
 import PageViewer from './PageViewer';
@@ -17,7 +17,10 @@ class ComponentOwner extends React.Component {
   // Modify or add prop types to validate the properties passed to this component!
   // This is defined using an ES7 class property (transpiled by Babel Stage 0)
   //
-
+  static propTypes = {
+    src:PropTypes.object.isRequired,
+    sendPageDetails:PropTypes.func.isRequired
+  };
   constructor(props) {
     super(props);
   }
@@ -37,8 +40,5 @@ class ComponentOwner extends React.Component {
     );
   };  
 }
-/*ComponentOwner.PropTypes.props={
-  src:PropTypes.object.isRequired,
-  sendPageDetails:PropTypes.func.isRequired
-};*/
+
 export default injectIntl(ComponentOwner); // Inject this.props.intl into the component context

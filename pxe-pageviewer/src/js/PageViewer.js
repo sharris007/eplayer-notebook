@@ -6,6 +6,7 @@ import TextField from 'material-ui/TextField';
 import renderHTML from 'react-render-html';
 
 import FooterNav from './FooterNav';
+import crossRef from './CrossRef';
 
 class PageViewer extends React.Component {
   
@@ -15,15 +16,16 @@ class PageViewer extends React.Component {
 
   init = (props) => {
     const initPage = this.props.src.currentPageURL ? this.props.src.currentPageURL.playOrder : '';
+    const playListURL = this.props.src.playListURL;
     this.state = {
       renderSrc: '',
       currentPage: initPage ? initPage : 1,
       goTo: '',
       pageNoDetails: '',
       isFirstPage: initPage === 1,
-      isLastPage: initPage === this.props.src.playListURL[this.props.src.playListURL.length - 1].playOrder,
-      prevPageTitle: (initPage <= 1) ? '' : this.props.src.playListURL[initPage - 2].title,
-      nextPageTitle: (initPage === this.props.src.playListURL[this.props.src.playListURL.length - 1].playOrder) ? '' : this.props.src.playListURL[initPage].title
+      isLastPage: initPage === playListURL[playListURL.length - 1].playOrder,
+      prevPageTitle: (initPage <= 1) ? '' : playListURL[initPage - 2].title,
+      nextPageTitle: (initPage === playListURL[playListURL.length - 1].playOrder) ? '' : playListURL[initPage].title
     };
 
     this.getResponse(this.state.currentPage, true, 'initPage', this.scrollWindowTop);
@@ -42,6 +44,7 @@ class PageViewer extends React.Component {
 
   getResponse = (currentPage, isInitOrGo, goToPage, scrollWindowTopCallBack) => {
     const thisRef = this;
+    const playListURL = thisRef.props.src.playListURL;
     currentPage = currentPage + (isInitOrGo ? 0 : thisRef.state.currentPage);
     thisRef.props.sendPageDetails(goToPage, thisRef.getRequestedPageUrl(currentPage)[0]);
     const url = thisRef.props.src.baseUrl + thisRef.getRequestedPageUrl(currentPage)[0].href;
@@ -59,9 +62,9 @@ class PageViewer extends React.Component {
         renderSrc: text,
         currentPage: currentPage,
         isFirstPage: currentPage <= 1,
-        isLastPage: currentPage >= this.props.src.playListURL[this.props.src.playListURL.length - 1].playOrder,
-        prevPageTitle: (currentPage <= 1) ? '' : this.props.src.playListURL[currentPage - 2].title,
-        nextPageTitle: (currentPage === this.props.src.playListURL[this.props.src.playListURL.length - 1].playOrder) ? '' : this.props.src.playListURL[currentPage].title
+        isLastPage: currentPage >= playListURL[playListURL.length - 1].playOrder,
+        prevPageTitle: (currentPage <= 1) ? '' : playListURL[currentPage - 2].title,
+        nextPageTitle: (currentPage === playListURL[playListURL.length - 1].playOrder) ? '' : playListURL[currentPage].title
       });
       //callback
       scrollWindowTopCallBack();
@@ -142,21 +145,21 @@ class PageViewer extends React.Component {
   componentDidUpdate = () => {
     //Disable contextmenu based on copyCharlimt and copyImage Props
     if ((this.props.src.copyCharLimit < 0 || this.props.src.copyCharLimit > 0) && (!this.props.src.copyImages)) {
-      const images = this.refs['book-container'].getElementsByTagName('img');
+      const images = this.bookContainerRef.getElementsByTagName('img');
       for (let i = 0; i < images.length; i++) {
         this.disableContextMenu(images[i]);
       }
     } else if (this.props.src.copyCharLimit === 0 && (!this.props.src.copyImages)) {
-      this.disableContextMenu(this.refs['book-container']);
+      this.disableContextMenu(this.bookContainerRef);
     }
 
     //Check the Text selection onCopy event
-    this.refs['book-container'].oncopy = () => {
+    this.bookContainerRef.oncopy = () => {
       if (this.props.src.copyCharLimit > 0) {
         let selection;
         selection = window.getSelection();
         const copytext = selection.toString().substring(0, this.props.src.copyCharLimit);
-        const drmdiv = this.refs.drm_block;
+        const drmdiv = this.drmBlockRef;
         drmdiv.innerHTML = copytext.substring(0, this.props.src.copyCharLimit);
         selection.selectAllChildren(drmdiv);
         window.setTimeout(function() {
@@ -168,6 +171,7 @@ class PageViewer extends React.Component {
     };
     //prints page no in the page rendered
     this.enablePageNo();
+    crossRef(this);
   };
 
   getGoToElement = () =>{
@@ -182,11 +186,11 @@ class PageViewer extends React.Component {
     return ( 
       <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
-          <div className = "book-container" ref = "book-container" > {renderHTML(this.state.renderSrc)} </div>
+          <div className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} > {renderHTML(this.state.renderSrc)} </div>
         </div>
         {this.props.src.enableGoToPage ?this.getGoToElement():''} 
         <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
-        <div ref = "drm_block"> </div >
+        <div ref = {(el) => { this.drmBlockRef = el; }}> </div >
       </div>
     );
   };
