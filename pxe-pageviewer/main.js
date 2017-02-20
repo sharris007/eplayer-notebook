@@ -2,8 +2,11 @@ import './main.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PageViewer from './src/js/PageViewer';
+// i18n, set up for French out-of-the-box
+import {addLocaleData, IntlProvider} from 'react-intl';
+import frLocaleData from 'react-intl/locale-data/fr';
 
+import ComponentOwner from './src/js/component-owner';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -13,14 +16,18 @@ injectTapEventPlugin();
 
 export default class PageViewerComponent {
   constructor(config) {
+    addLocaleData(frLocaleData);
     this.init(config);
   }
 
   init=config=>{
+    const locale = config.locale ? config.locale : 'en';
     const App = () => (
-      <MuiThemeProvider>
-         <PageViewer src={config} sendPageDetails={config.sendPageDetails}/>
-      </MuiThemeProvider>
+      <IntlProvider locale={locale}>
+        <MuiThemeProvider>
+          <ComponentOwner src={config} sendPageDetails={config.sendPageDetails}/>
+        </MuiThemeProvider>
+      </IntlProvider>
      );
     ReactDOM.render(
        <App/>, document.getElementById(config.elementId)

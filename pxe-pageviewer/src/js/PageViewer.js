@@ -11,7 +11,6 @@ class PageViewer extends React.Component {
   
   constructor(props) {
     super(props);
-    this.init(props);
   };
 
   init = (props) => {
@@ -130,6 +129,7 @@ class PageViewer extends React.Component {
   }
  
   componentWillMount = () => {
+    this.init(this.props);
     this.createHtmlBaseTag();//inserts base tag with baseUrl as a reference to relative paths
   };
 
@@ -181,7 +181,9 @@ class PageViewer extends React.Component {
   render() {
     return ( 
       <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
-        <div className = "book-container" ref = "book-container" > {renderHTML(this.state.renderSrc)} </div>
+        <div id={this.props.src.contentId}>
+          <div className = "book-container" ref = "book-container" > {renderHTML(this.state.renderSrc)} </div>
+        </div>
         {this.props.src.enableGoToPage ?this.getGoToElement():''} 
         <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
         <div ref = "drm_block"> </div >

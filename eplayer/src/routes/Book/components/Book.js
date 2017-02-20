@@ -180,7 +180,7 @@ export class Book extends Component {
         { !this.props.book.isFetching.viewer &&
           this.props.book.viewer.pages &&
           this.props.book.viewer.pages.length > 0 &&
-          <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'} id="pxe-viewer">
+          <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} />
             {loading ? <Annotation annotationData={annotionData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
           </div>
