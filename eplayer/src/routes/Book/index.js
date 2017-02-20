@@ -1,7 +1,7 @@
 import { injectReducer } from '../../store/reducers';
 
 export default store => ({
-  path: 'book/:bookId(/page/:pageId)',
+  path: '/eplayer/eplayer/dist/book/:bookId(/page/:pageId)',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
