@@ -20,7 +20,7 @@ Annotator.Editor = (function(_super) {
     focus: 'annotator-focus'
   };
 
-  Editor.prototype.html = "<div class=\"annotator-outer annotator-editor\">\n <form class=\"annotator-widget\">\n    <div class=\"annotator-color-container\"><button class=\"annotator-color annotator-yellow\" value=\"#FCF37F\"></button> <button class=\"annotator-color annotator-green\" value=\"#55DF49\"></button> <button class=\"annotator-color annotator-pink\" value=\"#FC92CF\"></button> </div>\n<ul class=\"annotator-listing\"></ul>\n    <div class=\"annotator-controls\">\n      <a href=\"#cancel\" class=\"annotator-cancel\">" + _t('Cancel') + "</a>\n<a href=\"#save\" class=\"annotator-save annotator-focus\">" + _t('Save') + "</a>\n    </div>\n  </form>\n</div>";
+  Editor.prototype.html = "<div class=\"annotator-outer annotator-editor\">\n <form class=\"annotator-widget\">\n    <div class=\"annotator-color-container\"><input type='button' class=\"annotator-color annotator-yellow\" value=\"#FCF37F\"/> <input type='button' class=\"annotator-color annotator-green\" value=\"#55DF49\"/> <input type='button' class=\"annotator-color annotator-pink\" value=\"#FC92CF\"/> </div>\n<ul class=\"annotator-listing\"></ul>\n    <div class=\"annotator-controls\">\n      <a href=\"#cancel\" class=\"annotator-cancel\">" + _t('CANCEL') + "</a>\n<a href=\"#save\" class=\"annotator-save annotator-focus\">" + _t('SAVE') + "</a>\n    </div>\n  </form>\n</div>";
 
   Editor.prototype.options = {};
 
@@ -77,7 +77,6 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.submit = function(event) {
-    debugger;
     var field, _i, _len, _ref;
     Annotator.Util.preventEventDefault(event);
     _ref = this.fields;

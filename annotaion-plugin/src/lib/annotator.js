@@ -12,8 +12,8 @@ Annotator = (function(_super) {
   Annotator.prototype.events = {
     ".annotator-adder click": "onAdderClick",
     ".annotator-adder mousedown": "onAdderMousedown",
-    // ".annotator-hl mouseover": "onHighlightMouseover",
-    // ".annotator-hl mouseout": "startViewerHideTimer"
+    ".annotator-hl mouseover": "onHighlightMouseover",
+    ".annotator-hl mouseout": "startViewerHideTimer"
   };
 
   Annotator.prototype.html = {
@@ -101,7 +101,7 @@ Annotator = (function(_super) {
     this.editor = new Annotator.Editor();
     this.editor.hide().on('hide', this.onEditorHide).on('save', this.onEditorSubmit).addField({
       type: 'textarea',
-      label: _t('Comments') + '\u2026',
+      label: _t('Write a note.'),
       load: function(field, annotation) {
         return $(field).find('textarea').val(annotation.text || '');
       },
@@ -319,7 +319,6 @@ Annotator = (function(_super) {
       cssClass = 'annotator-hl';
     }
     white = /^\s*$/;
-    normedRange.color=normedRange.color||'#FCF37F';
     hl = $("<span class='" + cssClass + "' style=background:" + normedRange.color + "></span>");
     _ref = normedRange.textNodes();
     _results = [];
