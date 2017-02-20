@@ -748,7 +748,8 @@
     outline: none;
     border: 2px solid transparent;
 	margin-right: 5px;    
-	font-size: 0px;
+	font-size: 0px;	
+	box-sizing: content-box;
 }
 .annotator-color.active{
     border: solid 2px #7e7f80;
