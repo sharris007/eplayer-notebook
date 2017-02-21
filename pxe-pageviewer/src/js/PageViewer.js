@@ -25,7 +25,8 @@ class PageViewer extends React.Component {
       isFirstPage: initPage === 1,
       isLastPage: initPage === playListURL[playListURL.length - 1].playOrder,
       prevPageTitle: (initPage <= 1) ? '' : playListURL[initPage - 2].title,
-      nextPageTitle: (initPage === playListURL[playListURL.length - 1].playOrder) ? '' : playListURL[initPage].title
+      nextPageTitle: (initPage === playListURL[playListURL.length - 1].playOrder) ? '' : playListURL[initPage].title,
+      currentStatePlayListUrl:{}
     };
 
     this.getResponse(this.state.currentPage, true, 'initPage', this.scrollWindowTop);
@@ -64,7 +65,8 @@ class PageViewer extends React.Component {
         isFirstPage: currentPage <= 1,
         isLastPage: currentPage >= playListURL[playListURL.length - 1].playOrder,
         prevPageTitle: (currentPage <= 1) ? '' : playListURL[currentPage - 2].title,
-        nextPageTitle: (currentPage === playListURL[playListURL.length - 1].playOrder) ? '' : playListURL[currentPage].title
+        nextPageTitle: (currentPage === playListURL[playListURL.length - 1].playOrder) ? '' : playListURL[currentPage].title,
+        currentStatePlayListUrl:thisRef.getRequestedPageUrl(currentPage)[0]
       });
       //callback
       scrollWindowTopCallBack();
