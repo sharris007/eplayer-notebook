@@ -68,8 +68,8 @@ export const pageDetails = {
   renderId: 'pxeViewer',
   locale: 'en-us',
   copyImages: false,
-  copyCharLimit: 0,
-  crossRefSettings: 'lightbox',
+  copyCharLimit: 10,
+  crossRefSettings: 'continue',
   enablePrintOption: false,
   showPageNo: true,
   orientation: 'horizontal',
@@ -85,38 +85,44 @@ export const pageDetails = {
   pdfSearch: false,
   allowLightboxFullscreen: false,
   contentId: 'pxe-viewer',
-  baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/52a34c8a-b182-4ce5-8afc-7fab6752ded8/1/file/belk5_pr623/',
+  baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/',
   playListURL: [
     {
-      href: 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
+      href: 'OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml',
       playOrder: 1,
-      title: '1.2 Hypothesis Testing'
+      title: 'Earth–Sun Relationships'
     },
     {
-      href: 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml',
+      href: 'OPS/s9ml/front_matter/filep7000496728000000000000000000005_01.xhtml',
       playOrder: 2,
-      title: '1.1 The Process of Science'
+      title: 'Meteorology Class'
     },
     {
-      href: 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml',
+      href: 'OPS/s9ml/chapter01/filep70004967280000000000000000009e5.xhtml',
       playOrder: 3,
-      title: 'Chapter 1: Can Science Cure the Common Cold?'
+      title: 'Earth as a System'
     },
     {
-      href: 'OPS/s9ml/chapter01/filep7000495777000000000000000000806.xhtml',
+      href: 'OPS/s9ml/front_matter/filep7000496728000000000000000000038.xhtml',
       playOrder: 4,
-      title: '1.3 Understanding Statistics'
+      title: 'The Perfect Storm'
     },
     {
-      href: 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml',
+      href: 'OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml',
       playOrder: 5,
-      title: '1.4 Evaluating Scientific Information'
+      title: 'Earth–Sun Relationships'
+    },
+    {
+      href: 'OPS/s9ml/chapter03/filep700049672800000000000000000107f.xhtml',
+      playOrder: 6,
+      title: 'Temperature'
     }
+    
   ],
   currentPageURL: {
-    href: 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
+    href: 'OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml',
     playOrder: 1,
-    title: '1.2 Hypothesis Testing'
+    title: 'Earth–Sun Relationships'
   }
 };
 
