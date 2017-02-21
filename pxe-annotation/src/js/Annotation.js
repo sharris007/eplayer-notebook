@@ -1,3 +1,4 @@
+/* global $ */
 import React, { PropTypes, Component } from 'react';
 
 class Annotation extends Component {
@@ -5,6 +6,7 @@ class Annotation extends Component {
     super(props);   
     this.annotationEventHandler = this.annotationEventHandler.bind(this);
     this.annotationEvent = this.annotationEvent.bind(this);
+    $('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
   }
 
   componentDidMount() { 
