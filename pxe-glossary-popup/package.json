@@ -19,8 +19,8 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
-    "axios": "^0.15.3",
     "intl": "^1.2.5",
+    "react-intl": "^2.0.1",
     "react-popup": "^0.5.0",
     "react-render-html": "^0.1.6"
   },
@@ -62,6 +62,10 @@
     "url-loader": "~0.5.7",
     "webpack": "~1.12.9",
     "webpack-dev-server": "~1.14.0"
+  },
+  "peerDependencies": {
+    "react-tap-event-plugin": "~2.0.1",
+    "react-intl": "~2.1.5"
   },
   "keywords": [
     "pearson-components"

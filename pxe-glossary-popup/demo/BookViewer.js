@@ -1,6 +1,5 @@
 import  {  Component, PropTypes } from 'react';
 import renderHTML from 'react-render-html';
-import axios from 'axios';
 
 class BookViewer extends Component {
   constructor(props) {
@@ -11,18 +10,32 @@ class BookViewer extends Component {
     this.init();
   }
 
-  init = () => {
-    axios.get('https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml')
-      .then((response) => {
-        this.setState({bookHTML : response.data});
-        this.props.renderGlossary();      
-      });
+  init = () => {  
+    const request = new Request(this.props.bookUrl, {
+      headers: new Headers({
+        'Content-Type': 'text/plain'
+      })
+    });
+
+    fetch(request, {
+      method: 'get'
+    }).then((response) => {
+      return response.text();
+    }).then((text) => {
+      this.setState({bookHTML : text}); 
+      this.props.onBookLoad(); 
+    }).catch((err) => {
+      console.debug(err);
+    });
   }
+
   componentDidMount() {
-    const base = document.createElement('base');
-    base.href = 'https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml';
+    let base = {}; 
+    base = document.createElement('base');
+    base.href = this.props.bookUrl;
     document.getElementsByTagName('head')[0].appendChild(base);
   }
+
   render() {
     return (<div>{renderHTML(this.state.bookHTML)}</div>);
   }
