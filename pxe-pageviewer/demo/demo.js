@@ -9,7 +9,7 @@ function init() {
     locale: 'en-us',
     copyImages: false,
     copyCharLimit: 0,
-    crossRefSettings:'continue',
+    crossRefSettings:'newtab',
     enablePrintOption: false,
     showPageNo:true,
     orientation: 'horizontal',
