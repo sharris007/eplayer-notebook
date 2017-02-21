@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { PageViewer } from 'pxe-pageviewer';
 import { Annotation } from 'pxe-annotation';
 
+
 // import { Viewer } from '@pearson-incubator/viewer';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
@@ -156,7 +157,7 @@ export class Book extends Component {
       }
     }
   }
-
+  
   render() {
     const callbacks = {};
     const { annotionData, loading } = this.props;// eslint-disable-line react/prop-types
