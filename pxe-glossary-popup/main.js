@@ -31,8 +31,8 @@ export default class GlossaryPopUpComponent {
     const locale = config.locale ? config.locale : 'en';
     ReactDOM.render(
       <IntlProvider locale={locale} messages={translations[locale]}>
-        <ComponentOwner bookUrl = "https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/OPS/s9ml/chapter02/why_are_age_structures_and_dependency_ratios_important.xhtml" 
-        glossaryurl= "https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/OPS/s9ml/glossary.xhtml" />
+        <ComponentOwner bookUrl = "https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml" 
+        glossaryurl= "https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/OPS/s9ml/glossary/filep7000496728000000000000000005a08.xhtml" />
       </IntlProvider>,
         document.getElementById(config.contentId)
     );
@@ -40,5 +40,5 @@ export default class GlossaryPopUpComponent {
 };
 
 export GlossaryPopUp from './src/js/GlossaryPopUp';
-// Listen for client events to initialize a new Bookshelf component
-document.body.addEventListener('o.InitAnnotation', e => new GlossaryPopUpComponent(e.detail));
+// Listen for client events to initialize a new GlossaryPopUp Component
+document.body.addEventListener('o.InitGlossaryPopUp', e => new GlossaryPopUpComponent(e.detail));
