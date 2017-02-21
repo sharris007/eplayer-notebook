@@ -9,7 +9,7 @@ function init() {
     locale: 'en-us',
     copyImages: false,
     copyCharLimit: 0,
-    crossRefSettings:'lightbox',
+    crossRefSettings:'continue',
     enablePrintOption: false,
     showPageNo:true,
     orientation: 'horizontal',
@@ -25,16 +25,46 @@ function init() {
     sendPageDetails:onPageChange,
     pdfSearch:false,
     allowLightboxFullscreen:false,
-    baseUrl:'https://content.stg-openclass.com/eps/pearson-reader/api/item/52a34c8a-b182-4ce5-8afc-7fab6752ded8/1/file/belk5_pr623/',
-    playListURL:[ {'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml',
-                'playOrder': 1, 'title': 'Chapter 1: Can Science Cure the Common Cold?'}, { 'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml#f1a0c0e3fc9c4f36a06ea462c6f9fd78', 'playOrder': 2
-                , 'title': '1.1 The Process of Science'}, {'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml#data-uuid-5a5a532fde8f4544825162098a629684',
-                    'playOrder': 3, 'title': '1.2 Hypothesis Testing'
-                  }, { 'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000806.xhtml#data-uuid-bd74d1114c5d448b9ed398a1a2ea2e73',
-                    'playOrder': 4, 'title': '1.3 Understanding Statistics'
-                  }, { 'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml#data-uuid-fe1f61709ece49bcb4ba8cc1a9377204',
-                    'playOrder': 5, 'title': '1.4 Evaluating Scientific Information' }],
-    currentPageURL:{'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml', 'playOrder': 1, 'title': 'Chapter 1: Can Science Cure the Common Cold?'}
+    contentId: 'pxe-viewer',
+    baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/',
+    playListURL:[
+      {
+        'playOrder': 1,
+        'title': 'The Atmosphere: An Introduction to Meteorology',
+        'href': 'OPS/s9ml/front_matter/cover.xhtml'
+      }, {
+        'playOrder': 2,
+        'title': 'Temperature and Precipitation Extremes Map',
+        'href': 'OPS/s9ml/front_matter/filep7000496728000000000000000000005_01.xhtml#data-uuid-5242a32c29c74f04b63d83a31b6f9a77'
+      }, {
+        'playOrder': 3,
+        'title': 'So Many Options for Your Meteorology Class!',
+        'href': 'OPS/s9ml/front_matter/filep7000496728000000000000000000005.xhtml#data-uuid-c37d44d1fa9b4d519d2dbc682d654f97'
+      }, {
+        'playOrder': 4,
+        'title': 'The Perfect Storm of Rich Media & Active Learning Tools',
+        'href': 'OPS/s9ml/front_matter/filep7000496728000000000000000000038.xhtml#data-uuid-40f184d6cce64162bc5d474935d04069'
+      }, {
+        'playOrder': 5,
+        'title': 'The Atmosphere 13e',
+        'href': 'OPS/s9ml/front_matter/filep700049672800000000000000000e36e.xhtml#data-uuid-5233a60b9d9d47f3ab5222c847891cb7'
+      }, {
+        'playOrder': 6,
+        'title': '1.4 Composition of the Atmosphere',
+        'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d259883600494c8bbe7971a356d66651'
+      }, {
+        'playOrder': 7,
+        'title': '1.5 Vertical Structure of the Atmosphere',
+        'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000ace.xhtml#c82fa704db4148aaa4e7184733ff2520'
+      }, {
+        'playOrder': 8,
+        'title': 'Chapter 2: Heating Earth’s Surface and Atmosphere',
+        'href': 'OPS/s9ml/chapter02/filep7000496728000000000000000000c93.xhtml'
+      }],
+    currentPageURL:{'playOrder': 1,
+        'title': 'The Atmosphere: An Introduction to Meteorology',
+        'href': 'OPS/s9ml/front_matter/cover.xhtml'
+      }
   });
 }
 function onPageChange(type, data) {

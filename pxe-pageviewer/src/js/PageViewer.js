@@ -6,12 +6,12 @@ import TextField from 'material-ui/TextField';
 import renderHTML from 'react-render-html';
 
 import FooterNav from './FooterNav';
+import crossRef from './CrossRef';
 
 class PageViewer extends React.Component {
   
   constructor(props) {
     super(props);
-    this.init(props);
   };
 
   init = (props) => {
@@ -132,6 +132,7 @@ class PageViewer extends React.Component {
   }
  
   componentWillMount = () => {
+    this.init(this.props);
     this.createHtmlBaseTag();//inserts base tag with baseUrl as a reference to relative paths
   };
 
@@ -170,6 +171,7 @@ class PageViewer extends React.Component {
     };
     //prints page no in the page rendered
     this.enablePageNo();
+    crossRef(this);
   };
 
   getGoToElement = () =>{
@@ -183,7 +185,9 @@ class PageViewer extends React.Component {
   render() {
     return ( 
       <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
-        <div className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} > {renderHTML(this.state.renderSrc)} </div>
+        <div id={this.props.src.contentId}>
+          <div className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} > {renderHTML(this.state.renderSrc)} </div>
+        </div>
         {this.props.src.enableGoToPage ?this.getGoToElement():''} 
         <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
         <div ref = {(el) => { this.drmBlockRef = el; }}> </div >
