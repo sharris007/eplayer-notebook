@@ -39,10 +39,10 @@ const crossRef = (pageViewerRef) => {
         e.preventDefault();
         const url=targetUrl.split('#')[0];
         const href=url.substring(url.indexOf('/'));
-        const currentTargetPlayList= props.src.playListURL.filter((el) => {
+        const currentTargetPlayListIndex= props.src.playListURL.findIndex((el) => {
           return el.href.indexOf(href)>=0;
         });
-        pageViewerRef.getResponse(parseInt(currentTargetPlayList[0].playOrder), true, 'Goto', pageViewerRef.scrollWindowTop);
+        pageViewerRef.getResponse(parseInt(currentTargetPlayListIndex), true, 'Goto', pageViewerRef.scrollWindowTop);
       }
       break;
     };
