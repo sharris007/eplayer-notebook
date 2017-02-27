@@ -27,16 +27,11 @@ const crossRef = (pageViewerRef) => {
       break;
     case settings.continue:
       targetUrl=e.currentTarget.getAttribute('href');
-      const baseUrl= document.getElementsByTagName('base')[0].getAttribute('href');
-      // For current page links 
-      if (targetUrl.indexOf('#')===0) {
-        document.getElementsByTagName('base')[0].removeAttribute('href');
-        window.setTimeout(function() {
-          document.getElementsByTagName('base')[0].setAttribute('href', baseUrl);
-        }, 0);
-      }else if (!(targetUrl.indexOf('http')===0))  {
+      // For other than current page links and TOC links
+      if (!(targetUrl.indexOf('#')===0) && targetUrl.includes(props.src.baseUrl)) {
         //in toc play list
         e.preventDefault();
+        targetUrl=targetUrl.replace(props.src.baseUrl, '');
         const url=targetUrl.split('#')[0];
         const href=url.substring(url.indexOf('/'));
         const currentTargetPlayListIndex= props.src.playListURL.findIndex((el) => {

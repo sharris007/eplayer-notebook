@@ -7,11 +7,13 @@ import renderHTML from 'react-render-html';
 
 import FooterNav from './FooterNav';
 import crossRef from './CrossRef';
+import replaceAllRelByAbs from './ConstructUrls';
 
 class PageViewer extends React.Component {
   
   constructor(props) {
     super(props);
+    this.startTimer=new Date();
   };
 
   init = (props) => {
@@ -62,8 +64,9 @@ class PageViewer extends React.Component {
     }).then((response) => {
       return response.text();
     }).then((text) => {
+      const currentHref=thisRef.state.currentStatePlayListUrl.href;
       thisRef.setState({
-        renderSrc: text,
+        renderSrc: replaceAllRelByAbs(text, thisRef.props.src.baseUrl+currentHref.substring(0, currentHref.lastIndexOf('/'))),
         currentPage: currentPage,
         isFirstPage: currentPage === 0,
         isLastPage: currentPage >= playListURL.length - 1,
@@ -138,7 +141,7 @@ class PageViewer extends React.Component {
  
   componentWillMount = () => {
     this.init(this.props);
-    this.createHtmlBaseTag();//inserts base tag with baseUrl as a reference to relative paths
+    //this.createHtmlBaseTag();// inserts base tag with baseUrl as a reference to relative paths
   };
 
   componentWillReceiveProps(newProps) {
@@ -177,6 +180,8 @@ class PageViewer extends React.Component {
     //prints page no in the page rendered
     this.enablePageNo();
     crossRef(this);
+    const difference_ms = new Date()-this.startTimer;
+    console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
 
   getGoToElement = () =>{
