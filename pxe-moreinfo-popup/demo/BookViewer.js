@@ -1,6 +1,6 @@
 import  {  Component, PropTypes } from 'react';
 import renderHTML from 'react-render-html';
-import axios from 'axios';
+import MoreInfoApi from '../src/api/MoreInfoApi';
 
 class BookViewer extends Component {
   constructor(props) {
@@ -12,15 +12,19 @@ class BookViewer extends Component {
   }
 
   init = () => {
-    axios.get('https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/OPS/s9ml/chapter02/why_are_age_structures_and_dependency_ratios_important.xhtml')
-      .then((response) => {
-        this.setState({bookHTML : response.data});     
-      });
+    MoreInfoApi.getData(this.props.bookUrl).then((response) => {
+      return response.text();
+    }).then((text) => {
+      this.setState({bookHTML : text}); 
+      this.props.onBookLoad();
+    }).catch((err) => {
+      console.debug(err);
+    });
   }
 
   componentDidMount() {
     const base = document.createElement('base');
-    base.href = 'https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/OPS/s9ml/chapter02/why_are_age_structures_and_dependency_ratios_important.xhtml';
+    base.href =  this.props.bookUrl;
     document.getElementsByTagName('head')[0].appendChild(base);
   }
   
