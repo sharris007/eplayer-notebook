@@ -15,18 +15,21 @@ class PageViewer extends React.Component {
   };
 
   init = (props) => {
-    const initPage = this.props.src.currentPageURL ? this.props.src.currentPageURL.playOrder : '';
+    //const thisRef=this;
     const playListURL = this.props.src.playListURL;
+    const initPageIndex = this.props.src.currentPageURL ? playListURL.findIndex(el =>{
+      return parseInt(el.playOrder)===parseInt(this.props.src.currentPageURL.playOrder); 
+    }): '';
     this.state = {
       renderSrc: '',
-      currentPage: initPage ? initPage : 1,
+      currentPage: initPageIndex ? initPageIndex : 0,
       goTo: '',
       pageNoDetails: '',
-      isFirstPage: initPage === 1,
-      isLastPage: initPage === playListURL[playListURL.length - 1].playOrder,
-      prevPageTitle: (initPage <= 1) ? '' : playListURL[initPage - 2].title,
-      nextPageTitle: (initPage === playListURL[playListURL.length - 1].playOrder) ? '' : playListURL[initPage].title,
-      currentStatePlayListUrl:{}
+      /*isFirstPage: initPageIndex === 0,
+      isLastPage: initPageIndex === playListURL.length - 1,
+      prevPageTitle: (initPageIndex === 0) ? '' : playListURL[initPageIndex - 1].title,
+      nextPageTitle: (initPageIndex === playListURL.length - 1) ? '' : playListURL[initPageIndex+1].title,*/
+      currentStatePlayListUrl:playListURL[initPageIndex]
     };
 
     this.getResponse(this.state.currentPage, true, 'initPage', this.scrollWindowTop);
@@ -47,8 +50,8 @@ class PageViewer extends React.Component {
     const thisRef = this;
     const playListURL = thisRef.props.src.playListURL;
     currentPage = currentPage + (isInitOrGo ? 0 : thisRef.state.currentPage);
-    thisRef.props.sendPageDetails(goToPage, thisRef.getRequestedPageUrl(currentPage)[0]);
-    const url = thisRef.props.src.baseUrl + thisRef.getRequestedPageUrl(currentPage)[0].href;
+    thisRef.props.sendPageDetails(goToPage, playListURL[currentPage]);
+    const url = thisRef.props.src.baseUrl + playListURL[currentPage].href;
     const request = new Request(url, {
       headers: new Headers({
         'Content-Type': 'text/plain'
@@ -62,11 +65,11 @@ class PageViewer extends React.Component {
       thisRef.setState({
         renderSrc: text,
         currentPage: currentPage,
-        isFirstPage: currentPage <= 1,
-        isLastPage: currentPage >= playListURL[playListURL.length - 1].playOrder,
-        prevPageTitle: (currentPage <= 1) ? '' : playListURL[currentPage - 2].title,
-        nextPageTitle: (currentPage === playListURL[playListURL.length - 1].playOrder) ? '' : playListURL[currentPage].title,
-        currentStatePlayListUrl:thisRef.getRequestedPageUrl(currentPage)[0]
+        isFirstPage: currentPage === 0,
+        isLastPage: currentPage >= playListURL.length - 1,
+        prevPageTitle: (currentPage === 0) ? '' : playListURL[currentPage - 1].title,
+        nextPageTitle: (currentPage === playListURL.length - 1) ? '' : playListURL[currentPage+1].title,
+        currentStatePlayListUrl: playListURL[currentPage]
       });
       //callback
       scrollWindowTopCallBack();
@@ -123,7 +126,7 @@ class PageViewer extends React.Component {
 
   createHtmlBaseTag = () => {
     const base = document.createElement('base');
-    base.href = this.props.src.baseUrl + this.getRequestedPageUrl(this.state.currentPage)[0].href;
+    base.href = this.props.src.baseUrl + this.state.currentStatePlayListUrl.href;
     document.getElementsByTagName('head')[0].appendChild(base);
   };
   //Common function for disable rightclick

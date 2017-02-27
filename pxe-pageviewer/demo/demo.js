@@ -9,7 +9,7 @@ function init() {
     locale: 'en-us',
     copyImages: false,
     copyCharLimit: 0,
-    crossRefSettings:'newtab',
+    crossRefSettings:'continue',
     enablePrintOption: false,
     showPageNo:true,
     orientation: 'horizontal',
@@ -61,10 +61,11 @@ function init() {
         'title': 'Chapter 2: Heating Earth’s Surface and Atmosphere',
         'href': 'OPS/s9ml/chapter02/filep7000496728000000000000000000c93.xhtml'
       }],
-    currentPageURL:{'playOrder': 1,
-        'title': 'The Atmosphere: An Introduction to Meteorology',
-        'href': 'OPS/s9ml/front_matter/cover.xhtml'
-      }
+    currentPageURL:{
+      'playOrder': 6,
+      'title': '1.4 Composition of the Atmosphere',
+      'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d259883600494c8bbe7971a356d66651'
+    }
   });
 }
 function onPageChange(type, data) {
