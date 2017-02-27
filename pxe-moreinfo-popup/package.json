@@ -19,8 +19,8 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
-    "axios": "^0.15.3",
     "intl": "^1.2.5",
+    "react-intl": "^2.0.1",
     "react-popup": "^0.5.0",
     "react-render-html": "^0.1.6"
   },
