@@ -31,15 +31,31 @@ class MoreInfoPopUp extends Component {
     let popOverTitle = '';
     let popOverDescription = '';
     const moreInfoIconDOM = event.target.parentElement;
-    const hrefId = moreInfoIconDOM.href ? moreInfoIconDOM.href.split('#')[1] : moreInfoIconDOM.children[0].href.split('#')[1];
+    let hrefId = '';
     
     switch (args.className) {
     case '.lc_ec_aside' : {
+      hrefId =  moreInfoIconDOM.href.split('#')[1];
       popOverTitle = renderHTML(document.getElementById(hrefId).getElementsByTagName('h2')[0].innerHTML);
       popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
       break;
     }
     case 'a.noteref.noteref_footnote' : {
+      if (moreInfoIconDOM.href) {
+        hrefId = moreInfoIconDOM.href.split('#')[1];
+      } else if (moreInfoIconDOM.children[0].href) {
+        hrefId = moreInfoIconDOM.children[0].href.split('#')[1];
+      } else if (moreInfoIconDOM.querySelector('a')) {
+        hrefId = moreInfoIconDOM.querySelector('a').href.split('#')[1];
+      } else {
+        hrefId = moreInfoIconDOM.parentElement.href.split('#')[1];
+      }
+      popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
+      break;
+    }
+
+    case 'a.noteref.noteref_footnote_symboled' : {
+      hrefId = moreInfoIconDOM.parentElement.href.split('#')[1];
       popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
       break;
     }

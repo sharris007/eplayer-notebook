@@ -32,7 +32,7 @@ export default class MoreInfoPopUpComponent {
     const locale = config.locale ? config.locale : 'en';
     ReactDOM.render(
     	<IntlProvider locale={locale} messages={translations[locale]}>
-        <ComponentOwner bookUrl = "https://eps.openclass.com/eps/sanvan/api/item/cf1b10a1-e24c-4359-8e74-cfeac4d05e56/102/file/kennedy-tlc-1e-rerelease_update_v2_RR1/OPS/xhtml/ch05_sec_04.xhtml"  />
+        <ComponentOwner bookUrl = "https://revel-ilp-stg.pearson.com/eps/sanvan/api/item/a44cb95f-8fd9-4b85-ab9f-c69aa8c9f914/100/file/lynn-tac-7e_v4_Revel/OPS/xhtml/ch07_pg0011.xhtml"  />
       </IntlProvider>,
         document.getElementById(config.contentId)
     );
