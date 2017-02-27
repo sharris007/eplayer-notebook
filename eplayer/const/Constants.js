@@ -3,6 +3,7 @@
 */
 export const apiConstants = {
   ANNOTATION: 'https://api.mongolab.com/api/1/databases/team4/collections/students',
+  PAPERBASE :'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext'
   BOOK: 'https://api.mongolab.com/api/1/databases/team4/collections/students',
   APIKEY: 'AgffBG36UOuFvRNORM8Y1ACvA1FdJwN8'
 };

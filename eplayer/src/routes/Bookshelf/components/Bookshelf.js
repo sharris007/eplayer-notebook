@@ -12,6 +12,7 @@ export default class BookshelfPage extends React.Component {
   componentWillMount() {
     const urn = 'urn:pearson:manifestation:16b1c52c-dbe7-486c-9103-5837b241ee61';
     this.props.fetch(urn);
+    console.log("this.props.fetch" ,this.props.fetch(urn));
   }
 
   handleBookClick = (bookId) => {
@@ -19,6 +20,7 @@ export default class BookshelfPage extends React.Component {
   }
 
   render() {
+    
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {

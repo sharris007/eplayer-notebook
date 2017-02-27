@@ -1,0 +1,223 @@
+// Demo styling
+
+#bookshelf-demo-title {
+  margin: 10px 0px 20px 20px;
+}
+
+#bookshelf-demo {
+  margin-left: 20px;
+}
+
+// Component-specific styling
+.book {
+  display: inline-block;
+  width: 320px;
+  background-color: #fff;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.33);
+  margin:0 20px 20px 0px;
+  padding: 10px;
+  position: relative;
+  a {
+    text-decoration: none !important;
+  }
+  a.container {
+    margin-top: -20px;
+    float: left;
+    &:hover .image {
+      opacity: 0.7;
+    }    
+    .image {
+      max-width: 120px;
+      height: 150px;
+      border: solid 1px #c7c7c7;
+      margin-top: 20px;
+    }
+  }
+  a.info {
+    position: absolute;
+    bottom: 25px;
+    right: 10px;
+    i {
+      font-size: 18px;
+      object-fit: contain;
+      color: #b7bbbf;
+    }
+  }
+}
+
+.no-book-cover {
+  .image {
+    background-image: url(./img/ic-book-placeholder@2x.png);
+    background-size: 59px 64px;
+    background-position: center;
+    background-repeat: no-repeat;    
+    min-width: 120px;
+    background-color: #ececec;
+    display: inline-block;
+  }
+}
+
+.title {
+      margin: 20px 0 0 15px;
+      text-align: left;   
+      color: #252525;
+      font-family: "Open Sans";
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      font-weight: 400;
+      overflow-y: hidden;
+    } 
+
+.bookview-info {
+   position:relative;
+   display: inline-block;
+   float: left;
+   width: 80px;
+}
+
+.favourite-DownLoadManager {
+   .unFavoritedImg {
+      background-image: url(./img/Unfavorited.png);
+      top: 10px;
+      right: 10px;
+      disply:inline-block;
+  }
+
+   .downloadManager {
+      background-image: url(./img/DownloadManager.png);
+      bottom: 20px;
+  }
+
+  .favorited {
+      background-image: url(./img/Favorited.png);
+      top: 10px;
+      right: 10px;
+      background-repeat : no-repeat;
+      disply:inline-block;
+  }
+  
+  .bookOptions {
+      width: 40px;
+      height: 40px;
+      background-size: contain;
+      position: absolute;
+  }
+}
+
+.favourite-DownLoadManager-ListView {
+    .unFavoritedImg {
+      background-image: url(./img/Unfavorited.png);
+      top: 10px;
+      right: 10px;
+      display: inline-block;
+    }
+
+    .favorited {
+      background-image: url(./img/Favorited.png);
+      top: 10px;
+      right: 10px;
+      background-repeat : no-repeat;
+      display:inline-block;
+    }
+
+    .bookOptions {
+      width: 40px;
+      height: 40px;
+      background-size: contain;
+    }  
+}
+
+.bookShelfGrid-view {
+    background-image: url(./img/Grid-view.png);
+    height : 30px;
+    width : 65px;
+    display: inline-block;
+}
+
+.bookShelfList-view {
+    background-image: url(./img/List-view.png);
+    height : 30px;
+    width : 65px;
+    display: inline-block;
+}
+
+.bookShelfListViewImg {
+    width: 45px;
+    height: 65px;
+    border: 1px solid #000;
+}
+
+.bookShelfListViewBookDescription {
+    display: inline-block;
+    vertical-align: top;
+    color: #000000;
+    padding-left: 10px;
+    width: 75%;
+}
+
+thead, tbody {
+  a {
+    text-decoration : none;
+  }
+}
+
+.bookShelfSortDropDown {
+    background-image: url(./img/DropdownHandle.png);
+    width: 21px;
+    height: 21px;
+    display: inline-block;
+}
+
+.hide {
+  display : none;
+}
+
+.show {
+  display : inline-block;
+}
+
+.sort-listbox {
+  position: relative;
+  top: 20px;
+  z-index:1000;
+  right: 50px;
+}
+
+.results-sort-listbox {
+    border-radius: 0px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    width: 113px;
+    top: 96px;
+    right: 82px;
+    position: absolute;
+    left: auto;
+    text-align: left;
+    cursor: pointer;
+    z-index:1000;
+}
+
+.result-sort-listItem {
+    padding: 10px 20px;
+}
+
+.floatRight{
+  float:right;
+}
+
+.textDecNone{
+  text-decoration:none;
+}
+
+.clearfix:after {
+     visibility: hidden;
+     display: block;
+     font-size: 0;
+     content: " ";
+     clear: both;
+     height: 0;
+     }
+.clearfix { display: inline-block; }
+/* start commented backslash hack \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* close commented backslash hack */

@@ -24,7 +24,9 @@ const mapDispatchToProps = {
   removeBookmark,
   fetchPreferences,
   fetchTocAndViewer,
-  goToPage
+  goToPage,
+  
+
 };
 
 const mapStateToProps = state => ({
