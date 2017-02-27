@@ -1,5 +1,7 @@
 import {  Component } from 'react';
 import Popup from 'react-popup';
+import renderHTML from 'react-render-html';
+
 import '../scss/moreInfoPopUp.scss';
 import { MoreInfoPopUpClasses } from '../../const/MoreInfoPopUpClasses';
 
@@ -12,9 +14,9 @@ class MoreInfoPopUp extends Component {
 
   bindMoreInfoCallBacks = () => {
     const bookDiv = document.getElementById(this.props.bookDiv);
-    console.log(MoreInfoPopUpClasses)
     MoreInfoPopUpClasses.forEach((val) => {
       bookDiv.querySelectorAll(val).forEach((item) => {
+        console.debug('Item       ', item)
         const obj = {'className' :  val};
         item.addEventListener('click', this.framePopOver.bind(this, obj))
       });
@@ -28,14 +30,20 @@ class MoreInfoPopUp extends Component {
 
     let popOverTitle = '';
     let popOverDescription = '';
-    let moreInfoIconDOM = ''
+    const moreInfoIconDOM = event.target.parentElement;
+    const hrefId = moreInfoIconDOM.href ? moreInfoIconDOM.href.split('#')[1] : moreInfoIconDOM.children[0].href.split('#')[1];
     
     switch (args.className) {
     case '.lc_ec_aside' : {
-      moreInfoIconDOM = event.target.parentElement; 
-      popOverTitle = document.getElementById(moreInfoIconDOM.href.split('#')[1]).getElementsByTagName('h2')[0].textContent;
-      popOverDescription = document.getElementById(moreInfoIconDOM.href.split('#')[1]).getElementsByTagName('p')[0].textContent;
+      popOverTitle = renderHTML(document.getElementById(hrefId).getElementsByTagName('h2')[0].innerHTML);
+      popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
+      break;
     }
+    case 'a.noteref.noteref_footnote' : {
+      popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
+      break;
+    }
+
     }
 
     Popup.registerPlugin('popover', function () {
