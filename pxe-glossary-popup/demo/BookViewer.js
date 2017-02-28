@@ -1,5 +1,6 @@
 import  {  Component, PropTypes } from 'react';
 import renderHTML from 'react-render-html';
+import GlossaryApi from '../src/api/GlossaryApi';
 
 class BookViewer extends Component {
   constructor(props) {
@@ -11,19 +12,11 @@ class BookViewer extends Component {
   }
 
   init = () => {  
-    const request = new Request(this.props.bookUrl, {
-      headers: new Headers({
-        'Content-Type': 'text/plain'
-      })
-    });
-
-    fetch(request, {
-      method: 'get'
-    }).then((response) => {
+    GlossaryApi.getData(this.props.bookUrl).then((response) => {
       return response.text();
     }).then((text) => {
       this.setState({bookHTML : text}); 
-      this.props.onBookLoad(); 
+      this.props.onBookLoad();
     }).catch((err) => {
       console.debug(err);
     });

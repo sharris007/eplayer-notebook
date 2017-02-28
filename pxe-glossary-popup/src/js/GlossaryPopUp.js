@@ -1,7 +1,9 @@
 import {  Component, PropTypes } from 'react';
 import renderHTML from 'react-render-html';
 import Popup from 'react-popup';
+
 import { GlossaryPopUpClasses } from '../../const/GlossaryPopUpClasses';
+import GlossaryApi from '../api/GlossaryApi'
 import '../scss/glossaryPopUp.scss';
 
 
@@ -18,18 +20,17 @@ class GlossaryPopUp extends Component {
   }
 
   fetchGlossaryData = () => {
-    const request = new Request(this.props.glossaryurl, {
-      headers: new Headers({
-        'Content-Type': 'text/plain'
-      })
-    });
-
-    fetch(request, {
-      method: 'get'
-    }).then((response) => {
+    const bookDiv = document.getElementById(this.props.bookDiv);
+    let glossaryurl = '';
+    
+    if (bookDiv.querySelectorAll('a.keyword').length > 0) {
+      glossaryurl = bookDiv.querySelectorAll('a.keyword')[0].href.split('#')[0];
+    } else if (bookDiv.querySelectorAll('dfn.keyword').length > 0) {
+      glossaryurl = bookDiv.querySelectorAll('dfn.keyword')[0].parentElement.href.split('#')[0];
+    }
+    GlossaryApi.getData(glossaryurl).then((response) => {
       return response.text();
     }).then((text) => {
-      console.clear();
       this.setState({ glossaryResponse : text});
       const bookDiv = document.getElementById(this.props.bookDiv);
 

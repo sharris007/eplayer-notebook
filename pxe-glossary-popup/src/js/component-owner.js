@@ -26,7 +26,7 @@ class ComponentOwner extends React.Component {
           <BookViewer bookUrl = {this.props.bookUrl} onBookLoad = {this.onBookLoad.bind(this)}/>
         </div>  
         <div>     
-          {this.state.isBookLoaded ? <GlossaryPopUp glossaryurl = {this.props.glossaryurl} bookDiv = "bookDiv"/> : ''}
+          {this.state.isBookLoaded ? <GlossaryPopUp bookDiv = "bookDiv"/> : ''}
         </div>  
         </div>
     )
