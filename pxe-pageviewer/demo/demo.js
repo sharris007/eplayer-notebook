@@ -9,7 +9,7 @@ function init() {
     locale: 'en-us',
     copyImages: false,
     copyCharLimit: 0,
-    crossRefSettings:'continue',
+    crossRefSettings:'newtab',
     enablePrintOption: false,
     showPageNo:true,
     orientation: 'horizontal',
@@ -51,7 +51,7 @@ function init() {
       }, {
         'playOrder': 6,
         'title': '1.4 Composition of the Atmosphere',
-        'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d259883600494c8bbe7971a356d66651'
+        'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
       }, {
         'playOrder': 7,
         'title': '1.5 Vertical Structure of the Atmosphere',
@@ -60,11 +60,19 @@ function init() {
         'playOrder': 8,
         'title': 'Chapter 2: Heating Earth’s Surface and Atmosphere',
         'href': 'OPS/s9ml/chapter02/filep7000496728000000000000000000c93.xhtml'
+      }, {
+        title: 'Concepts in Review',
+        playOrder: 9,
+        href: 'OPS/s9ml/chapter01/filep7000496728000000000000000000b62.xhtml#e7a18705605b4bf09f2e0258dd4fb74f'
+      }, {
+        title: '2.4 What Happens to Incoming Solar Radiation?',
+        playOrder: 10,
+        href: 'OPS/s9ml/chapter02/filep7000496728000000000000000000e71.xhtml#eff7d7ad567942dd97edc7a1bbd4b498'
       }],
     currentPageURL:{
       'playOrder': 6,
       'title': '1.4 Composition of the Atmosphere',
-      'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d259883600494c8bbe7971a356d66651'
+      'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
     }
   });
 }

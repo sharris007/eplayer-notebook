@@ -8,11 +8,11 @@ import frLocaleData from 'react-intl/locale-data/fr';
 
 import ComponentOwner from './src/js/component-owner';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+//import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
-injectTapEventPlugin();
+//injectTapEventPlugin();
 
 export default class PageViewerComponent {
   constructor(config) {

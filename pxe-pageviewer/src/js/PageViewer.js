@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import renderHTML from 'react-render-html';
+import $ from 'jquery';
 
 import FooterNav from './FooterNav';
 import crossRef from './CrossRef';
@@ -76,8 +77,8 @@ class PageViewer extends React.Component {
       });
       //callback
       scrollWindowTopCallBack();
-    }).catch((err) => {
-      console.log(err);
+    }).catch(() => {//err param
+      //console.log(err);
     });
   }
 
@@ -137,8 +138,31 @@ class PageViewer extends React.Component {
     getElem.oncontextmenu = () => {
       return false;
     };
-  }
+  };
  
+  scrollToFragment =(eleID) => {
+    const ele=document.getElementById(eleID);
+    if (ele) {
+      setTimeout(function() {
+        window.scrollTo(ele.offsetLeft, ele.offsetTop);
+      }, 0);
+      // window.scrollTo(ele.offsetLeft, ele.offsetTop);
+    }
+  };
+  loadMultimediaNscrollToFragment =() => {
+    let i=0;
+    $('img').each((index, ele) => {
+      const img = new Image();
+      img.onload =  () => {
+        i++;
+        //console.log($(ele).attr('src') + ' - done!');
+        if (i === $('img').length) {
+          this.scrollToFragment(this.state.currentStatePlayListUrl.href.split('#')[1]);
+        }
+      };
+      img.src = ele.src;
+    });
+  }
   componentWillMount = () => {
     this.init(this.props);
     //this.createHtmlBaseTag();// inserts base tag with baseUrl as a reference to relative paths
@@ -179,9 +203,10 @@ class PageViewer extends React.Component {
     };
     //prints page no in the page rendered
     this.enablePageNo();
+    this.loadMultimediaNscrollToFragment();
     crossRef(this);
-    const difference_ms = new Date()-this.startTimer;
-    console.log('time took in seconds',  Math.floor(difference_ms % 60));
+    // const difference_ms = new Date()-this.startTimer;
+    // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
 
   getGoToElement = () =>{
