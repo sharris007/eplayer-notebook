@@ -26,7 +26,7 @@ const rel_to_abs = (url, baseUrl) => {
     /* Escape certain characters to prevent XSS */
   }
   url = url.replace(/\.$/, '').replace(/\/\./g, '').replace(/"/g, '%22').replace(/'/g, '%27').replace(/</g, '%3C').replace(/>/g, '%3E');
-  console.log('url ----', url);
+  //console.log('url ----', url);
   return url;
 };
 

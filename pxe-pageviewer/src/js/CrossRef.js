@@ -21,6 +21,14 @@ const crossRef = (pageViewerRef) => {
       let targetUrl=e.currentTarget.getAttribute('href');
       if (targetUrl.indexOf('#')===0) {
         e.currentTarget.setAttribute('href', props.src.baseUrl+state.currentStatePlayListUrl.href.split('#')[0]+targetUrl);
+      }else if (targetUrl.indexOf('file')===0) {
+        //for toc links
+        //e.preventDefault();
+        const href=targetUrl.split('#')[0];
+        const currentTargetPlayListIndex= props.src.playListURL.findIndex((el) => {
+          return el.href.indexOf(href)>=0;
+        });
+        e.currentTarget.setAttribute('href', props.src.baseUrl+ props.src.playListURL[currentTargetPlayListIndex].href.split('#')[0]+'#'+targetUrl.split('#')[1]);
       }
       //for outer hyperlinks
       e.currentTarget.setAttribute('target', '_blank');
@@ -28,12 +36,11 @@ const crossRef = (pageViewerRef) => {
     case settings.continue:
       targetUrl=e.currentTarget.getAttribute('href');
       // For other than current page links and TOC links
-      if (!(targetUrl.indexOf('#')===0) && targetUrl.includes(props.src.baseUrl)) {
+      if (!(targetUrl.indexOf('#')===0) && (targetUrl.includes(props.src.baseUrl) || targetUrl.indexOf('file')===0)) {
         //in toc play list
         e.preventDefault();
         targetUrl=targetUrl.replace(props.src.baseUrl, '');
-        const url=targetUrl.split('#')[0];
-        const href=url.substring(url.indexOf('/'));
+        const href=targetUrl.split('#')[0];
         const currentTargetPlayListIndex= props.src.playListURL.findIndex((el) => {
           return el.href.indexOf(href)>=0;
         });
