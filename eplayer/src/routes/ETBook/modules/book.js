@@ -357,10 +357,9 @@ export function fetchBookDetails(bookId) {
     return clients.etext.get('/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=xlet2edu&courseInfo=true&includeBookData=true')
     .then((response) => {
       const tocData = response.data;
-      return clients.etext.get('custom/playlist/contextId/'+bookId+'?provider='+tocData.bookDetail.metadata.toc[0])
+      return clients.etext.get('/custom/playlist/contextId/'+bookId+'?provider='+tocData.bookDetail.metadata.toc[0])
         .then((pageData) => {
           const playlistData = pageData.data;
-          console.log("playlistData ------", playlistData)
           dispatch({ type: RECEIVE_PLAYLIST, playlistData});
         });
     });

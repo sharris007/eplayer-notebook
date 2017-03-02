@@ -1,11 +1,9 @@
 // import { apiConstants } from '../../const/Constants';
-import { getAnndata, postAnnData, putAnnData, deleteAnnData } from './genericApi';
+import { getBookDetails, getPlaylistDetails } from './genericApi';
 
 class PlaylistApi {
-  static doGetAnnotation = filterData => get(filterData)
-  static doPostAnnotation = data => postAnnData(data)
-  static doPutAnnotation = data => putAnnData(data)
-  static doDeleteAnnotation = data => deleteAnnData(data._id.$oid)// eslint-disable-line no-underscore-dangle
+  static doGetBookDetails = bookId => getBookDetails(bookId)
+  static doGetPlaylistDetails = (bookId,tocurl) => getPlaylistDetails(bookId,tocurl)
 }
 
-export default AnnotationApi;
+export default PlaylistApi;

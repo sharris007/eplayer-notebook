@@ -16,6 +16,7 @@ import { pageDetails } from '../../../../const/Mocdata';// booksdata, tocData
 import './Book.scss';
 
 import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
+import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 
 export class Book extends Component {
   constructor(props) {
@@ -60,6 +61,9 @@ export class Book extends Component {
 
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
+  }
+  componentWillMount(){
+    this.props.dispatch(getBookCallService(this.props.params.bookId));
   }
 
   parseDom = () => {
@@ -160,12 +164,23 @@ export class Book extends Component {
   
   render() {
     const callbacks = {};
-    const { annotionData, loading } = this.props;// eslint-disable-line react/prop-types
-    callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
-    callbacks.addBookmarkHandler = this.addBookmarkHandler;
-    callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
-    callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
-    callbacks.goToPageCallback = this.goToPageCallback;
+    const { annotionData, loading ,playlistData } = this.props;// eslint-disable-line react/prop-types
+    /*this.state.pageDetails.baseUrl                = playlistData.baseUrl;
+    this.state.pageDetails.currentPageDetails     = playlistData.content[1];*/
+    this.state.pageDetails.baseUrl                = 'https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/';
+    this.state.pageDetails.currentPageDetails     = {
+      href: 'OPS/s9ml/chapter02/why_are_age_structures_and_dependency_ratios_important.xhtml',
+      id: '1',
+      playOrder: 1,
+      title:"Cover"
+    }
+    this.state.pageDetails.playListURL            = playlistData.content;
+
+    callbacks.removeAnnotationHandler             = this.removeAnnotationHandler;
+    callbacks.addBookmarkHandler                  = this.addBookmarkHandler;
+    callbacks.removeBookmarkHandler               = this.removeBookmarkHandler;
+    callbacks.isCurrentPageBookmarked             = this.isCurrentPageBookmarked;
+    callbacks.goToPageCallback                    = this.goToPageCallback;
     // this.props.book.toc.content = {};
     // this.props.book.toc.content.list = tocData;
 
@@ -182,7 +197,7 @@ export class Book extends Component {
           this.props.book.viewer.pages &&
           this.props.book.viewer.pages.length > 0 &&
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
-            <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} />
+            {playlistData.length != 0 ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} /> : ''}
             {loading ? <Annotation annotationData={annotionData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
           </div>
         }
@@ -211,6 +226,12 @@ Book.contextTypes = {
   muiTheme: React.PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => ({ annotionData: state.annotationReducer.data, loading: state.annotationReducer.loading });// eslint-disable-line max-len
+const mapStateToProps = state => (
+      { 
+        annotionData: state.annotationReducer.data, 
+        loading: state.annotationReducer.loading, 
+        playlistData: state.playlistReducer.data
+      }
+);// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign
 export default Book;
