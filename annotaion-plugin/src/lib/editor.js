@@ -12,7 +12,8 @@ Annotator.Editor = (function(_super) {
     ".annotator-cancel click": "hide",
     ".annotator-cancel mouseover": "onCancelButtonMouseover",
     "textarea keydown": "processKeypress",
-    ".annotator-color click":"onColorChange"
+    ".annotator-color click":"onColorChange",
+    ".annotator-share click":"onShareClick"
   };
 
   Editor.prototype.classes = {
@@ -20,8 +21,8 @@ Annotator.Editor = (function(_super) {
     focus: 'annotator-focus'
   };
 
-  Editor.prototype.html = "<div class=\"annotator-outer annotator-editor\">\n <form class=\"annotator-widget\">\n    <div class=\"annotator-color-container\"><input type='button' class=\"annotator-color annotator-yellow\" value=\"#FCF37F\"/> <input type='button' class=\"annotator-color annotator-green\" value=\"#55DF49\"/> <input type='button' class=\"annotator-color annotator-pink\" value=\"#FC92CF\"/> </div>\n<ul class=\"annotator-listing\"></ul>\n    <div class=\"annotator-controls\">\n      <a href=\"#cancel\" class=\"annotator-cancel\">" + _t('CANCEL') + "</a>\n<a href=\"#save\" class=\"annotator-save annotator-focus\">" + _t('SAVE') + "</a>\n    </div>\n  </form>\n</div>";
-
+  Editor.prototype.html = "<div class=\"annotator-outer annotator-editor\">\n <form class=\"annotator-widget\">\n    <div class=\"annotator-color-container\"><input type='button' class=\"annotator-color annotator-yellow\" value=\"#FCF37F\"/> <input type='button' class=\"annotator-color annotator-green\" value=\"#55DF49\"/> <input type='button' class=\"annotator-color annotator-pink\" value=\"#FC92CF\"/> </div>\n<ul class=\"annotator-listing\"></ul>\n    <div class=\"annotator-controls\">\n  <div class=\"annotator-share-text\">Share</div><div class=\"annotator-share\"></div> <a href=\"#cancel\" class=\"annotator-cancel\">" + _t('CANCEL') + "</a>\n<a href=\"#save\" class=\"annotator-save annotator-focus disabled-save\">" + _t('SAVE') + "</a>\n    </div>\n  </form>\n</div>";
+  
   Editor.prototype.options = {};
 
   function Editor(options) {
@@ -32,25 +33,41 @@ Annotator.Editor = (function(_super) {
     this.hide = __bind(this.hide, this);
     this.show = __bind(this.show, this);
     this.onColorChange=__bind(this.onColorChange, this);
+    this.onShareClick=__bind(this.onShareClick, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
     this.annotation = {};
   }
   
+  Editor.prototype.onShareClick=function(event) {
+    if ($(event.target).hasClass('on')){
+       $(event.target).removeClass('on');
+       this.annotation.shareable=false;
+    }
+    else {
+       $(event.target).addClass('on');
+       this.annotation.shareable=true;
+    }
+  }
+
   Editor.prototype.onColorChange=function(event) {
     event.preventDefault();
     this.annotation.color=event.target.value;
     $('.annotator-color').removeClass('active');
     $(event.target).addClass('active');
+    $('.annotator-save').removeClass('disabled-save');
     $(this.annotation.highlights).css('background', event.target.value);
   }
 
   Editor.prototype.show = function(event) {
     Annotator.Util.preventEventDefault(event);
     this.element.removeClass(this.classes.hide);
-    this.annotation.color=''; 
+    this.annotation.color=this.annotation.color||'';
+    (this.annotation.color)?$('.annotator-save').removeClass('disabled-save'):''; 
+    this.annotation.shareable=(this.annotation.shareable===undefined)?false:this.annotation.shareable;
+    this.annotation.shareable?$('.annotator-share').addClass('on'):$('.annotator-share').removeClass('on');
     $('.annotator-color').removeClass('active');
-    $('.annotator-color:first').addClass('active');
+    $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
     this.element.find('.annotator-save').addClass(this.classes.focus);
     this.checkOrientation();
     this.element.find(":input:first").focus();
@@ -61,6 +78,7 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.hide = function(event) {
     Annotator.Util.preventEventDefault(event);
     this.element.addClass(this.classes.hide);
+    $('.annotator-save').addClass('disabled-save');
     return this.publish('hide');
   };
 
@@ -102,7 +120,7 @@ Annotator.Editor = (function(_super) {
     field.element = element[0];
     switch (field.type) {
       case 'textarea':
-        input = $('<textarea />');
+        input = $('<textarea maxlength="3000"/>');
         break;
       case 'input':
       case 'checkbox':

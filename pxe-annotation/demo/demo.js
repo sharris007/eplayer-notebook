@@ -21,6 +21,7 @@ function init() {
         }
       ],
       color:'#FCF37F',
+      shareable:true,
       'quote': 'ceratele',
       'highlights': [
         {
@@ -44,6 +45,7 @@ function init() {
         }
       ],
       color:'#55DF49',
+      shareable:false,
       'quote': 'rutrum or',
       'highlights': [
         {
