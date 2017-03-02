@@ -314,18 +314,19 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.highlightRange = function(normedRange, cssClass) {
-    var hl, node, white, _i, _len, _ref, _results;
+    var hl, node, white, _i, _len, _ref, _results, handle;
     if (cssClass == null) {
       cssClass = 'annotator-hl';
     }
     white = /^\s*$/;
     hl = $("<span class='" + cssClass + "' style=background:" + normedRange.color + "></span>");
+    handle=$("<span class='annotator-handle'></span>");
     _ref = normedRange.textNodes();
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
-        _results.push($(node).wrapAll(hl).parent().show()[0]);
+        _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
       }
     }
     return _results;

@@ -785,4 +785,53 @@
 .annotator-editor a{
 	background: none;
 }
+.annotator-share{
+	width: 44px;
+	height: 21px;
+	border-radius: 100px;
+	background-color: #e6e9eb;
+    margin: 5px 0 0 5px;
+    float: left;
+	position: relative;
+}
+.annotator-share::after{
+	width: 15px;
+	height: 15px;
+	border-radius: 100px;
+	background-color: #3e3e3e;
+	position: absolute;
+    content: '';
+    right: 25px;
+    top: 3px;
+}
+.annotator-share.on{
+	background-color: #d6ebe8;
+}
+.annotator-share.on::after{
+	background-color: #047a9c;
+    right: 4px;
+    top: 3px;
+}
+.annotator-share-text{		
+	float: left;
+	font-size: 12px;
+	text-align: left;
+	color: #6a7070;
+    line-height: 32px;
+    margin-left: 3px;
+}
+.annotator-handle {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    float: right;
+    background-color: inherit;
+	background-size: contain;
+	border-radius:2px;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAS1BMVEUAAAD////////////////////////////////////////////9/f39/f39/f39/f3+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7///+44xWBAAAAF3RSTlMADhAgMD9AUF9gcH+AkJ+gv8DP0N/v8Nn9WwcAAAEvSURBVHgB7MGBAAAAAMOg+1MfZNUAAAAAAAAAAAAAAAAAAAAAyHmzdYyFIBAEQRQFVxdRXFdx7n9S3yOazLGD7qkT/LA+e6+H6351XU6uUQb8q870TQBwZgILAByTA+tABSb3DWfEZ8YDLogvL3Aruy8tcJt2nwAY95mRgSvgowJb2NedLyOwH52PCQR8XCDks2y31ZwvI3AdnI8MBHxcIOCjAkfARwWW2L4IgYAvFbA6ngYI+KjA+deemhi4BPZKC8R8eqD3SYG30J4KgS24V1Ig4OMCAZ8Y2LxPDHxH90UFBH1K4Op5eiDo0wFrzEcDFtDHBQI+LhDw8YCxPdUBa3SvVMAF9HGBgI8O7HEfGRjdKxWwgT4uEPBRge0Q5/GB4X0RAZ+gjwZEfTQg6rMvVvUGjosMOxYAAAAASUVORK5CYII=);
+}
+.annotator-save.disabled-save {
+	pointer-events:none;
+	opacity:0.3;
+}
 /* Custom styles */
