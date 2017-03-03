@@ -60,7 +60,6 @@ export class Book extends Component {
     this.setState({
       currentPageDetails: this.state.pageDetails.playListURL[0]
     });
-
     // eslint-disable-next-line
     this.props.dispatch(getAnnCallService(1));
   }
@@ -147,16 +146,25 @@ export class Book extends Component {
       }
     }
   }
+ 
+  onBookLoaded = (bload) => {
+     this.setState({
+      bookLoaded : bload
+    });
 
-  onBookLoaded = () => {
-    this.setState({
-      bookLoaded : true
-    })
   }
+ 
   
   render() {
     const callbacks = {};
+    let annData = [];
     const { annotionData, loading ,playlistData, playlistReceived} = this.props;// eslint-disable-line react/prop-types
+    annData  = annotionData;
+    if(Array.isArray(annotionData)==false){
+      annData = [];
+      annData.push(annotionData);
+    }
+    
     if(playlistReceived){
         this.state.pageDetails.baseUrl                = playlistData.baseUrl;
         this.state.pageDetails.currentPageURL         = playlistData.content[1];
@@ -177,10 +185,10 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
-            {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {() => this.onBookLoaded()} /> : ''}
-            {this.state.bookLoaded ? <GlossaryPopUp bookDiv = "pxe-viewer" /> : ''}
-            {this.state.bookLoaded ? <MoreInfoPopUp bookDiv = "pxe-viewer" /> : ''}   
-            {playlistReceived ? <Annotation annotationData={annotionData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
+            {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
+            {this.state.bookLoaded ? <GlossaryPopUp bookDiv = "book-container" /> : ''}
+            {this.state.bookLoaded ? <MoreInfoPopUp bookDiv = "book-container" /> : ''}   
+            {playlistReceived ? <Annotation annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
           </div>
       </div>
     );
