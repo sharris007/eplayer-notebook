@@ -49,6 +49,7 @@ class PageViewer extends React.Component {
   };
 
   getResponse = (currentPage, isInitOrGo, goToPage, scrollWindowTopCallBack) => {
+    this.props.onBookLoaded(false);
     const thisRef = this;
     const playListURL = thisRef.props.src.playListURL;
     currentPage = currentPage + (isInitOrGo ? 0 : thisRef.state.currentPage);
@@ -74,7 +75,7 @@ class PageViewer extends React.Component {
         nextPageTitle: (currentPage === playListURL.length - 1) ? '' : playListURL[currentPage+1].title,
         currentStatePlayListUrl: playListURL[currentPage]
       });
-      this.props.onBookLoaded();
+      this.props.onBookLoaded(true);
       //callback
       scrollWindowTopCallBack();
     }).catch(() => {//err param
@@ -224,7 +225,7 @@ class PageViewer extends React.Component {
     return ( 
       <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
-          <div className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} > {renderHTML(this.state.renderSrc)} </div>
+          <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} > {renderHTML(this.state.renderSrc)} </div>
         </div>
         {this.props.src.enableGoToPage ?this.getGoToElement():''} 
         <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
