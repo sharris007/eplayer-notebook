@@ -32,10 +32,10 @@ class ComponentOwner extends React.Component {
   //
 
   render() {
-    const { src, sendPageDetails } = this.props;
+    const { src, sendPageDetails, onBookLoaded } = this.props;
     return (
       <div>
-        <PageViewer src={src} sendPageDetails={sendPageDetails}/>
+        <PageViewer src={src} sendPageDetails={sendPageDetails} onBookLoaded={onBookLoaded}/>
       </div>
     );
   };  
