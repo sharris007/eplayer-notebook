@@ -26,6 +26,7 @@ function init() {
     pdfSearch:false,
     allowLightboxFullscreen:false,
     contentId: 'pxe-viewer',
+    onBookLoaded:()=>{},
     baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/',
     playListURL:[
       {

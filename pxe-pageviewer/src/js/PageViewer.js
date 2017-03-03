@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import renderHTML from 'react-render-html';
-import $ from 'jquery';
 
 import FooterNav from './FooterNav';
 import crossRef from './CrossRef';
@@ -75,6 +74,7 @@ class PageViewer extends React.Component {
         nextPageTitle: (currentPage === playListURL.length - 1) ? '' : playListURL[currentPage+1].title,
         currentStatePlayListUrl: playListURL[currentPage]
       });
+      this.props.onBookLoaded();
       //callback
       scrollWindowTopCallBack();
     }).catch(() => {//err param
@@ -149,20 +149,23 @@ class PageViewer extends React.Component {
       // window.scrollTo(ele.offsetLeft, ele.offsetTop);
     }
   };
+
   loadMultimediaNscrollToFragment =() => {
     let i=0;
-    $('img').each((index, ele) => {
+    const imagesInPage=document.getElementsByTagName('img');
+    const images=[...imagesInPage];
+    images.map(ele=>{
       const img = new Image();
       img.onload =  () => {
         i++;
-        //console.log($(ele).attr('src') + ' - done!');
-        if (i === $('img').length) {
+        if (i === images.length) {
           this.scrollToFragment(this.state.currentStatePlayListUrl.href.split('#')[1]);
         }
       };
       img.src = ele.src;
     });
-  }
+  };
+
   componentWillMount = () => {
     this.init(this.props);
     //this.createHtmlBaseTag();// inserts base tag with baseUrl as a reference to relative paths
