@@ -12,24 +12,22 @@ export default class BookshelfPage extends React.Component {
   componentWillMount() {
     const urn = 'urn:pearson:manifestation:16b1c52c-dbe7-486c-9103-5837b241ee61';
     this.props.fetch(urn);
-    console.log("this.props.fetch" ,this.props.fetch(urn));
   }
 
   handleBookClick = (bookId) => {
-    browserHistory.push(`/eplayer/book/${bookId}`);
+    browserHistory.push(`/eplayer/ETbook/${bookId}`);
   }
 
   render() {
-    
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {
-      books.data.bookshelf.forEach((bookData) => {
+      books.data.entries.forEach((bookData) => {
         const bookRef = bookData;
         const book = {
-          id: bookRef.manifestId || '',
-          author: bookRef.author || '',
-          image: bookRef.thumbnail ? bookRef.thumbnail.src : '',
+          id: bookRef.bookId || '',
+          author: bookRef.creator || '',
+          image: bookRef.thumbnailImageUrl,
           title: bookRef.title || '',
           description: bookRef.description || '',
           tocId: ''

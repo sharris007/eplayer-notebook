@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 
 import { PageViewer } from 'pxe-pageviewer';
 import { Annotation } from 'pxe-annotation';
-
-
+import { GlossaryPopUp } from 'pxe-glossary-popup';
+import { MoreInfoPopUp } from 'pxe-moreinfo-popup';
+// import { Annotation } from 'pxe-annotation';
 // import { Viewer } from '@pearson-incubator/viewer';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
 // import { BookList } from '../../../../const/MockData';
 import { pageDetails } from '../../../../const/Mocdata';// booksdata, tocData
-
 import './Book.scss';
 
 import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
@@ -20,41 +20,46 @@ import { getBookCallService, getPlaylistCallService} from '../../../actions/play
 
 export class Book extends Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      classname: 'headerBar',
-      viewerContent: true,
-      currentPageDetails: '',
-      pageDetails
-    };
-    this.onPageChange.bind(this);
-    this.nodesToUnMount = [];
-    document.body.addEventListener('contentLoaded', this.parseDom);
-    document.body.addEventListener('navChanged', this.navChanged);
-  }
+      super(props);
+      this.state = {
+        classname: 'headerBar',
+        viewerContent: true,
+        currentPageDetails: '',
+        pageDetails, 
+        bookLoaded : false
 
+      };
+      this.onPageChange.bind(this);
+      this.nodesToUnMount = [];
+      document.body.addEventListener('contentLoaded', this.parseDom);
+      document.body.addEventListener('navChanged', this.navChanged);
+  }
+  componentWillMount(){
+    this.props.dispatch(getBookCallService(this.props.params.bookId));
+  }
   componentDidMount() {
-    const bookImageAndTitle = find(this.context.store.getState().bookshelf
-      .books.data.bookshelf, bookshelf => bookshelf.manifestId === this.props.params.bookId);
+    const bookImageAndTitle = find(this.context.store.getState().bookshelf.books.data.bookshelf, 
+                                   bookshelf => bookshelf.manifestId === this.props.params.bookId);
     const tocImageAndTitle = {
-      image: bookImageAndTitle ? bookImageAndTitle.thumbnail.src : '',
-      title: bookImageAndTitle ? bookImageAndTitle.title : '',
-      author: bookImageAndTitle ? bookImageAndTitle.author : ''
+        image: bookImageAndTitle ? bookImageAndTitle.thumbnail.src : '',
+        title: bookImageAndTitle ? bookImageAndTitle.title : '',
+        author: bookImageAndTitle ? bookImageAndTitle.author : ''
     };
+
     if (this.props.params.pageId) {
       this.props.fetchTocAndViewer(this.props.params.bookId, tocImageAndTitle, this.props.params.pageId);
     } else {
       this.props.fetchTocAndViewer(this.props.params.bookId, tocImageAndTitle);
     }
+
     this.props.fetchAnnotations(this.props.params.bookId);
     this.props.fetchBookmarks(this.props.params.bookId);
     this.props.fetchPreferences();
+
     // eslint-disable-next-line
     this.setState({
       currentPageDetails: this.state.pageDetails.playListURL[0]
     });
-
-    // const pageUrl = this.state.currentPageDetails.playOrder;
     // eslint-disable-next-line
     this.props.dispatch(getAnnCallService(1));
   }
@@ -62,10 +67,7 @@ export class Book extends Component {
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
   }
-  componentWillMount(){
-    this.props.dispatch(getBookCallService(this.props.params.bookId));
-  }
-
+  
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   };
@@ -117,7 +119,6 @@ export class Book extends Component {
       currentPageDetails: data
     });
     const pageId = data.playOrder;
-    // console.log('currentPage url', pageId);
     // eslint-disable-next-line
     this.props.dispatch(getAnnCallService(pageId));
   }
@@ -128,28 +129,12 @@ export class Book extends Component {
     return !(targetBookmark === undefined);
   };
 
-  goToPageCallback = (pageId) => {
-    const playListData = {
-      playListURL: pageDetails.playListURL,
-      baseUrl: pageDetails.baseUrl,
-      currentPageURL: {
-        href: 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
-        playOrder: pageId,
-        title: '1.2 Hypothesis Testing'
-      }
-    };
-    this.setState({
-      pageDetails: playListData
-    });
-  };
-
   viewerContentCallBack = (viewerCallBack) => {
     this.setState({ viewerContent: viewerCallBack });
   }
 
   annotationCallBack = (eventType, data) => {
-    // console.log('data stack', eventType);
-    switch (eventType) {
+  switch (eventType) {
       case 'annotationCreated': {
         return this.props.dispatch(postAnnCallService(data));
       }
@@ -161,29 +146,35 @@ export class Book extends Component {
       }
     }
   }
+ 
+  onBookLoaded = (bload) => {
+     this.setState({
+      bookLoaded : bload
+    });
+
+  }
+ 
   
   render() {
     const callbacks = {};
-    const { annotionData, loading ,playlistData } = this.props;// eslint-disable-line react/prop-types
-    /*this.state.pageDetails.baseUrl                = playlistData.baseUrl;
-    this.state.pageDetails.currentPageDetails     = playlistData.content[1];*/
-    this.state.pageDetails.baseUrl                = 'https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/';
-    this.state.pageDetails.currentPageDetails     = {
-      href: 'OPS/s9ml/chapter02/why_are_age_structures_and_dependency_ratios_important.xhtml',
-      id: '1',
-      playOrder: 1,
-      title:"Cover"
+    let annData = [];
+    const { annotionData, loading ,playlistData, playlistReceived} = this.props;// eslint-disable-line react/prop-types
+    annData  = annotionData;
+    if(Array.isArray(annotionData)==false){
+      annData = [];
+      annData.push(annotionData);
     }
-    this.state.pageDetails.playListURL            = playlistData.content;
-
-    callbacks.removeAnnotationHandler             = this.removeAnnotationHandler;
-    callbacks.addBookmarkHandler                  = this.addBookmarkHandler;
-    callbacks.removeBookmarkHandler               = this.removeBookmarkHandler;
-    callbacks.isCurrentPageBookmarked             = this.isCurrentPageBookmarked;
-    callbacks.goToPageCallback                    = this.goToPageCallback;
-    // this.props.book.toc.content = {};
-    // this.props.book.toc.content.list = tocData;
-
+    
+    if(playlistReceived){
+        this.state.pageDetails.baseUrl                = playlistData.baseUrl;
+        this.state.pageDetails.currentPageURL         = playlistData.content[1];
+        this.state.pageDetails.playListURL            = playlistData.content; 
+    }
+    callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
+    callbacks.addBookmarkHandler = this.addBookmarkHandler;
+    callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
+    callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
+    // callbacks.goToPageCallback = this.goToPageCallback;
     return (
       <div>
         <Header
@@ -193,14 +184,12 @@ export class Book extends Component {
           store={this.context.store}
           viewerContentCallBack={this.viewerContentCallBack}
         />
-        { !this.props.book.isFetching.viewer &&
-          this.props.book.viewer.pages &&
-          this.props.book.viewer.pages.length > 0 &&
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
-            {playlistData.length != 0 ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} /> : ''}
-            {loading ? <Annotation annotationData={annotionData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
+            {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
+            {this.state.bookLoaded ? <GlossaryPopUp bookDiv = "book-container" /> : ''}
+            {this.state.bookLoaded ? <MoreInfoPopUp bookDiv = "book-container" /> : ''}   
+            {playlistReceived ? <Annotation annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
           </div>
-        }
       </div>
     );
   }
@@ -230,7 +219,8 @@ const mapStateToProps = state => (
       { 
         annotionData: state.annotationReducer.data, 
         loading: state.annotationReducer.loading, 
-        playlistData: state.playlistReducer.data
+        playlistData: state.playlistReducer.data,
+        playlistReceived :state.playlistReducer.playlistReceived
       }
 );// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign
