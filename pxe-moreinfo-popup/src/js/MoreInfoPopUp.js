@@ -1,4 +1,4 @@
-import {  Component } from 'react';
+import React, {  Component } from 'react';
 import Popup from 'react-popup';
 import renderHTML from 'react-render-html';
 
@@ -62,20 +62,20 @@ class MoreInfoPopUp extends Component {
 
     }
 
-    Popup.registerPlugin('popover', function () {
+    Popup.registerPlugin('popover', function (element) {
       this.create({
         title: popOverTitle,
         content: popOverDescription,
         noOverlay: true,
         position: function (box) {
-          box.style.top = event.pageY + 5 + 'px';
+          box.style.top = (element.getBoundingClientRect().top + window.scrollY) + 'px';
           box.style.left = event.pageX + 'px';
           box.style.margin = 0;
           box.style.opacity = 1;
         }
       });
     }); 
-    Popup.plugins.popover();
+    Popup.plugins.popover(event.target);
   }
   
   render() {
