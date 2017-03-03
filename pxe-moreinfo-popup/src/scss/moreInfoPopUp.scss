@@ -28,7 +28,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	width: 100%;
 	height: 100%;
 	z-index: 1000;
-	overflow: auto;
+	//overflow: auto;
 	display: none;
 	background: $black_10;
 }
@@ -40,6 +40,8 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	top: 9px;
 	right: 20px;
 	padding: 0;
+	width: 20px;
+    height: 20px;
 	cursor: pointer;
 	outline: none;
 	text-align: center;
@@ -116,7 +118,6 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	padding: 8px 20px;
 	background: $color_catskill_white_approx;
 	color: $color_mako_approx;
-	margin-bottom: 0px;
 }
 .mm-popup__box__header__title {
 	margin: 0;
