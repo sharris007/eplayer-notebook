@@ -76,7 +76,7 @@ class GlossaryPopUp extends Component {
         content: popOverDescription,
         noOverlay: true,
         position: function(box) {
-          box.style.top = (element.getBoundingClientRect().top + window.scrollY + element.offsetHeight) + 'px';
+          box.style.top = (element.getBoundingClientRect().top + window.scrollY + element.offsetHeight + 10) + 'px';
           box.style.left = (element.getBoundingClientRect().left - (document.getElementsByClassName('mm-popup__box__body')[0].clientWidth/2) + element.clientWidth/2) + 'px';
           box.style.margin = 0;
           box.style.opacity = 1;

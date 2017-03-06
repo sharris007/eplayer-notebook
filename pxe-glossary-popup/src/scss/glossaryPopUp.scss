@@ -32,6 +32,15 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	display: none;
 	background: $black_10;
 }
+
+.mm-popup__box::after {
+	content: "";
+	border: 10px solid transparent;
+    border-bottom-color: #333;
+    position: absolute;
+    top: -20px;
+    left:112px
+}
 .mm-popup--visible {
 	display: block;
 }
@@ -111,7 +120,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	//Instead of the line below you could use @include border-radius($radius, $vertical-radius)
 	border-radius: 5px;
 	border: 1px solid $color_submarine_approx;
-	overflow: hidden;
+	//overflow: hidden;
 	z-index: 100;
 }
 .mm-popup__box__header {
