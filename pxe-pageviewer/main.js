@@ -25,7 +25,7 @@ export default class PageViewerComponent {
     const App = () => (
       <IntlProvider locale={locale}>
         <MuiThemeProvider>
-          <ComponentOwner src={config} sendPageDetails={config.sendPageDetails}/>
+          <ComponentOwner src={config} sendPageDetails={config.sendPageDetails} onBookLoaded={config.onBookLoaded}/>
         </MuiThemeProvider>
       </IntlProvider>
      );

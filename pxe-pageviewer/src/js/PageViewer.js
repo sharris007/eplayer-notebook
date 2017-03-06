@@ -48,7 +48,7 @@ class PageViewer extends React.Component {
     });
   };
 
-  getResponse = (currentPage, isInitOrGo, goToPage, scrollWindowTopCallBack) => {
+  getResponse = (currentPage, isInitOrGo, goToPage, scrollWindowTopCallBack, pageFragmentID) => {
     this.props.onBookLoaded(false);
     const thisRef = this;
     const playListURL = thisRef.props.src.playListURL;
@@ -65,6 +65,7 @@ class PageViewer extends React.Component {
     }).then((response) => {
       return response.text();
     }).then((text) => {
+      text  = text.replace(/ epub:type\S*\B/g, '').replace('<body', '<body>');
       const currentHref=thisRef.state.currentStatePlayListUrl.href;
       thisRef.setState({
         renderSrc: replaceAllRelByAbs(text, thisRef.props.src.baseUrl+currentHref.substring(0, currentHref.lastIndexOf('/'))),
@@ -77,7 +78,11 @@ class PageViewer extends React.Component {
       });
       this.props.onBookLoaded(true);
       //callback
-      scrollWindowTopCallBack();
+      if (pageFragmentID) {
+        this.scrollToFragment(pageFragmentID);
+      }else  {
+        scrollWindowTopCallBack();
+      }
     }).catch(() => {//err param
       //console.log(err);
     });
@@ -129,11 +134,6 @@ class PageViewer extends React.Component {
     }
   };
 
-  createHtmlBaseTag = () => {
-    const base = document.createElement('base');
-    base.href = this.props.src.baseUrl + this.state.currentStatePlayListUrl.href;
-    document.getElementsByTagName('head')[0].appendChild(base);
-  };
   //Common function for disable rightclick
   disableContextMenu = (getElem) => {
     getElem.oncontextmenu = () => {
@@ -145,7 +145,8 @@ class PageViewer extends React.Component {
     const ele=document.getElementById(eleID);
     if (ele) {
       setTimeout(function() {
-        window.scrollTo(ele.offsetLeft, ele.offsetTop);
+        //window.scrollTo(ele.offsetLeft, ele.offsetTop);
+        ele.scrollIntoView();
       }, 0);
       // window.scrollTo(ele.offsetLeft, ele.offsetTop);
     }
@@ -169,7 +170,6 @@ class PageViewer extends React.Component {
 
   componentWillMount = () => {
     this.init(this.props);
-    //this.createHtmlBaseTag();// inserts base tag with baseUrl as a reference to relative paths
   };
 
   componentWillReceiveProps(newProps) {

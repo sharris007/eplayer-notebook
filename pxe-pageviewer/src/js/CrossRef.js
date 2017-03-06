@@ -26,7 +26,9 @@ const crossRef = (pageViewerRef) => {
         //e.preventDefault();
         const href=targetUrl.split('#')[0];
         const currentTargetPlayListIndex= props.src.playListURL.findIndex((el) => {
-          return el.href.indexOf(href)>=0;
+          if (el.href) {
+            return el.href.indexOf(href)>=0;
+          }
         });
         e.currentTarget.setAttribute('href', props.src.baseUrl+ props.src.playListURL[currentTargetPlayListIndex].href.split('#')[0]+'#'+targetUrl.split('#')[1]);
       }
@@ -42,16 +44,25 @@ const crossRef = (pageViewerRef) => {
         targetUrl=targetUrl.replace(props.src.baseUrl, '');
         const href=targetUrl.split('#')[0];
         const currentTargetPlayListIndex= props.src.playListURL.findIndex((el) => {
-          return el.href.indexOf(href)>=0;
+          if (el.href) {
+            return el.href.indexOf(href)>=0;
+          }
         });
         pageViewerRef.getResponse(parseInt(currentTargetPlayListIndex), true, 'Goto', pageViewerRef.scrollWindowTop);
+      }else if (targetUrl.indexOf('#')===0) {
+        // current page hyperlink
+        e.preventDefault();
+        pageViewerRef.scrollToFragment(targetUrl.slice(1));
       }
       break;
     };
   };
   const xrefs=pageViewerRef.bookContainerRef.getElementsByClassName('xref');
   for (const element of xrefs) {
-    element.addEventListener('click', hyperLinkEventHandler, false);
+    if (!element.getAttribute('custom-click-event-added')) {
+      element.setAttribute('custom-click-event-added', true);
+      element.addEventListener('click', hyperLinkEventHandler, false);
+    }
   }
 };
 export default crossRef;
