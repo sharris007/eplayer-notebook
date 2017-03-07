@@ -32,7 +32,8 @@ class GlossaryPopUp extends Component {
     GlossaryApi.getData(glossaryurl).then((response) => {
       return response.text();
     }).then((text) => {
-      this.setState({ glossaryResponse: text });
+      //this.setState({ glossaryResponse: text });
+      document.getElementById("divGlossary").innerHTML = text;
       const bookDiv = document.getElementById(this.props.bookDiv);
       GlossaryPopUpClasses.forEach((val) => {
         bookDiv.querySelectorAll(val).forEach((item) => {
