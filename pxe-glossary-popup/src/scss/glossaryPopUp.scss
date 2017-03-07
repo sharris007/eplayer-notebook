@@ -33,7 +33,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	background: $black_10;
 }
 
-.mm-popup__box::after {
+.popUpbottomAlign::after {
 	content: "";
 	border: 10px solid transparent;
     border-bottom-color: rgb(0, 90, 112);
@@ -41,6 +41,25 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
     top: -20px;
     left:112px
 }
+
+.popUpRightAlign::after {
+	content: "";
+	border: 10px solid transparent;
+    border-right-color: rgb(0, 90, 112);
+    position: absolute;
+    top: 6px;
+    left: -20px;
+}
+
+.popUpLeftAlign::after {
+	content: "";
+	border: 10px solid transparent;
+    border-left-color: rgb(0, 90, 112);
+    position: absolute;
+   	top: 4px;
+    left: 246px;
+}
+
 .mm-popup--visible {
 	display: block;
 }
