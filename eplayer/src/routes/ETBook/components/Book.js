@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 
 import { PageViewer } from 'pxe-pageviewer';
 import { Annotation } from 'pxe-annotation';
-import { GlossaryPopUp } from 'pxe-glossary-popup';
-import { MoreInfoPopUp } from 'pxe-moreinfo-popup';
+// import { GlossaryPopUp } from 'pxe-glossary-popup';
+// import { MoreInfoPopUp } from 'pxe-moreinfo-popup';
 // import { Annotation } from 'pxe-annotation';
 // import { Viewer } from '@pearson-incubator/viewer';
 import find from 'lodash/find';
@@ -187,8 +187,6 @@ export class Book extends Component {
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
-            {this.state.bookLoaded ? <GlossaryPopUp bookDiv = "book-container" /> : ''}
-            {this.state.bookLoaded ? <MoreInfoPopUp bookDiv = "book-container" /> : ''}   
             {playlistReceived ? <Annotation shareableAnnotations={true} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
           </div>
       </div>
