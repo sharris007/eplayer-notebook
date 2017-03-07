@@ -64,4 +64,6 @@ svg[class$="-24"] {
   width: $svg-width-height;
   height: $svg-width-height;
 }
-
+[class^="icon-"] {
+  display: inline-block !important;
+}

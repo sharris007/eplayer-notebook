@@ -172,11 +172,11 @@ export class Header extends React.Component {
 
     const targetPageId = this.props.bookData.viewer.currentPageId;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
-
+     // title={currPageObj ? currPageObj.title : ''}
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
         <AppBar
-          title={currPageObj ? currPageObj.title : ''}
+          title = {this.props.pageTitle}
           titleStyle={style.appBar.title}
           style={style.appBar}
           iconStyleLeft={style.leftIcons}

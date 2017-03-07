@@ -14,7 +14,7 @@ import Header from '../../../components/Header';
 // import { BookList } from '../../../../const/MockData';
 import { pageDetails } from '../../../../const/Mocdata';// booksdata, tocData
 import './Book.scss';
-
+import { browserHistory } from 'react-router';
 import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 
@@ -26,7 +26,8 @@ export class Book extends Component {
         viewerContent: true,
         currentPageDetails: '',
         pageDetails, 
-        bookLoaded : false
+        bookLoaded : false,
+        currentPageTitle:''
 
       };
       this.onPageChange.bind(this);
@@ -35,27 +36,12 @@ export class Book extends Component {
       document.body.addEventListener('navChanged', this.navChanged);
   }
   componentWillMount(){
+    const bookId = this.props.params.bookId;
+    const pageId = this.props.params.pageId;
     this.props.dispatch(getBookCallService(this.props.params.bookId));
   }
   componentDidMount() {
-    const bookImageAndTitle = find(this.context.store.getState().bookshelf.books.data.bookshelf, 
-                                   bookshelf => bookshelf.manifestId === this.props.params.bookId);
-    const tocImageAndTitle = {
-        image: bookImageAndTitle ? bookImageAndTitle.thumbnail.src : '',
-        title: bookImageAndTitle ? bookImageAndTitle.title : '',
-        author: bookImageAndTitle ? bookImageAndTitle.author : ''
-    };
-
-    if (this.props.params.pageId) {
-      this.props.fetchTocAndViewer(this.props.params.bookId, tocImageAndTitle, this.props.params.pageId);
-    } else {
-      this.props.fetchTocAndViewer(this.props.params.bookId, tocImageAndTitle);
-    }
-
-    this.props.fetchAnnotations(this.props.params.bookId);
-    this.props.fetchBookmarks(this.props.params.bookId);
-    this.props.fetchPreferences();
-
+   
     // eslint-disable-next-line
     this.setState({
       currentPageDetails: this.state.pageDetails.playListURL[0]
@@ -118,9 +104,16 @@ export class Book extends Component {
     this.setState({
       currentPageDetails: data
     });
-    const pageId = data.playOrder;
+    const pageId = data.id;
+    const bookId = this.props.params.bookId;
+    const playOrder = data.playOrder;
+    this.setState({
+      currentPageTitle :data.title
+
+    });
     // eslint-disable-next-line
-    this.props.dispatch(getAnnCallService(pageId));
+    this.props.dispatch(getAnnCallService(playOrder));
+    browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
   }
 
   isCurrentPageBookmarked = () => {
@@ -135,11 +128,12 @@ export class Book extends Component {
 
   annotationCallBack = (eventType, data) => {
   switch (eventType) {
+
       case 'annotationCreated': {
         return this.props.dispatch(postAnnCallService(data));
       }
       case 'annotationDeleted': {
-        return this.props.dispatch(deleteAnnCallService(data));
+        return ((data._id)?this.props.dispatch(deleteAnnCallService(data)):'');
       }
       default : {
         return eventType;
@@ -160,6 +154,8 @@ export class Book extends Component {
     let annData = [];
     const { annotionData, loading ,playlistData, playlistReceived} = this.props;// eslint-disable-line react/prop-types
     annData  = annotionData;
+    const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
+    
     if(Array.isArray(annotionData)==false){
       annData = [];
       annData.push(annotionData);
@@ -169,6 +165,10 @@ export class Book extends Component {
         this.state.pageDetails.baseUrl                = playlistData.baseUrl;
         this.state.pageDetails.currentPageURL         = playlistData.content[1];
         this.state.pageDetails.playListURL            = playlistData.content; 
+        if(this.props.params.pageId){
+          // for the first page it is set to current page URL
+          this.state.pageDetails.currentPageURL         = filteredData;
+        }
     }
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
@@ -179,6 +179,7 @@ export class Book extends Component {
       <div>
         <Header
           classname={this.state.classname}
+          pageTitle = {this.state.currentPageTitle}
           bookData={this.props.book}
           bookCallbacks={callbacks}
           store={this.context.store}
