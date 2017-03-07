@@ -20,9 +20,6 @@ const webpackConfig = {
     root: paths.client(),
     extensions: ['', '.js', '.jsx', '.json']
   },
-  devServer: {
-    historyApiFallback: true
-  },
   module: {}
 };
 // ------------------------------------
@@ -74,6 +71,7 @@ if (__DEV__) {
   webpackConfig.plugins.push(
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
+    new webpack.NoErrorsPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         unused: true,
