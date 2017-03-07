@@ -173,10 +173,12 @@ class PageViewer extends React.Component {
   };
   clearSearchHighlights = (e) => {
     if (!e.target.closest('.book-container')) {
-      const span = this.bookContainerRef.getElementsByTagName('span');
-      for (let i = 0; i < span.length; i++) {
-        if ( span[i].className === 'react-highlighted-text') {
-          span[i].className = '';
+      if (this.props.src.clearSearchHighlights) {
+        const span = this.bookContainerRef.getElementsByTagName('span');
+        for (let i = 0; i < span.length; i++) {
+          if ( span[i].className === 'react-highlighted-text') {
+            span[i].className = '';
+          }
         }
       }
     }
