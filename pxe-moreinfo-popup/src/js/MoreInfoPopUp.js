@@ -32,7 +32,7 @@ class MoreInfoPopUp extends Component {
     let popOverDescription = '';
     const moreInfoIconDOM = event.target.parentElement;
     let hrefId = '';
-    window.bookDiv = this.props.bookDiv;
+    const bookDiv = this.props.bookDiv;
     switch (args.className) {
     case '.lc_ec_aside' : {
       hrefId =  moreInfoIconDOM.href.split('#')[1];
@@ -73,11 +73,10 @@ class MoreInfoPopUp extends Component {
             document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
             box.style.left = (element.getBoundingClientRect().left  + element.clientWidth + 20) + 'px';
             box.style.top = (element.getBoundingClientRect().top + window.scrollY  - 10) + 'px';
-          } else if (document.getElementById(window.bookDiv).clientWidth < (element.getBoundingClientRect().left + 124)) {
+          } else if (document.getElementById(bookDiv).clientWidth < (element.getBoundingClientRect().left + 124)) {
             document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign');
             box.style.top = (element.getBoundingClientRect().top + window.scrollY + element.offsetHeight - 20) + 'px';
             box.style.left = (element.getBoundingClientRect().left - 248 -15) + 'px';
-            window.bookDiv = undefined;
           } else {
             document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpbottomAlign');
             box.style.top = (element.getBoundingClientRect().top + window.scrollY + element.offsetHeight + 10) + 'px';
