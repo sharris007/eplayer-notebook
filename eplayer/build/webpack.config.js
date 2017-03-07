@@ -20,6 +20,9 @@ const webpackConfig = {
     root: paths.client(),
     extensions: ['', '.js', '.jsx', '.json']
   },
+  devServer: {
+    historyApiFallback: true
+  },
   module: {}
 };
 // ------------------------------------
