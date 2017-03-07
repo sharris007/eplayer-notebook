@@ -18,6 +18,7 @@ class Annotation extends Component {
   }
   componentDidMount() { 
     this.annotationEventHandler();
+    $('#' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
   }
 
   componentWillReceiveProps(nextProps) {    

@@ -20,7 +20,7 @@ function init() {
           'endOffset': 268
         }
       ],
-      color:'#FCF37F',
+      color:'#ccf5fd',
       shareable:true,
       'quote': 'ceratele',
       'highlights': [
@@ -60,6 +60,7 @@ function init() {
     elementId: 'demo',   
     contentId:'demo-content',
     annotationData:annotationData,
+    shareableAnnotations:true,
     currentPageDetails:{},
     annotationEventHandler:annotationEvent
   });  

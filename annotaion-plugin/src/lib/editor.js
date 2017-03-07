@@ -13,7 +13,8 @@ Annotator.Editor = (function(_super) {
     ".annotator-cancel mouseover": "onCancelButtonMouseover",
     "textarea keydown": "processKeypress",
     ".annotator-color click":"onColorChange",
-    ".annotator-share click":"onShareClick"
+    ".annotator-share click":"onShareClick",
+    ".annotator-delete-container click":"onDeleteClick"
   };
 
   Editor.prototype.classes = {
@@ -21,7 +22,7 @@ Annotator.Editor = (function(_super) {
     focus: 'annotator-focus'
   };
 
-  Editor.prototype.html = "<div class=\"annotator-outer annotator-editor\">\n <form class=\"annotator-widget\">\n    <div class=\"annotator-color-container\"><input type='button' class=\"annotator-color annotator-yellow\" value=\"#FCF37F\"/> <input type='button' class=\"annotator-color annotator-green\" value=\"#55DF49\"/> <input type='button' class=\"annotator-color annotator-pink\" value=\"#FC92CF\"/> </div>\n<ul class=\"annotator-listing\"></ul>\n    <div class=\"annotator-controls\">\n  <div class=\"annotator-share-text\">Share</div><div class=\"annotator-share\"></div> <a href=\"#cancel\" class=\"annotator-cancel\">" + _t('CANCEL') + "</a>\n<a href=\"#save\" class=\"annotator-save annotator-focus disabled-save\">" + _t('SAVE') + "</a>\n    </div>\n  </form>\n</div>";
+  Editor.prototype.html = "<div class=\"annotator-outer annotator-editor hide-note\">\n <form class=\"annotator-widget\">\n    <div class=\"annotator-color-container\"><input type='button' class=\"annotator-color annotator-yellow\" value=\"#FCF37F\"/> <input type='button' class=\"annotator-color annotator-green\" value=\"#55DF49\"/> <input type='button' class=\"annotator-color annotator-pink\" value=\"#FC92CF\"/> </div><div class=\"annotator-delete-container\"></div>\n<ul class=\"annotator-listing\"></ul>\n    <div class=\"annotator-controls\">\n  <div class=\"annotator-share-text\">Share</div><div class=\"annotator-share\"></div> <a href=\"#cancel\" class=\"annotator-cancel\">" + _t('CANCEL') + "</a>\n<a href=\"#save\" class=\"annotator-save annotator-focus disabled-save\">" + _t('SAVE') + "</a>\n    </div>\n  </form>\n</div>";
   
   Editor.prototype.options = {};
 
@@ -34,25 +35,47 @@ Annotator.Editor = (function(_super) {
     this.show = __bind(this.show, this);
     this.onColorChange=__bind(this.onColorChange, this);
     this.onShareClick=__bind(this.onShareClick, this);
+    this.onDeleteClick=__bind(this.onDeleteClick, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
+    this.tempColor=null;
+    this.tempShare=null;
     this.annotation = {};
   }
   
   Editor.prototype.onShareClick=function(event) {
-    if ($(event.target).hasClass('on')){
+    if ($(event.target).hasClass('on')) {
        $(event.target).removeClass('on');
-       this.annotation.shareable=false;
+       this.tempColor='#FCF37F';
+       this.tempShare=false;
+       $(this.annotation.highlights).css('background', '#FCF37F');
+       $('.annotator-color').removeClass('active');
+       $('.annotator-color:first').addClass('active');
+       $('.annotator-save').removeClass('disabled-save');
+       $('.annotator-color-container').removeClass('disabled-save');
     }
     else {
        $(event.target).addClass('on');
-       this.annotation.shareable=true;
+       this.tempColor='#ccf5fd';
+       this.tempShare=true;
+       $('.annotator-color').removeClass('active');
+       $(this.annotation.highlights).css('background', '#ccf5fd');
+       $('.annotator-color-container').addClass('disabled-save');
     }
+  }
+  
+  Editor.prototype.onDeleteClick=function(event){    
+    this.element.addClass(this.classes.hide);
+    return $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
   }
 
   Editor.prototype.onColorChange=function(event) {
     event.preventDefault();
-    this.annotation.color=event.target.value;
+    if(!this.annotation.color&&!this.tempColor){
+      this.element.css({top:this.element.offset().top+58});
+    }
+    this.element.removeClass('hide-note');
+    this.tempColor=event.target.value;
     $('.annotator-color').removeClass('active');
     $(event.target).addClass('active');
     $('.annotator-save').removeClass('disabled-save');
@@ -63,9 +86,19 @@ Annotator.Editor = (function(_super) {
     Annotator.Util.preventEventDefault(event);
     this.element.removeClass(this.classes.hide);
     this.annotation.color=this.annotation.color||'';
-    (this.annotation.color)?$('.annotator-save').removeClass('disabled-save'):''; 
+    if (this.annotation.color) {
+      $('.annotator-save').removeClass('disabled-save');
+      this.element.removeClass('hide-note');
+    } 
     this.annotation.shareable=(this.annotation.shareable===undefined)?false:this.annotation.shareable;
-    this.annotation.shareable?$('.annotator-share').addClass('on'):$('.annotator-share').removeClass('on');
+    if(this.annotation.shareable) {
+      $('.annotator-share').addClass('on');
+      $('.annotator-color-container').addClass('disabled-save');
+    }
+    else {
+      $('.annotator-share').removeClass('on');
+      $('.annotator-color-container').removeClass('disabled-save'); 
+    }
     $('.annotator-color').removeClass('active');
     $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
     this.element.find('.annotator-save').addClass(this.classes.focus);
@@ -76,13 +109,18 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.hide = function(event) {
+    this.tempColor=this.tempShare=null;
+    $(this.annotation.highlights).css('background', this.annotation.color);
     Annotator.Util.preventEventDefault(event);
     this.element.addClass(this.classes.hide);
     $('.annotator-save').addClass('disabled-save');
+    this.element.addClass('hide-note');
     return this.publish('hide');
   };
 
-  Editor.prototype.load = function(annotation) {
+  Editor.prototype.load = function(annotation, isShareable) {
+    if(!isShareable)
+      this.element.find('.annotator-share-text, .annotator-share').remove();
     var field, _i, _len, _ref;
     this.annotation = annotation;
     this.publish('load', [this.annotation]);
@@ -102,6 +140,8 @@ Annotator.Editor = (function(_super) {
       field = _ref[_i];
       field.submit(field.element, this.annotation);
     }
+    this.annotation.shareable=this.tempShare;
+    this.annotation.color=this.tempColor;
     this.publish('save', [this.annotation]);
     return this.hide();
   };

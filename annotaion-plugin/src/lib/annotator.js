@@ -12,8 +12,9 @@ Annotator = (function(_super) {
   Annotator.prototype.events = {
     ".annotator-adder click": "onAdderClick",
     ".annotator-adder mousedown": "onAdderMousedown",
-    ".annotator-hl mouseover": "onHighlightMouseover",
-    ".annotator-hl mouseout": "startViewerHideTimer"
+    // ".annotator-hl mouseover": "onHighlightMouseover",
+    ".annotator-hl click": "onHighlightClick"
+    // ".annotator-hl mouseout": "startViewerHideTimer"
   };
 
   Annotator.prototype.html = {
@@ -26,6 +27,8 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.plugins = {};
+
+  Annotator.prototype.isShareable = false;
 
   Annotator.prototype.editor = null;
 
@@ -45,6 +48,7 @@ Annotator = (function(_super) {
     this.onAdderClick = __bind(this.onAdderClick, this);
     this.onAdderMousedown = __bind(this.onAdderMousedown, this);
     this.onHighlightMouseover = __bind(this.onHighlightMouseover, this);
+    this.onHighlightClick = __bind(this.onHighlightClick, this);    
     this.checkForEndSelection = __bind(this.checkForEndSelection, this);
     this.checkForStartSelection = __bind(this.checkForStartSelection, this);
     this.clearViewerHideTimer = __bind(this.clearViewerHideTimer, this);
@@ -274,6 +278,10 @@ Annotator = (function(_super) {
     return annotation;
   };
 
+  Annotator.prototype.shareAnnotations = function(isShareable) {
+    return this.isShareable=isShareable;
+  };
+
   Annotator.prototype.loadAnnotations = function(annotations) {
     var clone, loader;
     if (annotations == null) {
@@ -364,9 +372,13 @@ Annotator = (function(_super) {
     return this;
   };
 
-  Annotator.prototype.showEditor = function(annotation, location) {
-    this.editor.element.css(location);
-    this.editor.load(annotation);
+  Annotator.prototype.showEditor = function(annotation, location, isAdderClick) {
+    var position= {
+      right:-30,
+      top:(39+location.top+(!isAdderClick?90:0))
+    }
+    this.editor.element.css(position);
+    this.editor.load(annotation,this.isShareable);
     this.publish('annotationEditorShown', [this.editor, annotation]);
     return this;
   };
@@ -447,6 +459,13 @@ Annotator = (function(_super) {
     return this.showViewer(annotations, Util.mousePosition(event, this.wrapper[0]));
   };
 
+  Annotator.prototype.onHighlightClick = function(event) {
+    var annotations = $(event.target).parents('.annotator-hl').addBack().map(function() {
+      return $(this).data("annotation");
+    }).toArray();
+    this.showEditor(annotations[0], Util.mousePosition(event, this.wrapper[0]), false);
+  }
+
   Annotator.prototype.onAdderMousedown = function(event) {
     if (event != null) {
       event.preventDefault();
@@ -497,7 +516,7 @@ Annotator = (function(_super) {
     })(this);
     this.subscribe('annotationEditorHidden', cancel);
     this.subscribe('annotationEditorSubmit', save);
-    return this.showEditor(annotation, position);
+    return this.showEditor(annotation, position, true);
   };
 
   Annotator.prototype.onEditAnnotation = function(annotation) {
@@ -518,7 +537,7 @@ Annotator = (function(_super) {
     this.subscribe('annotationEditorHidden', cleanup);
     this.subscribe('annotationEditorSubmit', update);
     this.viewer.hide();
-    return this.showEditor(annotation, offset);
+    return this.showEditor(annotation, offset, false);
   };
 
   Annotator.prototype.onDeleteAnnotation = function(annotation) {
