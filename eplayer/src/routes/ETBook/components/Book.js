@@ -175,7 +175,6 @@ export class Book extends Component {
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     // callbacks.goToPageCallback = this.goToPageCallback;
-    // console.log("this.state-----", this.state);
     return (
       <div>
         <Header
