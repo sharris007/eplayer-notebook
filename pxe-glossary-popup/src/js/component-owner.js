@@ -23,7 +23,7 @@ class ComponentOwner extends React.Component {
     return (
         <div> 
         <div id = "bookDiv">
-          <BookViewer bookUrl = {this.props.bookUrl} onBookLoad = {this.onBookLoad.bind(this)}/>
+          <BookViewer bookUrl = {this.props.bookUrl} onBookLoad = {this.onBookLoad.bind(this)} isFromComponent = {true}/>
         </div>  
         <div>     
           {this.state.isBookLoaded ? <GlossaryPopUp bookDiv = "bookDiv"/> : ''}

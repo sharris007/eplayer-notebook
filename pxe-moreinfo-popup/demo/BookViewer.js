@@ -23,9 +23,11 @@ class BookViewer extends Component {
   }
 
   componentDidMount() {
-    const base = document.createElement('base');
-    base.href =  this.props.bookUrl;
-    document.getElementsByTagName('head')[0].appendChild(base);
+    if (this.props.isFromComponent) {
+      const base = document.createElement('base');
+      base.href =  this.props.bookUrl;
+      document.getElementsByTagName('head')[0].appendChild(base);
+    }   
   }
   
   render() {
