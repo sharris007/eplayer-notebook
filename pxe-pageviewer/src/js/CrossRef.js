@@ -30,7 +30,7 @@ const crossRef = (pageViewerRef) => {
             return el.href.indexOf(href)>=0;
           }
         });
-        e.currentTarget.setAttribute('href', props.src.baseUrl+ props.src.playListURL[currentTargetPlayListIndex].href.split('#')[0]+'#'+targetUrl.split('#')[1]);
+        e.currentTarget.setAttribute('href', props.src.baseUrl+ props.src.playListURL[currentTargetPlayListIndex].href.split('#')[0]+(targetUrl.split('#')[1]?'#'+targetUrl.split('#')[1]:''));
       }
       //for outer hyperlinks
       e.currentTarget.setAttribute('target', '_blank');
@@ -53,6 +53,26 @@ const crossRef = (pageViewerRef) => {
         // current page hyperlink
         e.preventDefault();
         pageViewerRef.scrollToFragment(targetUrl.slice(1));
+      }
+      break;
+    case settings.lightBox:
+      e.preventDefault();
+        // For current page links
+      targetUrl = e.currentTarget.getAttribute('href');
+      if (targetUrl.indexOf('#') === 0) {
+        targetUrl = props.src.baseUrl + state.currentStatePlayListUrl.href.split('#')[0] + targetUrl;
+      } else if (targetUrl.indexOf('file') === 0) {
+        // for toc links
+        const href = targetUrl.split('#')[0];
+        const currentTargetPlayListIndex = props.src.playListURL.findIndex((el) => {
+          if (el.href) {
+            return el.href.indexOf(href) >= 0;
+          }
+        });
+        targetUrl = props.src.baseUrl+ props.src.playListURL[currentTargetPlayListIndex].href.split('#')[0]+(targetUrl.split('#')[1]?'#'+targetUrl.split('#')[1]:'');
+      }
+      if (targetUrl) {
+        pageViewerRef.props.sendPageDetails('openContentLightBox', targetUrl);
       }
       break;
     };
