@@ -2,7 +2,7 @@ import './main.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Annotation from './src/js/Annotation';
+import ComponentOwner from './src/js/component-owner';
 
 export default class AnnotationComponent {
   constructor(config) {
@@ -11,7 +11,9 @@ export default class AnnotationComponent {
 
   init=config=>{
     ReactDOM.render(
-        <Annotation contentId={config.contentId} annotationData={config.annotationData} annotationEventHandler={config.annotationEventHandler} currentPageDetails={config.currentPageDetails}/>,
+        <ComponentOwner contentId={config.contentId} annotationData={config.annotationData} 
+                    shareableAnnotations={config.shareableAnnotations} annotationEventHandler={config.annotationEventHandler} 
+                    currentPageDetails={config.currentPageDetails} />,
         document.getElementById(config.elementId)
     );
   };  
