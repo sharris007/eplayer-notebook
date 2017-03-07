@@ -80,10 +80,11 @@ export const pageDetails = {
   includeMathMLLib: false,
   enableAnnotation: true,
   annotationShareable: true,
-  clearSearchHighlights: false,
+  clearSearchHighlights: true,
   elementId: 'demo',
   pdfSearch: false,
   allowLightboxFullscreen: false,
+  highlightText:"Donna Kala",
   contentId: 'pxe-viewer',
   baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/',
   playListURL: [

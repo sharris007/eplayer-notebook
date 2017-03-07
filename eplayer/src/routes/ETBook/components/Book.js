@@ -189,7 +189,7 @@ export class Book extends Component {
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {this.state.bookLoaded ? <GlossaryPopUp bookDiv = "book-container" /> : ''}
             {this.state.bookLoaded ? <MoreInfoPopUp bookDiv = "book-container" /> : ''}   
-            {playlistReceived ? <Annotation annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
+            {playlistReceived ? <Annotation shareableAnnotations={true} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
           </div>
       </div>
     );
