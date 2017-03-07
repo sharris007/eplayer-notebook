@@ -7,6 +7,7 @@ import renderHTML from 'react-render-html';
 
 import FooterNav from './FooterNav';
 import crossRef from './CrossRef';
+import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
 
 class PageViewer extends React.Component {
@@ -65,6 +66,9 @@ class PageViewer extends React.Component {
     }).then((response) => {
       return response.text();
     }).then((text) => {
+      if (this.props.src.highlightText) {
+        text=HighlightText.highlightText(this, text);
+      }
       text  = text.replace(/ epub:type\S*\B/g, '').replace('<body', '<body>');
       const currentHref=thisRef.state.currentStatePlayListUrl.href;
       thisRef.setState({
@@ -167,7 +171,16 @@ class PageViewer extends React.Component {
       img.src = ele.src;
     });
   };
-
+  clearSearchHighlights = (e) => {
+    if (!e.target.closest('.book-container')) {
+      const span = this.bookContainerRef.getElementsByTagName('span');
+      for (let i = 0; i < span.length; i++) {
+        if ( span[i].className === 'react-highlighted-text') {
+          span[i].className = '';
+        }
+      }
+    }
+  };
   componentWillMount = () => {
     this.init(this.props);
   };
@@ -209,6 +222,7 @@ class PageViewer extends React.Component {
     this.enablePageNo();
     this.loadMultimediaNscrollToFragment();
     crossRef(this);
+    document.addEventListener('click', this.clearSearchHighlights);
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
