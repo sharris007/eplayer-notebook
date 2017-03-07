@@ -1,12 +1,12 @@
 $viewer-min-width: 768px;
-$viewer-top: 66px;
+//$viewer-top: 66px;
 $cont-min-width: 675px;
 $cont-padding-top: 20px;
 $cont-padding-bottom: 85px;
 
 .viewerContent {
   position: relative;
-  top: $viewer-top;
+  //top: $viewer-top;
   background: #FFF;
   min-width: $viewer-min-width;
   .container {

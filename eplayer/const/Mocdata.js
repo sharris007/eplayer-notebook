@@ -68,7 +68,7 @@ export const pageDetails = {
   renderId: 'pxeViewer',
   locale: 'en-us',
   copyImages: false,
-  copyCharLimit: 10,
+  copyCharLimit: -1,
   crossRefSettings: 'continue',
   enablePrintOption: false,
   showPageNo: true,
