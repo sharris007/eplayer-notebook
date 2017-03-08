@@ -58,7 +58,9 @@ class MoreInfoPopUp extends Component {
     }
 
     }
-    popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
+    if (hrefId) {
+      popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
+    }
     Popup.registerPlugin('popover', function (element) {
       this.create({
         title: popOverTitle,
