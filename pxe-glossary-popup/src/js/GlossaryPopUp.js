@@ -22,28 +22,31 @@ class GlossaryPopUp extends Component {
   fetchGlossaryData = () => {
     const bookDiv = document.getElementById(this.props.bookDiv);
     let glossaryurl = '';
-
-    if (bookDiv.querySelectorAll('a.keyword').length > 0) {
-      glossaryurl = bookDiv.querySelectorAll('a.keyword')[0].href.split('#')[0];
-    } else if (bookDiv.querySelectorAll('dfn.keyword').length > 0) {
-      glossaryurl = bookDiv.querySelectorAll('dfn.keyword')[0].parentElement.href.split('#')[0];
-    }
-    console.log(glossaryurl);
-    GlossaryApi.getData(glossaryurl).then((response) => {
-      return response.text();
-    }).then((text) => {
-      //this.setState({ glossaryResponse: text });
-      document.getElementById('divGlossary').innerHTML = text;
-      const bookDiv = document.getElementById(this.props.bookDiv);
-      GlossaryPopUpClasses.forEach((val) => {
-        bookDiv.querySelectorAll(val).forEach((item) => {
-          const obj = { 'className': val };
-          item.addEventListener('click', this.framePopOver.bind(this, obj))
-        });
-      });
-    }).catch((err) => {
-      console.debug(err);
+    GlossaryPopUpClasses.some((classes) => {
+      if (bookDiv.querySelectorAll(classes).length > 0 ) {
+        glossaryurl = bookDiv.querySelectorAll(classes)[0].href ? bookDiv.querySelectorAll(classes)[0].href.split('#')[0] : bookDiv.querySelectorAll(classes)[0].parentElement.href.split('#')[0];
+        return true;
+      }
     });
+
+    console.debug(glossaryurl);
+    if (glossaryurl) {
+      GlossaryApi.getData(glossaryurl).then((response) => {
+        return response.text();
+      }).then((text) => {
+        //this.setState({ glossaryResponse: text });
+        document.getElementById('divGlossary').innerHTML = text;
+        const bookDiv = document.getElementById(this.props.bookDiv);
+        GlossaryPopUpClasses.forEach((val) => {
+          bookDiv.querySelectorAll(val).forEach((item) => {
+            const obj = { 'className': val };
+            item.addEventListener('click', this.framePopOver.bind(this, obj))
+          });
+        });
+      }).catch((err) => {
+        console.debug(err);
+      });
+    }
   }
 
   framePopOver = (args, event) => {
@@ -54,23 +57,28 @@ class GlossaryPopUp extends Component {
     let popOverDescription = '';
     const targetElement = event.target;
     const bookDiv = this.props.bookDiv;
+    let glossaryNode = '';
     switch (args.className) {
     case 'a.keyword':
+    case 'a.noteref':
       {
-        const glossaryNode = document.getElementById(targetElement.hash.replace('#', ''));
-        popOverTitle = glossaryNode ? glossaryNode.getElementsByTagName('dfn')[0].textContent : '';
-        popOverDescription = glossaryNode ? renderHTML(glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML) : '';
+        glossaryNode = document.getElementById(targetElement.hash.replace('#', ''));
         break;
       }
     case 'dfn.keyword':
       {
-        const glossaryNode = document.getElementById(targetElement.parentElement.hash.replace('#', ''));
-        popOverTitle       = glossaryNode ? glossaryNode.getElementsByTagName('dfn')[0].textContent : '';
-        popOverDescription = glossaryNode ? renderHTML(glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML) : '';
+        glossaryNode = document.getElementById(targetElement.parentElement.hash.replace('#', ''));
+        break;
+      }
+    case 'dfn.reminder':
+      {
+        const id = targetElement.hash ? targetElement.hash.replace('#', '') : targetElement.parentElement.hash.replace('#', '');
+        glossaryNode = document.getElementById(id);
         break;
       }
     }
-
+    popOverTitle = glossaryNode ? glossaryNode.getElementsByTagName('dfn')[0].textContent : '';
+    popOverDescription = glossaryNode ? renderHTML(glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML) : '';
     Popup.registerPlugin('popover', function(element) {
       this.create({
         title: popOverTitle,

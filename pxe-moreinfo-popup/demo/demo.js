@@ -22,7 +22,7 @@ function init() {
   // http://stackoverflow.com/a/34015469/988941
   injectTapEventPlugin();  
 
-  // Create new instance of bookshelf component
+  // Create new instance of MoreInfoPopUp Component
   new MoreInfoPopUpComponent({
     contentId:'demo-content'
   });  
