@@ -37,7 +37,6 @@ class MoreInfoPopUp extends Component {
     case '.lc_ec_aside' : {
       hrefId =  moreInfoIconDOM.href.split('#')[1];
       popOverTitle = renderHTML(document.getElementById(hrefId).getElementsByTagName('h2')[0].innerHTML);
-      popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
       break;
     }
     case 'a.noteref.noteref_footnote' : {
@@ -50,18 +49,16 @@ class MoreInfoPopUp extends Component {
       } else {
         hrefId = moreInfoIconDOM.parentElement.href.split('#')[1];
       }
-      popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
       break;
     }
 
     case 'a.noteref.noteref_footnote_symboled' : {
       hrefId = moreInfoIconDOM.parentElement.href.split('#')[1];
-      popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
       break;
     }
 
     }
-
+    popOverDescription = renderHTML(document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML);
     Popup.registerPlugin('popover', function (element) {
       this.create({
         title: popOverTitle,
