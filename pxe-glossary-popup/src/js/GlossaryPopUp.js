@@ -23,14 +23,14 @@ class GlossaryPopUp extends Component {
     const bookDiv = document.getElementById(this.props.bookDiv);
     let glossaryurl = '';
     GlossaryPopUpClasses.some((classes) => {
-      if(bookDiv.querySelectorAll(classes).length > 0 ) {
+      if (bookDiv.querySelectorAll(classes).length > 0 ) {
         glossaryurl = bookDiv.querySelectorAll(classes)[0].href ? bookDiv.querySelectorAll(classes)[0].href.split('#')[0] : bookDiv.querySelectorAll(classes)[0].parentElement.href.split('#')[0];
         return true;
       }
     });
-    
+
     console.debug(glossaryurl);
-    if(glossaryurl) {
+    if (glossaryurl) {
       GlossaryApi.getData(glossaryurl).then((response) => {
         return response.text();
       }).then((text) => {
