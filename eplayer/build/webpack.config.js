@@ -2,9 +2,11 @@ const webpack = require('webpack');
 const cssnano = require('cssnano');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const config = require('../config');
 const debug = require('debug')('app:webpack:config');
 const path = require('path');
+const jquery = require('jquery');
 
 const paths = config.utils_paths;
 const __DEV__ = config.globals.__DEV__;
@@ -26,7 +28,8 @@ const webpackConfig = {
 // Entry Points
 // ------------------------------------
 const APP_ENTRY = paths.client('main.js');
-
+console.log("APP_"+APP_ENTRY);
+console.log("__dirname"+__dirname);
 webpackConfig.entry = {
   app: __DEV__
     ? [APP_ENTRY].concat(`webpack-hot-middleware/client?path=${config.compiler_public_path}__webpack_hmr`)
@@ -57,7 +60,11 @@ webpackConfig.plugins = [
     minify: {
       collapseWhitespace: true
     }
-  })
+  }),
+  new CopyWebpackPlugin([
+      { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf'}/*,
+      { from: path.join(__dirname, '../css'), to: 'css'}*/
+  ])
 ];
 
 if (__DEV__) {
@@ -117,13 +124,12 @@ webpackConfig.module.loaders = [{
   test: /\.json$/,
   loader: 'json'
 }];
-
 // ------------------------------------
 // Style Loaders
 // ------------------------------------
 // We use cssnano with the postcss loader, so we tell
 // css-loader not to duplicate minimization.
-const BASE_CSS_LOADER = 'css?sourceMap&-minimize';
+const BASE_CSS_LOADER = 'css?url=false&sourceMap&-minimize';
 
 webpackConfig.module.loaders.push({
   test: /\.scss$/,
@@ -131,6 +137,7 @@ webpackConfig.module.loaders.push({
   loaders: [
     'style',
     BASE_CSS_LOADER,
+    'postcss',
     'sass?sourceMap'
   ]
 });
@@ -199,6 +206,14 @@ if (!__DEV__) {
   webpackConfig.plugins.push(
     new ExtractTextPlugin('[name].[contenthash].css', {
       allChunks: true
+    })
+  );
+  webpackConfig.plugins.push(
+    new webpack.ProvidePlugin({
+        $: "jquery",
+        jquery: "jquery",
+        jQuery: "jquery",
+        "windows.jQuery": "jquery"
     })
   );
 }
