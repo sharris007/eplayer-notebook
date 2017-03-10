@@ -6,7 +6,6 @@ class Annotation extends Component {
     super(props);   
     this.annotationEventHandler = this.annotationEventHandler.bind(this);
     this.annotationEvent = this.annotationEvent.bind(this);
-    $('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
     this.onDocumentClick=this.onDocumentClick.bind(this);
     $(document).on('click', this.onDocumentClick);
   }
