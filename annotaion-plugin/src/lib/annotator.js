@@ -309,6 +309,7 @@ Annotator = (function(_super) {
     })(this);
     clone = annotations.slice();
     loader(annotations);
+    window.getSelection().removeAllRanges();
     return this;
   };
 
@@ -337,6 +338,8 @@ Annotator = (function(_super) {
         _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
       }
     }
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(normedRange.toRange());
     return _results;
   };
 
@@ -493,7 +496,7 @@ Annotator = (function(_super) {
     position = Util.mousePosition(event, this.wrapper[0]);
     this.adder.hide();
     annotation = this.setupAnnotation(this.createAnnotation());
-    this.clearTextSelection();
+    // this.clearTextSelection();
     $(annotation.highlights).addClass('annotator-hl-temporary');
     save = (function(_this) {
       return function() {

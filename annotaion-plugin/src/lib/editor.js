@@ -70,8 +70,8 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onColorChange=function(event) {
-    event.preventDefault();
-    if(!this.annotation.color&&!this.tempColor){
+    window.getSelection().removeAllRanges();
+    if (!this.annotation.color&&!this.tempColor) {
       this.element.css({top:this.element.offset().top+58});
     }
     this.element.removeClass('hide-note');
