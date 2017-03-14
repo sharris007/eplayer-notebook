@@ -12,7 +12,7 @@ export default class BookshelfPage extends React.Component {
 
 componentWillMount() {
     const sessionid=this.props.location.query.key;
-    const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key=204915729102641782292017';
+    const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key=807027958946346552142017';
     this.props.storeSsoKey(sessionid);
     //const urn ='http://10.102.88.150:8080/JavaSampleWebApp/TestServlet';
     this.props.fetch(urn);
