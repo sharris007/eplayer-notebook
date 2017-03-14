@@ -24,7 +24,7 @@ componentWillMount() {
     /*browserHistory.push(`/book/${bookId}?bookid=${bookId}&updfUrl=${updfUrl}`);*/
     if(iseT1)
     {
-     browserHistory.push(`/pdfbook/${bookId}`);
+     browserHistory.push(`/eplayer/pdfbook/${bookId}`);
     }
     else
     {
