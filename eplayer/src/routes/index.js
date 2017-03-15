@@ -14,10 +14,17 @@ export const createRoutes = store => ({
   component: CoreLayout,
   indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/etbookshelf') },
   childRoutes: [
+    ETbookshelfRoute(store),
+    ETbookRoute(store)
+  ]
+  /*path: '/eplayer',
+  component: CoreLayout,
+  indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/etbookshelf') },
+  childRoutes: [
     bookshelfRoute(store),
     bookRoute(store),
     pdfbookRoute(store)
-  ]
+  ]*/
 }/*,{
   path: '/eplayer',
   component: CoreLayout,
