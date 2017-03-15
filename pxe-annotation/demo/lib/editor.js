@@ -22,7 +22,7 @@ Annotator.Editor = (function(_super) {
     focus: 'annotator-focus'
   };
 
-  var panel1 = '<div class="annotator-panel-1"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" value="#FCF37F"/><input type="button" class="annotator-color annotator-green" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" value="#FC92CF"/></div><div class="annotator-edit-container"></div><div class="annotator-delete-container"></div></div>'
+  var panel1 = '<div class="annotator-panel-1"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" value="#FCF37F"/><input type="button" class="annotator-color annotator-green" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" value="#FC92CF"/></div><div class="annotator-delete-container"></div><div class="annotator-edit-container"></div></div>'
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
@@ -194,15 +194,15 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.checkOrientation = function() {
-    var controls, list;
+    var controls, list , panel3;
     Editor.__super__.checkOrientation.apply(this, arguments);
     list = this.element.find('ul');
-    panel3 = this.element.find('annotator-panel-3');
+    panel3 = this.element.find('.annotator-panel-3');
     controls = this.element.find('.annotator-controls');
     if (this.element.hasClass(this.classes.invert.y)) {
       panel3.html(controls);
     } else if (controls.is(':first-child')) {
-      controls.insertAfter(list);
+      panel3.html(controls);
     }
     return this;
   };
