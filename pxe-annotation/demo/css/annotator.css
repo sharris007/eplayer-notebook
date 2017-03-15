@@ -869,7 +869,9 @@
 .annotator-editor.hide-note .annotator-delete-container{
 	display: none;	
 }
-
+.annotator-editor.hide-note .annotator-edit-container{
+	display: none;	
+}
 .annotator-edit-container{
   width: 18px;
   height: 18px;
@@ -881,7 +883,14 @@
   display: inline-block;
 
 }
-/* Custom stylwidth: 18px;
-  height: 18px;
-  object-fit: contain;
+.show-edit-options .annotator-edit-container, .show-edit-options .annotator-share-text, .show-edit-options .annotator-share{
+	display: none;
+}
+.annotator-controls a {
+	display: none;
+}
+.show-edit-options .annotator-controls a{
+	display: inline;
+}
+/* Custom style */
   

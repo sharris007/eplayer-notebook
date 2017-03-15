@@ -14,7 +14,8 @@ Annotator.Editor = (function(_super) {
     "textarea keydown": "processKeypress",
     ".annotator-color click":"onColorChange",
     ".annotator-share click":"onShareClick",
-    ".annotator-delete-container click":"onDeleteClick"
+    ".annotator-delete-container click":"onDeleteClick",
+    ".annotator-edit-container click":"onEditClick"
   };
 
   Editor.prototype.classes = {
@@ -42,18 +43,17 @@ Annotator.Editor = (function(_super) {
     this.onColorChange=__bind(this.onColorChange, this);
     this.onShareClick=__bind(this.onShareClick, this);
     this.onDeleteClick=__bind(this.onDeleteClick, this);
+    this.onEditClick=__bind(this.onEditClick, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
-    this.tempColor=null;
-    this.tempShare=null;
     this.annotation = {};
   }
-  
+
   Editor.prototype.onShareClick=function(event) {
     if ($(event.target).hasClass('on')) {
        $(event.target).removeClass('on');
-       this.tempColor='#FCF37F';
-       this.tempShare=false;
+       this.annotation.color='#FCF37F';
+       this.annotation.shareable=false;
        $(this.annotation.highlights).css('background', '#FCF37F');
        $('.annotator-color').removeClass('active');
        $('.annotator-color:first').addClass('active');
@@ -62,8 +62,8 @@ Annotator.Editor = (function(_super) {
     }
     else {
        $(event.target).addClass('on');
-       this.tempColor='#ccf5fd';
-       this.tempShare=true;
+       this.annotation.color='#ccf5fd';
+       this.annotation.shareable=true;
        $('.annotator-color').removeClass('active');
        $(this.annotation.highlights).css('background', '#ccf5fd');
        $('.annotator-color-container').addClass('disabled-save');
@@ -75,22 +75,32 @@ Annotator.Editor = (function(_super) {
     return $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
   }
 
+  Editor.prototype.onEditClick=function(event){  
+    this.element.addClass('show-edit-options');
+  }
+
+  Editor.prototype.onNoteChange=function(event) {
+    debugger;
+  }
+
   Editor.prototype.onColorChange=function(event) {
     window.getSelection().removeAllRanges();
-    if (!this.annotation.color&&!this.tempColor) {
+    if (!this.annotation.color) {
       this.element.css({top:this.element.offset().top+58});
     }
     this.element.removeClass('hide-note');
-    this.tempColor=event.target.value;
+    this.annotation.color=event.target.value;
     $('.annotator-color').removeClass('active');
     $(event.target).addClass('active');
     $('.annotator-save').removeClass('disabled-save');
     $(this.annotation.highlights).css('background', event.target.value);
+    this.publish('save', [this.annotation]);
   }
 
   Editor.prototype.show = function(event) {
     Annotator.Util.preventEventDefault(event);
     this.element.removeClass(this.classes.hide);
+    if(!this.annotation.text || !this.annotation.text.length) $('.annotator-edit-container').hide();
     this.annotation.color=this.annotation.color||'';
     if (this.annotation.color) {
       $('.annotator-save').removeClass('disabled-save');
@@ -115,12 +125,12 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.hide = function(event) {
-    this.tempColor=this.tempShare=null;
     $(this.annotation.highlights).css('background', this.annotation.color);
     Annotator.Util.preventEventDefault(event);
     this.element.addClass(this.classes.hide);
     $('.annotator-save').addClass('disabled-save');
-    this.element.addClass('hide-note');
+    this.element.addClass('hide-note').removeClass('show-edit-options');
+    $('.annotator-edit-container').show();
     return this.publish('hide');
   };
 
@@ -146,8 +156,6 @@ Annotator.Editor = (function(_super) {
       field = _ref[_i];
       field.submit(field.element, this.annotation);
     }
-    this.annotation.shareable=this.tempShare;
-    this.annotation.color=this.tempColor;
     this.publish('save', [this.annotation]);
     return this.hide();
   };
