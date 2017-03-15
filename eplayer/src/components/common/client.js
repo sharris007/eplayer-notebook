@@ -9,6 +9,13 @@ export const clients = {
     headers: {
     }
   }),
+  getBookShelf: axios.create({
+    baseURL: 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key=1975822139101138730252017',
+    timeout: 20000,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }),
   scapi: axios.create({
     baseURL: 'https://scapi-dev-use.pearsoncms.net/sc-api/apis',
     timeout: 20000,

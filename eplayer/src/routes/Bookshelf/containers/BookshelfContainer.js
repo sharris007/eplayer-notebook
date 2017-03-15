@@ -21,7 +21,8 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
-  bookshelf: state.bookshelf ? state.bookshelf : {}
+  bookshelf: state.bookshelf ? state.bookshelf : {},
+  login: state.login ? state.login : {}
 });
 
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:

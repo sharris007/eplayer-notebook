@@ -11,14 +11,22 @@ import { clients } from '../../../components/common/client';
   }
 
 };*/
+export const fetch = (urn, postData) => {
+  
+    return {
+      type: 'BOOKS',
+      //payload: clients.scapi.get(`content/${urn}`)
+      payload: clients.getBookShelf.post(`${urn}`, postData)
+    };
+};
 
-export const fetch = (urn) => {
+/*export const fetch = (urn) => {
     return {
       type: 'BOOKS',
       //payload: clients.scapi.get(`content/${urn}`)
       payload: clients.scapi.get(`${urn}`)
     };
-};
+};*/
 
 export const storeUPdfUrl = (uPdf) => {
   return {

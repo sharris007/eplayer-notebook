@@ -46,7 +46,7 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
   };
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.scapi.get('http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/getbookmarkreport?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getbookmarkreport?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', {
       method: GET,
       headers: {
         Accept: 'application/json',
@@ -82,7 +82,7 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
 export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId,sessionKey) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.scapi.get('http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/setbookmark?userID=81600&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/setbookmark?userID=116392&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
       method: GET,
       headers: {
         Accept: 'application/json',
@@ -109,7 +109,7 @@ export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId
 export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId,sessionKey) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.scapi.get('http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/resetbookmark?userID=81600&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/resetbookmark?userID=116392&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
       method: GET,
       headers: {
         Accept: 'application/json',
@@ -133,7 +133,7 @@ export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId
   };
 }
 
-export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,pageId,sessionKey){
+export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey){
   console.log('bookeditionid==='+bookeditionid);
   const bookState = {
     toc: {
@@ -149,7 +149,7 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
   };
   return(dispatch) => {
     dispatch(request('toc'));
-    return clients.scapi.get('http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc')
+    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc')
     .then((response) => {
     response.data.forEach((allBaskets) =>{
     const basketData = allBaskets.basketsInfoTOList;
@@ -238,7 +238,7 @@ export function fetchBookInfo(bookid,sessionKey)
 {
   return{
   type: 'RECEIVEBOOKINFO',
-  payload: clients.scapi.get('http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/getbookinfo?userid=81600&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON')
+  payload: clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getbookinfo?userid=116392&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON')
   };
 }
  export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,sessionKey)
@@ -249,7 +249,7 @@ export function fetchBookInfo(bookid,sessionKey)
       }
   };
   return(dispatch)=>{
-    return clients.scapi.get('http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/getpagebypageorder?userid=81600&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON')
+    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getpagebypageorder?userid=116392&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON')
     .then((response) => {
       if (response.status >= 400) {
         console.log(`FetchPage info error: ${response.statusText}`);

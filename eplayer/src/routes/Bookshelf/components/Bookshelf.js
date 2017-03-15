@@ -11,12 +11,19 @@ import './Bookshelf.scss';
 export default class BookshelfPage extends React.Component {
 
 componentWillMount() {
-    const sessionid=this.props.location.query.key;
-    const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key=807027958946346552142017';
+    const sessionid=this.props.login.data.token;
+    //const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
     this.props.storeSsoKey(sessionid);
     //const urn ='http://10.102.88.150:8080/JavaSampleWebApp/TestServlet';
-    this.props.fetch(urn);
-
+    var userlogin = this.props.login.data.userName;
+    var password = this.props.login.data.password;
+    var urn = 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext/users/eT1/'+userlogin+'/bookshelf'
+    var postData = {
+      chk_old: 'true',
+      password: 'a17a41337551d6542fd005e18b43afd4',
+      languageId: '1'
+    }
+    this.props.fetch(urn, postData);
   }
 
 
@@ -36,8 +43,8 @@ componentWillMount() {
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {
-      books.data.forEach((allBooks) => {
-      allBooks.entries.forEach((bookData) => {
+     //books.data.forEach((allBooks) => {
+      books.data.entries.forEach((bookData) => {
         const bookRef = bookData;
         const book = {
           //id: 'urn:pearson:context:f3c7a5d0-7f38-4166-ac42-1a516b907760'/* bookRef.manifestId || ''*/,
@@ -54,11 +61,12 @@ componentWillMount() {
            tocId: '',
            updfUrl: bookRef.uPdfUrl,
            bookeditionid: bookRef.bookeditionid,
-           iseT1 : bookRef.iseT1
+           iseT1: bookRef.iseT1
+
         };
         booksdata.push(book);
       });
-    });
+    //});
     }
 
     if (error) {
