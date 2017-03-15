@@ -8,7 +8,7 @@ function init() {
     renderId:'pxeViewer',
     locale: 'en-us',
     copyImages: false,
-    copyCharLimit: 0,
+    copyCharLimit: 10,
     crossRefSettings:'continue',
     enablePrintOption: false,
     showPageNo:true,

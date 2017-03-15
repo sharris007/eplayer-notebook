@@ -1,8 +1,9 @@
 const copyCharLimit = (getRef) => {
   //Disable contextmenu based on copyCharlimt and copyImage Props
   const images = getRef.bookContainerRef.getElementsByTagName('img');
+  const img_length = images.length;
   if ((getRef.props.src.copyCharLimit < 0 || getRef.props.src.copyCharLimit > 0) && (!getRef.props.src.copyImages)) {
-    for (let i = 0; i < images.length; i++) {
+    for (let i = 0; i < img_length ; i++) {
       disableContextMenu(images[i]);
     }
   } 
@@ -29,8 +30,8 @@ const copyCharLimit = (getRef) => {
 
   //Apply Zoom size for all the Images
   const pageZoom = getRef.props.src.pageZoom ? getRef.props.src.pageZoom + '%' : '100%';
-  for (let j = 0; j < images.length; j++) {
-    images[j].style.zo0m = pageZoom;
+  for (let j = 0; j < img_length; j++) {
+    images[j].style.zoom = pageZoom;
   }
 };
 //Common function for disable rightclick
