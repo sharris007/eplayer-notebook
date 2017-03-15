@@ -12,7 +12,7 @@ import pdfbookRoute from './PdfBook';
 export const createRoutes = store => ({
   path: '/eplayer',
   component: CoreLayout,
-  indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/bookshelf') },
+  indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/etbookshelf') },
   childRoutes: [
     bookshelfRoute(store),
     bookRoute(store),
