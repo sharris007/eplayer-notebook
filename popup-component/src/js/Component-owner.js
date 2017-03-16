@@ -5,7 +5,7 @@ import renderHTML from 'react-render-html';
 import PopUps from './PopUps';
 import PopupApi from '../api/PopupApi';
 import BookViewer from '../../demo/BookViewer';
-import {PopupCallBacks} from './PopupCallBacks';
+import {Wrapper} from 'pxe-wrapper-component';
 
 
 class ComponentOwner extends React.Component {
@@ -17,6 +17,7 @@ class ComponentOwner extends React.Component {
       glossaryResponse: ''
     };  
     this.divGlossaryRef = '';
+    this.wrapper = ''
     this.init();
   }
 
@@ -44,7 +45,8 @@ class ComponentOwner extends React.Component {
     this.setState({
       isBookLoaded : true
     });
-    new PopupCallBacks(this.divGlossaryRef)
+    this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv' });
+    this.wrapper.bindPopUpCallBacks();
   }
 
   render() {    

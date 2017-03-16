@@ -31,7 +31,7 @@ export default class PopUpComponent {
     const locale = config.locale ? config.locale : 'en';
     ReactDOM.render(
       <IntlProvider locale={locale} messages={translations[locale]}>
-        <ComponentOwner bookUrl = "https://revel-ilp-stg.pearson.com/eps/sanvan/api/item/a44cb95f-8fd9-4b85-ab9f-c69aa8c9f914/100/file/lynn-tac-7e_v4_Revel/OPS/xhtml/ch07_pg0011.xhtml " isFromComponent = {true}  />
+        <ComponentOwner bookUrl = "https://revel-ilp-stg.pearson.com/eps/sanvan/api/item/a44cb95f-8fd9-4b85-ab9f-c69aa8c9f914/100/file/lynn-tac-7e_v4_Revel/OPS/xhtml/ch07_pg0011.xhtml" isFromComponent = {true}  />
       </IntlProvider>,
         document.getElementById(config.contentId)
     );

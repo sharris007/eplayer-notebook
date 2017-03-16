@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import renderHTML from 'react-render-html';
 import Popup from 'react-popup';
 import '../scss/PopUp.scss';
@@ -15,7 +15,7 @@ class PopUps extends Component {
 
   framePopOver = (props) => {
     if (props.popOverCollection) {
-      const bookDivHeight = document.getElementById('bookDiv').clientHeight + 'px';
+      const bookDivHeight = document.getElementById(props.bookDiv).clientHeight + 'px';
       document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
       Popup.registerPlugin('popover', function(element) {
         this.create({
@@ -52,10 +52,6 @@ class PopUps extends Component {
       < /div > );
   }
 
-}
-
-PopUps.PropTypes = {
-  glossaryResponse: PropTypes.string.isRequired
 }
 
 export default PopUps;
