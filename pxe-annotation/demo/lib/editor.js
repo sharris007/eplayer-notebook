@@ -15,7 +15,8 @@ Annotator.Editor = (function(_super) {
     ".annotator-color click":"onColorChange",
     ".annotator-share click":"onShareClick",
     ".annotator-delete-container click":"onDeleteClick",
-    ".annotator-edit-container click":"onEditClick"
+    ".annotator-edit-container click":"onEditClick",
+    ".annotator-listing textarea keyup":"onNoteChange"
   };
 
   Editor.prototype.classes = {
@@ -44,6 +45,7 @@ Annotator.Editor = (function(_super) {
     this.onShareClick=__bind(this.onShareClick, this);
     this.onDeleteClick=__bind(this.onDeleteClick, this);
     this.onEditClick=__bind(this.onEditClick, this);
+    this.onNoteChange=__bind(this.onNoteChange, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
     this.annotation = {};
@@ -80,7 +82,7 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onNoteChange=function(event) {
-    debugger;
+    this.element[(event.target.value.length)?'addClass':'removeClass']('show-edit-options');
   }
 
   Editor.prototype.onColorChange=function(event) {
