@@ -28,7 +28,7 @@ Annotator.Editor = (function(_super) {
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
-  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><label class="annotator-share-text">Share</label><div class="annotator-share"></div><a href="#cancel" class="annotator-cancel">' + _t("CANCEL") + '</a><a href="#save" class="annotator-save annotator-focus disabled-save">' + _t("SAVE") + '</a></div></div>';
+  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><label class="annotator-share-text">Share</label><div class="annotator-share"></div><a class="annotator-cancel">' + _t("CANCEL") + '</a><a class="annotator-save annotator-focus">' + _t("SAVE") + '</a></div></div>';
 
   Editor.prototype.html = '<div class="annotator-outer annotator-editor hide-note"><form class="annotator-widget">'+panel1+ panel2+panel3+'</form></div>';
   
@@ -54,12 +54,11 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.onShareClick=function(event) {
     if ($(event.target).hasClass('on')) {
        $(event.target).removeClass('on');
-       this.annotation.color='#FCF37F';
+       this.annotation.color=this.annotation.lastColor;
        this.annotation.shareable=false;
-       $(this.annotation.highlights).css('background', '#FCF37F');
+       $(this.annotation.highlights).css('background', this.annotation.color);
        $('.annotator-color').removeClass('active');
-       $('.annotator-color:first').addClass('active');
-       $('.annotator-save').removeClass('disabled-save');
+       $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
        $('.annotator-color-container').removeClass('disabled-save');
     }
     else {
@@ -70,6 +69,7 @@ Annotator.Editor = (function(_super) {
        $(this.annotation.highlights).css('background', '#ccf5fd');
        $('.annotator-color-container').addClass('disabled-save');
     }
+    this.submit();
   }
   
   Editor.prototype.onDeleteClick=function(event){    
@@ -91,10 +91,9 @@ Annotator.Editor = (function(_super) {
       this.element.css({top:this.element.offset().top+58});
     }
     this.element.removeClass('hide-note');
-    this.annotation.color=event.target.value;
+    this.annotation.color=this.annotation.lastColor=event.target.value;
     $('.annotator-color').removeClass('active');
     $(event.target).addClass('active');
-    $('.annotator-save').removeClass('disabled-save');
     $(this.annotation.highlights).css('background', event.target.value);
     this.publish('save', [this.annotation]);
   }
@@ -105,7 +104,6 @@ Annotator.Editor = (function(_super) {
     if(!this.annotation.text || !this.annotation.text.length) $('.annotator-edit-container').hide();
     this.annotation.color=this.annotation.color||'';
     if (this.annotation.color) {
-      $('.annotator-save').removeClass('disabled-save');
       this.element.removeClass('hide-note');
     } 
     this.annotation.shareable=(this.annotation.shareable===undefined)?false:this.annotation.shareable;
@@ -130,7 +128,6 @@ Annotator.Editor = (function(_super) {
     $(this.annotation.highlights).css('background', this.annotation.color);
     Annotator.Util.preventEventDefault(event);
     this.element.addClass(this.classes.hide);
-    $('.annotator-save').addClass('disabled-save');
     this.element.addClass('hide-note').removeClass('show-edit-options');
     $('.annotator-edit-container').show();
     return this.publish('hide');
