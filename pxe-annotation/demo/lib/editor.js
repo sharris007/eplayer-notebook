@@ -28,7 +28,7 @@ Annotator.Editor = (function(_super) {
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
-  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><label class="annotator-share-text">Share</label><div class="annotator-share"></div><a class="annotator-cancel">' + _t("CANCEL") + '</a><a class="annotator-save annotator-focus">' + _t("SAVE") + '</a></div></div>';
+  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">Share</label><div class="annotator-share"></div></div><div class="ann-cancelsave-section"><a class="annotator-cancel">' + _t("CANCEL") + '</a><a class="annotator-save annotator-focus">' + _t("SAVE") + '</a></div></div></div>';
 
   Editor.prototype.html = '<div class="annotator-outer annotator-editor hide-note"><form class="annotator-widget">'+panel1+ panel2+panel3+'</form></div>';
   
