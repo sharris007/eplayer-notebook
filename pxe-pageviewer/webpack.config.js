@@ -5,8 +5,8 @@
 
 module.exports = {
   entry: {
-   dev: ['webpack/hot/dev-server', './main.js', './demo/demo.js'],
-   dist: ['./main.js']
+    dev: ['webpack/hot/dev-server', './main.js', './demo/demo.js'],
+    dist: ['./main.js']
   },
   output: {
     path: './',
@@ -40,12 +40,32 @@ module.exports = {
         loader: 'json'
       },
       { 
-        test: /\.(woff|png|jpg|gif)$/, 
+        test: /\.(jpg|gif)$/, 
         loader: 'url-loader?limit=10000' 
       },
       {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url?mimetype=image/svg+xml'
+        test: /\.svg(\?.*)?$/,
+        loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=image/svg+xml'
+      },
+      {
+        test: /\.png(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url?mimetype=image/png'
+      },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url?mimetype=application/font-woff'
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url?mimetype=application/font-woff'
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url?mimetype=application/octet-stream'
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'file?name=build/fonts/[name].[ext]'
       }
     ]
   },

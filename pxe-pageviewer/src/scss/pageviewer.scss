@@ -122,5 +122,16 @@ div#book-render-component{
   margin : 4px;
 }
 .react-highlighted-text{
-  color: yellow;
+  background-color: #ff9632;
 }
+//video lightbox componenet over ride css
+figure.video .modal{
+  display:flex;
+  top: 0;
+  left: 0;
+  background: #000;
+}
+ figure.video .video-card-holder{
+   text-align: center;
+ } 
+//end of video lightbox componenet over ride css
