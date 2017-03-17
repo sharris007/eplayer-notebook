@@ -16,6 +16,7 @@ export const clients = {
     }
   }),
   etext: axios.create({
+   // baseURL: 'https://etext-stg.pearson.com/api/nextext-api/api/nextext',
     baseURL: 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
     timeout: 5000,
     headers: {

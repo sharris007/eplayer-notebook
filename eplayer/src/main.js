@@ -18,7 +18,7 @@ const RedBox = require('redbox-react').default;
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
- injectTapEventPlugin();
+// injectTapEventPlugin();
 
 // ========================================================
 // Store Instantiation
