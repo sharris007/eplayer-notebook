@@ -3,10 +3,11 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import renderHTML from 'react-render-html';
+// import renderHTML from 'react-render-html';
 
 import FooterNav from './FooterNav';
 import crossRef from './CrossRef';
+import copyCharLimit from './CopyCharLimit';
 import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
 
@@ -69,7 +70,7 @@ class PageViewer extends React.Component {
       if (this.props.src.highlightText) {
         text=HighlightText.highlightText(this, text);
       }
-      text  = text.replace(/ epub:type\S*\B/g, '').replace('<body', '<body>');
+      //text  = text.replace(/ epub:type\S*\B/g, '').replace('<body', '<body>');
       const currentHref=thisRef.state.currentStatePlayListUrl.href;
       thisRef.setState({
         renderSrc: replaceAllRelByAbs(text, thisRef.props.src.baseUrl+currentHref.substring(0, currentHref.lastIndexOf('/'))),
@@ -194,32 +195,7 @@ class PageViewer extends React.Component {
   };
 
   componentDidUpdate = () => {
-    //Disable contextmenu based on copyCharlimt and copyImage Props
-    if ((this.props.src.copyCharLimit < 0 || this.props.src.copyCharLimit > 0) && (!this.props.src.copyImages)) {
-      const images = this.bookContainerRef.getElementsByTagName('img');
-      for (let i = 0; i < images.length; i++) {
-        this.disableContextMenu(images[i]);
-      }
-    } else if (this.props.src.copyCharLimit === 0 && (!this.props.src.copyImages)) {
-      this.disableContextMenu(this.bookContainerRef);
-    }
-
-    //Check the Text selection onCopy event
-    this.bookContainerRef.oncopy = () => {
-      if (this.props.src.copyCharLimit > 0) {
-        let selection;
-        selection = window.getSelection();
-        const copytext = selection.toString().substring(0, this.props.src.copyCharLimit);
-        const drmdiv = this.drmBlockRef;
-        drmdiv.innerHTML = copytext.substring(0, this.props.src.copyCharLimit);
-        selection.selectAllChildren(drmdiv);
-        window.setTimeout(function() {
-          drmdiv.innerHTML = ' ';
-        }, 0);
-      } else if (this.props.src.copyCharLimit === 0) {
-        return false;
-      }
-    };
+    copyCharLimit(this);
     //prints page no in the page rendered
     this.enablePageNo();
     this.loadMultimediaNscrollToFragment();
@@ -237,12 +213,15 @@ class PageViewer extends React.Component {
       );
   };
 
+ 
   render() {
+    const zommLevel = this.props.src.pageZoom ? this.props.src.pageZoom + '%' : '100%';
     return ( 
       <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
-          <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} > {renderHTML(this.state.renderSrc)} </div>
-        </div>
+          <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
+            {this.state.renderSrc?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} </div>
+          </div>
         {this.props.src.enableGoToPage ?this.getGoToElement():''} 
         <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
         <div ref = {(el) => { this.drmBlockRef = el; }}> </div >

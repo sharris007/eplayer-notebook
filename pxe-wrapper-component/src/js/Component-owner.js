@@ -1,0 +1,71 @@
+import React, { PropTypes } from 'react';
+import { injectIntl } from 'react-intl';
+import renderHTML from 'react-render-html';
+
+import PopUps from './PopUps';
+import PopupApi from '../api/PopupApi';
+import BookViewer from '../../demo/BookViewer';
+import Wrapper from './Wrapper';
+
+
+class ComponentOwner extends React.Component {
+  constructor(props) {
+    super(props); 
+    this.state = {
+      isBookLoaded: false,
+      bookHTML: '',
+      glossaryResponse: ''
+    };  
+    this.divGlossaryRef = '';
+    this.Wrapper = null;
+    this.init();
+  }
+
+  init = () => {  
+    PopupApi.getData(this.props.bookUrl).then((response) => {
+      return response.text();
+    }).then((text) => {
+      this.setState({bookHTML : text});
+    }).catch((err) => {
+      console.debug(err);
+    });
+  }
+
+
+  componentDidMount() {
+    if (this.props.isFromComponent) {
+      let base = {}; 
+      base = document.createElement('base');
+      base.href = this.props.bookUrl;
+      document.getElementsByTagName('head')[0].appendChild(base);
+    }
+  }
+
+  onBookLoad() {
+    this.setState({
+      isBookLoaded : true
+    });
+    this.Wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef , 'bookDiv' : 'bookDiv' });
+    this.Wrapper.bindPopUpCallBacks();
+  }
+
+  render() {    
+    return (
+        <div> 
+        <div id = "bookDiv">
+          {this.state.bookHTML ? <BookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} /> : ''}
+        </div>  
+        <div>     
+          <div>{this.state.isBookLoaded ? <PopUps/> : ''}</div>
+          <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}> {renderHTML(this.state.glossaryResponse)} </div>
+        </div>  
+        </div>
+    )
+  }
+}
+
+ComponentOwner.PropTypes = {
+  bookUrl: PropTypes.string.isRequired
+}
+
+export default injectIntl(ComponentOwner); // Inject this.props.intl into the component context

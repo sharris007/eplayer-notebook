@@ -304,12 +304,11 @@ class DrawerComponent extends React.Component {
             { !this.props.bookData.isFetching.toc &&
               < TableOfContents
                 separateToggleIcon
-                data={this.props.bookData.toc}
+                data={ tocData }
                 showDuplicateTitle
                 depth={5}
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
-                isET1={this.props.isET1}
               />
             }
             { !this.props.bookData.isFetching.bookmarks &&
@@ -317,7 +316,6 @@ class DrawerComponent extends React.Component {
                 bookmarksArr={this.props.bookData.bookmarks}
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
                 removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
-                isET1={this.props.isET1}
               />
             }
             { !this.props.bookData.isFetching.annotations &&

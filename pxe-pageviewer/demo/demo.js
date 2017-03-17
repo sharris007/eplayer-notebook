@@ -8,14 +8,14 @@ function init() {
     renderId:'pxeViewer',
     locale: 'en-us',
     copyImages: false,
-    copyCharLimit: 0,
-    crossRefSettings:'continue',
+    copyCharLimit: 10,
+    crossRefSettings:'lightbox',
     enablePrintOption: false,
     showPageNo:true,
     orientation: 'horizontal',
     theme:'black',
     pageFontSize:'12px',
-    pageZoom:'50%', 
+    pageZoom:'', 
     enableGoToPage:true,
     includeMathMLLib: false,
     enableAnnotation: true,
@@ -28,7 +28,7 @@ function init() {
     contentId: 'pxe-viewer',
     onBookLoaded:()=>{},
     highlightText:'',
-    baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/',
+    baseUrl: 'https://content.openclass.com/eps/sanvan/api/item/138acd10-4c63-4eba-aba6-25f70c1626e5/1/file/pearson_bonds_v13-revel-2/', //'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/',
     playListURL:[
       {
         'playOrder': 1,
@@ -53,14 +53,14 @@ function init() {
       }, {
         'playOrder': 6,
         'title': '1.4 Composition of the Atmosphere',
-        'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
+        'href': 'OPS/text/bookmatter-02/bkm2_sec_01.xhtml'//'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
       }, {
         'playOrder': 7,
         'title': '1.5 Vertical Structure of the Atmosphere',
         'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000ace.xhtml#c82fa704db4148aaa4e7184733ff2520'
       }, {
         'playOrder': 8,
-        'title': 'Chapter 2: Heating Earth’s Surface and Atmosphere',
+        'title': 'Chapter 2: Heating Earthâ€™s Surface and Atmosphere',
         'href': 'OPS/s9ml/chapter02/filep7000496728000000000000000000c93.xhtml'
       }, {
         title: 'Concepts in Review',
@@ -74,7 +74,7 @@ function init() {
     currentPageURL:{
       'playOrder': 6,
       'title': '1.4 Composition of the Atmosphere',
-      'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
+      'href': 'OPS/text/bookmatter-02/bkm2_sec_01.xhtml'//'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
     }
   });
 }

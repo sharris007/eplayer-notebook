@@ -7,58 +7,35 @@ import errorCard from '../../../components/common/errorCard';
 import BookshelfHeader from '../../../components/BookshelfHeader';
 import './Bookshelf.scss';
 
-
 export default class BookshelfPage extends React.Component {
 
-componentWillMount() {
-    const sessionid=this.props.location.query.key;
-    const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key=204915729102641782292017';
-    this.props.storeSsoKey(sessionid);
-    //const urn ='http://10.102.88.150:8080/JavaSampleWebApp/TestServlet';
+  componentWillMount() {
+    const urn = 'urn:pearson:manifestation:16b1c52c-dbe7-486c-9103-5837b241ee61';
     this.props.fetch(urn);
-
+    console.log("this.props.fetch" ,this.props.fetch(urn));
   }
 
-
-  handleBookClick = (bookId,iseT1) => {
-    /*browserHistory.push(`/book/${bookId}?bookid=${bookId}&updfUrl=${updfUrl}`);*/
-    if(iseT1)
-    {
-     browserHistory.push(`/pdfbook/${bookId}`);
-    }
-    else
-    {
-      browserHistory.push(`/eplayer/book/${bookId}`);
-    }
+  handleBookClick = (bookId) => {
+    browserHistory.push(`/eplayer/book/${bookId}`);
   }
 
   render() {
+    
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {
-      books.data.forEach((allBooks) => {
-      allBooks.entries.forEach((bookData) => {
+      books.data.bookshelf.forEach((bookData) => {
         const bookRef = bookData;
         const book = {
-          //id: 'urn:pearson:context:f3c7a5d0-7f38-4166-ac42-1a516b907760'/* bookRef.manifestId || ''*/,
-          //author: bookRef.author || '',
-          //image: bookRef.thumbnail ? bookRef.thumbnail.src : '',
-          //title: bookRef.title || '',
-          //description: bookRef.description || '',
-          //tocId: ''
-           id: bookRef.bookId,
-           author: bookRef.creator || '',
-           image: bookRef.thumbnailImageUrl ? bookRef.thumbnailImageUrl : '',
-           title: bookRef.title || '',
-           description: bookRef.description || '',
-           tocId: '',
-           updfUrl: bookRef.uPdfUrl,
-           bookeditionid: bookRef.bookeditionid,
-           iseT1 : bookRef.iseT1
+          id: bookRef.manifestId || '',
+          author: bookRef.author || '',
+          image: bookRef.thumbnail ? bookRef.thumbnail.src : '',
+          title: bookRef.title || '',
+          description: bookRef.description || '',
+          tocId: ''
         };
         booksdata.push(book);
       });
-    });
     }
 
     if (error) {
@@ -69,8 +46,7 @@ componentWillMount() {
       <div id="bookshelf-page">
         <BookshelfHeader />
         {fetching ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
-        {fetched ? <Bookshelf books={booksdata} onBookClick={this.handleBookClick} storeUPdfUrl={this.props.storeUPdfUrl} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey}/> : null}
-
+        {fetched ? <Bookshelf books={booksdata} onBookClick={this.handleBookClick} /> : null}
       </div>
     );
   }
@@ -78,8 +54,5 @@ componentWillMount() {
 
 BookshelfPage.propTypes = {
   bookshelf: React.PropTypes.object.isRequired,
-  fetch: React.PropTypes.func.isRequired,
-  storeUPdfUrl: React.PropTypes.func,
-  storeBookDetails: React.PropTypes.func,
-  storeSsoKey: React.PropTypes.func
+  fetch: React.PropTypes.func.isRequired
 };

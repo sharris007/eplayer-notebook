@@ -4,7 +4,6 @@ import bookshelfRoute from './Bookshelf';
 import bookRoute from './Book';
 import ETbookshelfRoute from './ETBookshelf';
 import ETbookRoute from './ETBook';
-import pdfbookRoute from './PdfBook';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -12,21 +11,12 @@ import pdfbookRoute from './PdfBook';
 export const createRoutes = store => ({
   path: '/eplayer',
   component: CoreLayout,
-  indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/bookshelf') },
-  childRoutes: [
-    bookshelfRoute(store),
-    bookRoute(store),
-    pdfbookRoute(store)
-  ]
-}/*,{
-  path: '/eplayer',
-  component: CoreLayout,
   indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/etbookshelf') },
   childRoutes: [
     ETbookshelfRoute(store),
     ETbookRoute(store)
   ]
-}*/);
+});
 
 /*  Note: childRoutes can be chunked or otherwise loaded programmatically
     using getChildRoutes with the following signature:
