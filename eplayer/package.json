@@ -118,6 +118,7 @@
     "material-ui": "^0.16.3",
     "node-sass": "^3.7.0",
     "normalize.css": "^4.1.1",
+    "popup-component-new": "^1.0.2",
     "postcss-loader": "^0.13.0",
     "pxe-annotation": "^1.1.1",
     "pxe-pageviewer": "^1.0.14",
@@ -140,6 +141,7 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.6",
     "webpack": "^1.12.14",
+    "wrapper-component-new": "^1.0.2",
     "yargs": "^5.0.0"
   },
   "devDependencies": {

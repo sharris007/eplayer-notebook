@@ -108,7 +108,9 @@ webpackConfig.module.loaders = [{
         path.join(__dirname, '../node_modules/pxe-moreinfo-popup'),
         path.join(__dirname, '../node_modules/pxe-annotation'),
         path.join(__dirname, '../node_modules/@pearson-incubator'),
-        path.join(__dirname, '../node_modules/search')
+        path.join(__dirname, '../node_modules/search'),
+        path.join(__dirname, '../node_modules/wrapper-component-new'),
+        path.join(__dirname, '../node_modules/popup-component-new')
       ],
   loader: 'babel',
   query: config.compiler_babel
