@@ -244,6 +244,7 @@ Annotator = (function(_super) {
     for (_j = 0, _len1 = normedRanges.length; _j < _len1; _j++) {
       normed = normedRanges[_j];
       normed.color=annotation.color;
+      normed.note=annotation.text;
       annotation.quote.push($.trim(normed.text()));
       annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
       $.merge(annotation.highlights, this.highlightRange(normed));
@@ -327,6 +328,8 @@ Annotator = (function(_super) {
     if (cssClass == null) {
       cssClass = 'annotator-hl';
     }
+    if(normedRange.note && normedRange.note.length)
+      cssClass+=" highlight-note";
     white = /^\s*$/;
     hl = $("<span class='" + cssClass + "' style=background:" + normedRange.color + "></span>");
     handle=$("<span class='annotator-handle'></span>");

@@ -856,6 +856,7 @@
     margin-left: 3px;
 }
 .annotator-handle {
+	display:none;
     width: 16px;
     height: 16px;
     position: absolute;
@@ -924,6 +925,10 @@
 }
 .show-edit-options .annotator-controls a{
 	display: inline;
+}
+
+.highlight-note .annotator-handle {
+	display:inline;
 }
 /* Custom style */
 

@@ -155,6 +155,7 @@ Annotator.Editor = (function(_super) {
       field = _ref[_i];
       field.submit(field.element, this.annotation);
     }
+    $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
     this.publish('save', [this.annotation]);
     return this.hide();
   };
