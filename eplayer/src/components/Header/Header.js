@@ -67,17 +67,17 @@ export class Header extends React.Component {
     if ((event.which || event.keyCode) === 13) {
       this.setState({ drawerOpen: true });
     }
-    //this.props.viewerContentCallBack(false);
+    this.props.viewerContentCallBack(false);
   }
 
   handleDrawer = () => {
     this.setState({ drawerOpen: true });
-    //this.props.viewerContentCallBack(false);
+    this.props.viewerContentCallBack(false);
   }
 
   hideDrawer = () => {
     this.setState({ drawerOpen: false });
-    //this.props.viewerContentCallBack(true);
+    this.props.viewerContentCallBack(true);
   }
 
   handleBookshelfClick = () => {
@@ -172,11 +172,11 @@ export class Header extends React.Component {
 
     const targetPageId = this.props.bookData.viewer.currentPageId;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
-
+     // title={currPageObj ? currPageObj.title : ''}
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
         <AppBar
-          title={currPageObj ? currPageObj.title : ''}
+          title = {this.props.pageTitle}
           titleStyle={style.appBar.title}
           style={style.appBar}
           iconStyleLeft={style.leftIcons}
@@ -252,11 +252,10 @@ export class Header extends React.Component {
             bookCallbacks={this.props.bookCallbacks}
             isOpen={this.state.drawerOpen}
             hideDrawer={this.hideDrawer}
-            isET1={this.props.isET1}
           />
         }
         <div className="preferences-container">
-          {this.state.prefOpen ? <div className="content"><Preferences setCurrentZoomLevel={this.props.setCurrentZoomLevel}/></div> : <div className="empty" />}
+          {this.state.prefOpen ? <div className="content"><Preferences /></div> : <div className="empty" />}
         </div>
       </div>
     );
