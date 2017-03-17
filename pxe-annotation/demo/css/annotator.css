@@ -226,7 +226,6 @@
 	top: 13px;
     left: -14px;
     transform: rotate(90deg);
-    opacity: 0.70;
 }
 
 .annotator-invert-x .annotator-widget::after {
@@ -898,6 +897,7 @@
     width: 18px;
     height: 18px;
     background-repeat: no-repeat;
+    cursor: pointer;
 }
 .annotator-editor.hide-note .annotator-delete-container{
 	display: none;	
@@ -995,4 +995,72 @@
   margin-right: 20px;
   text-decoration: none;
   cursor: pointer;
+}
+.annotator-confirm{
+  width: 83px;
+  height: 22px;
+  font-family: Open Sans;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.57;
+  letter-spacing: -0.3px;
+  text-align: left;
+  color: #252525;
+  color: var(--black);
+}
+.annotator-confirm-cancel{
+	width: 64px;
+  height: 19px;
+  font-family: Open Sans;
+  font-size: 16px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.4px;
+  text-align: left;
+  color: #047a9c;
+  margin: 11px 16px 11px 11px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.annotator-confirm-delete{
+  width: 59px;
+  height: 19px;
+  font-family: Open Sans;
+  font-size: 16px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.4px;
+  text-align: left;
+  color: #047a9c;
+  margin: 11px 11px 11px 11px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.overlay{
+	pointer-events:none;
+	opacity:0.5;
+}
+.hide-popup{
+	display: none;
+}
+.ann-confirm-section{
+	width:35%;
+	float:left;
+}
+.ann-canceldelete-section{
+	width: 65%;
+    float: right;
+}
+.annotator-panel-4{
+	width: 96%;
+	height: 28px;
+    display: inline-block;
+    margin-left: 13.5px;
+    margin-top: 10px;
 }

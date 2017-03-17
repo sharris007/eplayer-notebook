@@ -14,9 +14,11 @@ Annotator.Editor = (function(_super) {
     "textarea keydown": "processKeypress",
     ".annotator-color click":"onColorChange",
     ".annotator-share click":"onShareClick",
-    ".annotator-delete-container click":"onDeleteClick",
+    ".annotator-confirm-delete click":"onDeleteClick",
     ".annotator-edit-container click":"onEditClick",
-    ".annotator-listing textarea keyup":"onNoteChange"
+    ".annotator-listing textarea keyup":"onNoteChange",
+    ".annotator-delete-container click":"onDeleteIconClick",
+    ".annotator-confirm-cancel click":"onCancelClick"
   };
 
   Editor.prototype.classes = {
@@ -29,6 +31,8 @@ Annotator.Editor = (function(_super) {
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
   var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">Share</label><div class="annotator-share"></div></div><div class="ann-cancelsave-section"><a class="annotator-cancel">' + _t("CANCEL") + '</a><a class="annotator-save annotator-focus">' + _t("SAVE") + '</a></div></div></div>';
+
+ var panel4 ='<div class="annotator-panel-4"><div class="ann-confirm-section"><label class="annotator-confirm">Confirm?</label></div><div class="ann-canceldelete-section"><a class="annotator-confirm-cancel">' + _t("CANCEL") + '</a><a class="annotator-confirm-delete">' + _t("DELETE") + '</a></div></div></div>';
 
   Editor.prototype.html = '<div class="annotator-outer annotator-editor hide-note"><form class="annotator-widget">'+panel1+ panel2+panel3+'</form></div>';
   
@@ -44,6 +48,8 @@ Annotator.Editor = (function(_super) {
     this.onColorChange=__bind(this.onColorChange, this);
     this.onShareClick=__bind(this.onShareClick, this);
     this.onDeleteClick=__bind(this.onDeleteClick, this);
+    this.onDeleteIconClick=__bind(this.onDeleteIconClick, this);
+    this.onCancelClick=__bind(this.onCancelClick, this);
     this.onEditClick=__bind(this.onEditClick, this);
     this.onNoteChange=__bind(this.onNoteChange, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
@@ -72,11 +78,31 @@ Annotator.Editor = (function(_super) {
     this.submit();
   }
   
-  Editor.prototype.onDeleteClick=function(event){    
+  Editor.prototype.onDeleteClick=function(event){  
     this.element.addClass(this.classes.hide);
+    var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'),panel3Sec =  this.element.find('.annotator-panel-3'),panel4Sec = this.element.find('.annotator-panel-4') ;
+    panel1Sec.removeClass('hide-popup');
+    panel2Sec.removeClass('overlay');
+    panel3Sec.removeClass('overlay');
+    panel4Sec.remove();
     return $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
   }
+  Editor.prototype.onDeleteIconClick=function(event){  
+    var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'),panel3Sec =  this.element.find('.annotator-panel-3');
+    panel1Sec.addClass('hide-popup').after(panel4);
+    panel2Sec.addClass('overlay');
+    panel3Sec.addClass('overlay');
 
+  }
+  Editor.prototype.onCancelClick=function(event){  
+    var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'),panel3Sec =  this.element.find('.annotator-panel-3'),panel4Sec = this.element.find('.annotator-panel-4') ;
+    panel1Sec.removeClass('hide-popup');
+    panel2Sec.removeClass('overlay');
+    panel3Sec.removeClass('overlay');
+    panel4Sec.remove();
+    this.element.addClass('annotator-hide');
+    // annotator-hide hide-note
+  }
   Editor.prototype.onEditClick=function(event){  
     this.element.addClass('show-edit-options');
   }
