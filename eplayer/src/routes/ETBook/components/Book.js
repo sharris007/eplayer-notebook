@@ -17,6 +17,7 @@ import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
+import {Wrapper, PopUps} from 'wrapper-component-new';
 
 export class Book extends Component {
   constructor(props) {
@@ -30,6 +31,8 @@ export class Book extends Component {
         currentPageTitle:''
 
       };
+      this.divGlossaryRef = '';
+      this.wrapper = '';
       this.onPageChange.bind(this);
       this.nodesToUnMount = [];
       document.body.addEventListener('contentLoaded', this.parseDom);
@@ -145,7 +148,10 @@ export class Book extends Component {
      this.setState({
       bookLoaded : bload
     });
-
+    if(bload) {
+      this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
+      this.wrapper.bindPopUpCallBacks(); 
+    }
   }
  
   
@@ -188,6 +194,8 @@ export class Book extends Component {
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation shareableAnnotations={true} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
+            {this.state.bookLoaded ? <PopUps /> : ''}
+            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div> 
           </div>
       </div>
     );
