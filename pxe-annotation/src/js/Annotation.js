@@ -7,11 +7,12 @@ class Annotation extends Component {
     this.annotationEventHandler = this.annotationEventHandler.bind(this);
     this.annotationEvent = this.annotationEvent.bind(this);
     this.onDocumentClick=this.onDocumentClick.bind(this);
-    $(document).on('click', this.onDocumentClick);
+    $('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
+    $(document).on('mousedown', this.onDocumentClick);
   }
 
   onDocumentClick(e) {
-    if (!$(e.target).closest('#' +this.props.contentId).length) {
+    if (!$(e.target).closest('.annotator-editor').length && !$('.annotator-editor').hasClass('annotator-hide')) {
       $('#' + this.props.contentId).data('annotator').editor.hide();
     }
   }

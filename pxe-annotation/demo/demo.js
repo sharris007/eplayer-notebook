@@ -35,7 +35,7 @@ function init() {
       },
       'playOrder': 1,
       'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
-      'text': 'asdasdas',
+      'text': '',
       'ranges': [
         {
           'start': '/p',
