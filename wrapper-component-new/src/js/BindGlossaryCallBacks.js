@@ -1,5 +1,3 @@
-import renderHTML from 'react-render-html';
-
 import {GlossaryPopUpClasses} from '../../const/PopUpClasses';
 import PopupApi from '../api/PopupApi';
 import PopUps from './PopUps';
@@ -49,7 +47,7 @@ export class BindGlossaryCallBacks {
               }
 
               popOverCollection.popOverTitle = glossaryNode ? glossaryNode.getElementsByTagName('dfn')[0].textContent: '';
-              popOverCollection.popOverDescription = glossaryNode ? renderHTML(glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML) : '';
+              popOverCollection.popOverDescription = glossaryNode ? glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML : '';
               new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
               console.log(item)
             });
