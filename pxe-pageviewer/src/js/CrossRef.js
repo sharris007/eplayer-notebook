@@ -4,7 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { cyan500 } from 'material-ui/styles/colors';
 import { ExternalLinkPreview } from '@pearson-incubator/aquila-js-basics';
-import { ImageViewerPreview, VideoPlayerPreview, AudioPlayer } from '@pearson-incubator/aquila-js-core';
+import { ImageViewerPreview, VideoPlayerPreview, AudioPlayer } from '@pearson-incubator/aquila-js-media';
 
 //Here pageViewerRef refers to "this" of PageViewer.js
 const crossRef = (pageViewerRef) => {
@@ -130,7 +130,7 @@ const crossRef = (pageViewerRef) => {
         const cloneImg=image.cloneNode(true); 
         const replaceImageDOM=document.createElement('div');
         replaceImageDOM.appendChild(cloneImg);
-        figure.replaceChild(replaceImageDOM, image);
+        image.parentNode.replaceChild(replaceImageDOM, image);
         const componentElement = figure.getElementsByTagName('img')[0].parentNode;
         const container = document.createElement('div');
         let wrapper;
@@ -160,10 +160,10 @@ const crossRef = (pageViewerRef) => {
       // Kindly, don't change the for loop here to high order functions
       for (let i=figures.length-1;i>=0;i--) {
         const figure=figures[i];
-        if (!figure.classList.contains('video')) {
+        const componentElement = figure.getElementsByClassName('lc_ec_videoinner')[0];
+        if (!figure.classList.contains('video') || !componentElement) {
           continue;
         }
-        const componentElement = figure.getElementsByClassName('lc_ec_videoinner')[0];
         const iFrame=componentElement.getElementsByTagName('iframe')[0];
         const container = document.createElement('div');
         let wrapper;

@@ -11,6 +11,7 @@ div#book-render-component{
     position: absolute;
     top: 60px;
     line-height:2em;
+    padding-bottom:70px; 
 }
 
 .navigation {
@@ -133,5 +134,8 @@ figure.video .modal{
 }
  figure.video .video-card-holder{
    text-align: center;
- } 
+ }
+ figure button.poster-play-icon:hover{
+    
+ }
 //end of video lightbox componenet over ride css
