@@ -4,11 +4,6 @@
 export const BOOKS_PENDING = 'BOOKS_PENDING';
 export const BOOKS_REJECTED = 'BOOKS_REJECTED';
 export const BOOKS_FULFILLED = 'BOOKS_FULFILLED';
-export const UPDF = 'UPDF';
-export const BOOK_DETAILS = 'BOOK_DETAILS';
-export const SSO_KEY = 'SSO_KEY';
-
-
 
 /**
  * Action Handlers for BOOKS actions.
@@ -24,28 +19,18 @@ const ACTION_HANDLERS = {
     fetched: true,
     books: action.payload,
     error: null }),
-  [UPDF]: (state, action) => ({ ...state, uPdf:action.uPdf }),
-  [BOOK_DETAILS]: (state, action) => ({ ...state, authorName:action.authorName,title:action.title,thumbnail:action.thumbnail,bookeditionid:action.bookeditionid}),
-  [BOOKS_REJECTED]: (state, action) => ({ ...state, fetching: false, fetched: false, error: action.payload }),
-  [SSO_KEY]: (state, action) => ({ ...state, ssoKey:action.ssoKey }),
 
+  [BOOKS_REJECTED]: (state, action) => ({ ...state, fetching: false, fetched: false, error: action.payload })
 };
 
 const initialState = {
   books: [],
   fetched: false,
   fetching: false,
-  error: null,
-  uPdf:"",
-  authorName:"",
-  title:"",
-  thumbnail:"",
-  bookeditionid:0,
-  ssoKey: ""
+  error: null
 };
 
 export default function (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type];
   return handler ? handler(state, action) : state;
 }
-

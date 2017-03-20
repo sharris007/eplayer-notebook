@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
-import {fetch,storeUPdfUrl,storeBookDetails,storeSsoKey} from '../modules/bookshelfActions';
-
+import bookshelfActions from '../modules/bookshelfActions';
 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -14,10 +13,7 @@ import BookshelfPage from '../components/Bookshelf';
     implementing our wrapper around increment; the component doesn't care   */
 
 const mapDispatchToProps = {
-  fetch,
-  storeUPdfUrl,
-  storeBookDetails,
-  storeSsoKey
+  fetch: bookshelfActions.fetch
 };
 
 const mapStateToProps = state => ({
