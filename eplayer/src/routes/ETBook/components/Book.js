@@ -164,11 +164,7 @@ export class Book extends Component {
       /*eslint-enable */
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
       this.wrapper.bindPopUpCallBacks();
-    } else {
-      this.popUpCollection.forEach((popUp) => {
-        popUp.unBindPopUpCallBacks();
-      })
-    }
+    } 
    
   }
  
