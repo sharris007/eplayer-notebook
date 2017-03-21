@@ -193,7 +193,7 @@ export class Book extends Component {
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
-            {playlistReceived ? <Annotation shareableAnnotations={true} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
+            {playlistReceived ? <Annotation shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
             {this.state.bookLoaded ? <PopUps /> : ''}
             <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div> 
           </div>
