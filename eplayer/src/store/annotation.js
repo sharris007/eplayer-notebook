@@ -7,6 +7,12 @@ export default (state = { data: [], loading: false }, action) => {
         loading: action.loading
       };
     }
+    case 'PUT_ANNOTATION': {
+      return {
+        ...state,
+        data: action.data,
+        loading: action.loading };
+    }
     case 'POST_ANNOTATION': {
       return {
         ...state,

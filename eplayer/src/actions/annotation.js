@@ -27,6 +27,18 @@ export const postAnnCallService = data => dispatch => AnnotationApi.doPostAnnota
    .then(response => response.json())
    .then(json => dispatch(getAnnotationData(json)));
 
+//PUT annotation Call
+export const putAnnotationData = json => ({
+  type: typeConstants.PUT_ANNOTATION,
+  data: json,
+  loading: true
+});
+
+export const putAnnCallService = data => dispatch => AnnotationApi.doPutAnnotation(data)
+   .then(response => response.json())
+   .then(json => dispatch(putAnnotationData(json)));
+
+
  // DELETE call annotations
 export const deleteAnnotationData = json => ({
   type: typeConstants.DELETE_ANNOTATION,
