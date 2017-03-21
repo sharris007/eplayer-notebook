@@ -1600,7 +1600,7 @@ Annotator = (function(_super) {
 
   Annotator.prototype.showEditor = function(annotation, location, isAdderClick) {
     var position= {
-      right:-30,
+      right:70,
       top:(39+location.top+(!isAdderClick?90:0))
     }
     this.editor.element.css(position);
