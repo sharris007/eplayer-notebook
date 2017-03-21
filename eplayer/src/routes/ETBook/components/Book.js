@@ -1,4 +1,4 @@
-/* eslint-disable */
+  /* eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
@@ -17,7 +17,8 @@ import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
-import {Wrapper, PopUps} from 'wrapper-component-new';
+import {Wrapper} from 'wrapper-component-new';
+import {PopUps} from 'popup-component-new';
 
 export class Book extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ export class Book extends Component {
       this.wrapper = '';
       this.onPageChange.bind(this);
       this.nodesToUnMount = [];
+      this.popUpCollection = [];
       document.body.addEventListener('contentLoaded', this.parseDom);
       document.body.addEventListener('navChanged', this.navChanged);
   }
@@ -149,9 +151,21 @@ export class Book extends Component {
       bookLoaded : bload
     });
     if(bload) {
+       /*eslint-disable */
+      PubSub.subscribe( 'setPopUpCollectionToComponent', (msg, popUpCollection) => {
+        popUpCollection.forEach((popUp) => {
+          this.popUpCollection.push(new PopUps(popUp));
+        })
+      });
+      /*eslint-enable */
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
-      this.wrapper.bindPopUpCallBacks(); 
+      this.wrapper.bindPopUpCallBacks();
+    } else {
+      this.popUpCollection.forEach((popUp) => {
+        popUp.unBindPopUpCallBacks();
+      })
     }
+   
   }
  
   
