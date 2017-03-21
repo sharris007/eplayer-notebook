@@ -11,7 +11,7 @@ export const postAnnData = data => fetch(`${apiConstants.ANNOTATION}?apiKey=${ap
   body: JSON.stringify(data)
 });
 
-export const putAnnData = data => fetch(`${apiConstants.ANNOTATION}?apiKey=${apiConstants.APIKEY}`, {// eslint-disable-line no-undef
+export const putAnnData = data => fetch(`${apiConstants.ANNOTATION}/${data._id.$oid}?apiKey=${apiConstants.APIKEY}`, {// eslint-disable-line no-undef
   method: 'PUT',
   headers: {
     Accept: 'application/json',
