@@ -87,44 +87,8 @@ export const pageDetails = {
   highlightText:"Atmosphere",
   contentId: 'pxe-viewer',
   baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/',
-  playListURL: [
-    {
-      href: 'OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml',
-      playOrder: 1,
-      title: 'Earth–Sun Relationships'
-    },
-    {
-      href: 'OPS/s9ml/front_matter/filep7000496728000000000000000000005_01.xhtml',
-      playOrder: 2,
-      title: 'Meteorology Class'
-    },
-    {
-      href: 'OPS/s9ml/chapter01/filep70004967280000000000000000009e5.xhtml',
-      playOrder: 3,
-      title: 'Earth as a System'
-    },
-    {
-      href: 'OPS/s9ml/front_matter/filep7000496728000000000000000000038.xhtml',
-      playOrder: 4,
-      title: 'The Perfect Storm'
-    },
-    {
-      href: 'OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml',
-      playOrder: 5,
-      title: 'Earth–Sun Relationships'
-    },
-    {
-      href: 'OPS/s9ml/chapter03/filep700049672800000000000000000107f.xhtml',
-      playOrder: 6,
-      title: 'Temperature'
-    }
-    
-  ],
-  currentPageURL: {
-    href: 'OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml',
-    playOrder: 1,
-    title: 'Earth–Sun Relationships'
-  }
+  playListURL: '',
+  currentPageURL: ''
 };
 
 export const tocData = [
