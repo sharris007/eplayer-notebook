@@ -21,6 +21,7 @@ function init() {
         }
       ],
       color:'#ccf5fd',
+      lastColor:'#55DF49',
       shareable:true,
       'quote': 'ceratele',
       'highlights': [

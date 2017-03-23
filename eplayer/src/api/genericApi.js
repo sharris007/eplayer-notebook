@@ -1,31 +1,41 @@
 import { apiConstants } from '../../const/Constants';
 
-export const getAnndata = filterData => fetch(`${apiConstants.ANNOTATION}?apiKey=${apiConstants.APIKEY}&q={"playOrder":${filterData}}`);// eslint-disable-line
+export const getAnndata = data => fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations?uri=${data.uri}`,{
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Identity-Id':data.user
+  }
+});// eslint-disable-line
 
-export const postAnnData = data => fetch(`${apiConstants.ANNOTATION}?apiKey=${apiConstants.APIKEY}`, { // eslint-disable-line no-undef
+export const postAnnData = data => fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations`, { // eslint-disable-line no-undef
   method: 'POST',
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Identity-Id':'epluser'
   },
   body: JSON.stringify(data)
 });
 
-export const putAnnData = data => fetch(`${apiConstants.ANNOTATION}/${data._id.$oid}?apiKey=${apiConstants.APIKEY}`, {// eslint-disable-line no-undef
+export const putAnnData = data => fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
   method: 'PUT',
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Identity-Id':'epluser'
   },
   body: JSON.stringify(data)
 });
 
 export const deleteAnnData = annId =>
- fetch(`${apiConstants.ANNOTATION}/${annId}?apiKey=${apiConstants.APIKEY}`, {// eslint-disable-line no-undef
+ fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations/${annId}`, {// eslint-disable-line no-undef
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Identity-Id':'epluser'
   }
 });
 

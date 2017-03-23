@@ -7,12 +7,14 @@ class Annotation extends Component {
     this.annotationEventHandler = this.annotationEventHandler.bind(this);
     this.annotationEvent = this.annotationEvent.bind(this);
     this.onDocumentClick=this.onDocumentClick.bind(this);
-    $('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
+    //$('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
     $(document).on('mousedown', this.onDocumentClick);
+    $(document).keyup(this.onDocumentClick);
+    this.state = {'updated':false}
   }
 
   onDocumentClick(e) {
-    if (!$(e.target).closest('.annotator-editor').length && !$('.annotator-editor').hasClass('annotator-hide')) {
+    if ((e.keyCode === 27 ||!$(e.target).closest('.annotator-editor').length) && !$('.annotator-editor').hasClass('annotator-hide')) {
       $('#' + this.props.contentId).data('annotator').editor.hide();
     }
   }
@@ -22,7 +24,8 @@ class Annotation extends Component {
   }
 
   componentWillReceiveProps(nextProps) {    
-    $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
+    $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData, this.state.updated);
+    this.setState({'updated':false});
   }  
 
   annotationEventHandler() {
@@ -42,6 +45,9 @@ class Annotation extends Component {
   annotationEvent(eventType, data, viewer) {
     data.playOrder=this.props.currentPageDetails.playOrder;
     data.href=this.props.currentPageDetails.href;
+    if (eventType==='annotationCreated') {
+      this.setState({'updated':true});
+    }
     this.props.annotationEventHandler(eventType, data, viewer);
   }
   

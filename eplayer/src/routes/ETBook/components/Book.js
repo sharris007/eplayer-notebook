@@ -15,7 +15,7 @@ import Header from '../../../components/Header';
 import { pageDetails } from '../../../../const/Mocdata';// booksdata, tocData
 import './Book.scss';
 import { browserHistory } from 'react-router';
-import { getAnnCallService, postAnnCallService,putAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
+import { getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 import {Wrapper} from 'wrapper-component-new';
 import {PopUps} from 'popup-component-new';
@@ -52,7 +52,13 @@ export class Book extends Component {
       currentPageDetails: this.state.pageDetails.playListURL[0]
     });
     // eslint-disable-next-line
-    this.props.dispatch(getAnnCallService(1));
+    const pageUri = encodeURIComponent(this.state.pageDetails.playListURL[0].href);
+    const getAnnDataDetails = {
+      context : this.props.params.bookId,
+      uri     :pageUri,
+      user    :'epluser'
+    }
+    this.props.dispatch(getAnnCallService(getAnnDataDetails));
   }
 
   componentWillUnmount() {
@@ -117,7 +123,13 @@ export class Book extends Component {
 
     });
     // eslint-disable-next-line
-    this.props.dispatch(getAnnCallService(playOrder));
+    const pageUri = encodeURIComponent(data.href);
+    const getAnnDataDetails = {
+      context : bookId,
+      uri     : pageUri,
+      user    :'epluser'
+    }
+    this.props.dispatch(getAnnCallService(getAnnDataDetails));
     browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
   }
 
@@ -132,6 +144,19 @@ export class Book extends Component {
   }
 
   annotationCallBack = (eventType, data) => {
+    data.text = (data.text ? data.text:'');
+    data.shareable = (data.shareable ? data.shareable:false);
+    data.createdTimestamp = new Date().toISOString();
+    data.updatedTimestamp = null;
+    data.user = (data.user ? data.user : "epluser");
+    data.context = (data.context ? data.context : this.props.params.bookId);
+    data.source = {
+        "uri": data.href,
+        "id": "a372789db0f4202773a1da2d1d63b541bf432a72c",
+        "label": "Chapter 8: DNA Detective",
+        "playOrder": data.playOrder,
+        "baseUrl": "https://content.stg-openclass.com/eps/pearson-reader/api/item/52a34c8a-b182-4ce5-8afc-7fab6752ded8/1/file/belk5_pr623/"
+    }
   switch (eventType) {
 
       case 'annotationCreated': {
