@@ -112,6 +112,18 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
+    console.log('data-----------',data);
+    
+    data.user = (data.user ? data.user : "epluser");
+    // debugger;
+    data.context = (data.context ? data.context : this.props.params.bookId);
+    data.source = {
+        "uri": data.href,
+        "id":  data.id,
+        "label": data.title,
+        "playOrder": data.playOrder,
+        "baseUrl": this.state.pageDetails.baseUrl
+    }
     this.setState({
       currentPageDetails: data
     });
@@ -144,34 +156,21 @@ export class Book extends Component {
   }
 
   annotationCallBack = (eventType, data) => {
-    data.text = (data.text ? data.text:'');
-    data.shareable = (data.shareable ? data.shareable:false);
-    data.createdTimestamp = new Date().toISOString();
-    data.updatedTimestamp = null;
-    data.user = (data.user ? data.user : "epluser");
-    data.context = (data.context ? data.context : this.props.params.bookId);
-    data.source = {
-        "uri": data.href,
-        "id": "a372789db0f4202773a1da2d1d63b541bf432a72c",
-        "label": "Chapter 8: DNA Detective",
-        "playOrder": data.playOrder,
-        "baseUrl": "https://content.stg-openclass.com/eps/pearson-reader/api/item/52a34c8a-b182-4ce5-8afc-7fab6752ded8/1/file/belk5_pr623/"
-    }
-  switch (eventType) {
-
-      case 'annotationCreated': {
-        return this.props.dispatch(postAnnCallService(data));
-      }
-      case 'annotationEditorSubmit':{
-          if(data.annotation._id)
-          return this.props.dispatch(putAnnCallService(data.annotation));
-      }
-      case 'annotationDeleted': {
-        return ((data._id)?this.props.dispatch(deleteAnnCallService(data)):'');
-      }
-      default : {
-        return eventType;
-      }
+    // debugger;
+    switch (eventType) {
+        case 'annotationCreated': {
+          return this.props.dispatch(postAnnCallService(data));
+        }
+        case 'annotationEditorSubmit':{
+            if(data.annotation.id)
+            return this.props.dispatch(putAnnCallService(data.annotation));
+        }
+        case 'annotationDeleted': {
+          return (data.id ? this.props.dispatch(deleteAnnCallService(data)):'');
+        }
+        default : {
+          return eventType;
+        }
     }
   }
  
@@ -198,10 +197,9 @@ export class Book extends Component {
     const callbacks = {};
     let annData = [];
     const { annotionData, loading ,playlistData, playlistReceived} = this.props;// eslint-disable-line react/prop-types
-    annData  = annotionData;
+    annData  = annotionData.rows;
     const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
-    
-    if(Array.isArray(annotionData)==false){
+    if(Array.isArray(annotionData)==false && annotionData.rows==undefined){
       annData = [];
       annData.push(annotionData);
     }

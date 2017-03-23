@@ -24,18 +24,18 @@ export const putAnnData = data => fetch(`${apiConstants.ANNOTATION}/context/${da
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id':'epluser'
+    'Identity-Id':data.user
   },
   body: JSON.stringify(data)
 });
 
-export const deleteAnnData = annId =>
- fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations/${annId}`, {// eslint-disable-line no-undef
+export const deleteAnnData = data =>
+ fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id':'epluser'
+    'Identity-Id':data.user
   }
 });
 

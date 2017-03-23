@@ -45,6 +45,12 @@ class Annotation extends Component {
   annotationEvent(eventType, data, viewer) {
     data.playOrder=this.props.currentPageDetails.playOrder;
     data.href=this.props.currentPageDetails.href;
+    data.createdTimestamp = new Date().toISOString();
+    data.updatedTimestamp = null;
+    data.text = (data.text ? data.text:'');
+    data.source = this.props.currentPageDetails.source;
+    data.user = this.props.currentPageDetails.user;
+    data.context = this.props.currentPageDetails.context;
     if (eventType==='annotationCreated') {
       this.setState({'updated':true});
     }
