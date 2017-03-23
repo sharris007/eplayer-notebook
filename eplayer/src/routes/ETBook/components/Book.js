@@ -29,8 +29,8 @@ export class Book extends Component {
         currentPageDetails: '',
         pageDetails, 
         bookLoaded : false,
-        currentPageTitle:''
-
+        currentPageTitle:'',
+        popUpCollection : []
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -155,13 +155,10 @@ export class Book extends Component {
       bookLoaded : bload
     });
     if(bload) {
-       /*eslint-disable */
-      PubSub.subscribe( 'setPopUpCollectionToComponent', (msg, popUpCollection) => {
-        popUpCollection.forEach((popUp) => {
-          this.popUpCollection.push(new PopUps(popUp));
-        })
-      });
-      /*eslint-enable */
+      const that = this;  
+      window.renderPopUp = function(collection) {
+        that.setState({ popUpCollection : collection });
+      }
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
       this.wrapper.bindPopUpCallBacks();
     } 
@@ -208,7 +205,7 @@ export class Book extends Component {
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
-            {this.state.bookLoaded ? <PopUps /> : ''}
+            {this.state.popUpCollection.length > 0 ? <PopUps popUpCollection = {this.state.popUpCollection}/> : ''}
             <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div> 
           </div>
       </div>
