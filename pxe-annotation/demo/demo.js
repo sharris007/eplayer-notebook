@@ -6,9 +6,7 @@ function init() {
 
   const annotationData = [
     {
-      '_id': {
-        '$oid': '589c882fc2ef162b33d60ccb'
-      },
+      'id': '589c882fc2ef162b33d60ccb',
       'playOrder': 1,
       'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
       'text': 'asdasdas',
@@ -31,9 +29,7 @@ function init() {
       ]
     },
     {
-      '_id': {
-        '$oid': '589c882fc2ef162b33d60ccb'
-      },
+      'id':'589c882fc2ef162b33d60ccb',
       'playOrder': 1,
       'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
       'text': '',

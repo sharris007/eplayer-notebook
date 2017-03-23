@@ -220,7 +220,6 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.setupAnnotation = function(annotation) {
-    console.log("plugin---", annotation);
     var e, normed, normedRanges, r, root, _i, _j, _len, _len1, _ref;
     root = this.wrapper[0];
     annotation.ranges || (annotation.ranges = this.selectedRanges);
@@ -253,7 +252,7 @@ Annotator = (function(_super) {
     annotation.quote = annotation.quote.join(' / ');
     $(annotation.highlights).data('annotation', annotation);
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
-    $(annotation.highlights).attr('data-ann-id', annotation._id?annotation._id.$oid:null);
+    $(annotation.highlights).attr('data-ann-id', annotation.id);
     return annotation;
   };
 

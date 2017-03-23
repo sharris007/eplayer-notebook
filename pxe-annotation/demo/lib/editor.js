@@ -157,7 +157,6 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.show = function(event) {
-    console.log('show');
     Annotator.Util.preventEventDefault(event);
     this.element.removeClass(this.classes.hide);
     $(this.annotation.highlights).removeClass('current-annotation');
