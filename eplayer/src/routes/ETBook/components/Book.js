@@ -154,9 +154,6 @@ export class Book extends Component {
   }
 
   annotationCallBack = (eventType, data) => {
-
-    console.log('application--data ',eventType);
-    console.log('application--data ',data);
       switch (eventType) {
           case 'annotationCreated': {
             return this.props.dispatch(postAnnCallService(data));
