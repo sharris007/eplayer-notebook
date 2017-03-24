@@ -15,10 +15,10 @@ import Header from '../../../components/Header';
 import { pageDetails } from '../../../../const/Mocdata';// booksdata, tocData
 import './Book.scss';
 import { browserHistory } from 'react-router';
-import { getAnnCallService, postAnnCallService,putAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
+import { getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
-import {Wrapper} from 'wrapper-component-new';
-import {PopUps} from 'popup-component-new';
+import {Wrapper} from 'pxe-wrapper';
+import {PopUpInfo} from 'popup-info';
 
 export class Book extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ export class Book extends Component {
         pageDetails, 
         bookLoaded : false,
         currentPageTitle:'',
-        popUpCollection : []
+        popUpCollection:''
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -52,7 +52,13 @@ export class Book extends Component {
       currentPageDetails: this.state.pageDetails.playListURL[0]
     });
     // eslint-disable-next-line
-    this.props.dispatch(getAnnCallService(1));
+    const pageUri = encodeURIComponent(this.state.pageDetails.playListURL[0].href);
+    const getAnnDataDetails = {
+      context : this.props.params.bookId,
+      uri     :pageUri,
+      user    :'epluser'
+    }
+    this.props.dispatch(getAnnCallService(getAnnDataDetails));
   }
 
   componentWillUnmount() {
@@ -106,6 +112,18 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
+    console.log('data-----------',data);
+    
+    data.user = (data.user ? data.user : "epluser");
+    // debugger;
+    data.context = (data.context ? data.context : this.props.params.bookId);
+    data.source = {
+        "uri": data.href,
+        "id":  data.id,
+        "label": data.title,
+        "playOrder": data.playOrder,
+        "baseUrl": this.state.pageDetails.baseUrl
+    }
     this.setState({
       currentPageDetails: data
     });
@@ -117,7 +135,13 @@ export class Book extends Component {
 
     });
     // eslint-disable-next-line
-    this.props.dispatch(getAnnCallService(playOrder));
+    const pageUri = encodeURIComponent(data.href);
+    const getAnnDataDetails = {
+      context : bookId,
+      uri     : pageUri,
+      user    :'epluser'
+    }
+    this.props.dispatch(getAnnCallService(getAnnDataDetails));
     browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
   }
 
@@ -132,28 +156,26 @@ export class Book extends Component {
   }
 
   annotationCallBack = (eventType, data) => {
-  switch (eventType) {
-
-      case 'annotationCreated': {
-        return this.props.dispatch(postAnnCallService(data));
-      }
-      case 'annotationEditorSubmit':{
-          if(data.annotation._id)
-          return this.props.dispatch(putAnnCallService(data.annotation));
-      }
-      case 'annotationDeleted': {
-        return ((data._id)?this.props.dispatch(deleteAnnCallService(data)):'');
-      }
-      default : {
-        return eventType;
-      }
+    // debugger;
+    switch (eventType) {
+        case 'annotationCreated': {
+          return this.props.dispatch(postAnnCallService(data));
+        }
+        case 'annotationEditorSubmit':{
+            if(data.annotation.id)
+            return this.props.dispatch(putAnnCallService(data.annotation));
+        }
+        case 'annotationDeleted': {
+          return (data.id ? this.props.dispatch(deleteAnnCallService(data)):'');
+        }
+        default : {
+          return eventType;
+        }
     }
   }
  
   onBookLoaded = (bload) => {
-     this.setState({
-      bookLoaded : bload
-    });
+    
     if(bload) {
       const that = this;  
       window.renderPopUp = function(collection) {
@@ -161,7 +183,7 @@ export class Book extends Component {
       }
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
       this.wrapper.bindPopUpCallBacks();
-    } 
+    }  
    
   }
  
@@ -170,10 +192,9 @@ export class Book extends Component {
     const callbacks = {};
     let annData = [];
     const { annotionData, loading ,playlistData, playlistReceived} = this.props;// eslint-disable-line react/prop-types
-    annData  = annotionData;
+    annData  = annotionData.rows;
     const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
-    
-    if(Array.isArray(annotionData)==false){
+    if(Array.isArray(annotionData)==false && annotionData.rows==undefined){
       annData = [];
       annData.push(annotionData);
     }
@@ -205,7 +226,7 @@ export class Book extends Component {
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
-            {this.state.popUpCollection.length > 0 ? <PopUps popUpCollection = {this.state.popUpCollection}/> : ''}
+            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection}/> : ''} 
             <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div> 
           </div>
       </div>
