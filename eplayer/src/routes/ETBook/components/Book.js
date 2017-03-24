@@ -27,7 +27,6 @@ export class Book extends Component {
         bookLoaded : false,
         currentPageTitle:'',
         annAttributes :''
-
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -43,19 +42,29 @@ export class Book extends Component {
     this.props.dispatch(getBookCallService(this.props.params.bookId));
   }
   componentDidMount() {    
-    // if(this.state.pageDetails.playListURL.length >0 ){
-    //     this.setState({
-    //       currentPageDetails: this.state.pageDetails.playListURL[0]
-    //     });
-    //     const pageUri = encodeURIComponent(this.state.pageDetails.playListURL[0].href);
-    //     const queryString= {
-    //       context : this.props.params.bookId,
-    //       uri     : pageUri,
-    //       user    : 'epluser'
-    //     }
-    //     this.props.dispatch(getAnnCallService(queryString));
-    //     this.props.dispatch(getBookmarkCallService(queryString));
-    // }    
+    const customeAttributes ={
+        playOrder: 'playOrder',
+        href     :'href',
+        createdTimestamp:'createdTimestamp',
+        updatedTimestamp:'updatedTimestamp',
+        text  :'text',
+        source :{
+          uri : 'uri',
+          id:'id',
+          label:'label',
+          playOrder:'playOrder',
+          baseUrl:'baseUrl',
+        },
+        user:'user',
+        context:'context',
+        ranges :'ranges',
+        quote:'quote',
+        shareable:'shareable'
+    };
+    this.setState({
+      annAttributes:customeAttributes
+    });
+
   }
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
@@ -108,26 +117,6 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
-    const annAttributes ={
-        playOrder:'',
-        href     :'',
-        createdTimestamp:'',
-        updatedTimestamp:'',
-        text  :'',
-        source :{
-          uri :'',
-          id:'',
-          label:'',
-          playOrder:'',
-          baseUrl:'',
-        },
-        user:'',
-        context:'',
-        ranges :'',
-        quote:'',
-        color:'',
-        shareable:''
-    };
     data.user = (data.user ? data.user : "epluser");
     data.context = (data.context ? data.context : this.props.params.bookId);
     data.source = {
@@ -137,7 +126,6 @@ export class Book extends Component {
         "playOrder": data.playOrder,
         "baseUrl": this.state.pageDetails.baseUrl
     }
-
     this.setState({ currentPageDetails: data  });
     const pageId = data.id;
     const bookId = this.props.params.bookId;
@@ -166,21 +154,24 @@ export class Book extends Component {
   }
 
   annotationCallBack = (eventType, data) => {
-    switch (eventType) {
-        case 'annotationCreated': {
-          return this.props.dispatch(postAnnCallService(data));
-        }
-        case 'annotationEditorSubmit':{
-            if(data.annotation.id)
-            return this.props.dispatch(putAnnCallService(data.annotation));
-        }
-        case 'annotationDeleted': {
-            return (data.id ? this.props.dispatch(deleteAnnCallService(data)):'');
-        }
-        default : {
-            return eventType;
-        }
-    }
+
+    console.log('application--data ',eventType);
+    console.log('application--data ',data);
+      switch (eventType) {
+          case 'annotationCreated': {
+            return this.props.dispatch(postAnnCallService(data));
+          }
+          case 'annotationEditorSubmit':{
+              if(data.annotation && data.annotation.id)
+              return this.props.dispatch(putAnnCallService(data.annotation));
+          }
+          case 'annotationDeleted': {
+              return (data.id ? this.props.dispatch(deleteAnnCallService(data)):'');
+          }
+          default : {
+              return eventType;
+          }
+      }
   }
  
   onBookLoaded = (bload) => {
@@ -237,7 +228,7 @@ export class Book extends Component {
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
-            {playlistReceived ? <Annotation shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
+            {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
             {this.state.bookLoaded ? <PopUps /> : ''}
             <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div> 
           </div>
