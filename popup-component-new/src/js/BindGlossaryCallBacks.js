@@ -7,6 +7,7 @@ import PopUps from './PopUps';
 export class BindGlossaryCallBacks {
     constructor(props) {
       this.bindGlossaryCallBacks(props);
+      this.popUpCollection = [];
     }
 
     bindGlossaryCallBacks(props) {
@@ -50,10 +51,12 @@ export class BindGlossaryCallBacks {
 
               popOverCollection.popOverTitle = glossaryNode ? glossaryNode.getElementsByTagName('dfn')[0].textContent: '';
               popOverCollection.popOverDescription = glossaryNode ? renderHTML(glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML) : '';
-              new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
+              this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
+              //new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
               console.log(item)
             });
           });
+          new PopUps({'popUpCollection' : this.popUpCollection});
         }).catch((err) => {
           console.debug(err);
         });

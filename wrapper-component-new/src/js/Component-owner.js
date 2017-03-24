@@ -5,7 +5,7 @@ import renderHTML from 'react-render-html';
 import Wrapper from './Wrapper';
 import PopupApi from '../api/PopupApi';
 import BookViewer from '../../demo/BookViewer';
-import PopUp from './PopUps'
+import {PopUps} from 'popup-component-new';
 
 
 class ComponentOwner extends React.Component {
@@ -14,7 +14,8 @@ class ComponentOwner extends React.Component {
     this.state = {
       isBookLoaded: false,
       bookHTML: '',
-      glossaryResponse: ''
+      glossaryResponse: '',
+      popUpCollection : []
     };  
     this.divGlossaryRef = '';
     this.Wrapper = null;
@@ -42,11 +43,14 @@ class ComponentOwner extends React.Component {
   }
 
   onBookLoad() {
-    this.setState({
-      isBookLoaded : true
-    });
+    const that = this;
+    window.renderPopUp = function(popUpCollection) {
+      that.setState({
+        'popUpCollection':popUpCollection
+      });
+    }
     this.Wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv'});
-    this.Wrapper.bindPopUpCallBacks();
+    this.Wrapper.bindPopUpCallBacks();    
   }
 
   render() {    
@@ -56,7 +60,7 @@ class ComponentOwner extends React.Component {
           {this.state.bookHTML ? <BookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} /> : ''}
         </div>  
         <div>     
-          <div>{this.state.isBookLoaded ? <PopUp/> : ''}</div>
+          <div>{(this.state.popUpCollection.length > 0) ? <PopUps popUpCollection = {this.state.popUpCollection}/> : ''}</div>
           <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}> {renderHTML(this.state.glossaryResponse)} </div>
         </div>  
         </div>

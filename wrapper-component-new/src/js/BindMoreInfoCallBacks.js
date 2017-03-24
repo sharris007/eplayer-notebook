@@ -1,8 +1,12 @@
 import {MoreInfoPopUpClasses} from '../../const/PopUpClasses';
-import PopUps from './PopUps';
 
 export class BindMoreInfoCallBacks {
     constructor(props) {
+      if (props.glossaryCollection && props.glossaryCollection.length > 0) {
+        this.popUpCollection = props.glossaryCollection;
+      } else {
+        this.popUpCollection = [];
+      }
       this.bindMoreInfoCallBacks(props);
     }
 
@@ -39,10 +43,10 @@ export class BindMoreInfoCallBacks {
           if (hrefId) {
             popOverCollection.popOverDescription = document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML;
           }
-          new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
-          console.log(popOverCollection)
-          console.log(item)
+          this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
         });
       });
+      console.log(this.popUpCollection)
+      window.renderPopUp(this.popUpCollection);
     }
 }

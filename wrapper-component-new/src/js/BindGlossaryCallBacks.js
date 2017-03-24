@@ -1,10 +1,12 @@
 import {GlossaryPopUpClasses} from '../../const/PopUpClasses';
 import PopupApi from '../api/PopupApi';
-import PopUps from './PopUps';
+import {BindMoreInfoCallBacks} from './BindMoreInfoCallBacks';
+//import PopUps from './PopUps';
 
 export class BindGlossaryCallBacks {
     constructor(props) {
       this.bindGlossaryCallBacks(props);
+      this.glossaryCollection =[];
     }
 
     bindGlossaryCallBacks(props) {
@@ -21,6 +23,7 @@ export class BindGlossaryCallBacks {
         PopupApi.getData(glossaryurl).then((response) => {
           return response.text();
         }).then((text) => {
+          this.glossaryCollection = [];
           props.divGlossaryRef.innerHTML = text;
           GlossaryPopUpClasses.forEach((classes) => {
             bookDiv.querySelectorAll(classes).forEach((item) => {
@@ -46,15 +49,20 @@ export class BindGlossaryCallBacks {
                 }
               }
 
-              popOverCollection.popOverTitle = glossaryNode ? glossaryNode.getElementsByTagName('dfn')[0].textContent: '';
-              popOverCollection.popOverDescription = glossaryNode ? glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML : '';
-              new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
-              console.log(item)
+              popOverCollection.popOverTitle = glossaryNode ? (glossaryNode.getElementsByTagName('dfn').length > 0 ? glossaryNode.getElementsByTagName('dfn')[0].textContent : ''): '';
+              popOverCollection.popOverDescription = glossaryNode ? (glossaryNode.nextElementSibling ? glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML : '') : '';
+              //new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
+              if (popOverCollection.popOverTitle && popOverCollection.popOverDescription) {
+                this.glossaryCollection.push({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
+              }
             });
           });
+          new BindMoreInfoCallBacks({'glossaryCollection':this.glossaryCollection, 'bookDiv' : props.bookDiv});
         }).catch((err) => {
           console.debug(err);
         });
+      } else {
+        new BindMoreInfoCallBacks({'glossaryCollection':this.glossaryCollection, 'bookDiv' : props.bookDiv});
       }
     }
 }

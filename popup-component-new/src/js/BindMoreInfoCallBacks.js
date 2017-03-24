@@ -3,6 +3,7 @@ import PopUps from './PopUps';
 
 export class BindMoreInfoCallBacks {
     constructor(props) {
+      this.popUpCollection = [];
       this.bindMoreInfoCallBacks(props);
     }
 
@@ -39,10 +40,10 @@ export class BindMoreInfoCallBacks {
           if (hrefId) {
             popOverCollection.popOverDescription = document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML;
           }
-          new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
-          console.log(popOverCollection)
-          console.log(item)
+          this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
+          //new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv})
         });
       });
+      new PopUps({'popUpCollection' : this.popUpCollection});
     }
 }

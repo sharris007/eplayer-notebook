@@ -1,6 +1,6 @@
 {
   "name": "wrapper-component-new",
-  "version": "1.0.3",
+  "version": "1.0.8",
   "description": "",
   "main": "./main.js",
   "scripts": {
@@ -20,8 +20,10 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
+    "install": "^0.8.7",
     "intl": "^1.2.5",
-    "popup-component-new": "^1.0.2",
+    "npm": "^4.4.1",
+    "popup-component-new": "^1.0.3",
     "pxe-wrapper-component": "^1.0.0",
     "react-intl": "^2.0.1",
     "react-popup": "^0.5.0",

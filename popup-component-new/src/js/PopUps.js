@@ -10,17 +10,27 @@ class PopUps extends Component {
     this.state = {
       glossaryResponse: ''
     };
-    if (Object.keys(props).length > 0) {
+    this.popUpArray = [];
+    this.bookDiv = '';
+    if (props && props.popUpCollection && props.popUpCollection.length > 0) {
       this.props = props;
-      this.props.item.addEventListener('click', this.framePopOver.bind(this));
+      this.props.popUpCollection.forEach((popUpProps, i) => {
+        if (!popUpProps.item.getAttribute('rendered')) {
+          popUpProps.item.setAttribute('rendered', true);
+          this.popUpArray[i] = popUpProps.popOverCollection;
+          this.bookDiv = popUpProps.bookDiv
+          popUpProps.item.addEventListener('click', this.framePopOver.bind(this, i));
+        }     
+      });
+      //this.props.item.addEventListener('click', this.framePopOver.bind(this));
     }
   }
 
-  framePopOver = (event) => {
+  framePopOver = (index, event) => {
     event.preventDefault();
-    const props = this.props;
-    if (this.props.popOverCollection) {
-      const bookDivHeight = document.getElementById(this.props.bookDiv).clientHeight + 'px';
+    const props = this.props.popUpCollection[index];
+    if (props.popOverCollection) {
+      const bookDivHeight = document.getElementById(props.bookDiv).clientHeight + 'px';
       document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
       Popup.registerPlugin('popover', function(element) {
         this.create({

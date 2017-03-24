@@ -38,7 +38,6 @@ export default class PxeWrapperComponent {
   };  
 };
 
-export PopUps from './src/js/PopUps'
 export Wrapper from './src/js/Wrapper';
 // Listen for client events to initialize a new PopUp Component
 document.body.addEventListener('o.InitWrapper', e => new PxeWrapperComponent(e.detail));
