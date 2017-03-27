@@ -78,10 +78,10 @@ const crossRef = (pageViewerRef) => {
       break;
     };
   };
-  const contentLightBoxSettings = (element, eleInnerHtml) =>{
+  const contentLightBoxSettings = (element, eleInnerHtml, targetUrl) =>{
        // logic for content light box
        // For current page links
-    let targetUrl = element.getAttribute('href');
+    
     if (targetUrl.indexOf('#') === 0) {
       targetUrl = props.src.baseUrl + state.currentStatePlayListUrl.href.split('#')[0] + targetUrl;
     } else if (targetUrl.indexOf('file') === 0) {
@@ -232,7 +232,11 @@ const crossRef = (pageViewerRef) => {
         element.setAttribute('custom-click-event-added', true);
         element.addEventListener('click', hyperLinkEventHandler, false);
       }else if (props.src.crossRefSettings===settings.lightBox) {
-        contentLightBoxSettings(element, eleInnerHtml);
+        const targetUrl = element.getAttribute('href');
+        if (!targetUrl) {
+          continue;
+        }
+        contentLightBoxSettings(element, eleInnerHtml, targetUrl);
       }
     }
    // adding class xref to the added ExternalLinkPreview component
