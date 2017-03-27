@@ -25,7 +25,7 @@ export class Book extends Component {
         currentPageDetails: '',
         pageDetails, 
         bookLoaded : false,
-        currentPageTitle:''
+        currentPageTitle:'',
         annAttributes :'',
         popUpCollection:''
       };
@@ -65,17 +65,8 @@ export class Book extends Component {
     this.setState({
       annAttributes:customeAttributes
     });
-    // eslint-disable-next-line
-    const pageUri = encodeURIComponent(this.state.pageDetails.playListURL[0].href);
-    const getAnnDataDetails = {
-      context : this.props.params.bookId,
-      uri     :pageUri,
-      user    :'epluser'
-    }
-    this.props.dispatch(getAnnCallService(getAnnDataDetails));
   }
 
-  }
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
   }
@@ -231,10 +222,9 @@ export class Book extends Component {
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
-
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
-            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection}/> : ''
-            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div> 
+            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection}/> : '' }
+            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
           </div>
       </div>
     );
