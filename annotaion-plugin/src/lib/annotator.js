@@ -220,6 +220,7 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.setupAnnotation = function(annotation) {
+    console.log("plugin---", annotation);
     var e, normed, normedRanges, r, root, _i, _j, _len, _len1, _ref;
     root = this.wrapper[0];
     annotation.ranges || (annotation.ranges = this.selectedRanges);
@@ -252,6 +253,7 @@ Annotator = (function(_super) {
     annotation.quote = annotation.quote.join(' / ');
     $(annotation.highlights).data('annotation', annotation);
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
+    $(annotation.highlights).attr('data-ann-id', annotation._id?annotation._id.$oid:null);
     return annotation;
   };
 
@@ -283,10 +285,13 @@ Annotator = (function(_super) {
     return this.isShareable=isShareable;
   };
 
-  Annotator.prototype.loadAnnotations = function(annotations) {
+  Annotator.prototype.loadAnnotations = function(annotations,isUpdate) {
     var clone, loader;
     if (annotations == null) {
       annotations = [];
+    }
+    if(isUpdate){   
+        this.editor.currentAnnotation=annotations[0];   
     }
     loader = (function(_this) {
       return function(annList) {
@@ -380,8 +385,8 @@ Annotator = (function(_super) {
 
   Annotator.prototype.showEditor = function(annotation, location, isAdderClick) {
     var position= {
-      right:70,
-      top:(39+location.top+(!isAdderClick?90:0))
+      right:80,
+      top:(39+location.top+(!isAdderClick?140:0))
     }
     this.editor.element.css(position);
     this.editor.load(annotation,this.isShareable);
@@ -425,6 +430,7 @@ Annotator = (function(_super) {
   Annotator.prototype.checkForEndSelection = function(event) {
     var container, range, _i, _len, _ref;
     this.mouseIsDown = false;
+    this.ignoreMouseup=$(event.target).hasClass('annotator-confirm-delete')?false:this.ignoreMouseup;
     if (this.ignoreMouseup) {
       return;
     }
@@ -496,9 +502,10 @@ Annotator = (function(_super) {
     if (event != null) {
       event.preventDefault();
     }
-    position = Util.mousePosition(event, this.wrapper[0]);
     this.adder.hide();
     annotation = this.setupAnnotation(this.createAnnotation());
+    event.pageY=$(annotation.highlights).offset().top;
+    position = Util.mousePosition(event, this.wrapper[0]);
     // this.clearTextSelection();
     $(annotation.highlights).addClass('annotator-hl-temporary');
     save = (function(_this) {

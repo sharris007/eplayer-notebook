@@ -1,5 +1,6 @@
 /* global $ */
 import React, { PropTypes, Component } from 'react';
+import { map,zipObject} from 'lodash';
 
 class Annotation extends Component {
   constructor(props) {
@@ -7,12 +8,14 @@ class Annotation extends Component {
     this.annotationEventHandler = this.annotationEventHandler.bind(this);
     this.annotationEvent = this.annotationEvent.bind(this);
     this.onDocumentClick=this.onDocumentClick.bind(this);
-    $('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
+    //$('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
     $(document).on('mousedown', this.onDocumentClick);
+    $(document).keyup(this.onDocumentClick);
+    this.state = {'updated':false}
   }
 
   onDocumentClick(e) {
-    if (!$(e.target).closest('.annotator-editor').length && !$('.annotator-editor').hasClass('annotator-hide')) {
+    if ((e.keyCode === 27 ||!$(e.target).closest('.annotator-editor').length) && !$('.annotator-editor').hasClass('annotator-hide')) {
       $('#' + this.props.contentId).data('annotator').editor.hide();
     }
   }
@@ -22,7 +25,8 @@ class Annotation extends Component {
   }
 
   componentWillReceiveProps(nextProps) {    
-    $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
+    $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData, this.state.updated);
+    this.setState({'updated':false});
   }  
 
   annotationEventHandler() {
@@ -40,9 +44,34 @@ class Annotation extends Component {
   }
 
   annotationEvent(eventType, data, viewer) {
-    data.playOrder=this.props.currentPageDetails.playOrder;
-    data.href=this.props.currentPageDetails.href;
-    this.props.annotationEventHandler(eventType, data, viewer);
+    const customAttributes = this.props.annAttributes;
+    const orgsourceObj  = customAttributes.source;
+    const customsourceObj ={};
+    if(data.annotation){
+      const annData             =  _.merge(data.annotation, this.props.currentPageDetails);
+      annData.createdTimestamp  =   new Date().toISOString();
+      annData.updatedTimestamp  =   null;
+      const unsourceObj         = _.omit(annData, ['source']);
+      const sourceObj           = _.pick(annData, ['source']);
+      const customUnsourceObj   = _.mapKeys(unsourceObj, function(value, key) {
+        if(customAttributes[key] ==undefined){
+          return key;
+        }
+        return customAttributes[key];
+      }); 
+      const filteredsourceObj   = _.mapKeys(sourceObj.source, function(value, key) {
+        if(orgsourceObj[key]==undefined){
+          return key;
+        }
+        return orgsourceObj[key];
+      });  
+      customsourceObj.source    = filteredsourceObj;
+      const finalData           =  _.merge(customUnsourceObj, customsourceObj);
+      
+      if(eventType=='annotationCreated'){
+        this.setState({'updated':true});
+      }
+      this.props.annotationEventHandler(eventType, finalData, viewer);
   }
   
   render() {

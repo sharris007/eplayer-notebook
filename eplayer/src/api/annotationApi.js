@@ -5,7 +5,7 @@ class AnnotationApi {
   static doGetAnnotation = filterData => getAnndata(filterData)
   static doPostAnnotation = data => postAnnData(data)
   static doPutAnnotation = data => putAnnData(data)
-  static doDeleteAnnotation = data => deleteAnnData(data._id.$oid)// eslint-disable-line no-underscore-dangle
+  static doDeleteAnnotation = data => deleteAnnData(data)// eslint-disable-line no-underscore-dangle
 }
 
 export default AnnotationApi;

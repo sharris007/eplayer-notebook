@@ -28,8 +28,8 @@ function init() {
     contentId: 'pxe-viewer',
     onBookLoaded:()=>{},
     highlightText:'',
-    bckColor:'',  
-    baseUrl: 'https://content.openclass.com/eps/sanvan/api/item/138acd10-4c63-4eba-aba6-25f70c1626e5/1/file/pearson_bonds_v13-revel-2/', //'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/',
+    bckColor:'', 
+    baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/',
     playListURL:[
       {
         'playOrder': 1,
@@ -54,7 +54,7 @@ function init() {
       }, {
         'playOrder': 6,
         'title': '1.4 Composition of the Atmosphere',
-        'href': 'OPS/text/bookmatter-02/bkm2_sec_01.xhtml'//'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
+        'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
       }, {
         'playOrder': 7,
         'title': '1.5 Vertical Structure of the Atmosphere',
@@ -75,7 +75,7 @@ function init() {
     currentPageURL:{
       'playOrder': 6,
       'title': '1.4 Composition of the Atmosphere',
-      'href': 'OPS/text/bookmatter-02/bkm2_sec_01.xhtml'//'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
+      'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
     }
   });
 }
