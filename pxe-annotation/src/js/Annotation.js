@@ -1,5 +1,6 @@
 /* global $ */
 import React, { PropTypes, Component } from 'react';
+import { map,zipObject} from 'lodash';
 
 class Annotation extends Component {
   constructor(props) {
@@ -43,18 +44,34 @@ class Annotation extends Component {
   }
 
   annotationEvent(eventType, data, viewer) {
-    data.playOrder=this.props.currentPageDetails.playOrder;
-    data.href=this.props.currentPageDetails.href;
-    data.createdTimestamp = new Date().toISOString();
-    data.updatedTimestamp = null;
-    data.text = (data.text ? data.text:'');
-    data.source = this.props.currentPageDetails.source;
-    data.user = this.props.currentPageDetails.user;
-    data.context = this.props.currentPageDetails.context;
-    if (eventType==='annotationCreated') {
-      this.setState({'updated':true});
-    }
-    this.props.annotationEventHandler(eventType, data, viewer);
+    const customAttributes = this.props.annAttributes;
+    const orgsourceObj  = customAttributes.source;
+    const customsourceObj ={};
+    if(data.annotation){
+      const annData             =  _.merge(data.annotation, this.props.currentPageDetails);
+      annData.createdTimestamp  =   new Date().toISOString();
+      annData.updatedTimestamp  =   null;
+      const unsourceObj         = _.omit(annData, ['source']);
+      const sourceObj           = _.pick(annData, ['source']);
+      const customUnsourceObj   = _.mapKeys(unsourceObj, function(value, key) {
+        if(customAttributes[key] ==undefined){
+          return key;
+        }
+        return customAttributes[key];
+      }); 
+      const filteredsourceObj   = _.mapKeys(sourceObj.source, function(value, key) {
+        if(orgsourceObj[key]==undefined){
+          return key;
+        }
+        return orgsourceObj[key];
+      });  
+      customsourceObj.source    = filteredsourceObj;
+      const finalData           =  _.merge(customUnsourceObj, customsourceObj);
+      
+      if(eventType=='annotationCreated'){
+        this.setState({'updated':true});
+      }
+      this.props.annotationEventHandler(eventType, finalData, viewer);
   }
   
   render() {
