@@ -28,6 +28,7 @@ function init() {
     contentId: 'pxe-viewer',
     onBookLoaded:()=>{},
     highlightText:'',
+    bckColor:'',  
     baseUrl: 'https://content.openclass.com/eps/sanvan/api/item/138acd10-4c63-4eba-aba6-25f70c1626e5/1/file/pearson_bonds_v13-revel-2/', //'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/',
     playListURL:[
       {
