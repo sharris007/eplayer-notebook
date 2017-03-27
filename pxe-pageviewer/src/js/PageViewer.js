@@ -204,6 +204,9 @@ class PageViewer extends React.Component {
     this.loadMultimediaNscrollToFragment();
     crossRef(this);
     document.addEventListener('click', this.clearSearchHighlights);
+    if ( this.bookComBlock.innerHTML.length > 0 ) {
+      this.bookComBlock.parentNode.style.height = '100%';
+    }
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
@@ -219,10 +222,11 @@ class PageViewer extends React.Component {
  
   render() {
     const zommLevel = this.props.src.pageZoom ? this.props.src.pageZoom + '%' : '100%';
+    const bckColor = this.props.src.bckColor ? this.props.src.bckColor : 'default';
     return ( 
       <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
-          <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
+          <div id = "book-container" className = {'book-container' + ' ' + bckColor} ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
             {this.state.renderSrc ?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} 
           </div>
         </div>

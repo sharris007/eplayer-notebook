@@ -13,8 +13,8 @@ import { getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallS
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 
 import { getBookmarkCallService} from '../../../actions/bookmark';
-import {Wrapper} from 'pxe-wrapper';
-import {PopUpInfo} from 'popup-info';
+import {Wrapper} from 'wrapper-component-new';
+import {PopUps} from 'popup-component-new';
 
 export class Book extends Component {
   constructor(props) {
@@ -26,8 +26,7 @@ export class Book extends Component {
         pageDetails, 
         bookLoaded : false,
         currentPageTitle:'',
-        annAttributes :'',
-        popUpCollection:''
+        annAttributes :''
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -65,8 +64,8 @@ export class Book extends Component {
     this.setState({
       annAttributes:customeAttributes
     });
-  }
 
+  }
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
   }
@@ -173,14 +172,18 @@ export class Book extends Component {
   }
  
   onBookLoaded = (bload) => {
+     this.setState({ bookLoaded : bload  });
     if(bload) {
-      const that = this;  
-      window.renderPopUp = function(collection) {
-        that.setState({ popUpCollection : collection });
-      }
+       /*eslint-disable */
+      PubSub.subscribe( 'setPopUpCollectionToComponent', (msg, popUpCollection) => {
+        popUpCollection.forEach((popUp) => {
+          this.popUpCollection.push(new PopUps(popUp));
+        })
+      });
+      /*eslint-enable */
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
       this.wrapper.bindPopUpCallBacks();
-    }  
+    } 
    
   }
  
@@ -223,8 +226,8 @@ export class Book extends Component {
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
-            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection}/> : '' }
-            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
+            {this.state.bookLoaded ? <PopUps /> : ''}
+            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div> 
           </div>
       </div>
     );
