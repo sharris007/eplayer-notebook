@@ -79,7 +79,7 @@ export const pageDetails = {
   enableGoToPage: false,
   includeMathMLLib: false,
   enableAnnotation: true,
-  annotationShareable: false,
+  annotationShareable: true,
   clearSearchHighlights: true,
   elementId: 'demo',
   pdfSearch: false,
