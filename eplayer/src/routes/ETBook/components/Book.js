@@ -1,22 +1,18 @@
   /* eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { PageViewer } from 'pxe-pageviewer';
 import { Annotation } from 'pxe-annotation';
-// import { GlossaryPopUp } from 'pxe-glossary-popup';
-// import { MoreInfoPopUp } from 'pxe-moreinfo-popup';
-// import { Annotation } from 'pxe-annotation';
-// import { Viewer } from '@pearson-incubator/viewer';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
-// import { BookList } from '../../../../const/MockData';
-import { pageDetails } from '../../../../const/Mocdata';// booksdata, tocData
+import { pageDetails } from '../../../../const/Mocdata'; 
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
+
+import { getBookmarkCallService} from '../../../actions/bookmark';
 import {Wrapper} from 'wrapper-component-new';
 import {PopUps} from 'popup-component-new';
 
@@ -29,12 +25,13 @@ export class Book extends Component {
         currentPageDetails: '',
         pageDetails, 
         bookLoaded : false,
-        currentPageTitle:''
+        currentPageTitle:'',
+        annAttributes :''
 
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
-      this.onPageChange.bind(this);
+      // this.onPageChange.bind(this);
       this.nodesToUnMount = [];
       this.popUpCollection = [];
       document.body.addEventListener('contentLoaded', this.parseDom);
@@ -45,22 +42,21 @@ export class Book extends Component {
     const pageId = this.props.params.pageId;
     this.props.dispatch(getBookCallService(this.props.params.bookId));
   }
-  componentDidMount() {
-   
-    // eslint-disable-next-line
-    this.setState({
-      currentPageDetails: this.state.pageDetails.playListURL[0]
-    });
-    // eslint-disable-next-line
-    const pageUri = encodeURIComponent(this.state.pageDetails.playListURL[0].href);
-    const getAnnDataDetails = {
-      context : this.props.params.bookId,
-      uri     :pageUri,
-      user    :'epluser'
-    }
-    this.props.dispatch(getAnnCallService(getAnnDataDetails));
+  componentDidMount() {    
+    // if(this.state.pageDetails.playListURL.length >0 ){
+    //     this.setState({
+    //       currentPageDetails: this.state.pageDetails.playListURL[0]
+    //     });
+    //     const pageUri = encodeURIComponent(this.state.pageDetails.playListURL[0].href);
+    //     const queryString= {
+    //       context : this.props.params.bookId,
+    //       uri     : pageUri,
+    //       user    : 'epluser'
+    //     }
+    //     this.props.dispatch(getAnnCallService(queryString));
+    //     this.props.dispatch(getBookmarkCallService(queryString));
+    // }    
   }
-
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
   }
@@ -112,24 +108,50 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
-    this.setState({
-      currentPageDetails: data
-    });
+    const annAttributes ={
+        playOrder:'',
+        href     :'',
+        createdTimestamp:'',
+        updatedTimestamp:'',
+        text  :'',
+        source :{
+          uri :'',
+          id:'',
+          label:'',
+          playOrder:'',
+          baseUrl:'',
+        },
+        user:'',
+        context:'',
+        ranges :'',
+        quote:'',
+        color:'',
+        shareable:''
+    };
+    data.user = (data.user ? data.user : "epluser");
+    data.context = (data.context ? data.context : this.props.params.bookId);
+    data.source = {
+        "uri": data.href,
+        "id":  data.id,
+        "label": data.title,
+        "playOrder": data.playOrder,
+        "baseUrl": this.state.pageDetails.baseUrl
+    }
+
+    this.setState({ currentPageDetails: data  });
     const pageId = data.id;
     const bookId = this.props.params.bookId;
     const playOrder = data.playOrder;
-    this.setState({
-      currentPageTitle :data.title
-
-    });
+    this.setState({ currentPageTitle :data.title  });
     // eslint-disable-next-line
     const pageUri = encodeURIComponent(data.href);
-    const getAnnDataDetails = {
+    const queryString = {
       context : bookId,
       uri     : pageUri,
       user    :'epluser'
     }
-    this.props.dispatch(getAnnCallService(getAnnDataDetails));
+    this.props.dispatch(getAnnCallService(queryString));
+    this.props.dispatch(getBookmarkCallService(queryString));
     browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
   }
 
@@ -144,41 +166,25 @@ export class Book extends Component {
   }
 
   annotationCallBack = (eventType, data) => {
-    data.text = (data.text ? data.text:'');
-    data.shareable = (data.shareable ? data.shareable:false);
-    data.createdTimestamp = new Date().toISOString();
-    data.updatedTimestamp = null;
-    data.user = (data.user ? data.user : "epluser");
-    data.context = (data.context ? data.context : this.props.params.bookId);
-    data.source = {
-        "uri": data.href,
-        "id": "a372789db0f4202773a1da2d1d63b541bf432a72c",
-        "label": "Chapter 8: DNA Detective",
-        "playOrder": data.playOrder,
-        "baseUrl": "https://content.stg-openclass.com/eps/pearson-reader/api/item/52a34c8a-b182-4ce5-8afc-7fab6752ded8/1/file/belk5_pr623/"
-    }
-  switch (eventType) {
-
-      case 'annotationCreated': {
-        return this.props.dispatch(postAnnCallService(data));
-      }
-      case 'annotationEditorSubmit':{
-          if(data.annotation._id)
-          return this.props.dispatch(putAnnCallService(data.annotation));
-      }
-      case 'annotationDeleted': {
-        return ((data._id)?this.props.dispatch(deleteAnnCallService(data)):'');
-      }
-      default : {
-        return eventType;
-      }
+    switch (eventType) {
+        case 'annotationCreated': {
+          return this.props.dispatch(postAnnCallService(data));
+        }
+        case 'annotationEditorSubmit':{
+            if(data.annotation.id)
+            return this.props.dispatch(putAnnCallService(data.annotation));
+        }
+        case 'annotationDeleted': {
+            return (data.id ? this.props.dispatch(deleteAnnCallService(data)):'');
+        }
+        default : {
+            return eventType;
+        }
     }
   }
  
   onBookLoaded = (bload) => {
-     this.setState({
-      bookLoaded : bload
-    });
+     this.setState({ bookLoaded : bload  });
     if(bload) {
        /*eslint-disable */
       PubSub.subscribe( 'setPopUpCollectionToComponent', (msg, popUpCollection) => {
@@ -198,10 +204,9 @@ export class Book extends Component {
     const callbacks = {};
     let annData = [];
     const { annotionData, loading ,playlistData, playlistReceived} = this.props;// eslint-disable-line react/prop-types
-    annData  = annotionData;
+    annData  = annotionData.rows;
     const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
-    
-    if(Array.isArray(annotionData)==false){
+    if(Array.isArray(annotionData)==false && annotionData.rows==undefined){
       annData = [];
       annData.push(annotionData);
     }

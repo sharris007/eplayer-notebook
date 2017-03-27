@@ -122,18 +122,18 @@ Annotator.Editor = (function(_super) {
   }
   
   Editor.prototype.onNoteChange=function(event) {
+    // debugger; 
     this.element[(event.target.value.length)?'addClass':'removeClass']('show-edit-options');
     var inputCharLength = event.currentTarget.value.length, actualChar = this.const.characters;
     var remainingCount = actualChar-inputCharLength;
     this.element.find('#letter-count').text(remainingCount);
     var selectors = this.element.find('.annotator-item textarea'); 
-    console.log('pageup', this.textareaHeight);
     var temp = this.textareaHeight;
-    selectors.height(1); 
-    this.textareaHeight = selectors.prop('scrollHeight');
-    selectors.height(this.textareaHeight);
-    if (temp && temp!==this.textareaHeight) {
-      var topPosition=(this.element.position().top-temp) + (this.textareaHeight/2) ;
+    this.textareaHeight = $('#annotator-field-0')[0].scrollHeight;
+    if(temp!==this.textareaHeight) {
+      selectors.height(this.textareaHeight);
+      this.textareaHeight = $('#annotator-field-0')[0].scrollHeight; 
+      var topPosition=(this.element.position().top) + (this.textareaHeight-temp);
       this.element.css({top:topPosition});
     }    
   }
@@ -168,11 +168,11 @@ Annotator.Editor = (function(_super) {
     this.annotation.shareable=(this.annotation.shareable===undefined)?false:this.annotation.shareable;
     if (this.annotation.color||this.annotation.shareable) {
       this.element.removeClass('hide-note');
-      var textareaScroll =this.element.find('textarea').prop('scrollHeight'), calPos, actualPos;
+      var textareaScroll =this.element.find('textarea').prop('scrollHeight'),calPos,actualPos,oldHeight;
+      oldHeight=this.element.find('textarea').height();
       this.element.find('textarea').height(textareaScroll);
       actualPos = this.element.position().top;
-      pos  = (textareaScroll/2) + actualPos;
-
+      pos  = (textareaScroll-oldHeight) + actualPos;
       this.element.css({top:pos});
     } 
     if (this.annotation.shareable) {
@@ -192,9 +192,10 @@ Annotator.Editor = (function(_super) {
     this.element.find('.annotator-listing').append(panel5);
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
-    if (!this.annotation.text || !this.annotation.text.length)
-      this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1'});
-    this.element.find(':input:first').focus();
+    this.textareaHeight = $('#annotator-field-0')[0].scrollHeight || 40; 
+    if(this.annotation.text === undefined||!this.annotation.text.length)
+      this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
+    this.element.find(":input:first").focus();
     this.setupDraggables();
     return this.publish('show');
   };
@@ -208,7 +209,7 @@ Annotator.Editor = (function(_super) {
     $('.annotator-panel-1').removeClass('disabled-save');
     this.onCancelClick();
     this.element.find('textarea').removeAttr('style'); 
-    this.currentAnnotation =null;
+    this.currentAnnotation = this.textareaHeight = null;
     return this.publish('hide');
   };
 

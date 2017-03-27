@@ -1,6 +1,6 @@
 import { apiConstants } from '../../const/Constants';
 
-export const getAnndata = data => fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations?uri=${data.uri}`,{
+export const getAnndata = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations?uri=${data.uri}`,{
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -9,7 +9,7 @@ export const getAnndata = data => fetch(`${apiConstants.ANNOTATION}/context/${da
   }
 });// eslint-disable-line
 
-export const postAnnData = data => fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations`, { // eslint-disable-line no-undef
+export const postAnnData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations`, { // eslint-disable-line no-undef
   method: 'POST',
   headers: {
     Accept: 'application/json',
@@ -19,23 +19,23 @@ export const postAnnData = data => fetch(`${apiConstants.ANNOTATION}/context/${d
   body: JSON.stringify(data)
 });
 
-export const putAnnData = data => fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
+export const putAnnData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
   method: 'PUT',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id':'epluser'
+    'Identity-Id':data.user
   },
   body: JSON.stringify(data)
 });
 
-export const deleteAnnData = annId =>
- fetch(`${apiConstants.ANNOTATION}/context/${data.context}/annotations/${annId}`, {// eslint-disable-line no-undef
+export const deleteAnnData = data =>
+ fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id':'epluser'
+    'Identity-Id':data.user
   }
 });
 
@@ -57,5 +57,15 @@ export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPER
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json'
+  }
+});
+
+// Bookmark Api Call,
+export const getBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/bookmarks?uri=${data.uri}`,{
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Identity-Id':data.user
   }
 });

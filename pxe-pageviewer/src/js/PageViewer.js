@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+// import CircularProgress from 'material-ui/CircularProgress';
 // import renderHTML from 'react-render-html';
 
 import FooterNav from './FooterNav';
@@ -52,6 +53,7 @@ class PageViewer extends React.Component {
 
   getResponse = (currentPage, isInitOrGo, goToPage, scrollWindowTopCallBack, pageFragmentID) => {
     this.props.onBookLoaded(false);
+    // this.setState({pageLoading:true});
     const thisRef = this;
     const playListURL = thisRef.props.src.playListURL;
     currentPage = currentPage + (isInitOrGo ? 0 : thisRef.state.currentPage);
@@ -82,8 +84,9 @@ class PageViewer extends React.Component {
         currentStatePlayListUrl: playListURL[currentPage]
       });
       this.props.onBookLoaded(true);
+      // this.setState({pageLoading:false});
       //callback
-      if (pageFragmentID) {
+      if (pageFragmentID && document.getElementById(pageFragmentID)) {
         this.scrollToFragment(pageFragmentID);
       }else  {
         scrollWindowTopCallBack();
@@ -152,7 +155,7 @@ class PageViewer extends React.Component {
       setTimeout(function() {
         //window.scrollTo(ele.offsetLeft, ele.offsetTop);
         ele.scrollIntoView();
-      }, 0);
+      }, 1000);
       // window.scrollTo(ele.offsetLeft, ele.offsetTop);
     }
   };
@@ -220,8 +223,9 @@ class PageViewer extends React.Component {
       <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
           <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
-            {this.state.renderSrc?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} </div>
+            {this.state.renderSrc ?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} 
           </div>
+        </div>
         {this.props.src.enableGoToPage ?this.getGoToElement():''} 
         <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
         <div ref = {(el) => { this.drmBlockRef = el; }}> </div >
@@ -233,5 +237,4 @@ class PageViewer extends React.Component {
 PageViewer.PropTypes = {
   src: PropTypes.object.isRequired
 };
-
 export default PageViewer;
