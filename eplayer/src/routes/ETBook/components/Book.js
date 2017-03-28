@@ -118,15 +118,7 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
-    data.user = (data.user ? data.user : "epluser");
-    data.context = (data.context ? data.context : this.props.params.bookId);
-    data.source = {
-        "uri": data.href,
-        "id":  data.id,
-        "label": data.title,
-        "playOrder": data.playOrder,
-        "baseUrl": this.state.pageDetails.baseUrl
-    }
+    
     this.setState({ currentPageDetails: data  });
     const pageId = data.id;
     const bookId = this.props.params.bookId;
@@ -155,16 +147,28 @@ export class Book extends Component {
   }
 
   annotationCallBack = (eventType, data) => {
+      if ( data && data.annotation ){
+          const receivedAnnotationData    = data.annotation;
+          receivedAnnotationData.user     = "epluser";
+          receivedAnnotationData.context  = this.props.params.bookId;
+          receivedAnnotationData.source   = {
+              "uri": this.state.currentPageDetails.href,
+              "id":  this.state.currentPageDetails.id,
+              "label": this.state.currentPageDetails.title,
+              "playOrder": this.state.currentPageDetails.playOrder,
+              "baseUrl": this.state.currentPageDetails.baseUrl
+          }
+      }
       switch (eventType) {
           case 'annotationCreated': {
-            return this.props.dispatch(postAnnCallService(data));
+            return this.props.dispatch(postAnnCallService(receivedAnnotationData));
           }
           case 'annotationEditorSubmit':{
-              if(data.annotation && data.annotation.id)
-              return this.props.dispatch(putAnnCallService(data.annotation));
+              if(receivedAnnotationData && receivedAnnotationData.id)
+              return this.props.dispatch(putAnnCallService(receivedAnnotationData));
           }
           case 'annotationDeleted': {
-              return (data.id ? this.props.dispatch(deleteAnnCallService(data)):'');
+              return (data.id ? this.props.dispatch(deleteAnnCallService(receivedAnnotationData)):'');
           }
           default : {
               return eventType;
