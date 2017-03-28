@@ -2,7 +2,7 @@ import { clients } from '../../../components/common/client';
 import axios from 'axios';
 
 
-const urlLogin = "https://etext-qa-stg.pearson.com:443/api/nextext-api/v1/api/account/login?chk_old=true&withIdpResponse=true";
+const urlLogin = "https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/account/login?withIdpResponse=true&chk_old=true&is_stand=true";
 
  
 

@@ -46,7 +46,7 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
   };
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getbookmarkreport?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return clients.fetchBookmarks.get('getbookmarkreport?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', {
       method: GET,
       headers: {
         Accept: 'application/json',
@@ -66,8 +66,11 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
           const bookmarks=bookmarkList.bookMarkReportList
         bookmarks.forEach((bookmark) => {
           const bmObj = {
-            id: bookmark.bookPageNumber,
-            uri: bookmark.pageOrder
+            id: bookmark.pageOrder,
+            uri: bookmark.pageOrder,
+            title: 'Page '+bookmark.pageOrder,
+            pageID: bookmark.pageID,
+            createdTimestamp: bookmark.updatedDate
           };
           bookState.bookmarks.push(bmObj);
           });
@@ -82,7 +85,7 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
 export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId,sessionKey) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/setbookmark?userID=116392&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return clients.addBookmarks.get('setbookmark?userID=116392&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
       method: GET,
       headers: {
         Accept: 'application/json',
@@ -109,7 +112,7 @@ export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId
 export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId,sessionKey) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/resetbookmark?userID=116392&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return clients.removeBookmark.get('resetbookmark?userID=116392&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
       method: GET,
       headers: {
         Accept: 'application/json',
@@ -133,7 +136,7 @@ export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId
   };
 }
 
-export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey){
+export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,pageId,sessionKey){
   console.log('bookeditionid==='+bookeditionid);
   const bookState = {
     toc: {
@@ -149,12 +152,12 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
   };
   return(dispatch) => {
     dispatch(request('toc'));
-    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc')
+    return clients.fetchTocAndViewer.get('getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc')
     .then((response) => {
     response.data.forEach((allBaskets) =>{
     const basketData = allBaskets.basketsInfoTOList;
-      bookState.toc.content.bookId = basketData[0].bookID || '';
-      bookState.toc.content.id = basketData[0].id || 'TOC';
+      //bookState.toc.content.bookId = basketData[0].bookID || '';
+      bookState.toc.content.id = basketData[0].bookID || '';
       bookState.toc.content.mainTitle = title || 'Sample Title';
       bookState.toc.content.author = authorName || 'Saha/Rai/Mahapatra/Pujari';
       bookState.toc.content.thumbnail = thumbnail || 'http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM21254346/assets/1256799653_Iannone_thumbnail.png';
@@ -167,22 +170,21 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
           const tocLevel_2_ChildData=tocLevel_2.bc.b.be;
           if(tocLevel_2_ChildData.length===undefined)
           {
-            var childList = construct_tree(tocLevel_2_ChildData,j);
+            var childList = construct_tree(tocLevel_2_ChildData);
             tocLevel_1_ChildList.push(childList);
           }
           else
           {
           tocLevel_2_ChildData.forEach((tocLevel_3,k) =>{
-            var childList = construct_tree(tocLevel_3,k);
+            var childList = construct_tree(tocLevel_3);
             tocLevel_1_ChildList.push(childList);
 
           });
         }
           });
         var tocLevel_1_Obj = new Node();
-        tocLevel_1_Obj.id=i;
+        tocLevel_1_Obj.id=tocLevel_1.basketID;
         tocLevel_1_Obj.title=tocLevel_1.name;
-        tocLevel_1_Obj.playOrder='';
         tocLevel_1_Obj.children=tocLevel_1_ChildList;
         bookState.toc.content.list.push(tocLevel_1_Obj);
         console.log();
@@ -197,31 +199,29 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
  function Node() {
    this.id =""
    this.title =""
-   this.playOrder =""
    this.children =[]
-   this.linkVal ={}
+   this.urn =""
  }
- function construct_tree(input,idVal){
+ function construct_tree(input){
        var output = new Node();
-       output.id = idVal;
+       output.id = input.i;
        output.title = input.n;
-       output.playOrder ='';
        if(input.lv!==undefined)
        {
-        output.linkVal=input.lv;
+        output.urn=input.lv.pageorder;
        }
        if(input.be!==undefined)
        {
        if(input.be.length===undefined)
        {
           output.children.push(
-            construct_tree(input.be,idVal));
+            construct_tree(input.be));
        }
        else
        {
         input.be.forEach((node,i) =>{
           output.children.push(
-               construct_tree(node,i));
+               construct_tree(node));
        });
        }
      }
@@ -238,7 +238,7 @@ export function fetchBookInfo(bookid,sessionKey)
 {
   return{
   type: 'RECEIVEBOOKINFO',
-  payload: clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getbookinfo?userid=116392&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON')
+  payload: clients.fetchBookInfo.get('getbookinfo?userid=116392&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON')
   };
 }
  export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,sessionKey)
@@ -249,7 +249,7 @@ export function fetchBookInfo(bookid,sessionKey)
       }
   };
   return(dispatch)=>{
-    return clients.scapi.get('http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getpagebypageorder?userid=116392&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON')
+    return clients.fetchPageInfo.get('getpagebypageorder?userid=116392&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON')
     .then((response) => {
       if (response.status >= 400) {
         console.log(`FetchPage info error: ${response.statusText}`);
@@ -303,8 +303,11 @@ const ACTION_HANDLERS = {
     bookmarks: [
       ...state.bookmarks,
       {
-        id: 'NA',
-        uri: action.bookmarkToAdd.uri
+        id: action.bookmarkToAdd.id,
+        uri: action.bookmarkToAdd.uri,
+        title:'Page '+action.bookmarkToAdd.uri,
+        pageID: action.bookmarkToAdd.pageID,
+        createdTimestamp: action.bookmarkToAdd.createdTimestamp
       }
     ].sort(function(bkm1, bkm2){return bkm1.uri-bkm2.uri}),
     isFetching: {
@@ -388,10 +391,7 @@ const initialState = {
   bookmarks: [],
   preferences: {},
   toc: {},
-  viewer: {
-    currentPageId:1,
-    pages:[{id:1,content:'Dummy',title:''}]
-  },
+  viewer: {},
   isFetching: {
     annotations: false,
     preferences: false,

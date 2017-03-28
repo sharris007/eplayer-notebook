@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import {fetch,storeUPdfUrl,storeBookDetails,storeSsoKey} from '../modules/bookshelfActions';
+import {fetch,storeUPdfUrl,storeBookDetails,storeSsoKey,fetchcdnToken} from '../modules/bookshelfActions';
 
 
 /*  This is a container component. Notice it does not contain any JSX,
@@ -17,12 +17,14 @@ const mapDispatchToProps = {
   fetch,
   storeUPdfUrl,
   storeBookDetails,
-  storeSsoKey
+  storeSsoKey,
+  fetchcdnToken
 };
 
 const mapStateToProps = state => ({
   bookshelf: state.bookshelf ? state.bookshelf : {},
-  login: state.login ? state.login : {}
+  login: state.login ? state.login : {},
+  cdnData:state.bookshelf.cdnToken ? state.bookshelf.cdnToken : {},
 });
 
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:

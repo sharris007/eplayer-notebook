@@ -220,11 +220,11 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             m.setWatermarkInfo(a)
         }, this.getWatermarkInfo = function() {
             return m.getWatermarkInfo()
+        }, this.setLayoutShowMode = function(a) {
+            var b = g();
+            return b ? b.changeShowMode(a, !0) : null
         }
-        // }, this.setLayoutShowMode = function(a) {
-        //     var b = g();
-        //     return b ? b.changeShowMode(a, !0) : null
-        // // }, this.setAccessToken = function(a) {
+        // , this.setAccessToken = function(a) {
         // //     a && $.ajaxSetup({
         // //         headers: {
         // //             accessToken: a
@@ -3513,7 +3513,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var g = f.defaults.errPageImgWidth / e,
                 h = f.defaults.errPageImgHeight / e,
                 i = (C.getPageViewWidth() - g) / 2,
-                j = (C.getPageViewHeight() - h) / 2,
+                j = (C.getPageViewHeight() - h) / 2,            
                 k = "<div style='position:absolute;width:" + g + "px;height:" + h + "px;margin-left:" + i + "px;margin-top:" + j + "px'><img alt='' src='" + a + "'  style='width:100%;height:100%'></div>";
             b.append(k)
         }, this.isPageLoaded = function() {
@@ -4736,39 +4736,66 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
         var b = {},
             c = {},
             e = this;
-        this.ajaxGetTextPage = function(e) {
+        this.ajaxGetTextPage = function(e) {            
             if (!c[e]) {
-                var f = a.getOptions().url + "text/" + e;
-                a.isFormMode() && (f += "?formMode=true");
                 var g = {
                     password: a.getPDFPassword()
                 };
-                c[e] = !0, $.ajax({
-                    url: f,
-                    dataType: "json",
-                    data: g,
-                    success: function(a) {
-                        var f = 0;
-                        if (null != a && (f = a.error), 0 != f) return void(c[e] = !1);
-                        if (null == a) return console.warn("Get page text returns null."), !1;
-                        try {
-                            var g = $.parseJSON(a.TextPageData);
-                            if (null != g) {
-                                var h = new d;
-                                h.init(g), b[e] = h
-                            }
-                        } catch (i) {
-                            console.error("Parse page{" + e + "} text failed.");
-                            var h = new d;
-                            return h.init(""), b[e] = h, c[e] = !1, !1
-                        }
-                    },
-                    error: function() {
-                        console.error("Get page{" + e + "} text from server failed.");
-                        var a = new d;
-                        return a.init(""), b[e] = a, c[e] = !1, !1
+                c[e] = !0
+                /*if(window.location.protocol != "file:"){
+                    var bookid = JSON.parse(localStorage.getItem('bookId'));
+                    if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
+                        var f = "./js/providers/"+bookid+"epub/"+bookid+"/annotations/page" + e;
+                    } else {
+                        var f = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/annotations/page" + e;
                     }
-                })
+                    $.get(f , function(a) {
+                        a = JSON.parse(a);
+                        var f = 0;
+                            if (null != a && (f = a.error), 0 != f) return void(c[e] = !1);
+                            if (null == a) return console.warn("Get page text returns null."), !1;
+                            try {
+                                var g = $.parseJSON(a.TextPageData);
+                                if (null != g) {
+                                    var h = new d;
+                                    h.init(g), b[e] = h
+                                }
+                            } catch (i) {
+                                console.error("Parse page{" + e + "} text failed.");
+                                var h = new d;
+                                return h.init(""), b[e] = h, c[e] = !1, !1
+                            }
+                    });
+                } else {*/
+                    var f = a.getOptions().url + "text/" + e;
+                    a.isFormMode() && (f += "?formMode=true");
+                    $.ajax({
+                        url: f,
+                        dataType: "json",
+                        data: g,
+                        success: function(a) {
+                            var f = 0;
+                            if (null != a && (f = a.error), 0 != f) return void(c[e] = !1);
+                            if (null == a) return console.warn("Get page text returns null."), !1;
+                            try {
+                                var g = $.parseJSON(a.TextPageData);
+                                if (null != g) {
+                                    var h = new d;
+                                    h.init(g), b[e] = h
+                                }
+                            } catch (i) {
+                                console.error("Parse page{" + e + "} text failed.");
+                                var h = new d;
+                                return h.init(""), b[e] = h, c[e] = !1, !1
+                            }
+                        },
+                        error: function() {
+                            console.error("Get page{" + e + "} text from server failed.");
+                            var a = new d;
+                            return a.init(""), b[e] = a, c[e] = !1, !1
+                        }
+                    })
+                //}
             }
         }, this.ajaxSearchText = function(b, c) {
             if ("" != b) {
@@ -6325,7 +6352,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
 
         function d(a, c, d, e, h, i) {
             if ($.isFunction(h) && $.isFunction(i) || $.error("both 'doneHandler' and 'failedHandler' must be function."), 0 >= f) return console.error("Maximum number of retries exceeded for getAnnotData request."), void i(null);
-            var j = c.getOptions().url + "annots/" + e;
+            var j = c.getOptions().url + "annots/" + e ;
             c.isFormMode() && (j += "?formMode=true");
             var k = {
                 password: c.getPDFPassword()
@@ -10680,7 +10707,17 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             b = this;
         this.asyncLoadPDFBookmark = function(c, d, e, f) {
             if ($.isFunction(e) && $.isFunction(f) || $.error("both 'doneHandler' and 'failedHandler' must be function."), 0 >= a) return console.error("Maximum number of retries exceeded for getBookmarkData request."), void f(null);
-            var g = c.getOptions().url + "bookmarks";
+            var g;
+            /*if(window.location.protocol != "file:"){
+                var bookid = JSON.parse(localStorage.getItem('bookId'));
+                if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
+                    g = "./js/providers/"+bookid+"epub/"+bookid+"/bookmark";
+                } else {
+                    g = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/bookmark";
+                }
+            }else{*/
+                g = c.getOptions().url + "bookmarks";
+           // }
             c.isFormMode() && (g += "?formMode=true");
             var h = {
                 password: c.getPDFPassword()
@@ -16896,7 +16933,17 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             return c
         }, this.asyncLoadDocument = function(a, c, d, e, f) {
             if (!$.isFunction(e) || !$.isFunction(f)) return void $.error("both 'doneHandler' and 'failedHandler' must be function.");
-            var g = a.getOptions().url + "manifest",
+            var g;
+            /*if(window.location.protocol != "file:"){
+                var bookid = JSON.parse(localStorage.getItem('bookId'));
+                if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
+                    g = "./js/providers/"+bookid+"epub/"+bookid+"/manifest";
+                } else {
+                    g = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/manifest";
+                }
+            }else{*/
+                g = a.getOptions().url + "manifest";
+            //} 
                 h = {};
             c ? h.password = c : h.password = "", null != d && (h.isCheckPsd = d), h.form = a.isFormMode(), $.ajax({
                 url: g,
@@ -17424,9 +17471,21 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
         }, this.getPageImgUrl = function(a, b, c) {
             b = 100;
             var d = c ? "thumb" : b + "",
-                e = "?password=" + i.getPDFPassword(),
-                f = i.getOptions().url + "image/" + a + "/" + d + e;
-            return f += "&accessToken=" + "null", i.isFormMode() && (f += "&formMode=true"), f
+                e = "?password=" + i.getPDFPassword();
+                var f;
+               /* if(window.location.protocol != "file:"){
+                    var bookid = JSON.parse(localStorage.getItem('bookId'));
+                    if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
+                        f = "./js/providers/"+bookid+"epub/"+bookid+"/pages/page" + a;
+                        return f
+                    } else {
+                        f = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/pages/page" + a;
+                        return f
+                    }
+                }else{*/
+                    f = i.getOptions().url + "image/" + a + "/" + d + e;
+                    return f += "&accessToken=" + "null", i.isFormMode() && (f += "&formMode=true"), f
+               // }
         }, this.getPixelsPerPoint = function() {
             return 96 / 72
         }, this.renderPage = function(a, b) {
@@ -17458,9 +17517,12 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                             a.isThumb() || a.setThumbnailLoaded(!0), a.setPageLoaded(!0);
                             var q = "";
                             q = l ? i.getBaseUrl() + "images/reader/imgFailed.png" : i.getBaseUrl() + "images/reader/imgLimit.png", a.showErrorPage(q)
-                        } else $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.isThumb() ? a.setPageLoaded(!0) : a.isThumbnailLoaded() ? a.setPageLoaded(!0) : (a.setThumbnailLoaded(!0), setTimeout(function() {
+                        } else{
+                            $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.isThumb() ? a.setPageLoaded(!0) : a.isThumbnailLoaded() ? a.setPageLoaded(!0) : (a.setThumbnailLoaded(!0), setTimeout(function() {
                             j.renderPage(a, d.defaults.requestRetryCount)
-                        }, 50));
+                            }, 50));    
+                        } 
+                        
                         !a.isThumb() && a.isPageLoaded() && (a.setPageLoadError(e), $(i).trigger(WebPDF.EventList.PAGE_SHOW_COMPLETE, {
                             pageView: a
                         }))
@@ -17506,21 +17568,29 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
 }), define("core/ImageLazyLoad", ["core/WebPDF"], function(a, b, c) {
     var d = a("core/WebPDF");
     return d.ImgLazyLoad = function(a, b, c, e, f) {
-        $.ajax({
-            url: a,
-            crossDomain: !0,
-            ifModified: !0,
-            error: function(a, b, d) {
-                $.isFunction(f) && f(c)
-            },
-            success: function(a, b, f) {
-                var g = f.getResponseHeader("content-type") || "";
-                if (g.indexOf("application/json") > -1) {
-                    var h = a.status.toString();
-                    h != d.ImageEngine.GetImageErrorCode.ERROR_PAGE_DISPLAY_LIMIT.toString() && h != d.ImageEngine.GetImageErrorCode.ERROR_CREATE_IMG_FAILED.toString() && h != d.ImageEngine.GetImageErrorCode.ERROR_INPROGRESS.toString() || "success" != b || e(c, h)
-                } else e(c)
+        /*if(window.location.protocol != "file:"){
+            if(a.indexOf("pages") > -1){
+                e(c);      
             }
-        })
+        }else{*/
+            $.ajax({
+                url: a,
+                crossDomain: !0,
+                ifModified: !0,
+                error: function(a, b, d) {
+                    $.isFunction(f) && f(c)
+                },
+                success: function(a, b, f) {
+                    var g = f.getResponseHeader("content-type") || "";
+                    if (g.indexOf("application/json") > -1) {
+                        var h = a.status.toString();
+                        h != d.ImageEngine.GetImageErrorCode.ERROR_PAGE_DISPLAY_LIMIT.toString() && h != d.ImageEngine.GetImageErrorCode.ERROR_CREATE_IMG_FAILED.toString() && h != d.ImageEngine.GetImageErrorCode.ERROR_INPROGRESS.toString() || "success" != b || e(c, h)
+                    } else {
+                        e(c)
+                    }
+                }
+            })            
+        //}        
     }, d.ImgLazyLoad
 }), define("core/AjaxRetryManager", ["core/WebPDF"], function(a, b, c) {
     var d = a("core/WebPDF");

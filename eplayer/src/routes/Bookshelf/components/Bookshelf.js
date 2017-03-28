@@ -1,29 +1,51 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
-import { Bookshelf } from '@pearson-incubator/bookshelf';
+import { BookshelfComponent } from '@pearson-incubator/bookshelf';
 import CircularProgress from 'material-ui/CircularProgress';
 import isEmpty from 'lodash/isEmpty';
 import errorCard from '../../../components/common/errorCard';
 import BookshelfHeader from '../../../components/BookshelfHeader';
 import './Bookshelf.scss';
+import { clients } from '../../../components/common/client';
 
 
 export default class BookshelfPage extends React.Component {
-
+constructor(props) {
+    super(props);
+    this.props.fetchcdnToken()
+    .then((data) => {})
+  }
 componentWillMount() {
     const sessionid=this.props.login.data.token;
+    const piToken = this.props.login.data.piToken;
+
     //const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
-    this.props.storeSsoKey(sessionid);
+    this.props.storeSsoKey(sessionid, );
+    console.log('sessionid:: '+sessionid);
+
+    console.log('piToken:: '+piToken);
+
     //const urn ='http://10.102.88.150:8080/JavaSampleWebApp/TestServlet';
     var userlogin = this.props.login.data.userName;
     var password = this.props.login.data.password;
-    var urn = 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext/users/eT1/'+userlogin+'/bookshelf'
-    var postData = {
+    
+    //var urn = 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext/bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
+    var urn = 'bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
+    //console.log(urn);
+
+    /*var postData = {
       chk_old: 'true',
       password: 'a17a41337551d6542fd005e18b43afd4',
-      languageId: '1'
-    }
-    this.props.fetch(urn, postData);
+      languageId: '1',
+      piToken: piToken
+    }*/
+    this.props.fetch(urn, piToken);
+    console.log(urn);
+    //this.props.fetch(urn);
+    /*console.log("********"+this.props.login.data.token+"********");
+    console.log("password "+this.props.login.data.password);
+    console.log("User "+this.props.login.data.userName);*/
+
   }
 
 
@@ -35,11 +57,12 @@ componentWillMount() {
     }
     else
     {
-      browserHistory.push(`/eplayer/book/${bookId}`);
+      //browserHistory.push(`/eplayer/book/${bookId}`);
     }
   }
 
   render() {
+    console.log(this.props.bookshelf.cdnToken);
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {
@@ -60,11 +83,13 @@ componentWillMount() {
            description: bookRef.description || '',
            tocId: '',
            updfUrl: bookRef.uPdfUrl,
+           globalBookId: bookRef.globalBookId,
            bookeditionid: bookRef.bookeditionid,
            iseT1: bookRef.iseT1
-
         };
         booksdata.push(book);
+        console.log("globalBookId :: "+book.globalBookId);
+        console.log("bookeditionid :: "+book.bookeditionid);
       });
     //});
     }
@@ -75,9 +100,9 @@ componentWillMount() {
 
     return (
       <div id="bookshelf-page">
-        <BookshelfHeader />
+        <BookshelfHeader userName={this.props.login.data.userName}/>
         {fetching ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
-        {fetched ? <Bookshelf books={booksdata} onBookClick={this.handleBookClick} storeUPdfUrl={this.props.storeUPdfUrl} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey}/> : null}
+        {fetched ? <BookshelfComponent books={booksdata} onBookClick={this.handleBookClick} storeUPdfUrl={this.props.storeUPdfUrl} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey}/> : null}
 
       </div>
     );
@@ -89,5 +114,6 @@ BookshelfPage.propTypes = {
   fetch: React.PropTypes.func.isRequired,
   storeUPdfUrl: React.PropTypes.func,
   storeBookDetails: React.PropTypes.func,
-  storeSsoKey: React.PropTypes.func
+  storeSsoKey: React.PropTypes.func,
+   fetchcdnToken:React.PropTypes.func
 };

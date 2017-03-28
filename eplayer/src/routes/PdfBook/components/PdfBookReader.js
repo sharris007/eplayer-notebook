@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Viewer } from '@pearson-incubator/viewer';
+import { ViewerComponent } from '@pearson-incubator/viewer';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
 import './PdfBook.scss';
 import pdfwrapper from '../../../../pdf_reader_lib/pdfWrapper';
-import Navigation from '@pearson-incubator/viewer/src/js/Navigation';
 import {Link, browserHistory } from 'react-router';
 
 export class PdfBookReader extends Component {
@@ -13,7 +12,13 @@ export class PdfBookReader extends Component {
     super(props);
     this.state = {
       classname: 'headerBar',
-      currPageIndex:''
+      currPageIndex:'',
+      data  : {
+        currentPageNo : '',
+        isFirstPage : true,
+        isLastPage : true
+      },
+      isET1: 'Y'
      
     };
     this.nodesToUnMount = [];
@@ -24,11 +29,16 @@ export class PdfBookReader extends Component {
   componentDidMount() {
     this.props.fetchTocAndViewer(this.props.params.bookId,this.props.bookshelf.authorName,this.props.bookshelf.title,this.props.bookshelf.thumbnail,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey);
     this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey);
+    var etext_token =this.props.bookshelf.cdnToken;
+    var headerParams = {
+       'etext-cdn-token' : etext_token 
+     }
     var config = {
     host: "https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/",
     //PDFassetURL: "http://www.pdf995.com/samples/pdf.pdf",
     //PDFassetURL: "http://epspqa.stg-openclass.com/pearson-reader/api/item/ad6c0891-da60-4285-8c62-68850775c329/1/file/CM76820710_uPDF.pdf",
     PDFassetURL: this.props.bookshelf.uPdf,
+    headerParams: headerParams,
     encpwd: null,
     zip: false,
     callbackOnPageChange : this.pdfBookCallback
@@ -40,6 +50,24 @@ export class PdfBookReader extends Component {
      this.setState({currPageIndex : currentPageIndex});
      const currentPageOrder=currentPageIndex+1;
      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageOrder);
+     var data = this.state.data;
+     if(currentPageOrder == 1){
+      data.isFirstPage =true;
+      this.setState({data : data})
+     }else{
+       data.isFirstPage =false; 
+       this.setState({data : data})
+     }
+
+     if(currentPageOrder === this.getPageCount()){
+       data.isLastPage =true;
+      this.setState({data : data})
+     }else{
+      data.isLastPage =false;
+      this.setState({data : data})
+     }
+     data.currentPageNo = currentPageOrder;
+     this.setState({data : data});
      // If already page details are in store then we do not hit fetchPageInfo again
      if(currentPage===undefined)
      {
@@ -67,7 +95,7 @@ export class PdfBookReader extends Component {
   };
 
   goToPageCallback(pageNum)
-  {
+  {  
     pageNum=pageNum-1;
     if(pageNum>=0)
     {
@@ -104,7 +132,7 @@ export class PdfBookReader extends Component {
    return currPageIndex;
   }
   
-  handleBackClick = (bookId) => {   
+  handleBackClick = (bookId) => { 
     browserHistory.push(`/bookshelf`);    
   }
   
@@ -118,7 +146,7 @@ export class PdfBookReader extends Component {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   }
 
-  handleScroll = () => {
+  /*handleScroll = () => {
             var didScroll;
             var lastScrollTop = 0;
             var delta = 5;
@@ -141,24 +169,34 @@ export class PdfBookReader extends Component {
   leaveScroll = () => {
           $('.headerBar').show(); 
           $('.navigation').css('display','block');
-  }
+  }*/
 
   addBookmarkHandler = () => {
     const currentPageId=pdfwrapper().getCurrentPage()+1;
     const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
+    var currTimeInMillsc = (new Date).getTime();
     const bookmark = {
-      id: currentPage.pagenumber,
-      uri:currentPageId
+      id: currentPageId,
+      uri:currentPageId,
+      createdTimestamp:currTimeInMillsc,
+      pageID:currentPage.pageid
     };
     this.props.addBookmark(this.props.params.bookId, bookmark,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,currentPage.pageid,this.props.bookshelf.ssoKey);
   }
 
-  removeBookmarkHandler = (bookmarkId) => {
+  removeBookmarkHandler = () => {
     const currentPageId=pdfwrapper().getCurrentPage()+1;
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
+    //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
     const targetBookmarkId = targetBookmark.uri;
-    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,currentPage.pageid,this.props.bookshelf.ssoKey);
+    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,targetBookmark.pageID,this.props.bookshelf.ssoKey);
+  };
+
+  removeBookmarkHandlerForBookmarkList = (bookmarkId) => {
+    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === bookmarkId);
+    //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === bookmarkId);
+    const targetBookmarkId = targetBookmark.uri;
+    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,targetBookmark.pageID,this.props.bookshelf.ssoKey);
   };
 
   isCurrentPageBookmarked = () => {
@@ -176,6 +214,7 @@ export class PdfBookReader extends Component {
     const callbacks = {};
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
+    callbacks.removeBookmarkHandlerForBookmarkList =this.removeBookmarkHandlerForBookmarkList;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPageCallback.bind(this);
@@ -189,11 +228,15 @@ export class PdfBookReader extends Component {
           bookCallbacks={callbacks}
           setCurrentZoomLevel={this.setCurrentZoomLevel}
           store={this.context.store}
+          goToPage={this.goToPageCallback}
+          bookId={this.props.params.bookId}
+          globalBookId={this.props.bookshelf.globalBookId}
+          ssoKey={this.props.bookshelf.ssoKey}
           isET1='Y'
-        />
+        /> 
       
        <div className="viewerContent">
-      <Navigation data={this.props.book.viewer} pages={this.props.book.viewer.pages} callbackParent={this.goToPage} getPrevNextPage={this.getPrevNextPage} isET1='Y' />
+       <ViewerComponent data={this.state.data} pages={this.props.book.viewer.pages} goToPageCallback={this.goToPage} getPrevNextPage={this.getPrevNextPage} isET1='Y'/>
       </div>
       </div>
         <div>
@@ -202,7 +245,7 @@ export class PdfBookReader extends Component {
                 <div id="right" className="pdf-fwr-pc-right">
                  <div id="toolbar" className="pdf-fwr-toolbar"></div>
                   <div id="frame">
-                    <div id="docViewer" onHold={this.handleScroll} onMouseLeave={this.leaveScroll}  className="docViewer" ></div>
+                    <div id="docViewer"  className="docViewer" ></div>
                   </div>
                  </div>
                 </div>

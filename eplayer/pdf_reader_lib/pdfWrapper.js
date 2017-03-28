@@ -176,7 +176,7 @@ function initBookmark(baseUrl,options){
                   WebPDF.ViewerInstance.gotoPageByDestination(des);
                  }
                  triggerEvent("onpageChange");
-                 return false;
+                 return des.pageIndex;
                }
             }
             catch (ex) {
@@ -262,7 +262,7 @@ function initBookmark(baseUrl,options){
          return TOCArray;
        },
        gotoPDFNode: function(nodeId){
-        _gotoPDFNode(nodeId);
+        return _gotoPDFNode(nodeId);
        }
     };
 }
@@ -334,8 +334,6 @@ function _handleClick() {
   if(selectedText.toString().trim() !== '') {
   var selection = document.querySelectorAll('.fwr-text-highlight');
     triggerEvent("textSelected", selection);
-	//invoke
-	highlightText();
     } else{
       if(typeof InstallTrigger !== 'undefined'){
         triggerEvent("blankSelection", {});
@@ -400,9 +398,9 @@ function initViewer(config) {
    }
   });
   }
-
+  //initWebPDFMini()
   // open the sample file
-  var assertUrl = openFile(baseUrl,openFileUrl, zip, encpwd, assetid, deviceid, appversion, authorization, acceptLanguage);
+  var assertUrl = openFile(baseUrl,openFileUrl, config.headerParams);
   if (assertUrl == null) return;
   seajs.use(['webpdf.mini.js'], function (init) {
     var options = {
@@ -432,20 +430,20 @@ function initViewer(config) {
     WebPDF.ViewerInstance.on(WebPDF.EventList.PAGE_SHOW_COMPLETE, function (event, data) {
        createPDFEvent('wrpageLoaded');
     });
-  
     tocObj = initBookmark(compBaseURL,compBaseOptions);
     toolBar = initToolBar();
     //WebPDF.ViewerInstance.setWatermarkInfo(getWatermarkConfigs());
     WebPDF.ViewerInstance.load();
-
   });
-}
-
+};
 
 function createPDFEvent(eventName) {
   var event = document.createEvent('Event');
   event.initEvent(eventName, true, true);
-  document.querySelector('.docViewer').dispatchEvent(event);
+  try{
+    document.querySelector('.docViewer').dispatchEvent(event);
+  }catch(e){}
+  
 }
 
 function getIP(baseUrl) {
@@ -471,14 +469,18 @@ function getIP(baseUrl) {
  * @param fileUrl the file url to be opened.
  * @param callback the callback function to implement after open the file.
  */
-function openFile(baseUrl,fileUrl,zip,encpwd,assetid,deviceid,appversion,authorization,acceptLanguage,callback) {
+function openFile(baseUrl,fileUrl,headerParams,callback) {
     fileUrl = fileUrl.replace(/^\s*/g, "").replace(/\s*$/g, ""); // trim string
-  // User information can be get from custom user system.
-  // It can be set at this place,and also can be set by SPI plugin implement.
+    // User information can be get from custom user system.
+    // It can be set at this place,and also can be set by SPI plugin implement.
     var user = getIP(baseUrl);
+    var tempURL = "";
+    for(var i in headerParams) {
+      tempURL = tempURL + i.toString() + "=" + headerParams[i].toString() + '&';
+      // console.log( i + ": " + foo[i] + "<br />");
+    }
     // Current SDK only support read only,disable print and disable download user permission control.
-     var loadParams = fileUrl + "?user=" + user
-             + "&readOnly=false&disablePrint=false&disableDownload=false" + "&encpwd=" + encpwd + "&zip=" + zip + "&assetid=" + assetid + "&deviceid=" + deviceid + "&appversion=" + appversion + "&token=" + authorization + "&acceptLanguage=" + acceptLanguage;
+     var loadParams = fileUrl + "?"  + tempURL;
         // Set the load type of SPI plugin. HTTP means demo plugin implement to process the document from http protocol.
     var loadType = "com.foxit.readerplus.HttpDocumentPlugin";
     var data = {
@@ -585,6 +587,85 @@ function triggerEvent(eventName, eventData) {
   }
 }
 
+/*
+function loadLocalAssets(){
+    // open the sample file
+  // var assertUrl = openFile(baseUrl,openFileUrl, zip, encpwd, assetid, deviceid, appversion, authorization, acceptLanguage);
+  var language = "en-US";
+  var assertUrl = "";
+  if (assertUrl == null) return;
+  initWebPDFMini();
+  seajs.use(['./webpdf.mini.js'], function (init) {
+    var options = {
+        language: language,
+        url: "testString",
+        scrollBarType: 0
+    };
+    compBaseOptions = options;
+    var pos = assertUrl.indexOf("asserts");
+    var baseUrl = assertUrl.substr(0, pos);
+    compBaseURL = baseUrl;
+    WebPDF.createViewer("docViewer", options);
+    WebPDF.ViewerInstance.on(WebPDF.EventList.DOCUMENT_LOADED, function (event, data) {
+         createPDFEvent('wrdocLoaded');
+    });
+    WebPDF.ViewerInstance.on(WebPDF.EventList.PAGE_VISIBLE, function (event, data) {
+        createPDFEvent('pageVisible');
+    });
+    WebPDF.ViewerInstance.on(WebPDF.EventList.DOCVIEW_PAGE_CHANGED, function (event, data) {
+        var currentPageIndex = WebPDF.ViewerInstance.getCurPageIndex();
+        var pdfImageLoad = document.querySelector("#docViewer_ViewContainer_BG_" + currentPageIndex).className;
+        if(pdfImageLoad.indexOf("fwr-hidden") > 1) {
+        createPDFEvent('wrpageChanged');
+        }
+    });
+    WebPDF.ViewerInstance.on(WebPDF.EventList.PAGE_SHOW_COMPLETE, function (event, data) {
+       createPDFEvent('wrpageLoaded');
+    });
+    tocObj = initBookmark(compBaseURL,compBaseOptions);
+    toolBar = initToolBar();
+    //WebPDF.ViewerInstance.setWatermarkInfo(getWatermarkConfigs());
+    WebPDF.ViewerInstance.load();
+  });
+}*/
+
+function getAssetURLForPDFDownload(config,cb){
+  var language = "en-US";
+  var assetid="",deviceid="",appversion = "" ,authorization = "",acceptLanguage="";
+  // get the base url
+  var host = config.host; //"http://10.25.168.128:8085/foxit-webpdf-web/pc/";
+  var index = host.lastIndexOf("foxit-webpdf-web");
+  var baseUrl = host.substr(0,index + 17);
+  //PDF asset path
+  var openFileUrl = config.PDFassetURL;
+  var zip = config.zip;
+  var encpwd = config.encpwd;
+  if(config.requestheaderParams) {
+    assetid = config.requestheaderParams.assetid || "";
+    deviceid = config.requestheaderParams.deviceid || "";
+    appversion = config.requestheaderParams.appversion || "";
+    authorization = config.requestheaderParams.token || "";
+    acceptLanguage = config.requestheaderParams.acceptLanguage || "";
+  }
+
+  var uStr = localStorage.getItem('userInformation');
+  var uObj = {};
+  if(uStr){
+    uObj = $.parseJSON(uStr);
+    $.ajaxSetup({
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('token',uObj.userToken);
+      }
+    });
+  }
+  // open the sample file
+  var assertUrl = openFile(baseUrl,openFileUrl, zip, encpwd, assetid, deviceid, appversion, authorization, acceptLanguage);
+  var lastIndexOf = assertUrl.lastIndexOf('/');
+  var assertUrlLength = assertUrl.length;
+  var assertLocationId = assertUrl.substr((lastIndexOf + 1), assertUrlLength);
+  cb(assertLocationId);
+}
+
 //PDF Wrapper component
 (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -644,7 +725,7 @@ function triggerEvent(eventName, eventData) {
       _this.restoreHighlights = function(highlights) {       
          var scrollPercentage = 0;
         try{
-          scrollPercentage = WebPDF.ViewerInstance.getDocView().getScrollApi().getPercentScrolledY();  
+          scrollPercentage = WebPDF.ViewerInstance.getDocView().getScrollApi().getPercentScrolledY();           
         }catch(e){} 
         _this.removeExistingHighlightElement(); 
         var mainDiv = [];     
@@ -701,7 +782,11 @@ function triggerEvent(eventName, eventData) {
            }catch(e){}
           }
           try{
-            WebPDF.ViewerInstance.getDocView().getScrollApi().scrollToPercentY(scrollPercentage);
+            if(scrollPercentage == -0) {
+              _this.gotoPdfPage(0,0);
+            }else{
+              WebPDF.ViewerInstance.getDocView().getScrollApi().scrollToPercentY(scrollPercentage);           
+            }            
           }catch(e){
 
           }
@@ -722,13 +807,24 @@ function triggerEvent(eventName, eventData) {
         } catch(e){return null;  
         }
       }
-
       /*
        This method is used to initiate a Original Foxit PDF object.
       */
       _this.createPDFViewer = function(pdfConfig) {
         initViewer(pdfConfig);
       }
+
+      _this.loadPDFViewer = function(){
+        loadLocalAssets();
+      }
+
+      /*
+       * This method gets asset URL to download PDF as images from Foxit
+      */
+      _this.createPDFDownloader = function(pdfConfig, cb) {
+        getAssetURLForPDFDownload(pdfConfig, cb);
+      }
+      
       /*
        This method is used to create a TOC content for the loaded asset.
       */
@@ -738,7 +834,7 @@ function triggerEvent(eventName, eventData) {
       }
 
       _this.gotoPDFNode = function(nodeId) {
-        tocObj.gotoPDFNode(nodeId)
+        return tocObj.gotoPDFNode(nodeId);
       }
       /* This method is called to Download the PDF currently in the Viewer Instance
       */
@@ -748,6 +844,17 @@ function triggerEvent(eventName, eventData) {
         }catch(e){
 
         }
+      }
+      /*Set Page Navigation */
+      _this.setPageNavigation = function(style) {
+        try{
+          if(style == "horizontal"){
+            WebPDF.ViewerInstance.setLayoutShowMode(2);
+            document.querySelector('.fwrJspVerticalBar').style.visibility = "hidden";
+          }else{
+            document.querySelector('.fwrJspVerticalBar').style.visibility = "visible";
+          }
+        }catch(e){}
       }
       /*
        This method is used create Highlight Element on the Page.
@@ -815,6 +922,7 @@ function triggerEvent(eventName, eventData) {
         
         return highlight ; 
       }
+      
 
       _this.gotoPdfPage = function(pageNumber, top) {
         //console.log("PDF Wrapper Goto : " + pageNumber + " : " + top);
@@ -825,7 +933,35 @@ function triggerEvent(eventName, eventData) {
        _this.getCurrentZoomLevel = function() {
          return WebPDF.ViewerInstance.getCurZoomLevel();
         }
-
+         /*Add navigation track to the Local Storage Stack
+      */
+      _this.addToNavigationStack = function(currentPage, hrefLocation) {
+         var currentStack = [];
+         var stackSize = parseInt(_this.getStackSize());
+       currentStack = JSON.parse(localStorage.getItem("currentStack")) ? JSON.parse(localStorage.getItem("currentStack")) : [];
+       if(currentStack){
+          if(currentStack.length == stackSize){
+          currentStack.shift();
+        }       
+      }
+      var navObj = {
+       "currentPage" : currentPage,
+       "hrefLocation" : hrefLocation
+      }
+      currentStack.push(navObj);
+      localStorage.setItem("currentStack", JSON.stringify(currentStack));
+      }
+        /*This function returns the Stack Size for Back button implementation 
+      */
+      _this.getStackSize = function() {
+        try{
+          if(window.localStorage) {
+          return window.localStorage.getItem('stackSize') ? window.localStorage.getItem('stackSize') : 1;
+          }
+        }catch(e){
+          return 1;
+        }     
+      }
        /* Set Current Zoom Level */ 
         _this.setCurrentZoomLevel = function(level) {
           WebPDF.ViewerInstance.zoomTo(level);
@@ -877,6 +1013,11 @@ function triggerEvent(eventName, eventData) {
         restoreHighlights: function(highlights) {
           var currPage = _this.restoreHighlights(highlights);
         },
+        /*Get the total Number of Pages in the PDF*/    
+         getPageCount: function() {
+          var pageCount = _this.getPageCount();
+          return pageCount;
+        },
          /*
           Get the Current Page Index.
         */
@@ -884,15 +1025,19 @@ function triggerEvent(eventName, eventData) {
           var currPage = _this.getCurrentPage();
           return currPage;
         },
-        getPageCount: function() {
-          var pageCount = _this.getPageCount();
-          return pageCount;
-        },
         /*
           Triggers a method to call the PDFViewer.
         */
         createPDFViewer: function(pdfConfig) {
           _this.createPDFViewer(pdfConfig);
+        },
+
+        loadPDFViewer: function(pdfConfig) {
+          _this.loadPDFViewer(pdfConfig);
+        },
+
+        createPDFDownloader: function(pdfConfig, cb) {
+          _this.createPDFDownloader(pdfConfig, cb);
         },
         /*
           Triggers a method to create TOC Content.
@@ -902,7 +1047,8 @@ function triggerEvent(eventName, eventData) {
           return TOCArray;
         },
         gotoPDFNode: function(nodeId) {
-          _this.gotoPDFNode(nodeId);
+           var pageIndex = _this.gotoPDFNode(nodeId);
+           return pageIndex;
         },
          /* Download the PDF File */
         downloadPDF: function() {
@@ -914,18 +1060,30 @@ function triggerEvent(eventName, eventData) {
         registerEvent: function(eventName, callbackMethod) {
           eventMap[eventName] = callbackMethod;
         },
-    /*
+        /*Set Navigation Layout (SinglePage/Vartical)
+        */
+        setPageNavigation: function(style){
+          _this.setPageNavigation(style);
+        },
+         /*
         This method enables the UI to register for certain book events.
         */
         createHighlight: function() {
          var highlight =  _this.createHighlight();
          return highlight;
         },
-
+        enableSelectTool: function(){
+          try{
+            WebPDF.ViewerInstance.setCurrentToolByName(WebPDF.Tools.TOOL_NAME_SELECTTEXT);
+          }catch(e){}
+        },
         gotoPdfPage: function(pageNumber, top) {
           _this.gotoPdfPage(pageNumber, top);
         },
-
+        getInternalLinkToPageNumber: function(pageNumber, annotID) {
+          var toPage = WebPDF.ViewerInstance.getDocView().getPageView(pageNumber).getPDFPage().getAnnotByName(annotID).getAction().actionJSONData.ds.p
+          return toPage;
+        },
         getCurrentZoomLevel: function() {
           if(WebPDF) {
             var curZoomLevel = _this.getCurrentZoomLevel();
@@ -934,7 +1092,27 @@ function triggerEvent(eventName, eventData) {
           return 1;
         }
         },
-
+        getPageForNodeId: function(nodeId) {
+           try {     
+               var  tocInstance =   WebPDF.ViewerInstance.getBookmark();
+               tocInstance.moveToRoot();
+               // var nodeId = parseInt(event.target.getAttribute("nodeid"));
+               var isFind = tocInstance.getNode(nodeId);
+               if(isFind){
+                 var count = tocInstance.countActions();
+                 for(var i = 0; i<count ;i++ ){
+                  var action =  tocInstance.getAction(i);
+                  var des = action.getDestination();
+                  WebPDF.ViewerInstance.gotoPageByDestination(des);
+                 }
+                 // triggerEvent("onpageChange");
+                 return des.pageIndex;
+               }
+            }
+            catch (ex) {
+               //console.error(ex);
+            }
+        },
         setCurrentZoomLevel: function(level) {
           _this.setCurrentZoomLevel(level);
         }

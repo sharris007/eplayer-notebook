@@ -2,7 +2,7 @@ import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import find from 'lodash/find';
 import { browserHistory } from 'react-router';
-import { Preferences } from '@pearson-incubator/preferences';
+import { PreferencesComponent } from '@pearson-incubator/preferences';
 import { BookmarkIcon } from '@pearson-incubator/bookmark-icon';
 import Icon from '../Icon';
 import './Header.scss';
@@ -23,20 +23,13 @@ export class Header extends React.Component {
     };
   }
 
-  componentWillUnmount() {
-    if (this.headerInterval) {
-      clearInterval(this.headerInterval);
-    }
-    this.headerInterval = false;
-  }
-
   componentDidMount() {
     let didScroll = false;
     let lastScrollPosition = 0;
     window.addEventListener('scroll', () => {
       didScroll = true;
     });
-    this.headerInterval = setInterval(() => {
+    setInterval(() => {
       if (didScroll) {
         const documentHeight = Math.max(
           document.body.scrollHeight,
@@ -67,21 +60,18 @@ export class Header extends React.Component {
     if ((event.which || event.keyCode) === 13) {
       this.setState({ drawerOpen: true });
     }
-    //this.props.viewerContentCallBack(false);
   }
 
   handleDrawer = () => {
     this.setState({ drawerOpen: true });
-    //this.props.viewerContentCallBack(false);
   }
 
   hideDrawer = () => {
     this.setState({ drawerOpen: false });
-    //this.props.viewerContentCallBack(true);
   }
 
   handleBookshelfClick = () => {
-    browserHistory.push('/');
+    browserHistory.push('/eplayer/bookshelf');
     this.setState({ open: false });
   }
 
@@ -113,13 +103,11 @@ export class Header extends React.Component {
       this.setState({ searchOpen: true });
       this.setState({ prefOpen: false });
     }
+    
   }
 
   searchKeySelect = (event) => {
     if ((event.which || event.keyCode) === 13) {
-      this.searchClick();
-    }
-    if ((event.which || event.keyCode) === 27) {
       this.searchClick();
     }
   }
@@ -173,8 +161,10 @@ export class Header extends React.Component {
     const targetPageId = this.props.bookData.viewer.currentPageId;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
 
+
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
+
         <AppBar
           title={currPageObj ? currPageObj.title : ''}
           titleStyle={style.appBar.title}
@@ -233,12 +223,7 @@ export class Header extends React.Component {
                 <Icon name="search-lg-18" />
               </div>
               <div className="searchContainer">
-                {this.state.searchOpen ? <Search
-                  store={this.props.store}
-                  listClick={this.searchClick}
-                  searchKeySelect={this.searchKeySelect}
-                  clickSearchListHandler={this.props.bookCallbacks.goToPageCallback}
-                /> : <div className="empty" />}
+                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} goToPage={this.props.goToPage}/> : <div className="empty" />}
               </div>
               <div className="moreIcon">
                 <MoreMenuComponent store={this.props.store} />
@@ -256,7 +241,7 @@ export class Header extends React.Component {
           />
         }
         <div className="preferences-container">
-          {this.state.prefOpen ? <div className="content"><Preferences setCurrentZoomLevel={this.props.setCurrentZoomLevel}/></div> : <div className="empty" />}
+          {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />}
         </div>
       </div>
     );
@@ -267,8 +252,7 @@ Header.propTypes = {
   classname: React.PropTypes.string,
   bookData: React.PropTypes.object,
   bookCallbacks: React.PropTypes.object,
-  store: React.PropTypes.object,
-  viewerContentCallBack: React.PropTypes.func
+  store: React.PropTypes.object
 };
 
 export default Header;

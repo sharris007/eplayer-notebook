@@ -4,48 +4,10 @@ import SwipeableViews from 'react-swipeable-views';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Drawer from 'material-ui/Drawer';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import { TableOfContents } from '@pearson-incubator/toc';
-import { BookmarkList } from '@pearson-incubator/bookmarks';
-import { NotesList } from '@pearson-incubator/notes';
+import { TableOfContentsComponent } from '@pearson-incubator/toc';
+import { BookmarkListComponent } from '@pearson-incubator/bookmarks';
+import { NoteListComponent } from '@pearson-incubator/notes';
 import './Drawer.scss';
-
-const sampleList = {};
-  sampleList.author = 'Charles Dickens';
-  sampleList.mainTitle = 'Science';
-  sampleList.thumbnail = 'http://content.stg-openclass.com/eps/pearson-reader/api/item/4eaf188e-1798-446b-b382-90a0c6da6629/1/file/cover_thumbnail.jpg';
-  sampleList.list = [
-  {
-    'id': '1',
-    'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
-    'title': 'Chapter 1 Hypothesis Testing',
-    children: [
-      {
-        'id': '2',
-        'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml',
-        'title': '1.1 The Process of Science',
-      },
-      {
-        'id': '3',
-        'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml',
-        'title': '1.2 Can Science Cure the Common Cold'
-      },
-      {
-        'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000806.xhtml',
-        'id': 4,
-        'title': '1.3 Understanding Statistics'
-      },
-      {
-        'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml',
-        'id': 5,
-        'title': '1.4 Evaluating Scientific Information'
-      }
-    ]
-  }
-];
-
-const tocData = {content : sampleList};
-
-
 let counter = -1;
 let rowCount = 0;
 const grey = '#f5f5f5';
@@ -68,14 +30,6 @@ class DrawerComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.drawerListFocus();
-  }
-
-  componentDidUpdate() {
-    this.drawerListFocus();
-  }
-
-  drawerListFocus = () => {
     if (this.state.slideIndex === 0) {
       this.onActive('contents');
       rowCount = document.getElementsByClassName('toc-parent').length;
@@ -302,28 +256,27 @@ class DrawerComponent extends React.Component {
             className="swipeviewStyle"
           >
             { !this.props.bookData.isFetching.toc &&
-              < TableOfContents
+              < TableOfContentsComponent
                 separateToggleIcon
                 data={this.props.bookData.toc}
                 showDuplicateTitle
                 depth={5}
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
-                isET1={this.props.isET1}
               />
             }
             { !this.props.bookData.isFetching.bookmarks &&
-              < BookmarkList
+              < BookmarkListComponent
                 bookmarksArr={this.props.bookData.bookmarks}
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
-                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
+                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandlerForBookmarkList}
                 isET1={this.props.isET1}
               />
             }
             { !this.props.bookData.isFetching.annotations &&
-              < NotesList
+              < NoteListComponent
                 notes={this.props.bookData.annotations}
-                clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
+                clickNoteHandler={this.props.bookCallbacks.goToPage}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
               />
             }

@@ -1,21 +1,80 @@
 import contentful from 'contentful';  // eslint-disable-line import/no-extraneous-dependencies
 import axios from 'axios';
 
+
 export const clients = {
 
   search: axios.create({
-    baseURL: 'https://etext-qa-stg.pearson.com/search/pxereader-cm',
-    timeout: 5000,
+    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    timeout: 20000,
     headers: {
     }
   }),
-  getBookShelf: axios.create({
+
+  fetchBookmarks: axios.create({
+    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    timeout: 20000,
+    headers: {
+    }
+  }),
+
+  addBookmarks: axios.create({
+    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    timeout: 20000,
+    headers: {
+    }
+  }),
+
+  removeBookmark: axios.create({
+    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    timeout: 20000,
+    headers: {
+    }
+  }),
+
+  fetchTocAndViewer: axios.create({
+    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    timeout: 20000,
+    headers: {
+    }
+  }),
+
+  fetchBookInfo: axios.create({
+    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    timeout: 20000,
+    headers: {
+    }
+  }),
+
+  fetchPageInfo: axios.create({
+    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    timeout: 20000,
+    headers: {
+    }
+  }),
+
+  /*getBookShelf: axios.create({
     baseURL: 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key=1975822139101138730252017',
     timeout: 20000,
     headers: {
       'Content-Type': 'application/json'
     }
+  }),*/
+
+ getBookShelf: axios.create({
+    baseURL: 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext',
+    timeout: 20000,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   }),
+
+  /*getLogin: axios.create({
+    baseURL: 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api',
+    timeout: 20000
+  }),
+*/
+
   scapi: axios.create({
     baseURL: 'https://scapi-dev-use.pearsoncms.net/sc-api/apis',
     timeout: 20000,

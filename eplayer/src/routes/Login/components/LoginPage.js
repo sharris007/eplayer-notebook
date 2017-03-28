@@ -34,8 +34,11 @@ class LoginPage extends React.Component{
     console.log(data);
     this.props.storeLoginDetails(data);
     const LoginToken = [];
+    const loginPiToken = [];
+
       if (this.props.fetched){
         LoginToken.push(this.props.data.token);
+        loginPiToken.push(this.props.data.piToken);
         browserHistory.push(`/eplayer/bookshelf`);
           }
       })
