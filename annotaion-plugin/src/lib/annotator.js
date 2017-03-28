@@ -266,6 +266,7 @@ Annotator = (function(_super) {
   Annotator.prototype.deleteAnnotation = function(annotation) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
+      $(annotation.highlights).find('.annotator-handle').remove();
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
