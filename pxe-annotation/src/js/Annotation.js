@@ -11,7 +11,7 @@ class Annotation extends Component {
     //$('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
     $(document).on('mousedown', this.onDocumentClick);
     $(document).keyup(this.onDocumentClick);
-    this.state = {'updated':false}
+    this.state = {'updated':false, 'firstLoad':true}
   }
 
   onDocumentClick(e) {
@@ -24,8 +24,14 @@ class Annotation extends Component {
     $('#' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
   }
 
-  componentWillReceiveProps(nextProps) {    
-    $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData, this.state.updated);
+  componentWillReceiveProps(nextProps) {
+    if(this.state.firstLoad && nextProps.annotationData.length && nextProps.annotationData[0].color) {
+      console.log("loadAnnotations", nextProps.annotationData);
+      $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
+      this.setState({'firstLoad':false});
+    }
+    if(this.state.updated)  
+      $('#' + nextProps.contentId).annotator().annotator('updateAnnotationId', nextProps.annotationData[0]);
     this.setState({'updated':false});
   }  
 
@@ -43,7 +49,7 @@ class Annotation extends Component {
     annotation.data('annotator').on('annotationViewerTextField', this.annotationEvent.bind(null, 'annotationViewerTextField'));
   }
 
-  annotationEvent(eventType, data, viewer) {
+  annotationEvent(eventType, data, viewer) {    
     const customAttributes = this.props.annAttributes;
     if(data.annotation){
       const annData             =   data.annotation;
