@@ -2080,6 +2080,9 @@ Annotator.Editor = (function(_super) {
   
   Editor.prototype.onNoteChange=function(event) {
     this.element[(event.target.value.length)?'addClass':'removeClass']('show-edit-options');
+    if(!event.target.value.length){
+      $(this.element).find('.annotator-share-text, .annotator-share').hide();
+    }
     var inputCharLength = event.currentTarget.value.length, actualChar = this.const.characters;
     var remainingCount = actualChar-inputCharLength;
     this.element.find('#letter-count').text(remainingCount);
@@ -2173,7 +2176,7 @@ Annotator.Editor = (function(_super) {
 
   Editor.prototype.load = function(annotation, isShareable) {
     this.isShareable=isShareable;
-    if (!isShareable || !annotation.id)
+    if (!isShareable || !annotation.id || !annotation.text)
       $('.annotator-share-text, .annotator-share').hide();
     else      
       $('.annotator-share-text, .annotator-share').show();
