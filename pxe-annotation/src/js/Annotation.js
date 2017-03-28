@@ -59,8 +59,8 @@ class Annotation extends Component {
         this.setState({'updated':true});
       }
       this.props.annotationEventHandler(eventType, customUnsourceObj, viewer);
+    }
   }
-  
   render() {
     return (<div></div>);
   }

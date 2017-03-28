@@ -3,7 +3,16 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 
 function init() {
   injectTapEventPlugin();  
-
+ const customeAttributes ={
+       playOrder: 'playOrder',
+       href     :'href',
+       createdTimestamp:'createdTimestamp',
+       updatedTimestamp:'updatedTimestamp',
+       text  :'text',
+       ranges :'ranges',
+       quote:'quote',
+       shareable:'shareable'
+   };
   const annotationData = [
     {
       'id': '589c882fc2ef162b33d60ccb',
@@ -59,7 +68,8 @@ function init() {
     annotationData:annotationData,
     shareableAnnotations:true,
     currentPageDetails:{},
-    annotationEventHandler:annotationEvent
+    annotationEventHandler:annotationEvent,
+    annAttributes:customeAttributes
   });  
 }
 function annotationEvent(type, data) {
