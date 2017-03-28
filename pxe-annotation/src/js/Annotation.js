@@ -1,5 +1,6 @@
 /* global $ */
 import React, { PropTypes, Component } from 'react';
+import { map,zipObject} from 'lodash';
 
 class Annotation extends Component {
   constructor(props) {
@@ -10,7 +11,7 @@ class Annotation extends Component {
     //$('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
     $(document).on('mousedown', this.onDocumentClick);
     $(document).keyup(this.onDocumentClick);
-    this.state = {'updated':false, 'firstLoad':true}
+    this.state = {'updated':false}
   }
 
   onDocumentClick(e) {
@@ -23,14 +24,8 @@ class Annotation extends Component {
     $('#' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if(this.state.firstLoad && nextProps.annotationData.length && nextProps.annotationData[0].color) {
-      console.log("loadAnnotations", nextProps.annotationData);
-      $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
-      this.setState({'firstLoad':false});
-    }
-    if(this.state.updated)  
-      $('#' + nextProps.contentId).annotator().annotator('updateAnnotationId', nextProps.annotationData[0]);
+  componentWillReceiveProps(nextProps) {    
+    $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData, this.state.updated);
     this.setState({'updated':false});
   }  
 
@@ -48,13 +43,22 @@ class Annotation extends Component {
     annotation.data('annotator').on('annotationViewerTextField', this.annotationEvent.bind(null, 'annotationViewerTextField'));
   }
 
-  annotationEvent(eventType, data, viewer) {    
-    data.createdTimestamp = new Date().toISOString();
-    data.updatedTimestamp = null;
-    if (eventType==='annotationCreated') {
-      this.setState({'updated':true});
-    }
-    this.props.annotationEventHandler(eventType, data, viewer);
+  annotationEvent(eventType, data, viewer) {
+    const customAttributes = this.props.annAttributes;
+    if(data.annotation){
+      const annData             =   data.annotation;
+      annData.createdTimestamp  =   new Date().toISOString();
+      annData.updatedTimestamp  =   null;
+      const customUnsourceObj   = _.mapKeys(annData, function(value, key) {
+        if(customAttributes[key] ==undefined){
+          return key;
+        }
+        return customAttributes[key];
+      }); 
+      if(eventType=='annotationCreated'){
+        this.setState({'updated':true});
+      }
+      this.props.annotationEventHandler(eventType, customUnsourceObj, viewer);
   }
   
   render() {
