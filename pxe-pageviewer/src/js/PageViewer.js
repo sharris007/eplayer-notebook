@@ -222,11 +222,11 @@ class PageViewer extends React.Component {
  
   render() {
     const zommLevel = this.props.src.pageZoom ? this.props.src.pageZoom + '%' : '100%';
-    const bckColor = this.props.src.bckColor ? this.props.src.bckColor : 'default';
+    const bgColor = this.props.src.bgColor ? this.props.src.bgColor : 'default';
     return ( 
       <div id = "book-render-component" ref = {(el) => { this.bookComBlock = el; }} tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
-          <div id = "book-container" className = {'book-container' + ' ' + bckColor} ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
+          <div id = "book-container" className = {'book-container' + ' ' + bgColor} ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
             {this.state.renderSrc ?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} 
           </div>
         </div>
