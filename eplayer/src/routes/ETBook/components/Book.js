@@ -40,6 +40,13 @@ export class Book extends Component {
   componentWillMount(){
     const bookId = this.props.params.bookId;
     const pageId = this.props.params.pageId;
+    const pageUri = encodeURIComponent(this.state.currentPageDetails.href);
+    const queryString = {
+      context : bookId,
+      uri     : pageUri,
+      user    :'epluser'
+    }
+    this.props.dispatch(getAnnCallService(queryString));
     this.props.dispatch(getBookCallService(this.props.params.bookId));
   }
   componentDidMount() {    
@@ -49,13 +56,6 @@ export class Book extends Component {
         createdTimestamp:'createdTimestamp',
         updatedTimestamp:'updatedTimestamp',
         text  :'text',
-        source :{
-          uri : 'uri',
-          id:'id',
-          label:'label',
-          playOrder:'playOrder',
-          baseUrl:'baseUrl',
-        },
         user:'user',
         context:'context',
         ranges :'ranges',

@@ -25,7 +25,7 @@ class Annotation extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.firstLoad && nextProps.annotationData && nextProps.annotationData.length && nextProps.annotationData[0].color) {
+    if (nextProps.annotationData && nextProps.annotationData.length && nextProps.annotationData[0].color) {
       $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
       this.setState({'firstLoad':false});
     }
