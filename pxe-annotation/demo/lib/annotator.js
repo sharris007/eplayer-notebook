@@ -284,7 +284,16 @@ Annotator = (function(_super) {
     return this.isShareable=isShareable;
   };
 
-  Annotator.prototype.loadAnnotations = function(annotations,isUpdate) {
+  Annotator.prototype.updateAnnotationId = function (annotation) {
+     $('.annotator-hl').each(function() {
+      if(Date.parse($(this).data("annotation").createdTimestamp) == annotation.createdTimestamp) {
+        $(this).data("annotation").id=annotation.id;
+        $(this).attr('data-ann-id', annotation.id);
+      }
+    })
+  };
+
+  Annotator.prototype.loadAnnotations = function(annotations, isUpdate) {
     var clone, loader;
     if (annotations == null) {
       annotations = [];

@@ -1,6 +1,5 @@
 /* global $ */
 import React, { PropTypes, Component } from 'react';
-import { map,zipObject} from 'lodash';
 
 class Annotation extends Component {
   constructor(props) {
@@ -11,7 +10,7 @@ class Annotation extends Component {
     //$('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
     $(document).on('mousedown', this.onDocumentClick);
     $(document).keyup(this.onDocumentClick);
-    this.state = {'updated':false}
+    this.state = {'updated':false, 'firstLoad':true}
   }
 
   onDocumentClick(e) {
@@ -24,8 +23,14 @@ class Annotation extends Component {
     $('#' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
   }
 
-  componentWillReceiveProps(nextProps) {    
-    $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData, this.state.updated);
+  componentWillReceiveProps(nextProps) {
+    if(this.state.firstLoad && nextProps.annotationData.length && nextProps.annotationData[0].color) {
+      console.log("loadAnnotations", nextProps.annotationData);
+      $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
+      this.setState({'firstLoad':false});
+    }
+    if(this.state.updated)  
+      $('#' + nextProps.contentId).annotator().annotator('updateAnnotationId', nextProps.annotationData[0]);
     this.setState({'updated':false});
   }  
 
@@ -43,35 +48,13 @@ class Annotation extends Component {
     annotation.data('annotator').on('annotationViewerTextField', this.annotationEvent.bind(null, 'annotationViewerTextField'));
   }
 
-  annotationEvent(eventType, data, viewer) {
-    const customAttributes = this.props.annAttributes;
-    const orgsourceObj  = customAttributes.source;
-    const customsourceObj ={};
-    if(data.annotation){
-      const annData             =  _.merge(data.annotation, this.props.currentPageDetails);
-      annData.createdTimestamp  =   new Date().toISOString();
-      annData.updatedTimestamp  =   null;
-      const unsourceObj         = _.omit(annData, ['source']);
-      const sourceObj           = _.pick(annData, ['source']);
-      const customUnsourceObj   = _.mapKeys(unsourceObj, function(value, key) {
-        if(customAttributes[key] ==undefined){
-          return key;
-        }
-        return customAttributes[key];
-      }); 
-      const filteredsourceObj   = _.mapKeys(sourceObj.source, function(value, key) {
-        if(orgsourceObj[key]==undefined){
-          return key;
-        }
-        return orgsourceObj[key];
-      });  
-      customsourceObj.source    = filteredsourceObj;
-      const finalData           =  _.merge(customUnsourceObj, customsourceObj);
-      
-      if(eventType=='annotationCreated'){
-        this.setState({'updated':true});
-      }
-      this.props.annotationEventHandler(eventType, finalData, viewer);
+  annotationEvent(eventType, data, viewer) {    
+    data.createdTimestamp = new Date().toISOString();
+    data.updatedTimestamp = null;
+    if (eventType==='annotationCreated') {
+      this.setState({'updated':true});
+    }
+    this.props.annotationEventHandler(eventType, data, viewer);
   }
   
   render() {

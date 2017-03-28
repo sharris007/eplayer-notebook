@@ -88,7 +88,7 @@ Annotator.Editor = (function(_super) {
       $(this.annotation.highlights).css('background', '#ccf5fd');
       $('.annotator-color-container').addClass('disabled-save');
     }
-    setTimeout(function() { that.submit(); }, 800);    
+    //setTimeout(function(){ that.submit(); }, 800);    
   }
   
   Editor.prototype.onDeleteClick=function(event) {  
@@ -154,7 +154,7 @@ Annotator.Editor = (function(_super) {
       var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height();
       this.element.css({top:topPosition});
     }
-    this.publish('save', [this.annotation]);
+    // this.publish('save', [this.annotation]);
     // if(isTopAlign)
     //    $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
   }
@@ -193,7 +193,7 @@ Annotator.Editor = (function(_super) {
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
     this.textareaHeight = $('#annotator-field-0')[0].scrollHeight || 40; 
-    if(this.annotation.text === undefined||!this.annotation.text.length)
+    if(!this.annotation.text || !this.annotation.text.length)
       this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
     this.element.find(":input:first").focus();
     this.setupDraggables();
@@ -210,6 +210,7 @@ Annotator.Editor = (function(_super) {
     this.onCancelClick();
     this.element.find('textarea').removeAttr('style'); 
     this.currentAnnotation = this.textareaHeight = null;
+    this.publish('save', [this.annotation]);
     return this.publish('hide');
   };
 
