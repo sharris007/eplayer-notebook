@@ -220,7 +220,6 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.setupAnnotation = function(annotation) {
-    console.log("plugin---", annotation);
     var e, normed, normedRanges, r, root, _i, _j, _len, _len1, _ref;
     root = this.wrapper[0];
     annotation.ranges || (annotation.ranges = this.selectedRanges);
@@ -253,7 +252,7 @@ Annotator = (function(_super) {
     annotation.quote = annotation.quote.join(' / ');
     $(annotation.highlights).data('annotation', annotation);
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
-    $(annotation.highlights).attr('data-ann-id', annotation._id?annotation._id.$oid:null);
+    $(annotation.highlights).attr('data-ann-id', annotation.id);
     return annotation;
   };
 
@@ -285,7 +284,16 @@ Annotator = (function(_super) {
     return this.isShareable=isShareable;
   };
 
-  Annotator.prototype.loadAnnotations = function(annotations,isUpdate) {
+  Annotator.prototype.updateAnnotationId = function (annotation) {
+     $('.annotator-hl').each(function() {
+      if(Date.parse($(this).data("annotation").createdTimestamp) == annotation.createdTimestamp) {
+        $(this).data("annotation").id=annotation.id;
+        $(this).attr('data-ann-id', annotation.id);
+      }
+    })
+  };
+
+  Annotator.prototype.loadAnnotations = function(annotations, isUpdate) {
     var clone, loader;
     if (annotations == null) {
       annotations = [];

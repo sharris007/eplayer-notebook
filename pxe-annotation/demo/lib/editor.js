@@ -88,7 +88,7 @@ Annotator.Editor = (function(_super) {
       $(this.annotation.highlights).css('background', '#ccf5fd');
       $('.annotator-color-container').addClass('disabled-save');
     }
-    //setTimeout(function(){ that.submit(); }, 800);    
+    setTimeout(function(){ that.submit(); }, 800);    
   }
   
   Editor.prototype.onDeleteClick=function(event) {  
@@ -122,7 +122,6 @@ Annotator.Editor = (function(_super) {
   }
   
   Editor.prototype.onNoteChange=function(event) {
-    // debugger; 
     this.element[(event.target.value.length)?'addClass':'removeClass']('show-edit-options');
     var inputCharLength = event.currentTarget.value.length, actualChar = this.const.characters;
     var remainingCount = actualChar-inputCharLength;
@@ -218,7 +217,9 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.load = function(annotation, isShareable) {
     this.isShareable=isShareable;
     if (!isShareable || !annotation.id)
-      this.element.find('.annotator-share-text, .annotator-share').remove();
+      $('.annotator-share-text, .annotator-share').hide();
+    else      
+      $('.annotator-share-text, .annotator-share').show();
     var field, _i, _len, _ref;
     this.annotation = annotation;
     this.publish('load', [this.annotation]);
