@@ -210,7 +210,8 @@ Annotator.Editor = (function(_super) {
     this.onCancelClick();
     this.element.find('textarea').removeAttr('style'); 
     this.currentAnnotation = this.textareaHeight = null;
-    this.publish('save', [this.annotation]);
+    if(this.annotation.color && this.annotation.color.length)
+      this.publish('save', [this.annotation]);
     return this.publish('hide');
   };
 

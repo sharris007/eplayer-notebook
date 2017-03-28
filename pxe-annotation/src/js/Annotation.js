@@ -25,8 +25,7 @@ class Annotation extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.firstLoad && nextProps.annotationData.length && nextProps.annotationData[0].color) {
-      console.log('loadAnnotations', nextProps.annotationData);
+    if (this.state.firstLoad && nextProps.annotationData && nextProps.annotationData.length && nextProps.annotationData[0].color) {
       $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
       this.setState({'firstLoad':false});
     }
@@ -69,6 +68,8 @@ class Annotation extends Component {
       if (eventType==='annotationCreated') {
         this.setState({'updated':true});
       }
+      if (eventType==='annotationDeleted' && !annData.id) 
+        return;   
       this.props.annotationEventHandler(eventType, customUnsourceObj, viewer);
     }
   }
