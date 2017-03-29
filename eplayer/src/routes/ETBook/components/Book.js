@@ -40,13 +40,17 @@ export class Book extends Component {
   componentWillMount(){
     const bookId = this.props.params.bookId;
     const pageId = this.props.params.pageId;
-    const pageUri = encodeURIComponent(this.state.currentPageDetails.href);
-    const queryString = {
-      context : bookId,
-      uri     : pageUri,
-      user    :'epluser'
+    
+    if(this.state.currentPageDetails.href){
+      const pageUri = encodeURIComponent(this.state.currentPageDetails.href);
+      const queryString = {
+        context : bookId,
+        uri     : pageUri,
+        user    :'epluser'
+      }
+      this.props.dispatch(getAnnCallService(queryString));
     }
-    this.props.dispatch(getAnnCallService(queryString));
+    
     this.props.dispatch(getBookCallService(this.props.params.bookId));
   }
   componentDidMount() {    
@@ -223,7 +227,8 @@ export class Book extends Component {
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
-            {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
+            {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
+            currentPageDetails={ this.state.pageDetails.currentPageURL} annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
             {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection}/> : '' }
             <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
           </div>
