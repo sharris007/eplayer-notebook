@@ -1112,7 +1112,8 @@ font-size: 16px;
 
 /*cursor*/
 .fwr-hand-cursor {
-    cursor:url("../../images/reader/cursor/hand.cur"),auto !important;
+    cursor:url("../../images/reader/cursor/hand.cur"),auto;
+    cursor:pointer !important;
 }
 
 .fwr-hand-cursor-ie {

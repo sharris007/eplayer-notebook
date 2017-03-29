@@ -273,7 +273,8 @@ $('#fwr-textSelect-context-menu-container').remove();
 $('#fwr-annots-context-menu-container').remove();
 $('#docViewerFxMenuContainer').remove();
 
-WebPDF.ViewerInstance.setCurrentToolByName(WebPDF.Tools.TOOL_NAME_SELECTTEXT);
+//WebPDF.ViewerInstance.setCurrentToolByName(WebPDF.Tools.TOOL_NAME_SELECTTEXT);
+WebPDF.ViewerInstance.setCurrentToolByName(WebPDF.Tools.TOOL_NAME_HAND);
 /*
 To put OnClick Event Listener on the Page once the page is Loaded for the Links annot on the Page.
 */
@@ -317,6 +318,8 @@ function _blankSelection(){
   if(selectedText.toString().trim() !== '') {
   var selection = document.querySelectorAll('.fwr-text-highlight');
     triggerEvent("textSelected", selection);
+    //invoke
+    highlightText();
     } else{
       try{
         if(event.srcElement.classList.contains("addNotes") || event.srcElement.classList.contains("deleteHighlight")){
@@ -440,6 +443,7 @@ function initViewer(config) {
 function createPDFEvent(eventName) {
   var event = document.createEvent('Event');
   event.initEvent(eventName, true, true);
+  document.querySelector('.docViewer').dispatchEvent(event);
   try{
     document.querySelector('.docViewer').dispatchEvent(event);
   }catch(e){}
