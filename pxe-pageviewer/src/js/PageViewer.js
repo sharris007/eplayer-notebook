@@ -222,7 +222,7 @@ class PageViewer extends React.Component {
  
   render() {
     const zommLevel = this.props.src.pageZoom ? this.props.src.pageZoom + '%' : '100%';
-    const bgColor = this.props.src.bgColor ? this.props.src.bgColor : 'default';
+    const bgColor = this.props.src.bgColor ? this.props.src.bgColor : '';
     return ( 
       <div id = "book-render-component" ref = {(el) => { this.bookComBlock = el; }} tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
