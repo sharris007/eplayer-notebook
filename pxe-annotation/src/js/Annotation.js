@@ -26,8 +26,10 @@ class Annotation extends Component {
 
   componentWillReceiveProps(nextProps) {
     const checkPlayOrder = (this.props.currentPageDetails.playOrder != nextProps.currentPageDetails.playOrder);
-    if (!checkPlayOrder && nextProps.annotationData && nextProps.annotationData.length && nextProps.annotationData[0].color) {
+    if(checkPlayOrder) this.setState({'firstLoad':true});
+    if (this.state.firstLoad && nextProps.annotationData && nextProps.annotationData.length && nextProps.annotationData[0].color) {
       $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
+      this.setState({'firstLoad':false});
     }
     if (this.state.updated) {
       $('#' + nextProps.contentId).annotator().annotator('updateAnnotationId', nextProps.annotationData[0]);
