@@ -11,7 +11,7 @@ class Annotation extends Component {
     //$('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
     $(document).on('mousedown', this.onDocumentClick);
     $(document).keyup(this.onDocumentClick);
-    this.state = {'updated':false, 'firstLoad':true}
+    this.state = {'updated':false}
   }
 
   onDocumentClick(e) {
@@ -25,9 +25,9 @@ class Annotation extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.annotationData && nextProps.annotationData.length && nextProps.annotationData[0].color) {
+    const checkPlayOrder = (this.props.currentPageDetails.playOrder != nextProps.currentPageDetails.playOrder);
+    if (!checkPlayOrder && nextProps.annotationData && nextProps.annotationData.length && nextProps.annotationData[0].color) {
       $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
-      this.setState({'firstLoad':false});
     }
     if (this.state.updated) {
       $('#' + nextProps.contentId).annotator().annotator('updateAnnotationId', nextProps.annotationData[0]);
