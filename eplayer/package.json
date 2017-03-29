@@ -93,7 +93,7 @@
     "@pearson-incubator/react-image-lightbox": "^3.1.3",
     "@pearson-incubator/search": "^0.1.23",
     "@pearson-incubator/toc": "^0.1.30",
-    "@pearson-incubator/viewer": "^0.1.32" 
+    "@pearson-incubator/viewer": "^0.1.32",
     "axios": "^0.15.3",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
