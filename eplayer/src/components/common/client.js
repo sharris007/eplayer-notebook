@@ -5,49 +5,49 @@ import axios from 'axios';
 export const clients = {
 
   search: axios.create({
-    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
     timeout: 20000,
     headers: {
     }
   }),
 
   fetchBookmarks: axios.create({
-    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
     timeout: 20000,
     headers: {
     }
   }),
 
   addBookmarks: axios.create({
-    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
     timeout: 20000,
     headers: {
     }
   }),
 
   removeBookmark: axios.create({
-    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
     timeout: 20000,
     headers: {
     }
   }),
 
   fetchTocAndViewer: axios.create({
-    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
     timeout: 20000,
     headers: {
     }
   }),
 
   fetchBookInfo: axios.create({
-    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
     timeout: 20000,
     headers: {
     }
   }),
 
   fetchPageInfo: axios.create({
-    baseURL: 'http://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
+    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
     timeout: 20000,
     headers: {
     }
