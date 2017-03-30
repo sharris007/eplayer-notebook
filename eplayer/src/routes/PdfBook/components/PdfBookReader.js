@@ -34,9 +34,9 @@ export class PdfBookReader extends Component {
        'etext-cdn-token' : etext_token 
      }
     var config = {
-    host: "https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/",
+    //host: "https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/",
     //PDFassetURL: "http://www.pdf995.com/samples/pdf.pdf",
-    //PDFassetURL: "http://epspqa.stg-openclass.com/pearson-reader/api/item/ad6c0891-da60-4285-8c62-68850775c329/1/file/CM76820710_uPDF.pdf",
+    host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
     PDFassetURL: this.props.bookshelf.uPdf,
     headerParams: headerParams,
     encpwd: null,
