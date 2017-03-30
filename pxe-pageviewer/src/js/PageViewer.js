@@ -11,6 +11,7 @@ import crossRef from './CrossRef';
 import copyCharLimit from './CopyCharLimit';
 import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
+import loadMathMLScript from './MathML';
 
 class PageViewer extends React.Component {
   
@@ -189,6 +190,9 @@ class PageViewer extends React.Component {
   };
   componentWillMount = () => {
     this.init(this.props);
+    if (this.props.src.includeMathMLLib) {
+      loadMathMLScript();
+    }
   };
 
   componentWillReceiveProps(newProps) {
