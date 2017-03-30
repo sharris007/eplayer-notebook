@@ -85,7 +85,7 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
 export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId,sessionKey) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.addBookmarks.get('setbookmark?userID=116392&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return clients.addBookmarks.get('setbookmark?userID=116435&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
       method: GET,
       headers: {
         Accept: 'application/json',
@@ -112,7 +112,7 @@ export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId
 export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId,sessionKey) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.removeBookmark.get('resetbookmark?userID=116392&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return clients.removeBookmark.get('resetbookmark?userID=116435&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
       method: GET,
       headers: {
         Accept: 'application/json',
@@ -238,7 +238,7 @@ export function fetchBookInfo(bookid,sessionKey)
 {
   return{
   type: 'RECEIVEBOOKINFO',
-  payload: clients.fetchBookInfo.get('getbookinfo?userid=116392&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON')
+  payload: clients.fetchBookInfo.get('getbookinfo?userid=116435&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON')
   };
 }
  export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,sessionKey)
@@ -249,7 +249,7 @@ export function fetchBookInfo(bookid,sessionKey)
       }
   };
   return(dispatch)=>{
-    return clients.fetchPageInfo.get('getpagebypageorder?userid=116392&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON')
+    return clients.fetchPageInfo.get('getpagebypageorder?userid=116435&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON')
     .then((response) => {
       if (response.status >= 400) {
         console.log(`FetchPage info error: ${response.statusText}`);
