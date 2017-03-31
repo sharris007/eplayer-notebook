@@ -69,6 +69,10 @@ componentWillMount() {
      //books.data.forEach((allBooks) => {
       books.data.entries.forEach((bookData) => {
         const bookRef = bookData;
+        if(bookRef.bookId==='3BKZBJB2QB' || bookRef.bookId==='8DJBSW6MHR')
+        {
+          bookRef.thumbnailImageUrl='http://images.contentful.com/tbx6i45kvpo5/28WYeWCc3aauKkWkiYaua2/489832c2bdb06b7245479e887ccfea06/cite_elements_cover';
+        }
         const book = {
           //id: 'urn:pearson:context:f3c7a5d0-7f38-4166-ac42-1a516b907760'/* bookRef.manifestId || ''*/,
           //author: bookRef.author || '',
