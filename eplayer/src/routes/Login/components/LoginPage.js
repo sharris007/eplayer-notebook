@@ -4,7 +4,6 @@ import { browserHistory } from 'react-router';
 import CircularProgress from 'material-ui/CircularProgress';
 import LoginHeader  from '../../../components/LoginHeader';
 import './LoginPage.css';
-import 'bootstrap/dist/css/bootstrap.css';
 import reducer from '../modules/loginReducer';
 
 
@@ -57,13 +56,13 @@ class LoginPage extends React.Component{
           <form onSubmit={this.handleSubmit} className={this.state.className}>
             <div className="form-group">
               <label>Username</label>
-              <input type="text" name='loginname' className='form-control' value={this.state.value} onChange={this.handleChange} required />
+              <input type="text" name='loginname' value={this.state.value} onChange={this.handleChange} required />
             </div>
             <div className="form-group">
               <label>Password</label>
-              <input type="password" name='password' className='form-control'  onChange={this.handleChange}  required />
+              <input type="password" name='password' onChange={this.handleChange}  required />
             </div>
-            <button type="submit"  className="btn btn-primary">Sign In</button>
+            <button type="submit"  className="form_button">Sign In</button>
           </form>
           {this.props.fetching == true ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
         </div>
