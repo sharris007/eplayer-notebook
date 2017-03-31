@@ -4,8 +4,7 @@ import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
 import './PdfBook.scss';
-//import pdfwrapper from '../../../../pdf_reader_lib/pdfWrapper';
-import pdfwrapper from '../pdf/pdfWrapper';
+import pdfwrapper from '../../../../pdf_reader_lib/pdfWrapper';
 import {Link, browserHistory } from 'react-router';
 
 export class PdfBookReader extends Component {
