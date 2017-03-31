@@ -41,7 +41,7 @@ export class PdfBookReader extends Component {
     encpwd: null,
     zip: false,
     callbackOnPageChange : this.pdfBookCallback
-  },
+  };
     __pdfInstance.createPDFViewer(config);
   }
   pdfBookCallback = (currentPageIndex) => {
