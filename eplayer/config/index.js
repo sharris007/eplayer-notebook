@@ -9,7 +9,9 @@ debug('Creating default configuration.')
 // Default Configuration
 // ========================================================
 const config = {
-  env : process.env.NODE_ENV || 'development',
+  // For testing purpose
+  //env : process.env.NODE_ENV || 'development',
+  env : 'development',
 
   // ----------------------------------
   // Project Structure
