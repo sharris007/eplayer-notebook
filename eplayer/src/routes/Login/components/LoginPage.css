@@ -37,3 +37,7 @@ form{
     width: 100%;
     background: url('https://etext.pearson.com/img/NTLogin-backgroundImage.jpg');
 }
+
+.formClass{
+    display:none;
+}

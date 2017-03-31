@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { browserHistory } from 'react-router';
+import CircularProgress from 'material-ui/CircularProgress';
 import LoginHeader  from '../../../components/LoginHeader';
 import './LoginPage.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -23,6 +24,7 @@ class LoginPage extends React.Component{
   
  
   handleSubmit(event) {
+     this.setState({className: 'formClass'});
     //alert('A name was submitted: ' + this.state.value);
     //alert('A password was submitted: ' + this.input.value);
     event.preventDefault();
@@ -49,22 +51,10 @@ class LoginPage extends React.Component{
   componentDidMount() {};
   
      render() {
-      /*let {data} = this.props.data;
-      const LoginToken = [];
-      //console.log('inside login page render :: '+ JSON.stringify(data));
-      if (this.props.fetched && (this.props.data.code==200)) {
-          //alert("hh"); 
-          console.log(this.props.data);
-          LoginToken.push(this.props.data.data.token);
-          //this.props.storeLoginToken(LoginToken);
-          browserHistory.push(`/bookshelf?authservice=sso&key=${LoginToken}`);
-        }else{
-          //alert("Wrong");
-        }*/
        return (<div className="login-wrapper">
         <LoginHeader/>
         <div className="form-container">
-          <form onSubmit={this.handleSubmit}>
+          <form onSubmit={this.handleSubmit} className={this.state.className}>
             <div className="form-group">
               <label>Username</label>
               <input type="text" name='loginname' className='form-control' value={this.state.value} onChange={this.handleChange} required />
@@ -75,6 +65,7 @@ class LoginPage extends React.Component{
             </div>
             <button type="submit"  className="btn btn-primary">Sign In</button>
           </form>
+          {this.props.fetching == true ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
         </div>
         </div>);
      }
