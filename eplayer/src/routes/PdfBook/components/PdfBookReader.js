@@ -4,7 +4,6 @@ import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
 import './PdfBook.scss';
-import pdfwrapper from '../../../../pdf_reader_lib/pdfWrapper';
 import {Link, browserHistory } from 'react-router';
 
 export class PdfBookReader extends Component {
@@ -43,8 +42,7 @@ export class PdfBookReader extends Component {
     zip: false,
     callbackOnPageChange : this.pdfBookCallback
   },
-    pdfInstance = pdfwrapper();
-    pdfInstance.createPDFViewer(config);
+    __pdfInstance.createPDFViewer(config);
   }
   pdfBookCallback = (currentPageIndex) => {
      this.setState({currPageIndex : currentPageIndex});
@@ -82,15 +80,15 @@ export class PdfBookReader extends Component {
   }
 
   goToPage = (navType) =>{
-     var currPageIndex=pdfwrapper().getCurrentPage();
+     var currPageIndex=__pdfInstance.getCurrentPage();
      this.setState({currPageIndex: currPageIndex});
     if(navType=="prev"){
       var prevPageIndex=currPageIndex-1;
-      pdfwrapper().gotoPdfPage(prevPageIndex); 
+      __pdfInstance.gotoPdfPage(prevPageIndex); 
     }
     else if(navType=="next"){
       var nextPageIndex=currPageIndex+1;
-      pdfwrapper().gotoPdfPage(nextPageIndex); 
+      __pdfInstance.gotoPdfPage(nextPageIndex); 
     }
   };
 
@@ -99,20 +97,20 @@ export class PdfBookReader extends Component {
     pageNum=pageNum-1;
     if(pageNum>=0)
     {
-      pdfwrapper().gotoPdfPage(pageNum);
-      var currPageIndex=pdfwrapper().getCurrentPage();
+      __pdfInstance.gotoPdfPage(pageNum);
+      var currPageIndex=__pdfInstance.getCurrentPage();
       this.setState({currPageIndex: currPageIndex});
     }
   }
 
   getPageCount = () => {
 
-    var pagecount = pdfwrapper().getPageCount();
+    var pagecount = __pdfInstance.getPageCount();
     return pagecount;
   }
 
   getPrevNextPage = (pageType) =>{
-    var currPageIndex=pdfwrapper().getCurrentPage();
+    var currPageIndex=__pdfInstance.getCurrentPage();
     var currPageNumber=currPageIndex + 1;
     var page;
     if(pageType=="prev"){
@@ -128,7 +126,7 @@ export class PdfBookReader extends Component {
   }
 
   getCurrentPageIndex = () => {
-   var currPageIndex=pdfwrapper().getCurrentPage();
+   var currPageIndex=__pdfInstance.getCurrentPage();
    return currPageIndex;
   }
   
@@ -172,7 +170,7 @@ export class PdfBookReader extends Component {
   }*/
 
   addBookmarkHandler = () => {
-    const currentPageId=pdfwrapper().getCurrentPage()+1;
+    const currentPageId=__pdfInstance.getCurrentPage()+1;
     const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
     var currTimeInMillsc = (new Date).getTime();
     const bookmark = {
@@ -185,7 +183,7 @@ export class PdfBookReader extends Component {
   }
 
   removeBookmarkHandler = () => {
-    const currentPageId=pdfwrapper().getCurrentPage()+1;
+    const currentPageId=__pdfInstance.getCurrentPage()+1;
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
     //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
     const targetBookmarkId = targetBookmark.uri;
@@ -200,14 +198,14 @@ export class PdfBookReader extends Component {
   };
 
   isCurrentPageBookmarked = () => {
-    const currentPageId=pdfwrapper().getCurrentPage()+1;
+    const currentPageId=__pdfInstance.getCurrentPage()+1;
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
     return !(targetBookmark === undefined);
   };
 
   setCurrentZoomLevel(level){
     console.log(level);
-    pdfwrapper().setCurrentZoomLevel(level);
+    __pdfInstance.setCurrentZoomLevel(level);
   }
 
   render() {
