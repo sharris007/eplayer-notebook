@@ -1,0 +1,223 @@
+/*
+ * CSS Styles that are needed by fwrJScrollPane for it to operate correctly.
+ *
+ * Include this stylesheet in your site or copy and paste the styles below into your stylesheetfwrJScrollPaneane
+ * may not operate correctly without them.
+ */
+
+.fwrJspContainer
+{
+	/*overflow: hidden;*/
+	position: relative;
+}
+
+.fwrJspContainer-ie
+{
+	overflow: hidden;
+	position: relative;
+}
+
+.fwrJspPane
+{
+	position: absolute;
+}
+
+.fwrJspVerticalBar
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 18px;
+	height: 100%;
+	background: red;
+	z-index: 9;
+}
+
+.fwrJspHorizontalBar
+{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 16px;
+	background: red;
+	z-index: 9;
+}
+
+.fwrJspVerticalBar *,
+.fwrJspHorizontalBar *
+{
+	margin: 0;
+	padding: 0;
+}
+
+.fwrJspCap
+{
+	display: none;
+}
+
+.fwrJspHorizontalBar .fwrJspCap
+{
+	float: left;
+}
+
+.fwrJspTrack
+{
+	background: #dde;
+	position: relative;
+	cursor: default;
+}
+
+.fwrJspDrag
+{
+	background: #bbd;
+	position: relative;
+	top: 0;
+	left: 0;
+	cursor: pointer;
+}
+
+.fwrJspHorizontalBar .fwrJspTrack,
+.fwrJspHorizontalBar .fwrJspDrag
+{
+	float: left;
+	height: 100%;
+}
+
+.fwrJspArrow
+{
+	background: #50506d;
+	text-indent: -20000px;
+	display: block;
+	cursor: pointer;
+}
+
+.fwrJspArrow.jspDisabled
+{
+	cursor: default;
+	background: #80808d;
+}
+
+.fwrJspVerticalBar .fwrJspArrow
+{
+	height: 16px;
+}
+
+.fwrJspHorizontalBar .fwrJspArrow
+{
+	width: 16px;
+	float: left;
+	height: 100%;
+}
+
+.fwrJspVerticalBar .fwrJspArrow:focus
+{
+	outline: none;
+}
+
+.fwrJspCorner
+{
+	background: #B7B8BA;
+	float: left;
+	height: 100%;
+}
+
+/* Yuk! CSS Hack for IE6 3 pixel bug :( */
+* html .fwrJspCorner
+{
+	margin: 0 -3px 0 0;
+}
+
+.fwrJspHorizontalBar,
+.fwrJspVerticalBar,
+.fwrJspTrack
+{
+
+	background: #F5F6F5;
+}
+
+.fwrJspDrag
+{
+	background:  #B7B8BA;
+    margin-left:1px;
+    margin-right:1px;
+	/*-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;*/
+}
+
+.fwrJspTrack .jspActive,
+.fwrJspTrack .jspHover,
+.fwrJspDrag:hover
+{
+	background: #868896;
+}
+
+
+.fwrJspArrow
+{
+	/*background: url(../images/scrolltop.png) no-repeat;*/
+	
+	/*-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;*/
+}
+
+.fwrJspVerticalBar>.jspActive,
+.fwrJspArrow:hover
+{
+	/*background-image: url('../images/ui-scrolltop.png');*/
+}
+
+.fwrJspVerticalBar>.jspDisabled,
+.fwrJspVerticalBar>.jspDisabled:hover,
+.fwrJspHorizontalBar>.jspDisabled,
+.fwrJspHorizontalBar>.jspDisabled:hover
+.fwrJspVerticalBar>.jspDisabledUp,
+.fwrJspVerticalBar>.jspDisabledUp:hover,
+.fwrJspHorizontalBar>.jspDisabledUp,
+.fwrJspHorizontalBar>.jspDisabledUp:hover
+{
+	background-color: transparent;
+	background-image: url('../../images/reader/scrolltop.png');
+}
+
+.fwrJspVerticalBar>.jspDisabledDown,
+.fwrJspVerticalBar>.jspDisabledDown:hover,
+.fwrJspHorizontalBar>.jspDisabledDown,
+.fwrJspHorizontalBar>.jspDisabledDown:hover
+{
+    background-color: transparent;
+	background-image: url('../../images/reader/scrollbottom.png');
+    }
+.fwrJspVerticalBar .fwrJspArrow
+{
+	height: 15px;
+}
+
+.fwrJspHorizontalBar .fwrJspArrow
+{
+	width: 15px;
+}
+
+.fwrJspArrowUp,.fwrJspArrowUp:hover
+{
+	background-position: 0 0;
+	background: url(../../images/reader/scrolltop.png) no-repeat;
+}
+
+.fwrJspArrowDown,.fwrJspArrowDown:hover
+{
+	background-position: 0 0 !important; 
+	background: url(../../images/reader/scrollbottom.png) no-repeat;
+}
+
+.fwrJspArrowLeft
+{
+	background-position: 0 0 !important;
+}
+
+.fwrJspArrowRight
+{
+	background-position: 0 0 !important;
+}

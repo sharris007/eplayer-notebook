@@ -1,0 +1,165 @@
+
+.fwr-Nav-icons{
+	float:left;
+	width:24px;
+	height:24px;
+	overflow:hidden;
+	background:url(../../../images/pc/icons.png);
+	cursor:pointer;
+}
+
+.fwr-navigation-tip{
+	float: left;
+  	display: none;
+  	width: 120px;
+  	height: auto;
+  	line-height: 20px;
+  	border: #999999 1px solid;
+  	padding: 5px 10px 5px 10px;
+  	margin: 0;
+  	background: #FFFFFF;
+  	position: absolute;
+  	/* top: 30px; */
+  	left: 50px;
+}
+
+.fwr-Nav-bookmark{
+	background-position:0 -240px;
+}
+
+.fwr-Nav-bookmark.selected, .fwr-Nav-bookmark:hover{
+	background-position:-24px -240px;
+}
+
+.fwr-Nav-thumbnail{
+	background-position:0 -264px;
+}
+
+.fwr-Nav-thumbnail.selected,.fwr-Nav-thumbnail:hover{
+	background-position:-24px -264px;
+}
+
+.fwr-Nav-search{
+	background-position:0 -288px;
+}
+
+.fwr-Nav-search.selected,.fwr-Nav-search:hover{
+	background-position:-24px -288px;
+}
+
+.fwr-Nav-sign{
+	background-position:0 -216px;
+}
+
+.fwr-Nav-sign:hover{
+	background-position:-24px -216px;
+}
+
+.fwr-navigation{
+  float: left;
+  width: 49px;
+  height: 100%;
+  background: url(../../../images/pc/shortcut-bg.gif) repeat-y #FFFFFF;
+  position: absolute;
+  z-index: 1;
+}
+
+.fwr-navigation ul{
+    padding:0 0 0 12px;
+}
+.fwr-navigation ul li{
+	display:none;
+	float:left;
+	width:37px;
+	height:24px;
+	overflow:hidden;
+	padding:15px 0 15px 0;
+	margin:0;
+	zoom:1;
+}
+
+
+.fwr-Nav-panel{
+	display:none;
+	left:49px;
+	float:left;
+	width:180px;
+	height:100%;
+	background:#f5f5f5;
+	border-right:#cbcbcb 1px solid;
+	position:absolute;
+	overflow: hidden;
+}
+
+.fwr-Nav-panel-close{
+	width:16px;
+	height:16px;
+	background:url(../../../images/pc/shortcut-box-close.gif) no-repeat;
+	position:absolute;
+	right:5px;
+	top:10px;
+	cursor:pointer;
+}
+
+.fwr-Nav-panel-title{
+	position:absolute;
+	left:5px;
+	top:10px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+.fwr-Nav-panel-close:hover{
+	background-position:0 -16px;
+}
+
+
+.fwr-bookmark-panel{
+	width:100% !important;
+	height:100%;
+	padding: 10px;
+	top:28px;
+	cursor:pointer;
+	overflow-y:scroll !important;
+	display:block !important;
+}
+
+.fwr-thumb-panel{
+	width:180px;
+	height:100%;
+	position:absolute;
+	top:28px;
+	cursor:pointer;
+}
+
+.fwr-search-panel{
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:28px;
+	cursor:pointer;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	
+}
+
+.fwr-search-result{
+	width:100%;
+	height:100%;
+}
+
+.fwr-search-tip{
+	 margin: 10px;
+}
+ 
+.fwr-search-next-last{
+	margin-right: 10px;
+	  float: right;
+}
+ 
+
+.fwr-Nav-panel-selected{
+	background:url(../../../images/pc/shortcut-selected.gif) no-repeat right;
+}
+
+
