@@ -1,7 +1,7 @@
 import { injectReducer } from '../../store/reducers';
 
 export default store => ({
-  path: '/eplayer/bookshelf',
+  path: '/eplayer/login',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
@@ -9,16 +9,16 @@ export default store => ({
     require.ensure([], (require) => {
       /*  Webpack - use require callback to define
           dependencies for bundling   */
-      const Bookshelf = require('./containers/BookshelfContainer').default;
-      const reducer = require('./modules/bookshelfReducer').default;
+      const LoginPage = require('./containers/LoginContainer').default;
+      const reducer = require('./modules/loginReducer').default;
 
-      /*  Add the reducer to the store on key 'bookshelf'  */
-      injectReducer(store, { key: 'bookshelf', reducer });
+          injectReducer(store, { key: 'login', reducer });
+
 
       /*  Return getComponent   */
-      cb(null, Bookshelf);
+      cb(null, LoginPage);
 
     /* Webpack named bundle   */
-    }, 'bookshelf');
+    }, 'login');
   }
 });

@@ -4,9 +4,9 @@ import SwipeableViews from 'react-swipeable-views';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Drawer from 'material-ui/Drawer';
 import { Tabs, Tab } from 'material-ui/Tabs';
-import { TableOfContents } from '@pearson-incubator/toc';
-import { BookmarkList } from '@pearson-incubator/bookmarks';
-import { NotesList } from '@pearson-incubator/notes';
+import { TableOfContentsComponent } from '@pearson-incubator/toc';
+import { BookmarkListComponent } from '@pearson-incubator/bookmarks';
+import { NoteListComponent } from '@pearson-incubator/notes';
 import './Drawer.scss';
 
 const sampleList = {};
@@ -302,9 +302,9 @@ class DrawerComponent extends React.Component {
             className="swipeviewStyle"
           >
             { !this.props.bookData.isFetching.toc &&
-              < TableOfContents
+              < TableOfContentsComponent
                 separateToggleIcon
-                data={ tocData }
+                data={this.props.bookData.toc}
                 showDuplicateTitle
                 depth={5}
                 childField={'children'}
@@ -312,16 +312,17 @@ class DrawerComponent extends React.Component {
               />
             }
             { !this.props.bookData.isFetching.bookmarks &&
-              < BookmarkList
+              < BookmarkListComponent
                 bookmarksArr={this.props.bookData.bookmarks}
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
-                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
+                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandlerForBookmarkList}
+                isET1={this.props.isET1}
               />
             }
             { !this.props.bookData.isFetching.annotations &&
-              < NotesList
+              < NoteListComponent
                 notes={this.props.bookData.annotations}
-                clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
+                clickNoteHandler={this.props.bookCallbacks.goToPage}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
               />
             }

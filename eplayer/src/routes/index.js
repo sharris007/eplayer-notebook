@@ -1,5 +1,6 @@
 // We only need to import the modules necessary for initial render
 import { CoreLayout } from '../layouts/CoreLayout/CoreLayout';
+import loginRoute from './Login';
 import bookshelfRoute from './Bookshelf';
 import bookRoute from './Book';
 import ETbookshelfRoute from './ETBookshelf';
@@ -11,8 +12,11 @@ import ETbookRoute from './ETBook';
 export const createRoutes = store => ({
   path: '/eplayer',
   component: CoreLayout,
-  indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/etbookshelf') },
+  indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/login') },
   childRoutes: [
+    loginRoute(store),
+    bookshelfRoute(store),
+    bookRoute(store),
     ETbookshelfRoute(store),
     ETbookRoute(store)
   ]

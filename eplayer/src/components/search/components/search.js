@@ -11,14 +11,10 @@ export class Search extends React.Component {
   }
 
   render() {
-    const indexId = '90104c7ed4e49497887808b3e8cb7f8c';
+    //const indexId = '90104c7ed4e49497887808b3e8cb7f8c';
 
     return (
-      <SearchComponent
-        fetch={this.props.fetch} searchData={this.props.search}
-        indexId={indexId} searchListClick={this.props.clickSearchListHandler}
-        listClick={this.props.listClick} searchKeySelect={this.props.searchKeySelect}
-      />
+      <SearchComponent fetch={this.props.fetch} ssoKey={this.props.ssoKey} bookId={this.props.bookId} globalBookId={this.props.globalBookId} searchData={this.props.search} goToPage={this.props.goToPage} isET1='Y'/>
     );
   }
 }
@@ -26,9 +22,6 @@ export class Search extends React.Component {
 Search.propTypes = {
   store: React.PropTypes.object,
   fetch: React.PropTypes.func.isRequired,
-  search: React.PropTypes.object.isRequired,
-  clickSearchListHandler: React.PropTypes.func,
-  listClick: React.PropTypes.func,
-  searchKeySelect: React.PropTypes.func
+  search: React.PropTypes.object.isRequired
 };
 export default Search;

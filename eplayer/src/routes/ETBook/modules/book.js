@@ -354,7 +354,7 @@ export function fetchTocAndViewer(bookId, tocImageAndTitle, pageId) {
 export function fetchBookDetails(bookId) {
 
    return (dispatch) => {
-    return clients.etext.get('/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=xlet2edu&courseInfo=true&includeBookData=true')
+    return clients.etext.get('/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true')
     .then((response) => {
       const tocData = response.data;
       return clients.etext.get('/custom/playlist/contextId/'+bookId+'?provider='+tocData.bookDetail.metadata.toc[0])

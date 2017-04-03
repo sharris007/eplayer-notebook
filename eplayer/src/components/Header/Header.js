@@ -2,7 +2,7 @@ import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import find from 'lodash/find';
 import { browserHistory } from 'react-router';
-import { Preferences } from '@pearson-incubator/preferences';
+import { PreferencesComponent } from '@pearson-incubator/preferences';
 import { BookmarkIcon } from '@pearson-incubator/bookmark-icon';
 import Icon from '../Icon';
 import './Header.scss';
@@ -81,7 +81,7 @@ export class Header extends React.Component {
   }
 
   handleBookshelfClick = () => {
-    browserHistory.push('/');
+    browserHistory.push('/eplayer/bookshelf');
     this.setState({ open: false });
   }
 
@@ -172,7 +172,6 @@ export class Header extends React.Component {
 
     const targetPageId = this.props.bookData.viewer.currentPageId;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
-     // title={currPageObj ? currPageObj.title : ''}
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
         <AppBar
@@ -233,12 +232,7 @@ export class Header extends React.Component {
                 <Icon name="search-lg-18" />
               </div>
               <div className="searchContainer">
-                {this.state.searchOpen ? <Search
-                  store={this.props.store}
-                  listClick={this.searchClick}
-                  searchKeySelect={this.searchKeySelect}
-                  clickSearchListHandler={this.props.bookCallbacks.goToPageCallback}
-                /> : <div className="empty" />}
+                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} goToPage={this.props.goToPage}/> : <div className="empty" />}
               </div>
               <div className="moreIcon">
                 <MoreMenuComponent store={this.props.store} />
@@ -252,10 +246,11 @@ export class Header extends React.Component {
             bookCallbacks={this.props.bookCallbacks}
             isOpen={this.state.drawerOpen}
             hideDrawer={this.hideDrawer}
+            isET1={this.props.isET1}
           />
         }
         <div className="preferences-container">
-          {this.state.prefOpen ? <div className="content"><Preferences /></div> : <div className="empty" />}
+          {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />}
         </div>
       </div>
     );
