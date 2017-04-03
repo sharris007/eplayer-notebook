@@ -267,6 +267,7 @@ Annotator = (function(_super) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
       $(annotation.highlights).find('.annotator-handle').remove();
+      $('.annotator-handle').css({'right' : '-25px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
@@ -277,6 +278,7 @@ Annotator = (function(_super) {
         $(h).replaceWith(h.childNodes);
       }
     }
+    this.alignNotes();
     this.publish('annotationDeleted', [annotation]);
     return annotation;
   };
@@ -336,7 +338,23 @@ Annotator = (function(_super) {
       return false;
     }
   };
-
+  Annotator.prototype.alignNotes = function() {
+    var notes=document.getElementsByClassName('annotator-handle');
+    for (var i = 0; i<notes.length - 1; i++) {
+      for(var j=i+1;j<notes.length;j++){
+        var noteTwo=notes[j];
+        var noteOneBoundaries=notes[i].getBoundingClientRect();
+        var noteTwoBoundaries=noteTwo.getBoundingClientRect();
+        var overlapped=!(noteOneBoundaries.right < noteTwoBoundaries.left || 
+                  noteOneBoundaries.left > noteTwoBoundaries.right || 
+                  noteOneBoundaries.bottom < noteTwoBoundaries.top || 
+                  noteOneBoundaries.top > noteTwoBoundaries.bottom);
+        if(overlapped){
+          noteTwo.style.right=parseInt($(noteTwo).css('right'))-26 + 'px';
+        }
+      }
+    }
+  };
   Annotator.prototype.highlightRange = function(normedRange, cssClass) {
     var hl, node, white, _i, _len, _ref, _results, handle;
     if (cssClass == null) {
@@ -357,6 +375,7 @@ Annotator = (function(_super) {
     }
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(normedRange.toRange());
+    this.alignNotes();
     return _results;
   };
 
