@@ -12,9 +12,13 @@ export class Search extends React.Component {
 
   render() {
     //const indexId = '90104c7ed4e49497887808b3e8cb7f8c';
-
+    const indexId={
+      ssoKey:this.props.ssoKey,
+      bookId:this.props.bookId,
+      globalBookId:this.props.globalBookId
+    };
     return (
-      <SearchComponent fetch={this.props.fetch} ssoKey={this.props.ssoKey} bookId={this.props.bookId} globalBookId={this.props.globalBookId} searchData={this.props.search} goToPage={this.props.goToPage} isET1='Y'/>
+      <SearchComponent fetch={this.props.fetch} indexId={indexId} searchData={this.props.search} searchListClick={this.props.goToPage} isET1='Y'/>
     );
   }
 }

@@ -3,7 +3,7 @@
 // ------------------------------------
 export const SEARCH_PENDING = 'SEARCH_PENDING';
 export const SEARCH_REJECTED = 'SEARCH_REJECTED';
-export const SEARCH_FULFILLED = 'SEARCH_FULFILLED';
+export const SEARCH = 'SEARCH';
 
 /**
  * Action Handlers for Search actions.
@@ -11,16 +11,12 @@ export const SEARCH_FULFILLED = 'SEARCH_FULFILLED';
  * @type {{type}} returns the handler for action type
  */
 const ACTION_HANDLERS = {
-  [SEARCH_PENDING]: state => ({ ...state, fetching: true, error: null }),
-
-  [SEARCH_FULFILLED]: (state, action) => ({
+  [SEARCH]: (state, action) => ({
     ...state,
     fetching: false,
     fetched: true,
-    data: action.payload,
-    error: null }),
-
-  [SEARCH_REJECTED]: (state, action) => ({ ...state, fetching: false, fetched: false, error: action.payload })
+    data: action.searchState.searchResult.results.sort(function(res1, res2){return res1.urn-res2.urn}),
+    error: null })
 };
 
 const initialState = {
