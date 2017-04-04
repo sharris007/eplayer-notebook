@@ -1,7 +1,7 @@
 //header
 $prefIcon-height:18px;
 $prefIcon-width:28px;
-$prefCont-right: 7px;
+$prefCont-right: 50px;
 $prefCont-top: 46px;
 $bookmark-margin: 15px 15px;
 $back_rec-width: 66px;
@@ -26,7 +26,19 @@ $padding-right: 30px;
   height:$prefIcon-height;
   width:$prefIcon-width;
 }
-.preferences-container, .searchContainer {
+.preferences-container-eT1 {
+  position: absolute;
+  right: $prefCont-right;
+  top: $prefCont-top;
+  z-index: 10001;
+}
+.preferences-container {
+  position: absolute;
+  right: 10px;
+  top: $prefCont-top;
+  z-index: 10001;
+}
+.searchContainer {
   position: absolute;
   right: $prefCont-right;
   top: $prefCont-top;

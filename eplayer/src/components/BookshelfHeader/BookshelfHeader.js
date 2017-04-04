@@ -43,7 +43,7 @@ export class BookshelfHeader extends React.Component {
         <div>
           <div className="logo" />
           <span className="rightComp">
-            <span className="label">Addie Learnerbee</span>
+            <span className="label">{this.props.userName ? this.props.userName : 'Addie Learnerbee'}</span>
             <span className="dropdown"><Icon name="dropdown-open-18" /></span>
           </span>
         </div>
