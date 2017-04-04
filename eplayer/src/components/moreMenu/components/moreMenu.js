@@ -1,4 +1,5 @@
 import React from 'react';
+import { browserHistory } from 'react-router';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
@@ -11,7 +12,9 @@ class MoreMenuComponent extends React.Component {
     injectReducer(this.props.store, { key: 'moreMenu', reducer });
   }
   handleClick = () => {
-    this.props.logout();
+    //alert("logout");
+    browserHistory.push(`/eplayer`);
+    //this.props.logout();
   }
   render() {
     const style = {
