@@ -51,7 +51,7 @@ export class BindGlossaryCallBacks {
               popOverCollection.popOverTitle = glossaryNode ? (glossaryNode.getElementsByTagName('dfn').length > 0 ? glossaryNode.getElementsByTagName('dfn')[0].textContent : ''): '';
               popOverCollection.popOverDescription = glossaryNode ? (glossaryNode.nextElementSibling ? glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML : '') : '';
               if (popOverCollection.popOverTitle && popOverCollection.popOverDescription) {
-                this.glossaryCollection.push({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
+                this.glossaryCollection.push({'popOverCollection' : popOverCollection, 'item' : item});
               }
             });
           });

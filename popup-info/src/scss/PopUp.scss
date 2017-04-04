@@ -33,31 +33,58 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	background: $black_10;
 }
 
-.popUpbottomAlign::after {
+.popUpTopAlign::before {
 	content: "";
-	border: 10px solid transparent;
+	border: 15px solid transparent;
+    border-top-color: rgb(0, 90, 112);
+    position: absolute;
+    right: 200px;
+    bottom: -30px;
+}
+
+.popUpTopAlign::after {
+	content: "";
+	border: 15px solid transparent;
+    border-top-color: #fff;
+    position: absolute;
+    right: 200px;
+    bottom: -30px;
+}
+
+.popUpRightAlign::before {
+	content: "";
+	border: 15px solid transparent;
     border-bottom-color: rgb(0, 90, 112);
     position: absolute;
-    top: -20px;
-    left:112px
+    top: -30px;
+    right:35px
 }
 
 .popUpRightAlign::after {
 	content: "";
-	border: 10px solid transparent;
-    border-right-color: rgb(0, 90, 112);
+	border: 15px solid transparent;
+    border-bottom-color: #fff;
     position: absolute;
-    top: 6px;
-    left: -20px;
+    top: -30px;
+    right:35px
+}
+
+.popUpLeftAlign::before {
+	content: "";
+	border: 15px solid transparent;
+    border-bottom-color: rgb(0, 90, 112);
+    position: absolute;
+    top: -30px;
+    left:35px
 }
 
 .popUpLeftAlign::after {
 	content: "";
-	border: 10px solid transparent;
-    border-left-color: rgb(0, 90, 112);
+	border: 15px solid transparent;
+    border-bottom-color: #fff;
     position: absolute;
-   	top: 4px;
-    left: 246px;
+    top: -30px;
+    left:35px
 }
 
 .mm-popup--visible {
@@ -129,7 +156,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	color: $white;
 }
 .mm-popup__box {
-	width: 250px;
+	width: 400px;
 	position: absolute;
 	top: 10%;
 	left: 50%;
@@ -148,18 +175,21 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	//background: $color_catskill_white_approx;
 	//color: $color_mako_approx;
 	padding: 8px 20px;
-    background: #005a70;
+    background: #fff;
     color: #fff;
     border-radius: 5px;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
+    //border-style: solid;
+    //border-bottom-color: black;
+    //border-bottom-width: thin;
 }
 .mm-popup__box__header__title {
 	margin: 0;
 	font-size: 16px;
 	text-align: left;
 	font-weight: 600;
-	color: #fff;
+	color: #0c0c0c;
 }
 .mm-popup__box__body {
 	padding: 20px;
