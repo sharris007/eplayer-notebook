@@ -81,6 +81,11 @@ export class Header extends React.Component {
   }
 
   handleBookshelfClick = () => {
+    if(this.props.bookData.toc.content!==undefined)
+    {
+      this.props.bookData.toc.content={};
+      this.props.bookData.bookmarks=[];
+    }
     browserHistory.push('/eplayer/bookshelf');
     this.setState({ open: false });
   }
@@ -172,24 +177,6 @@ export class Header extends React.Component {
 
     const targetPageId = this.props.bookData.viewer.currentPageId;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
-    let finalBookData;
-    if(this.props.bookData.toc.content!==undefined)
-    {
-     if(this.props.bookData.toc.content.id==this.props.curbookID)
-     { 
-      finalBookData=this.props.bookData;
-     }
-     else
-     {
-      let temp = this.props.bookData;
-      temp = temp.toc.content.list = [];
-      finalBookData = temp;
-     }
-   }
-   else
-   {
-    finalBookData =this.props.bookData;
-   }
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
         <AppBar
