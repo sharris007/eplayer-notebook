@@ -164,6 +164,8 @@ export class Book extends Component {
     });
     this.setState({ drawerOpen: false });
     this.viewerContentCallBack(true);
+    const bookId = this.props.params.bookId;
+    browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
   };
   annotationCallBack = (eventType, data) => {
       const receivedAnnotationData    = data;
@@ -223,6 +225,9 @@ export class Book extends Component {
         }
         this.state.pageDetails.playListURL            = playlistData.content; 
         this.state.tocUrl                             = playlistData.provider;
+        if(this.props.params.pageId){
+           this.state.pageDetails.currentPageURL =filteredData;
+        }
     }
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
     callbacks.addBookmarkHandler = this.addBookmarkHandler;

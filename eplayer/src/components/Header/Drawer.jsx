@@ -77,7 +77,6 @@ class DrawerComponent extends React.Component {
    
     const tocContent = this.props.bookData.pxeTocData.content;
     const bookConfigDetails = this.props.bookData.pxeTocData.bookConfig;
-    tocContent.id = bookConfigDetails.publicBookId;
     tocContent.mainTitle = bookConfigDetails.title;
     tocContent.author = bookConfigDetails.creator;
     tocContent.thumbnail =bookConfigDetails.coverImageUrl;
