@@ -175,7 +175,7 @@ export class Header extends React.Component {
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
         <AppBar
-          title = {this.props.pageTitle}
+          title = {this.props.isET1 == 'Y' ?  this.props.title :  this.props.pageTitle  }
           titleStyle={style.appBar.title}
           style={style.appBar}
           iconStyleLeft={style.leftIcons}

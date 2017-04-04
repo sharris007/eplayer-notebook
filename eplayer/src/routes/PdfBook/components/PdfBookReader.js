@@ -230,6 +230,7 @@ export class PdfBookReader extends Component {
           bookId={this.props.params.bookId}
           globalBookId={this.props.bookshelf.globalBookId}
           ssoKey={this.props.bookshelf.ssoKey}
+          title={this.props.bookshelf.title}
           isET1='Y'
         /> 
       
