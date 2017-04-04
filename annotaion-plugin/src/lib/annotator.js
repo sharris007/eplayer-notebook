@@ -220,7 +220,6 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.setupAnnotation = function(annotation) {
-    console.log("plugin---", annotation);
     var e, normed, normedRanges, r, root, _i, _j, _len, _len1, _ref;
     root = this.wrapper[0];
     annotation.ranges || (annotation.ranges = this.selectedRanges);
@@ -253,7 +252,7 @@ Annotator = (function(_super) {
     annotation.quote = annotation.quote.join(' / ');
     $(annotation.highlights).data('annotation', annotation);
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
-    $(annotation.highlights).attr('data-ann-id', annotation._id?annotation._id.$oid:null);
+    $(annotation.highlights).attr('data-ann-id', annotation.id);
     return annotation;
   };
 
@@ -267,6 +266,8 @@ Annotator = (function(_super) {
   Annotator.prototype.deleteAnnotation = function(annotation) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
+      $(annotation.highlights).find('.annotator-handle').remove();
+      $('.annotator-handle').css({'right' : '-25px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
@@ -277,6 +278,7 @@ Annotator = (function(_super) {
         $(h).replaceWith(h.childNodes);
       }
     }
+    this.alignNotes();
     this.publish('annotationDeleted', [annotation]);
     return annotation;
   };
@@ -285,7 +287,16 @@ Annotator = (function(_super) {
     return this.isShareable=isShareable;
   };
 
-  Annotator.prototype.loadAnnotations = function(annotations,isUpdate) {
+  Annotator.prototype.updateAnnotationId = function (annotation) {
+     $('.annotator-hl').each(function() {
+      if(Date.parse($(this).data("annotation").createdTimestamp) == annotation.createdTimestamp) {
+        $(this).data("annotation").id=annotation.id;
+        $(this).attr('data-ann-id', annotation.id);
+      }
+    })
+  };
+
+  Annotator.prototype.loadAnnotations = function(annotations, isUpdate) {
     var clone, loader;
     if (annotations == null) {
       annotations = [];
@@ -327,7 +338,23 @@ Annotator = (function(_super) {
       return false;
     }
   };
-
+  Annotator.prototype.alignNotes = function() {
+    var notes=document.getElementsByClassName('annotator-handle');
+    for (var i = 0; i<notes.length - 1; i++) {
+      for(var j=i+1;j<notes.length;j++){
+        var noteTwo=notes[j];
+        var noteOneBoundaries=notes[i].getBoundingClientRect();
+        var noteTwoBoundaries=noteTwo.getBoundingClientRect();
+        var overlapped=!(noteOneBoundaries.right < noteTwoBoundaries.left || 
+                  noteOneBoundaries.left > noteTwoBoundaries.right || 
+                  noteOneBoundaries.bottom < noteTwoBoundaries.top || 
+                  noteOneBoundaries.top > noteTwoBoundaries.bottom);
+        if(overlapped){
+          noteTwo.style.right=parseInt($(noteTwo).css('right'))-26 + 'px';
+        }
+      }
+    }
+  };
   Annotator.prototype.highlightRange = function(normedRange, cssClass) {
     var hl, node, white, _i, _len, _ref, _results, handle;
     if (cssClass == null) {
@@ -348,6 +375,7 @@ Annotator = (function(_super) {
     }
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(normedRange.toRange());
+    this.alignNotes();
     return _results;
   };
 
@@ -385,7 +413,7 @@ Annotator = (function(_super) {
 
   Annotator.prototype.showEditor = function(annotation, location, isAdderClick) {
     var position= {
-      right:80,
+      right:190,
       top:(39+location.top+(!isAdderClick?140:0))
     }
     this.editor.element.css(position);

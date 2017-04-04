@@ -34,12 +34,12 @@ class ComponentOwner extends React.Component {
   //
 
   render() {
-    const { contentId, annotationData, shareableAnnotations, annotationEventHandler, currentPageDetails} = this.props;
+    const { contentId, annotationData, shareableAnnotations, annotationEventHandler, currentPageDetails, annAttributes} = this.props;
     return (
       <div>
         <Annotation contentId={contentId} annotationData={annotationData} 
                     shareableAnnotations={shareableAnnotations} annotationEventHandler={annotationEventHandler} 
-                    currentPageDetails={currentPageDetails} />
+                    currentPageDetails={currentPageDetails} annAttributes={annAttributes}/>
       </div>
     );
   };  

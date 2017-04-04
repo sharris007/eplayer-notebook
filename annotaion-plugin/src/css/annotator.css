@@ -828,7 +828,8 @@
     margin-left: 3px;
 }
 .annotator-handle {
-	display:none;
+	/*display:none;*/
+	visibility: hidden;
     width: 16px;
     height: 16px;
     position: absolute;
@@ -900,7 +901,8 @@
 }
 
 .highlight-note .annotator-handle {
-	display:inline;
+	/*display:inline;*/
+	visibility: visible;
 }
 /* Custom style */
 

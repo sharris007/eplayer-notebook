@@ -11,6 +11,7 @@ import crossRef from './CrossRef';
 import copyCharLimit from './CopyCharLimit';
 import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
+import loadMathMLScript from './MathML';
 
 class PageViewer extends React.Component {
   
@@ -189,14 +190,22 @@ class PageViewer extends React.Component {
   };
   componentWillMount = () => {
     this.init(this.props);
-  };
-
-  componentWillReceiveProps(newProps) {
-    if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
-      this.getResponse(parseInt(newProps.src.currentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
+    if (this.props.src.includeMathMLLib) {
+      loadMathMLScript();
     }
   };
 
+  componentWillReceiveProps(newProps) {
+
+    if (this.props.src.tocUpdated===true || parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
+      const pageIndex=this.props.src.playListURL.findIndex(el =>{
+        return parseInt(el.playOrder)===parseInt(newProps.src.currentPageURL.playOrder); 
+      });
+      this.getResponse(parseInt(pageIndex), true, 'propChanged', this.scrollWindowTop);
+      this.props.src.tocUpdated = false;
+    }
+  };
+  
   componentDidUpdate = () => {
     copyCharLimit(this);
     //prints page no in the page rendered
@@ -204,6 +213,9 @@ class PageViewer extends React.Component {
     this.loadMultimediaNscrollToFragment();
     crossRef(this);
     document.addEventListener('click', this.clearSearchHighlights);
+    if ( this.bookComBlock.innerHTML.length > 0 ) {
+      this.bookComBlock.parentNode.style.height = '100%';
+    }
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
@@ -219,10 +231,11 @@ class PageViewer extends React.Component {
  
   render() {
     const zommLevel = this.props.src.pageZoom ? this.props.src.pageZoom + '%' : '100%';
+    const bgColor = this.props.src.bgColor ? this.props.src.bgColor : '';
     return ( 
-      <div id = "book-render-component"  tabIndex = "0" onKeyUp = {this.arrowNavigation} >
+      <div id = "book-render-component" ref = {(el) => { this.bookComBlock = el; }} tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
-          <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
+          <div id = "book-container" className = {'book-container' + ' ' + bgColor} ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
             {this.state.renderSrc ?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} 
           </div>
         </div>

@@ -14,7 +14,7 @@ export const postAnnData = data => fetch(`${apiConstants.PXESERVICE}/context/${d
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id':'epluser'
+    'Identity-Id':data.user
   },
   body: JSON.stringify(data)
 });
@@ -43,13 +43,20 @@ export const deleteAnnData = data =>
 
 export const getBookDetails = bookId => 
 fetch(apiConstants.PAPERBASE+'/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=xlet2edu&courseInfo=true&includeBookData=true',
-//fetch(apiConstants.PAPERBASE+'/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=staging_inst2&courseInfo=true&includeBookData=true',
  {
     method: 'GET',
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
     }
+});
+
+export const getTocDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/toc/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
 });
 
 export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef

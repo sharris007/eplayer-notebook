@@ -1,11 +1,26 @@
 ////
 /// Custom SCSS for component-specific styling goes here
 ////
+html, body {
+  height:100%;
+}
 div#book-render-component{
     position: relative;
     outline: none;
+    height:100%;
 }
-
+#book-container.sepia{
+  background-color:#fbeecf;
+  color:#673403;
+}
+#book-container.default{
+  background-color:#fff;
+  color:#070707;
+}
+#book-container.night{
+  background-color:#333;
+  color:#eee;
+}
 .book-container{
     width: 100%;
     position: absolute;
@@ -123,7 +138,7 @@ div#book-render-component{
   margin : 4px;
 }
 .react-highlighted-text{
-  background-color: #ff9632;
+  background-color: #ff9632 !important;
 }
 //video lightbox componenet over ride css
 figure.video .modal{

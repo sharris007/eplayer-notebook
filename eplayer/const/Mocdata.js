@@ -79,16 +79,17 @@ export const pageDetails = {
   enableGoToPage: false,
   includeMathMLLib: false,
   enableAnnotation: true,
-  annotationShareable: false,
+  annotationShareable: true,
   clearSearchHighlights: true,
   elementId: 'demo',
   pdfSearch: false,
   allowLightboxFullscreen: false,
-  highlightText:"Atmosphere",
+  highlightText:"MasteringMeteorology",
   contentId: 'pxe-viewer',
   baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/',
   playListURL: '',
-  currentPageURL: ''
+  currentPageURL: '',
+  bgColor: ''
 };
 
 export const tocData = [

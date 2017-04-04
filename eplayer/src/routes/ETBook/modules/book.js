@@ -113,7 +113,6 @@ export function addAnnotation(bookId, annotationToAdd) {
       if (response.status >= 400) {
         // TODO: Implement add annotation error
         //eslint-disable-next-line
-        console.log(`Add annotation error: ${response.statusText}`);
       }
       return response.json();
     })
@@ -284,7 +283,7 @@ function orderPages(unorderedPages, bookState, pageId) {
   bookSt.isFetching.viewer = false;
 }
 
-export function fetchTocAndViewer(bookId, tocImageAndTitle, pageId) {
+export function fetchTocAndViewer(bookId, tocImageAndTitle, pageId,tocUrl) {
   const bookState = {
     toc: {
       content: {}
@@ -298,56 +297,29 @@ export function fetchTocAndViewer(bookId, tocImageAndTitle, pageId) {
   return (dispatch) => {
     dispatch(request('toc'));
     dispatch(request('viewer'));
-    return clients.scapi.get('content/urn:pearson:manifestation:55a98cce-067a-4a73-b610-229959548eab')
+    return clients.etext.get('/custom/toc/contextId/'+bookId+'?provider='+tocUrl)
     .then((response) => {
       const tocData = response.data;
-      let nManifestIndex = 0;
-      // Get corresponding index from mainifest passing in mainfest id
-      for (let n = 0; n < tocData.manifest.length; n += 1) {
-        if (tocData.manifest[n].id === bookId) {
-          nManifestIndex = n;
-        }
-      }
-
-      bookState.toc.content.id = tocData.manifest[nManifestIndex].urn || '';
-      bookState.toc.content.mainTitle = tocImageAndTitle.title || '';
-      bookState.toc.content.author = tocImageAndTitle.author || '';
-      bookState.toc.content.thumbnail = tocImageAndTitle.image || '';
+      bookState.toc.content.id = 'testid';
+      bookState.toc.content.mainTitle = "Science";
+      bookState.toc.content.author = 'Charles Dickens';
+      bookState.toc.content.thumbnail ='http://content.stg-openclass.com/eps/pearson-reader/api/item/4eaf188e-1798-446b-b382-90a0c6da6629/1/file/cover_thumbnail.jpg';
       bookState.toc.content.list = [];
-      const listObj = {
-        id: tocData.manifest[nManifestIndex].urn || '',
-        title: tocData.manifest[nManifestIndex].label || '',
-        children: []
-      };
-      bookState.toc.content.list.push(listObj);
-      tocData.manifest[nManifestIndex].content.forEach((page) => {
-        const chapterPageObj = {
-          id: page.urn,
-          title: page.label,
-          playOrder: ''
-        };
-        bookState.toc.content.list[0].children.push(chapterPageObj);
-      });
+      const chapterPageObj = tocData.content.items;
+      var repl = chapterPageObj.map(function(obj) {
+                return {
+                    id: obj.id,
+                    title: obj.title,
+                coPage: obj.coPage,
+                playOrder: obj.playOrder,
+                children: obj.items
+                
+                }
+            });
+     
+      bookState.toc.content.list= repl;
       bookState.isFetching.toc = false;
       dispatch({ type: RECEIVE_TOC, bookState });
-
-      const unorderedPages = [];
-      tocData.manifest[nManifestIndex].content.forEach((page) => {
-        const pageObj = {
-          id: page.urn,
-          title: page.label
-        };
-        return clients.scapi.get(`content/${page.urn}`)
-        .then((pageData) => {
-          pageObj.content = pageData.data;
-          unorderedPages.push(pageObj);
-          if (unorderedPages.length === bookState.toc.content.list[0].children.length) {
-            // On the last API call, order the pages according to TOC
-            orderPages(unorderedPages, bookState, pageId);
-            dispatch({ type: RECEIVE_VIEWER, bookState });
-          }
-        });
-      });
     });
   };
 }

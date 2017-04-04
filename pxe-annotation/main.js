@@ -13,7 +13,7 @@ export default class AnnotationComponent {
     ReactDOM.render(
         <ComponentOwner contentId={config.contentId} annotationData={config.annotationData} 
                     shareableAnnotations={config.shareableAnnotations} annotationEventHandler={config.annotationEventHandler} 
-                    currentPageDetails={config.currentPageDetails} />,
+                    currentPageDetails={config.currentPageDetails} annAttributes={config.annAttributes}/>,
         document.getElementById(config.elementId)
     );
   };  
