@@ -2,7 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Icon from '../Icon';
 import './BookshelfHeader.scss';
-
+import { browserHistory } from 'react-router';
 
 const style = {
   raisedButton: {
@@ -36,6 +36,11 @@ export class BookshelfHeader extends React.Component {
       valueSingle: value
     });
   };
+  onClick = () => {
+    //alert("logout");
+    browserHistory.push(`/eplayer/login`);
+    //this.props.logout();
+  }
 
   render() {
     return (
@@ -52,6 +57,7 @@ export class BookshelfHeader extends React.Component {
             label="Sign out"
             buttonStyle={style.raisedButton}
             labelStyle={style.raisedButton.label}
+            onClick={this.onClick}
           />
         </div>
         <div className="title">My Bookshelf</div>
