@@ -1,49 +1,50 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {ReactDOM} from 'react-dom';
 import SwipeableViews from 'react-swipeable-views';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+// import injectTapEventPlugin from 'react-tap-event-plugin';
 import Drawer from 'material-ui/Drawer';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { TableOfContents } from '@pearson-incubator/toc';
-import { BookmarkList } from '@pearson-incubator/bookmarks';
-import { NotesList } from '@pearson-incubator/notes';
+// import { BookmarkList } from '@pearson-incubator/bookmarks';
+// import { NotesList } from '@pearson-incubator/notes';
 import './Drawer.scss';
 
-const sampleList = {};
-  sampleList.author = 'Charles Dickens';
-  sampleList.mainTitle = 'Science';
-  sampleList.thumbnail = 'http://content.stg-openclass.com/eps/pearson-reader/api/item/4eaf188e-1798-446b-b382-90a0c6da6629/1/file/cover_thumbnail.jpg';
-  sampleList.list = [
-  {
-    'id': '1',
-    'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
-    'title': 'Chapter 1 Hypothesis Testing',
-    children: [
-      {
-        'id': '2',
-        'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml',
-        'title': '1.1 The Process of Science',
-      },
-      {
-        'id': '3',
-        'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml',
-        'title': '1.2 Can Science Cure the Common Cold'
-      },
-      {
-        'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000806.xhtml',
-        'id': 4,
-        'title': '1.3 Understanding Statistics'
-      },
-      {
-        'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml',
-        'id': 5,
-        'title': '1.4 Evaluating Scientific Information'
-      }
-    ]
-  }
-];
 
-const tocData = {content : sampleList};
+// const sampleList = {};
+//   sampleList.author = 'Charles Dickens';
+//   sampleList.mainTitle = 'Science';
+//   sampleList.thumbnail = 'http://content.stg-openclass.com/eps/pearson-reader/api/item/4eaf188e-1798-446b-b382-90a0c6da6629/1/file/cover_thumbnail.jpg';
+//   sampleList.list = [
+//   {
+//     'id': '1',
+//     'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
+//     'title': 'Chapter 1 Hypothesis Testing',
+//      children: [
+//       {
+//         'id': '2',
+//         'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml',
+//         'title': '1.1 The Process of Science',
+//       },
+//       {
+//         'id': '3',
+//         'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml',
+//         'title': '1.2 Can Science Cure the Common Cold'
+//       },
+//       {
+//         'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000806.xhtml',
+//         'id': 4,
+//         'title': '1.3 Understanding Statistics'
+//       },
+//       {
+//         'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml',
+//         'id': 5,
+//         'title': '1.4 Evaluating Scientific Information'
+//       }
+//     ]
+//   }
+// ];
+
+// const tocData = {content : sampleList};
 
 
 let counter = -1;
@@ -58,19 +59,45 @@ const four = 4;
 const normal = 'normal';
 const center = 'center';
 class DrawerComponent extends React.Component {
+  
   constructor(props) {
     super(props);
-
     this.state = {
       slideIndex: 0,
-      drawerOpen: false
+      drawerOpen: false,
+      tocContentData:''
     };
+
   }
 
   componentDidMount() {
     this.drawerListFocus();
   }
-
+  componentWillMount(){
+   
+    const tocContent = this.props.bookData.pxeTocData.content;
+    const bookConfigDetails = this.props.bookData.pxeTocData.bookConfig;
+    tocContent.id = bookConfigDetails.publicBookId;
+    tocContent.mainTitle = bookConfigDetails.title;
+    tocContent.author = bookConfigDetails.creator;
+    tocContent.thumbnail =bookConfigDetails.coverImageUrl;
+    tocContent.list = [];
+    const chapterPageObj = tocContent.items;
+    var repl = chapterPageObj.map(function(obj) {
+          return {
+              id: obj.id,
+              title: obj.title,
+              coPage: obj.coPage,
+              playOrder: obj.playOrder,
+              children: obj.items
+          }
+    });
+    tocContent.list= repl;
+    const tocContent2 = {'content':tocContent}
+    this.setState({
+      tocData:tocContent2
+    })
+  }
   componentDidUpdate() {
     this.drawerListFocus();
   }
@@ -221,6 +248,8 @@ class DrawerComponent extends React.Component {
   }
 
   render() {
+   
+    
     const drawerTab = {
       tabHeader: {
         backgroundColor: bkgColor,
@@ -301,30 +330,17 @@ class DrawerComponent extends React.Component {
             onChangeIndex={this.handleChange}
             className="swipeviewStyle"
           >
-            { !this.props.bookData.isFetching.toc &&
+            
               < TableOfContents
                 separateToggleIcon
-                data={ tocData }
+                data={ this.state.tocData }
                 showDuplicateTitle
                 depth={5}
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
               />
-            }
-            { !this.props.bookData.isFetching.bookmarks &&
-              < BookmarkList
-                bookmarksArr={this.props.bookData.bookmarks}
-                clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
-                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
-              />
-            }
-            { !this.props.bookData.isFetching.annotations &&
-              < NotesList
-                notes={this.props.bookData.annotations}
-                clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
-                removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
-              />
-            }
+           
+             
           < /SwipeableViews> < /div > < /Drawer>
     );
   }

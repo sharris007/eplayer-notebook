@@ -2,14 +2,14 @@ import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import find from 'lodash/find';
 import { browserHistory } from 'react-router';
-import { Preferences } from '@pearson-incubator/preferences';
+
 import { BookmarkIcon } from '@pearson-incubator/bookmark-icon';
 import Icon from '../Icon';
 import './Header.scss';
 import DrawerComponent from './Drawer';
 import Search from '../search/containers/searchContainer';
 import MoreMenuComponent from '../moreMenu/containers/moreMenuContainer';
-// import { injectReducer } from '../../store/reducers';
+import { injectReducer } from '../../store/reducers';
 
 
 export class Header extends React.Component {
@@ -29,7 +29,11 @@ export class Header extends React.Component {
     }
     this.headerInterval = false;
   }
-
+  componentWillReceiveProps(){
+    if(this.state.drawerOpen == true){
+      this.setState({ drawerOpen: this.props.drawerOpen });
+    }
+  }
   componentDidMount() {
     let didScroll = false;
     let lastScrollPosition = 0;
@@ -65,6 +69,7 @@ export class Header extends React.Component {
 
   handleDrawerkeyselect = (event) => {
     if ((event.which || event.keyCode) === 13) {
+      
       this.setState({ drawerOpen: true });
     }
     this.props.viewerContentCallBack(false);
@@ -171,9 +176,10 @@ export class Header extends React.Component {
     };
 
     const targetPageId = this.props.bookData.viewer.currentPageId;
+    this.props.bookData.pxeTocData = this.props.pxeTocbundle;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
-     // title={currPageObj ? currPageObj.title : ''}
     return (
+
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
         <AppBar
           title = {this.props.pageTitle}
@@ -246,6 +252,7 @@ export class Header extends React.Component {
             </div>}
         />
         {
+
           this.state.drawerOpen &&
           <DrawerComponent
             bookData={this.props.bookData}
@@ -254,9 +261,7 @@ export class Header extends React.Component {
             hideDrawer={this.hideDrawer}
           />
         }
-        <div className="preferences-container">
-          {this.state.prefOpen ? <div className="content"><Preferences /></div> : <div className="empty" />}
-        </div>
+        
       </div>
     );
   }
