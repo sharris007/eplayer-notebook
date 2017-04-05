@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import $ from 'jquery';
 // import CircularProgress from 'material-ui/CircularProgress';
 // import renderHTML from 'react-render-html';
 
@@ -188,6 +189,25 @@ class PageViewer extends React.Component {
       }
     }
   };
+  setPageTheme = () => {
+    const linkEle = 'link[title][rel*="stylesheet"]';
+    const getAllLinkTags = this.bookContainerRef.querySelectorAll(linkEle);
+    const bgTheme = this.props.src.bgColor;
+    if ( this.bookContainerRef.querySelectorAll('link[title="'+ bgTheme +'"]').length ) {
+      getAllLinkTags.forEach (function(link) {
+        link.setAttribute('disabled', 'disabled');
+      });
+      $('link[title="'+ bgTheme +'"]', this.bookContainerRef).removeAttr('disabled');
+    }
+   else {
+      getAllLinkTags.forEach (function(link) {
+        link.setAttribute('disabled', 'disabled');
+        if (!(link.title === 'night' ||  link.title === 'sepia')) {
+          $('link[title="'+ link.title +'"]', this.bookContainerRef).removeAttr('disabled');
+        }
+      });
+    }
+  };
   componentWillMount = () => {
     this.init(this.props);
     if (this.props.src.includeMathMLLib) {
@@ -219,10 +239,10 @@ class PageViewer extends React.Component {
     if (this.props.src.includeMathMLLib) {
       reloadMathMl(this);
     } 
+    this.setPageTheme();
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
-
   getGoToElement = () =>{
     return (
       <div className = "goto-group" >
