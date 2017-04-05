@@ -13,7 +13,7 @@ Include the following lines in  the application
 import {PopUpInfo} from 'popup-info';
 
 In render method of the application :
-<PopUpInfo popUpCollection = {this.state.popUpCollection}/>
+<PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = {bookId}/>
 
 # popUpCollection
 
@@ -22,22 +22,21 @@ popUpCollection is an array of objects and its structure need to be followed as
 
 popUpCollection = [ {
                         ‘popOverCollection’ : { ‘popOverDescription’ : “Desc1”, ‘popOverTitle’ : “Title1” },
-                                  ‘bookDiv’ : bookId,
                                      ‘item’ : DOM of the link(Glossary) or Icon(MoreInfo)                               
                     } ,
                     {
                        ‘popOverCollection’ : { ‘popOverDescription’ : “Desc2”, ‘popOverTitle’ : “Title2” },
-                                 ‘bookDiv’ : bookId,
                                     ‘item’ : DOM of the link(Glossary) or Icon(MoreInfo)                               
 
                     }, .. ,
                     {
                         ‘popOverCollection’ : { ‘popOverDescription’ : “DescN”, ‘popOverTitle’ : “TitleN” },
-                                  ‘bookDiv’ : bookId,
                                      ‘item’ : DOM of the link(Glossary) or Icon(MoreInfo)                               
                     }
                   ]
-
+# bookId
+ Id of the bookContainer
+ 
 After passing all the required properties from the client application to popup-info component, popup-info component will handle the clicks, positioning the popup, and rendering the popup. 
 
 this.popUpArray[i] = popUpProps.popOverCollection;

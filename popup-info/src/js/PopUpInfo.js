@@ -27,6 +27,9 @@ class PopUpInfo extends Component {
 
   framePopOver = (index, event) => {
     event.preventDefault();
+    if (event.target.getAttribute('class').indexOf('annotator-hl') > -1) {
+      return false;
+    }
     const props = this.props.popUpCollection[index];
     const bookId = document.getElementById(this.bookId);
     if (props.popOverCollection) {
