@@ -11,7 +11,7 @@ import crossRef from './CrossRef';
 import copyCharLimit from './CopyCharLimit';
 import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
-import loadMathMLScript from './MathML';
+import { loadMathMLScript, reloadMathMl } from './MathML';
 
 class PageViewer extends React.Component {
   
@@ -216,6 +216,9 @@ class PageViewer extends React.Component {
     if ( this.bookComBlock.innerHTML.length > 0 ) {
       this.bookComBlock.parentNode.style.height = '100%';
     }
+    if (this.props.src.includeMathMLLib) {
+      reloadMathMl(this);
+    } 
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
