@@ -9,7 +9,7 @@ import './Header.scss';
 import DrawerComponent from './Drawer';
 import Search from '../search/containers/searchContainer';
 import MoreMenuComponent from '../moreMenu/containers/moreMenuContainer';
-// import { injectReducer } from '../../store/reducers';
+import { injectReducer } from '../../store/reducers';
 
 
 export class Header extends React.Component {
@@ -29,7 +29,11 @@ export class Header extends React.Component {
     }
     this.headerInterval = false;
   }
-
+  componentWillReceiveProps(){
+    if(this.state.drawerOpen == true){
+      this.setState({ drawerOpen: this.props.drawerOpen });
+    }
+  }
   componentDidMount() {
     let didScroll = false;
     let lastScrollPosition = 0;
@@ -176,6 +180,7 @@ export class Header extends React.Component {
     };
 
     const targetPageId = this.props.bookData.viewer.currentPageId;
+    this.props.bookData.pxeTocData = this.props.pxeTocbundle;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >

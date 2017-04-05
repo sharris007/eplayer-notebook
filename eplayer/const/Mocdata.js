@@ -77,7 +77,7 @@ export const pageDetails = {
   pageFontSize: '12px',
   pageZoom: '',
   enableGoToPage: false,
-  includeMathMLLib: false,
+  includeMathMLLib: true,
   enableAnnotation: true,
   annotationShareable: true,
   clearSearchHighlights: true,

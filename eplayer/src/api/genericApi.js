@@ -52,7 +52,15 @@ fetch(apiConstants.PAPERBASE+'/books/'+bookId+'/details?platformId=&profile=yes&
     }
 });
 
-export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef
+export const getTocDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/toc/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
+});
+
+export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=false', { // eslint-disable-line no-undef
   method: 'GET',
   headers: {
     Accept: 'application/json',

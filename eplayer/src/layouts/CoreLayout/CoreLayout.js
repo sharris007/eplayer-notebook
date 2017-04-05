@@ -11,7 +11,7 @@ import '../../styles/webpdfDemoPC.scss';
 
 export const CoreLayout = ({ children }) => (
   <div>
-    <div className="text-center">
+    <div /*className="text-center"*/>
     <div className="core-layout__viewport">
       {children}
       </div>
