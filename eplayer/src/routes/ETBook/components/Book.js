@@ -14,7 +14,7 @@ import { getBookCallService, getPlaylistCallService} from '../../../actions/play
 
 import { getBookmarkCallService} from '../../../actions/bookmark';
 import {Wrapper} from 'pxe-wrapper';
-import {PopUpInfo} from 'popup-info';
+import {PopUpInfo} from '@pearson-incubator/popup-info';
 
 export class Book extends Component {
   constructor(props) {
@@ -22,18 +22,23 @@ export class Book extends Component {
       this.state = {
         classname: 'headerBar',
         viewerContent: true,
+        drawerOpen: true,
         currentPageDetails: '',
         pageDetails, 
         bookLoaded : false,
         currentPageTitle:'',
         annAttributes :'',
-        popUpCollection:''
+        popUpCollection:'',
+        tocUrl :'',
+        tocUpdated:false
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
       // this.onPageChange.bind(this);
       this.nodesToUnMount = [];
       this.popUpCollection = [];
+
+      
       document.body.addEventListener('contentLoaded', this.parseDom);
       document.body.addEventListener('navChanged', this.navChanged);
   }
@@ -50,7 +55,6 @@ export class Book extends Component {
       }
       this.props.dispatch(getAnnCallService(queryString));
     }
-    
     this.props.dispatch(getBookCallService(this.props.params.bookId));
   }
   componentDidMount() {    
@@ -69,12 +73,12 @@ export class Book extends Component {
     this.setState({
       annAttributes:customeAttributes
     });
+    
   }
 
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
   }
-  
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   };
@@ -149,7 +153,20 @@ export class Book extends Component {
   viewerContentCallBack = (viewerCallBack) => {
     this.setState({ viewerContent: viewerCallBack });
   }
-
+  goToPageCallback = (pageId) => {
+    const currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
+    const playpageDetails  = this.state.pageDetails ; 
+    playpageDetails.currentPageURL =  currentData;
+    playpageDetails.tocUpdated  = true;
+    this.setState({
+      pageDetails: playpageDetails
+      
+    });
+    this.setState({ drawerOpen: false });
+    this.viewerContentCallBack(true);
+    const bookId = this.props.params.bookId;
+    browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
+  };
   annotationCallBack = (eventType, data) => {
       const receivedAnnotationData    = data;
       receivedAnnotationData.user     = "epluser";
@@ -183,6 +200,7 @@ export class Book extends Component {
       window.renderPopUp = function(collection) {
         that.setState({ popUpCollection : collection });
       }
+      this.setState({ popUpCollection : [] });
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
       this.wrapper.bindPopUpCallBacks();
     }  
@@ -193,7 +211,7 @@ export class Book extends Component {
   render() {
     const callbacks = {};
     let annData = [];
-    const { annotionData, loading ,playlistData, playlistReceived} = this.props;// eslint-disable-line react/prop-types
+    const { annotionData, loading ,playlistData, playlistReceived, tocData ,tocReceived} = this.props;// eslint-disable-line react/prop-types
     annData  = annotionData.rows;
     const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
     if(Array.isArray(annotionData)==false && annotionData.rows==undefined){
@@ -203,33 +221,38 @@ export class Book extends Component {
     
     if(playlistReceived){
         this.state.pageDetails.baseUrl                = playlistData.baseUrl;
-        this.state.pageDetails.currentPageURL         = playlistData.content[1];
+        if(this.state.pageDetails.currentPageURL === ""){
+          this.state.pageDetails.currentPageURL =playlistData.content[1];
+        }
         this.state.pageDetails.playListURL            = playlistData.content; 
+        this.state.tocUrl                             = playlistData.provider;
         if(this.props.params.pageId){
-          // for the first page it is set to current page URL
-          this.state.pageDetails.currentPageURL         = filteredData;
+           this.state.pageDetails.currentPageURL =filteredData;
         }
     }
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
-    // callbacks.goToPageCallback = this.goToPageCallback;
+    callbacks.goToPageCallback = this.goToPageCallback;
     return (
       <div>
         <Header
+          pxeTocbundle={this.props.tocData}
           classname={this.state.classname}
           pageTitle = {this.state.currentPageTitle}
           bookData={this.props.book}
           bookCallbacks={callbacks}
           store={this.context.store}
+          hideDrawer={this.hideDrawer}
+          drawerOpen={this.state.drawerOpen}
           viewerContentCallBack={this.viewerContentCallBack}
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
             currentPageDetails={ this.state.pageDetails.currentPageURL} annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
-            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection}/> : '' }
+            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = 'book-container'/> : '' }
             <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
           </div>
       </div>
@@ -262,7 +285,9 @@ const mapStateToProps = state => (
         annotionData: state.annotationReducer.data, 
         loading: state.annotationReducer.loading, 
         playlistData: state.playlistReducer.data,
-        playlistReceived :state.playlistReducer.playlistReceived
+        playlistReceived :state.playlistReducer.playlistReceived,
+        tocData: state.playlistReducer.tocdata,
+        tocReceived :state.playlistReducer.tocReceived
       }
 );// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign

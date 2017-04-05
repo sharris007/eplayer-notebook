@@ -20,5 +20,5 @@ export default class AnnotationComponent {
 };
 
 export Annotation from './src/js/Annotation';
-// Listen for client events to initialize a new Bookshelf component
+// Listen for client events to initialize a new Annotation component
 document.body.addEventListener('o.InitAnnotation', e => new AnnotationComponent(e.detail));

@@ -196,11 +196,16 @@ class PageViewer extends React.Component {
   };
 
   componentWillReceiveProps(newProps) {
-    if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
-      this.getResponse(parseInt(newProps.src.currentPageURL.playOrder), true, 'propChanged', this.scrollWindowTop);
+
+    if (this.props.src.tocUpdated===true || parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
+      const pageIndex=this.props.src.playListURL.findIndex(el =>{
+        return parseInt(el.playOrder)===parseInt(newProps.src.currentPageURL.playOrder); 
+      });
+      this.getResponse(parseInt(pageIndex), true, 'propChanged', this.scrollWindowTop);
+      this.props.src.tocUpdated = false;
     }
   };
-
+  
   componentDidUpdate = () => {
     copyCharLimit(this);
     //prints page no in the page rendered

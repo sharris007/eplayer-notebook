@@ -1,6 +1,8 @@
 const initalData = { 
   data: [], 
-  playlistReceived: false 
+  tocdata: [], 
+  playlistReceived: false,
+  tocReceived: false 
 };
 export default (state = initalData, action) => {
   switch (action.type) {
@@ -9,6 +11,13 @@ export default (state = initalData, action) => {
         ...state,
         data: action.data,
         playlistReceived: action.playlistReceived
+      };
+    }
+    case 'GET_TOC': {
+      return {
+        ...state,
+        tocdata: action.data,
+        tocReceived: action.tocReceived
       };
     }
     default :
