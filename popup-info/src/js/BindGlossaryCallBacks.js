@@ -51,12 +51,12 @@ export class BindGlossaryCallBacks {
 
               popOverCollection.popOverTitle = glossaryNode ? glossaryNode.getElementsByTagName('dfn')[0].textContent: '';
               popOverCollection.popOverDescription = glossaryNode ? renderHTML(glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML) : '';
-              this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
+              this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : item});
               //new PopUps({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
               console.log(item)
             });
           });
-          new PopUpInfo({'popUpCollection' : this.popUpCollection});
+          new PopUpInfo({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv});
         }).catch((err) => {
           console.debug(err);
         });
