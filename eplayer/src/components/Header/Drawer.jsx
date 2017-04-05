@@ -81,12 +81,21 @@ class DrawerComponent extends React.Component {
     tocContent.list = [];
     const chapterPageObj = tocContent.items;
     var repl = chapterPageObj.map(function(obj) {
+    var set = obj.items.map(function(n) {
+         return {
+           urn: n.id,
+           href:n.href,
+           id:n.id,
+           playorder:n.playorder,
+           title:n.title
+       }
+     });
           return {
               id: obj.id,
               title: obj.title,
               coPage: obj.coPage,
               playOrder: obj.playOrder,
-              children: obj.items
+              children: set
           }
     });
     tocContent.list= repl;
