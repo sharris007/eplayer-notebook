@@ -209,7 +209,7 @@ class PageViewer extends React.Component {
     else {
       getAllLinkTags.forEach (function(link) {
         link.setAttribute('disabled', 'disabled');
-        if ( (link.title !== 'sepia') && (link.title !== 'night')) {
+        if ( !(link.title !== 'sepia') && (link.title !== 'night')) {
           $('link[title="'+ link.title +'"]', document.getElementById('book-container')).removeAttr('disabled');
         }
       });
