@@ -5,7 +5,8 @@ import renderHTML from 'react-render-html';
 import Wrapper from './Wrapper';
 import PopupApi from '../api/PopupApi';
 import BookViewer from '../../demo/BookViewer';
-import {PopUpInfo} from 'popup-info';
+import {PopUpInfo} from '@pearson-incubator/popup-info';
+
 
 
 class ComponentOwner extends React.Component {
@@ -60,7 +61,7 @@ class ComponentOwner extends React.Component {
           {this.state.bookHTML ? <BookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} /> : ''}
         </div>  
         <div>     
-          <div>{(this.state.popUpCollection.length > 0) ? <PopUpInfo popUpCollection = {this.state.popUpCollection}/> : ''}</div>
+          <div>{(this.state.popUpCollection.length > 0) ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = "bookDiv"/> : ''}</div>
           <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}> {renderHTML(this.state.glossaryResponse)} </div>
         </div>  
         </div>

@@ -1,4 +1,4 @@
-const loadMathMLScript = () => {
+export const loadMathMLScript = () => {
   /*const init=() => {
     let scriptSrc = (window.location.href.indexOf('https://') > -1) ? 'https:' : 'http:';
     scriptSrc += '//cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
@@ -59,4 +59,12 @@ const loadMathMLScript = () => {
   }; 
   init();
 };
-export default loadMathMLScript;
+export const reloadMathMl = (pageViewerRef) => {
+  const init = () => {
+    try {
+      //MathJax comes from script added dynamically
+      MathJax.Hub.Queue(['Typeset', MathJax.Hub, pageViewerRef.bookContainerRef]); // eslint-disable-line
+    } catch (e) {}
+  };
+  init();
+};
