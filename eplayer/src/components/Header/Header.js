@@ -260,7 +260,7 @@ export class Header extends React.Component {
           />
         }
        {this.props.isET1 ? <div className="preferences-container-eT1">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />} </div>  
-       : <div className="preferences-container">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />} </div>} 
+       : <div className="preferences-container">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} preferenceUpdate = {this.props.preferenceUpdate} preferenceBackgroundColor  = { this.props.preferenceBackgroundColor }/></div> : <div className="empty" />} </div>} 
      
       </div>
     );
