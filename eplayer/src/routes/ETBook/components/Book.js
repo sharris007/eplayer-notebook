@@ -193,7 +193,11 @@ export class Book extends Component {
           }
       }
   }
- 
+  
+  printFun = () => {
+    const url = this.state.pageDetails.baseUrl + this.state.pageDetails.currentPageURL.href;
+    window.open(`/eplayer/Print?${url}`, 'PrintPage', 'scrollbars=yes,toolbar=no,location=no,status=no,titlebar=no,toolbar=no,menubar=no, resizable=no,dependent=no');
+  }
   onBookLoaded = (bload) => {
     if(bload) {
       const that = this;  
@@ -249,6 +253,7 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
+            {playlistReceived ? <div className="printBlock"><button type="button" onClick={this.printFun} >Print</button> </div>: '' }
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
             currentPageDetails={ this.state.pageDetails.currentPageURL} annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}

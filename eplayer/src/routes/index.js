@@ -4,6 +4,7 @@ import bookshelfRoute from './Bookshelf';
 import bookRoute from './Book';
 import ETbookshelfRoute from './ETBookshelf';
 import ETbookRoute from './ETBook';
+import Print from './Print';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -14,7 +15,8 @@ export const createRoutes = store => ({
   indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/etbookshelf') },
   childRoutes: [
     ETbookshelfRoute(store),
-    ETbookRoute(store)
+    ETbookRoute(store),
+    Print(store)
   ]
 });
 

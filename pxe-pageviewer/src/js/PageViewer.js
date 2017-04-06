@@ -188,6 +188,27 @@ class PageViewer extends React.Component {
       }
     }
   };
+
+  setPageTheme = () => {
+   const linkEle = 'link[title][rel*="stylesheet"]';
+   const getAllLinkTags = this.bookContainerRef.querySelectorAll(linkEle);
+   const bgTheme = this.props.src.bgColor;
+
+   if ( this.bookContainerRef.querySelectorAll('link[title="'+ bgTheme +'"]').length ) {
+     getAllLinkTags.forEach (function(link) {
+       link.setAttribute('disabled', 'disabled');
+     });
+     $('link[title="'+ bgTheme +'"]', this.bookContainerRef).removeAttr('disabled');
+   }
+   else {
+     getAllLinkTags.forEach (function(link) {
+       link.setAttribute('disabled', 'disabled');
+       if (!(link.title === 'night' ||  link.title === 'sepia')) {
+         $('link[title="'+ link.title +'"]', this.bookContainerRef).removeAttr('disabled');
+       }
+     });
+   }
+ }
   componentWillMount = () => {
     this.init(this.props);
     if (this.props.src.includeMathMLLib) {
@@ -216,6 +237,7 @@ class PageViewer extends React.Component {
     if ( this.bookComBlock.innerHTML.length > 0 ) {
       this.bookComBlock.parentNode.style.height = '100%';
     }
+    this.setPageTheme();
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
