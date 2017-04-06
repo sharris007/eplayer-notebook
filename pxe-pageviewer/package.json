@@ -1,6 +1,6 @@
 {
-  "name": "pxe-pageviewer",
-  "version": "1.0.31",
+  "name": "@pearson-incubator/pxe-pageviewer",
+  "version": "1.0.1",
   "description": "",
   "main": "./main.js",
   "scripts": {
@@ -22,6 +22,7 @@
     "@pearson-incubator/aquila-js-basics": "^0.0.6",
     "@pearson-incubator/aquila-js-media": "^0.0.3",
     "intl": "^1.2.5",
+    "jquery": "^3.2.1",
     "material-ui": "^0.16.3",
     "react-intl": "^2.2.3"
   },
