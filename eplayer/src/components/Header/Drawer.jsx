@@ -72,7 +72,8 @@ class DrawerComponent extends React.Component {
     this.drawerListFocus();
   }
   componentWillMount(){
-   
+   if(this.props.isET1!=='Y')
+   {
     const tocContent = this.props.bookData.pxeTocData.content;
     const bookConfigDetails = this.props.bookData.pxeTocData.bookConfig;
     tocContent.mainTitle = bookConfigDetails.title;
@@ -103,6 +104,15 @@ class DrawerComponent extends React.Component {
     this.setState({
       tocData:tocContent2
     })
+    }
+    else
+    {
+    const tocContent2 = this.props.bookData.toc;
+    this.setState({
+      tocData:tocContent2
+    })
+    }
+    
   }
   componentDidUpdate() {
     this.drawerListFocus();
@@ -343,7 +353,6 @@ class DrawerComponent extends React.Component {
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
               />
-            }
             { !this.props.bookData.isFetching.bookmarks &&
               < BookmarkListComponent
                 bookmarksArr={this.props.bookData.bookmarks}
