@@ -197,13 +197,13 @@ class PageViewer extends React.Component {
       getAllLinkTags.forEach (function(link) {
         link.setAttribute('disabled', 'disabled');
       });
-      $('link[title="'+ bgTheme +'"]', this.bookContainerRef).removeAttr('disabled');
+      $('link[title="'+ bgTheme +'"]', document.getElementById('book-container')).removeAttr('disabled');
     }
    else {
       getAllLinkTags.forEach (function(link) {
         link.setAttribute('disabled', 'disabled');
         if (!(link.title === 'night' ||  link.title === 'sepia')) {
-          $('link[title="'+ link.title +'"]', this.bookContainerRef).removeAttr('disabled');
+          $('link[title="'+ link.title +'"]', document.getElementById('book-container')).removeAttr('disabled');
         }
       });
     }
