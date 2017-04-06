@@ -193,22 +193,23 @@ class PageViewer extends React.Component {
     const linkEle = 'link[title][rel*="stylesheet"]';
     const getAllLinkTags = this.bookContainerRef.querySelectorAll(linkEle);
     let bgTheme = this.props.src.bgColor;
-    if( bgTheme === 'Akaroa'){
-        bgTheme = 'sepia';
-      }
-      else if( bgTheme === 'Black'){
-        bgTheme = 'night';
-      }
+    if ( bgTheme === 'Akaroa') {
+      bgTheme = 'sepia';
+    }
+    else if ( bgTheme === 'Black') {
+      bgTheme = 'night';
+    }
+
     if ( this.bookContainerRef.querySelectorAll('link[title="'+ bgTheme +'"]').length ) {
       getAllLinkTags.forEach (function(link) {
         link.setAttribute('disabled', 'disabled');
       });
       $('link[title="'+ bgTheme +'"]', document.getElementById('book-container')).removeAttr('disabled');
     }
-   else {
+    else {
       getAllLinkTags.forEach (function(link) {
         link.setAttribute('disabled', 'disabled');
-        if (!(link.title === 'sepia' || 'night' || 'Black' || 'Akaroa')) {
+        if ( (link.title !== 'sepia') && (link.title !== 'night')) {
           $('link[title="'+ link.title +'"]', document.getElementById('book-container')).removeAttr('disabled');
         }
       });
