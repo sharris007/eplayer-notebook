@@ -68,12 +68,45 @@ export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPER
   }
 });
 
-// Bookmark Api Call,
+
+// Bookmark Api Total GET Call,
+export const getTotalBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/bookmarks`,{
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Identity-Id':data.user
+  }
+});
+
+// Bookmark Api GET Call,
 export const getBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/bookmarks?uri=${data.uri}`,{
   method: 'GET',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'Identity-Id':data.user
+  }
+});
+// Bookmark Api Post Call,
+
+export const postBookmarkData = postData => fetch(`${apiConstants.PXESERVICE}/context/${postData.context}/identities/${postData.user}/bookmarks`,{
+  method: 'POST',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Identity-Id':postData.user
+  },
+  body:JSON.stringify(postData)
+});
+
+// Bookmark Api Delete Call,
+
+export const deleteBookmarkData = deleteData => fetch(`${apiConstants.PXESERVICE}/context/${deleteData.context}/identities/${deleteData.user}/bookmarks?uri=${deleteData.uri}`,{
+  method: 'DELETE',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Identity-Id':deleteData.user
   }
 });

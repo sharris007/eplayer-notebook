@@ -12,7 +12,7 @@ import { browserHistory } from 'react-router';
 import { getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 
-import { getBookmarkCallService} from '../../../actions/bookmark';
+import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
 import {Wrapper} from 'pxe-wrapper';
 import {PopUpInfo} from 'popup-info';
 
@@ -45,17 +45,18 @@ export class Book extends Component {
   componentWillMount(){
     const bookId = this.props.params.bookId;
     const pageId = this.props.params.pageId;
-    
-    if(this.state.currentPageDetails.href){
-      const pageUri = encodeURIComponent(this.state.currentPageDetails.href);
-      const queryString = {
+    const queryString = {
         context : bookId,
-        uri     : pageUri,
         user    :'epluser'
       }
+    if(this.state.currentPageDetails.href){
+      const pageUri = encodeURIComponent(this.state.currentPageDetails.href);
+      queryString.uri     = pageUri;
       this.props.dispatch(getAnnCallService(queryString));
     }
+    this.props.dispatch(getTotalBookmarkCallService(queryString));
     this.props.dispatch(getBookCallService(this.props.params.bookId));
+    
   }
   componentDidMount() {    
     const customeAttributes ={
@@ -99,30 +100,39 @@ export class Book extends Component {
   };
 
   addBookmarkHandler = () => {
-    const currentPageId = this.props.book.viewer.currentPageId;
-    const targetPage = find(this.props.book.viewer.pages, pages => pages.id === currentPageId);
+    const bookmarkDetails = this.state.currentPageDetails;
+    
     const bookmark = {
-      jsonData: {
-        uri: currentPageId,
+        uri: bookmarkDetails.href,
         data: {
           //eslint-disable-next-line
-          baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/12d4a34c-e9ff-4537-b4b0-c1538ac01af2/1/file/QA_TEST_FILE/'
+          baseUrl: this.state.pageDetails.baseUrl
         },
-        title: targetPage.title,
-        labels: [targetPage.title]
-      },
-      createdBy: 'cite_qauser1'
+        id:bookmarkDetails.id,
+        title: bookmarkDetails.title,
+        labels:[bookmarkDetails.title],
+        user:'epluser',
+        context:this.props.params.bookId
+      
     };
-    this.props.addBookmark(this.props.params.bookId, bookmark);
+    this.props.dispatch(postBookmarkCallService(bookmark));
   }
 
   removeBookmarkHandler = (bookmarkId) => {
+    const bookmarkDetails = this.state.currentPageDetails;
+    const pageUri = encodeURIComponent(bookmarkDetails.href);  
+    const deleteData = {
+      user:'epluser',
+      context:this.props.params.bookId,
+      uri:pageUri
+    }  
     // TODO: Should not need to look up currentPageId manually; bookmark-component should have currentPageId
     // to be used in its removeBookmarkHandler call
-    const currentPageId = this.props.book.viewer.currentPageId;
-    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
-    const targetBookmarkId = bookmarkId || targetBookmark.id;
-    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId);
+    // const currentPageId = this.props.book.viewer.currentPageId;
+    // const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
+    // const targetBookmarkId = bookmarkId || targetBookmark.id;
+    // this.props.removeBookmark(this.props.params.bookId, targetBookmarkId);
+    this.props.dispatch(deleteBookmarkCallService(deleteData));
   };
 
   onPageChange = (type, data) => {
@@ -145,9 +155,7 @@ export class Book extends Component {
   }
 
   isCurrentPageBookmarked = () => {
-    const currentPageId = this.props.book.viewer.currentPageId;
-    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
-    return !(targetBookmark === undefined);
+    return this.props.isBookmarked;
   };
 
   viewerContentCallBack = (viewerCallBack) => {
@@ -217,7 +225,7 @@ export class Book extends Component {
       annData = [];
       annData.push(annotionData);
     }
-    
+    this.props.book.bookmarks = this.props.bookMarkData.bookmarksData.bookmarks;
     if(playlistReceived){
         this.state.pageDetails.baseUrl                = playlistData.baseUrl;
         if(this.state.pageDetails.currentPageURL === ""){
@@ -286,7 +294,9 @@ const mapStateToProps = state => (
         playlistData: state.playlistReducer.data,
         playlistReceived :state.playlistReducer.playlistReceived,
         tocData: state.playlistReducer.tocdata,
-        tocReceived :state.playlistReducer.tocReceived
+        tocReceived :state.playlistReducer.tocReceived,
+        isBookmarked :state.bookmarkReducer.data.isBookmarked,
+        bookMarkData : state.bookmarkReducer
       }
 );// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign

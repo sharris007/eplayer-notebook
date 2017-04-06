@@ -343,22 +343,21 @@ class DrawerComponent extends React.Component {
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
               />
-            }
-            { !this.props.bookData.isFetching.bookmarks &&
+          
+            
               < BookmarkListComponent
                 bookmarksArr={this.props.bookData.bookmarks}
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
                 removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandlerForBookmarkList}
                 isET1={this.props.isET1}
               />
-            }
-            { !this.props.bookData.isFetching.annotations &&
+            
               < NoteListComponent
                 notes={this.props.bookData.annotations}
                 clickNoteHandler={this.props.bookCallbacks.goToPage}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
               />
-            }
+            
           < /SwipeableViews> < /div > < /Drawer>
     );
   }

@@ -172,7 +172,7 @@ export class Header extends React.Component {
         }
       }
     };
-
+    
     const bookmarkIconData = {
       addBookmarkHandler: this.props.bookCallbacks.addBookmarkHandler,
       removeBookmarkHandler: this.props.bookCallbacks.removeBookmarkHandler,

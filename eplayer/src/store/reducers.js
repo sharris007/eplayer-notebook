@@ -2,12 +2,14 @@ import { combineReducers } from 'redux';
 import locationReducer from './location';
 import annotationReducer from './annotation';
 import playlistReducer from './playlist';
+import bookmarkReducer from './bookmark';
 
 export const makeRootReducer = asyncReducers =>
    combineReducers({
      location: locationReducer,
      annotationReducer,
      playlistReducer,
+     bookmarkReducer,
      ...asyncReducers
    })
 ;
