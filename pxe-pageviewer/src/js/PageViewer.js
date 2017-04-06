@@ -203,9 +203,6 @@ class PageViewer extends React.Component {
       getAllLinkTags.forEach (function(link) {
         link.setAttribute('disabled', 'disabled');
       });
-      console.log(", bgTheme", bgTheme);
-      
-
       $('link[title="'+ bgTheme +'"]', document.getElementById('book-container')).removeAttr('disabled');
     }
    else {
