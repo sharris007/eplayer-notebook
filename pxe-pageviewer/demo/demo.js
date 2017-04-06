@@ -14,7 +14,7 @@ function init() {
     showPageNo:true,
     orientation: 'horizontal',
     theme:'black',
-    pageFontSize:'12px',
+    pageFontSize:'',
     pageZoom:'', 
     enableGoToPage:true,
     includeMathMLLib: true,

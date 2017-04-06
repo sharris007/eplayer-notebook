@@ -192,17 +192,26 @@ class PageViewer extends React.Component {
   setPageTheme = () => {
     const linkEle = 'link[title][rel*="stylesheet"]';
     const getAllLinkTags = this.bookContainerRef.querySelectorAll(linkEle);
-    const bgTheme = this.props.src.bgColor;
+    let bgTheme = this.props.src.bgColor;
+    if( bgTheme === 'Akaroa'){
+        bgTheme = 'sepia';
+      }
+      else if( bgTheme === 'Black'){
+        bgTheme = 'night';
+      }
     if ( this.bookContainerRef.querySelectorAll('link[title="'+ bgTheme +'"]').length ) {
       getAllLinkTags.forEach (function(link) {
         link.setAttribute('disabled', 'disabled');
       });
+      console.log(", bgTheme", bgTheme);
+      
+
       $('link[title="'+ bgTheme +'"]', document.getElementById('book-container')).removeAttr('disabled');
     }
    else {
       getAllLinkTags.forEach (function(link) {
         link.setAttribute('disabled', 'disabled');
-        if (!(link.title === 'night' ||  link.title === 'sepia')) {
+        if (!(link.title === 'sepia' || 'night' || 'Black' || 'Akaroa')) {
           $('link[title="'+ link.title +'"]', document.getElementById('book-container')).removeAttr('disabled');
         }
       });
@@ -233,9 +242,6 @@ class PageViewer extends React.Component {
     this.loadMultimediaNscrollToFragment();
     crossRef(this);
     document.addEventListener('click', this.clearSearchHighlights);
-    if ( this.bookComBlock.innerHTML.length > 0 ) {
-      this.bookComBlock.parentNode.style.height = '100%';
-    }
     if (this.props.src.includeMathMLLib) {
       reloadMathMl(this);
     } 
@@ -254,11 +260,11 @@ class PageViewer extends React.Component {
  
   render() {
     const zommLevel = this.props.src.pageZoom ? this.props.src.pageZoom + '%' : '100%';
-    const bgColor = this.props.src.bgColor ? this.props.src.bgColor : '';
+    const fontSize = this.props.src.pageFontSize ? this.props.src.pageFontSize + 'px' : '16px';
     return ( 
       <div id = "book-render-component" ref = {(el) => { this.bookComBlock = el; }} tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
-          <div id = "book-container" className = {'book-container' + ' ' + bgColor} ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel}}>
+          <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel, fontSize : fontSize}}>
             {this.state.renderSrc ?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} 
           </div>
         </div>
