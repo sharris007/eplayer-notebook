@@ -9,7 +9,7 @@ import Header from '../../../components/Header';
 import { pageDetails } from '../../../../const/Mocdata'; 
 import './Book.scss';
 import { browserHistory } from 'react-router';
-import { getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
+import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
@@ -47,7 +47,8 @@ export class Book extends Component {
     const pageId = this.props.params.pageId;
     const queryString = {
         context : bookId,
-        user    :'epluser'
+        user    :'epluser',
+        id      : pageId
       }
     if(this.state.currentPageDetails.href){
       const pageUri = encodeURIComponent(this.state.currentPageDetails.href);
@@ -56,6 +57,8 @@ export class Book extends Component {
     }
     this.props.dispatch(getTotalBookmarkCallService(queryString));
     this.props.dispatch(getBookCallService(this.props.params.bookId));
+
+    this.props.dispatch(getTotalAnnCallService(queryString));
     
   }
   componentDidMount() {    
@@ -93,29 +96,40 @@ export class Book extends Component {
   removeAnnotationHandler = (annotationId) => {
     // TODO: Should not need to look up currentPageId manually; bookmark-component should have currentPageId
     // to be used in its removeBookmarkHandler call
-    const currentPageId = this.props.book.viewer.currentPageId;
-    const targetAnnotation = find(this.props.book.annotations, annotation => annotation.pageId === currentPageId);
-    const targetAnnotationId = annotationId || targetAnnotation.id;
-    this.props.removeAnnotation(this.props.params.bookId, targetAnnotationId);
+    const queryString = {
+        context : this.props.params.bookId,
+        user    :'epluser',
+        id      : annotationId
+    }
+   this.props.dispatch(deleteAnnCallService(queryString));
   };
 
   addBookmarkHandler = () => {
     const bookmarkDetails = this.state.currentPageDetails;
     
     const bookmark = {
-        uri: bookmarkDetails.href,
+        uri: bookmarkDetails.id,
         data: {
-          //eslint-disable-next-line
           baseUrl: this.state.pageDetails.baseUrl
         },
-        id:bookmarkDetails.id,
         title: bookmarkDetails.title,
         labels:[bookmarkDetails.title],
         user:'epluser',
         context:this.props.params.bookId
-      
     };
+    const queryString = {
+      context : this.props.params.bookId,
+      uri     : this.props.params.pageId,
+      user    :'epluser',
+      id      : this.props.params.pageId
+    }
+    
     this.props.dispatch(postBookmarkCallService(bookmark));
+    const that = this;
+    setTimeout(function(){
+      that.props.dispatch(getTotalBookmarkCallService(queryString));
+    },2000)
+    
   }
 
   removeBookmarkHandler = (bookmarkId) => {
@@ -124,7 +138,7 @@ export class Book extends Component {
     const deleteData = {
       user:'epluser',
       context:this.props.params.bookId,
-      uri:pageUri
+      uri:bookmarkId
     }  
     // TODO: Should not need to look up currentPageId manually; bookmark-component should have currentPageId
     // to be used in its removeBookmarkHandler call
@@ -147,7 +161,8 @@ export class Book extends Component {
     const queryString = {
       context : bookId,
       uri     : pageUri,
-      user    :'epluser'
+      user    :'epluser',
+      id:pageId
     }
     this.props.dispatch(getAnnCallService(queryString));
     this.props.dispatch(getBookmarkCallService(queryString));
@@ -186,20 +201,27 @@ export class Book extends Component {
           "playOrder": this.state.currentPageDetails.playOrder,
           "baseUrl": this.state.currentPageDetails.baseUrl
       }
+      
       switch (eventType) {
           case 'annotationCreated': {
             return this.props.dispatch(postAnnCallService(receivedAnnotationData));
+             
           }
           case 'annotationUpdated':{
             return this.props.dispatch(putAnnCallService(receivedAnnotationData));
+             
           }
           case 'annotationDeleted': {
               return this.props.dispatch(deleteAnnCallService(receivedAnnotationData));
+             
           }
           default : {
               return eventType;
           }
       }
+
+      
+
   }
  
   onBookLoaded = (bload) => {
@@ -225,7 +247,34 @@ export class Book extends Component {
       annData = [];
       annData.push(annotionData);
     }
-    this.props.book.bookmarks = this.props.bookMarkData.bookmarksData.bookmarks;
+
+    const bookmarksDataMap = this.props.bookMarkData.bookmarksData.bookmarks;
+    if(bookmarksDataMap && bookmarksDataMap.length>0){
+      for(let i=0;i<bookmarksDataMap.length;i++){
+        bookmarksDataMap[i].id =bookmarksDataMap[i].uri;
+      }
+    }
+    const annListArray = [];
+    if(this.props.annotionTotalData){
+      const annTotalList = this.props.annotionTotalData.rows;
+      if(annTotalList && annTotalList.length>0){
+        for(let i=0;i<annTotalList.length;i++){
+          const setArray = {
+            pageId: annTotalList[i].source.id,
+            id: annTotalList[i].id,
+            author: annTotalList[i].user,
+            time: annTotalList[i].createdTimestamp,
+            text: annTotalList[i].quote,
+            comment: '',
+            color: 'Green'
+          }
+          annListArray.push(setArray);
+        }
+      }
+      this.props.book.annTotalData = annListArray;
+    }
+    
+    this.props.book.bookmarks = bookmarksDataMap;
     if(playlistReceived){
         this.state.pageDetails.baseUrl                = playlistData.baseUrl;
         if(this.state.pageDetails.currentPageURL === ""){
@@ -289,7 +338,8 @@ Book.contextTypes = {
 
 const mapStateToProps = state => (
       { 
-        annotionData: state.annotationReducer.data, 
+        annotionData: state.annotationReducer.data,
+        annotionTotalData: state.annotationReducer.totalAnndata,  
         loading: state.annotationReducer.loading, 
         playlistData: state.playlistReducer.data,
         playlistReceived :state.playlistReducer.playlistReceived,

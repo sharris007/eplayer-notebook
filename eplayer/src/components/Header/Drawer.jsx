@@ -76,7 +76,7 @@ class DrawerComponent extends React.Component {
     const tocContent = this.props.bookData.pxeTocData.content;
     const bookConfigDetails = this.props.bookData.pxeTocData.bookConfig;
     tocContent.mainTitle = bookConfigDetails.title;
-    tocContent.author = bookConfigDetails.creator;
+    tocContent.author = bookConfigDetails.creator.substring(0,20)+'...';
     tocContent.thumbnail =bookConfigDetails.coverImageUrl;
     tocContent.list = [];
     const chapterPageObj = tocContent.items;
@@ -103,6 +103,7 @@ class DrawerComponent extends React.Component {
     this.setState({
       tocData:tocContent2
     })
+
   }
   componentDidUpdate() {
     this.drawerListFocus();
@@ -254,6 +255,7 @@ class DrawerComponent extends React.Component {
   }
 
   render() {
+    console.log("this.props.bookData.bookmarks--",this.props.bookData.bookmarks)
     const drawerTab = {
       tabHeader: {
         backgroundColor: bkgColor,
@@ -344,17 +346,17 @@ class DrawerComponent extends React.Component {
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
               />
           
-            
-              < BookmarkListComponent
+            { this.props.bookData.bookmarks &&
+              <BookmarkListComponent
                 bookmarksArr={this.props.bookData.bookmarks}
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
-                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandlerForBookmarkList}
+                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
                 isET1={this.props.isET1}
               />
-            
+            }
               < NoteListComponent
-                notes={this.props.bookData.annotations}
-                clickNoteHandler={this.props.bookCallbacks.goToPage}
+                notes={this.props.bookData.annTotalData}
+                clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
               />
             
