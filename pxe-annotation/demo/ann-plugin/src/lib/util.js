@@ -83,7 +83,8 @@ Util.getTextNodes = function(jq) {
 
 Util.getLastTextNodeUpTo = function(n) {
   var result;
-  switch (n.nodeType) {
+  if(n){
+    switch (n.nodeType) {
     case Node.TEXT_NODE:
       return n;
     case Node.ELEMENT_NODE:
@@ -94,18 +95,20 @@ Util.getLastTextNodeUpTo = function(n) {
         }
       }
       break;
-  }
-  n = n.previousSibling;
-  if (n != null) {
-    return Util.getLastTextNodeUpTo(n);
-  } else {
-    return null;
+    }
+    n = n.previousSibling;
+    if (n != null) {
+      return Util.getLastTextNodeUpTo(n);
+    } else {
+      return null;
+    }
   }
 };
 
 Util.getFirstTextNodeNotBefore = function(n) {
   var result;
-  switch (n.nodeType) {
+  if(n){
+    switch (n.nodeType) {
     case Node.TEXT_NODE:
       return n;
     case Node.ELEMENT_NODE:
@@ -116,13 +119,14 @@ Util.getFirstTextNodeNotBefore = function(n) {
         }
       }
       break;
-  }
-  n = n.nextSibling;
-  if (n != null) {
-    return Util.getFirstTextNodeNotBefore(n);
-  } else {
-    return null;
-  }
+    }
+    n = n.nextSibling;
+    if (n != null) {
+      return Util.getFirstTextNodeNotBefore(n);
+    } else {
+      return null;
+    }
+  } 
 };
 
 Util.readRangeViaSelection = function(range) {

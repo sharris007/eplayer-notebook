@@ -119,6 +119,7 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.onEditClick=function(event) {  
     this.element.addClass('show-edit-options');
     this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1'});
+    this.element.find('input').css({'pointer-events':'all', 'opacity':'1'});
   }
   
   Editor.prototype.onNoteChange=function(event) {
@@ -195,8 +196,10 @@ Annotator.Editor = (function(_super) {
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
     this.textareaHeight = $('#annotator-field-0')[0].scrollHeight || 40; 
-    if(!this.annotation.text || !this.annotation.text.length)
+    if(!this.annotation.text || !this.annotation.text.length){
       this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
+      this.element.find('input').css({'pointer-events':'all','opacity':'1'});
+    }
     this.element.find(":input:first").focus();
     this.setupDraggables();
     return this.publish('show');
@@ -210,19 +213,40 @@ Annotator.Editor = (function(_super) {
     $('.annotator-edit-container').show();
     $('.annotator-panel-1').removeClass('disabled-save');
     this.onCancelClick();
-    this.element.find('textarea').removeAttr('style'); 
+    this.element.find('textarea').removeAttr('style');
+    this.element.find('input').removeAttr('style'); 
     this.currentAnnotation = this.textareaHeight = null;
     if(this.annotation.color && this.annotation.color.length)
       this.publish('save', [this.annotation]);
     return this.publish('hide');
   };
-
+  Editor.prototype.hasClass=function(element, className) {
+    do {
+      if (element.classList && element.classList.contains(className)) {
+        return true;
+      }
+      element = element.parentNode;
+    } while (element);
+    return false;
+  }
   Editor.prototype.load = function(annotation, isShareable) {
     this.isShareable=isShareable;
     if (!isShareable || !annotation.id || !annotation.text)
       $('.annotator-share-text, .annotator-share').hide();
     else      
       $('.annotator-share-text, .annotator-share').show();
+    if (!$('.annotator-item input').length) {
+     $('.annotator-item').prepend('<input placeholder="Add title."/>');
+    }
+    if(this.hasClass(annotation.highlights[0], 'MathJax_Display')){
+      $('.annotator-item input').show();
+      if(!annotation.id){
+          annotation.quote='';
+      }
+      $('.annotator-item input').val(annotation.quote);
+    }else{
+       $('.annotator-item input').hide()
+    }
     var field, _i, _len, _ref;
     this.annotation = annotation;
     this.publish('load', [this.annotation]);
@@ -243,6 +267,7 @@ Annotator.Editor = (function(_super) {
       $('.annotator-share').removeClass('on');
       this.unShareAnnotation();
     }
+    this.annotation.quote=$('.annotator-item input').val();
     _ref = this.fields;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       field = _ref[_i];

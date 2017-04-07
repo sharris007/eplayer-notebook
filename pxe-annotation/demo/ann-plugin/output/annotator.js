@@ -566,7 +566,8 @@ Util.getTextNodes = function(jq) {
 
 Util.getLastTextNodeUpTo = function(n) {
   var result;
-  switch (n.nodeType) {
+  if(n){
+    switch (n.nodeType) {
     case Node.TEXT_NODE:
       return n;
     case Node.ELEMENT_NODE:
@@ -577,18 +578,20 @@ Util.getLastTextNodeUpTo = function(n) {
         }
       }
       break;
-  }
-  n = n.previousSibling;
-  if (n != null) {
-    return Util.getLastTextNodeUpTo(n);
-  } else {
-    return null;
+    }
+    n = n.previousSibling;
+    if (n != null) {
+      return Util.getLastTextNodeUpTo(n);
+    } else {
+      return null;
+    }
   }
 };
 
 Util.getFirstTextNodeNotBefore = function(n) {
   var result;
-  switch (n.nodeType) {
+  if(n){
+    switch (n.nodeType) {
     case Node.TEXT_NODE:
       return n;
     case Node.ELEMENT_NODE:
@@ -599,13 +602,14 @@ Util.getFirstTextNodeNotBefore = function(n) {
         }
       }
       break;
-  }
-  n = n.nextSibling;
-  if (n != null) {
-    return Util.getFirstTextNodeNotBefore(n);
-  } else {
-    return null;
-  }
+    }
+    n = n.nextSibling;
+    if (n != null) {
+      return Util.getFirstTextNodeNotBefore(n);
+    } else {
+      return null;
+    }
+  } 
 };
 
 Util.readRangeViaSelection = function(range) {
@@ -1458,18 +1462,18 @@ Annotator = (function(_super) {
         }
       }
     }
-    annotation.quote = [];
+    annotation.quote = annotation.quote||[];
     annotation.ranges = [];
     annotation.highlights = [];
     for (_j = 0, _len1 = normedRanges.length; _j < _len1; _j++) {
       normed = normedRanges[_j];
       normed.color=annotation.color;
       normed.note=annotation.text;
-      annotation.quote.push($.trim(normed.text()));
+      if(!annotation.quote)annotation.quote.push($.trim(normed.text()));
       annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
       $.merge(annotation.highlights, this.highlightRange(normed));
     }
-    annotation.quote = annotation.quote.join(' / ');
+    if(!annotation.quote)annotation.quote = annotation.quote.join(' / ');
     $(annotation.highlights).data('annotation', annotation);
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
     $(annotation.highlights).attr('data-ann-id', annotation.id);
@@ -2095,6 +2099,7 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.onEditClick=function(event) {  
     this.element.addClass('show-edit-options');
     this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1'});
+    this.element.find('input').css({'pointer-events':'all', 'opacity':'1'});
   }
   
   Editor.prototype.onNoteChange=function(event) {
@@ -2171,8 +2176,10 @@ Annotator.Editor = (function(_super) {
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
     this.textareaHeight = $('#annotator-field-0')[0].scrollHeight || 40; 
-    if(!this.annotation.text || !this.annotation.text.length)
+    if(!this.annotation.text || !this.annotation.text.length){
       this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
+      this.element.find('input').css({'pointer-events':'all','opacity':'1'});
+    }
     this.element.find(":input:first").focus();
     this.setupDraggables();
     return this.publish('show');
@@ -2186,19 +2193,40 @@ Annotator.Editor = (function(_super) {
     $('.annotator-edit-container').show();
     $('.annotator-panel-1').removeClass('disabled-save');
     this.onCancelClick();
-    this.element.find('textarea').removeAttr('style'); 
+    this.element.find('textarea').removeAttr('style');
+    this.element.find('input').removeAttr('style'); 
     this.currentAnnotation = this.textareaHeight = null;
     if(this.annotation.color && this.annotation.color.length)
       this.publish('save', [this.annotation]);
     return this.publish('hide');
   };
-
+  Editor.prototype.hasClass=function(element, className) {
+    do {
+      if (element.classList && element.classList.contains(className)) {
+        return true;
+      }
+      element = element.parentNode;
+    } while (element);
+    return false;
+  }
   Editor.prototype.load = function(annotation, isShareable) {
     this.isShareable=isShareable;
     if (!isShareable || !annotation.id || !annotation.text)
       $('.annotator-share-text, .annotator-share').hide();
     else      
       $('.annotator-share-text, .annotator-share').show();
+    if (!$('.annotator-item input').length) {
+     $('.annotator-item').prepend('<input placeholder="Add title."/>');
+    }
+    if(this.hasClass(annotation.highlights[0], 'MathJax_Display')){
+      $('.annotator-item input').show();
+      if(!annotation.id){
+          annotation.quote='';
+      }
+      $('.annotator-item input').val(annotation.quote);
+    }else{
+       $('.annotator-item input').hide()
+    }
     var field, _i, _len, _ref;
     this.annotation = annotation;
     this.publish('load', [this.annotation]);
@@ -2219,6 +2247,7 @@ Annotator.Editor = (function(_super) {
       $('.annotator-share').removeClass('on');
       this.unShareAnnotation();
     }
+    this.annotation.quote=$('.annotator-item input').val();
     _ref = this.fields;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       field = _ref[_i];
