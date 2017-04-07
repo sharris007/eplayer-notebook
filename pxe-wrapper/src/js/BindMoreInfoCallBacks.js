@@ -43,7 +43,7 @@ export class BindMoreInfoCallBacks {
           if (hrefId) {
             popOverCollection.popOverDescription = document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML;
           }
-          this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : item, 'bookDiv' : props.bookDiv});
+          this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : item});
         });
       });
       console.log(this.popUpCollection)

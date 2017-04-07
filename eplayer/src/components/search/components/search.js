@@ -15,7 +15,8 @@ export class Search extends React.Component {
     const indexId={
       ssoKey:this.props.ssoKey,
       bookId:this.props.bookId,
-      globalBookId:this.props.globalBookId
+      globalBookId:this.props.globalBookId,
+      serverDetails:this.props.serverDetails
     };
     return (
       <SearchComponent fetch={this.props.fetch} indexId={indexId} searchData={this.props.search} searchListClick={this.props.goToPage} isET1='Y'/>

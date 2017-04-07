@@ -1,7 +1,7 @@
   /* eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { PageViewer } from 'pxe-pageviewer';
+import { PageViewer } from '@pearson-incubator/pxe-pageviewer';
 import { Annotation } from 'pxe-annotation';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
@@ -14,7 +14,7 @@ import { getBookCallService, getPlaylistCallService} from '../../../actions/play
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
 import {Wrapper} from 'pxe-wrapper';
-import {PopUpInfo} from 'popup-info';
+import {PopUpInfo} from '@pearson-incubator/popup-info';
 
 export class Book extends Component {
   constructor(props) {
@@ -231,17 +231,32 @@ export class Book extends Component {
       
 
   }
- 
+  
+  printFun = () => {
+    const url = this.state.pageDetails.baseUrl + this.state.pageDetails.currentPageURL.href;
+    window.open(`/eplayer/Print?${url}`, 'PrintPage', 'scrollbars=yes,toolbar=no,location=no,status=no,titlebar=no,toolbar=no,menubar=no, resizable=no,dependent=no');
+  }
   onBookLoaded = (bload) => {
     if(bload) {
       const that = this;  
       window.renderPopUp = function(collection) {
         that.setState({ popUpCollection : collection });
       }
+      this.setState({ popUpCollection : [] });
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
       this.wrapper.bindPopUpCallBacks();
-    }  
-   
+    }    
+  }
+
+  preferenceUpdate = (pref) => {
+    let pageDetails = this.state.pageDetails;
+    pageDetails.bgColor = pref.theme;
+    pageDetails.pageFontSize =  pref.fontSize;
+    this.setState({pageDetails : pageDetails});
+  }
+
+  preferenceBackgroundColor = (theme) => {
+    //console.log(theme)
   }
  
   
@@ -316,12 +331,15 @@ export class Book extends Component {
           hideDrawer={this.hideDrawer}
           drawerOpen={this.state.drawerOpen}
           viewerContentCallBack={this.viewerContentCallBack}
+          preferenceUpdate = {this.preferenceUpdate}
+          preferenceBackgroundColor = {this.preferenceBackgroundColor}
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
+            {playlistReceived ? <div className="printBlock"><button type="button" onClick={this.printFun} >Print</button> </div>: '' }
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
             currentPageDetails={ this.state.pageDetails.currentPageURL} annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
-            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection}/> : '' }
+            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = 'book-container'/> : '' }
             <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
           </div>
       </div>

@@ -242,7 +242,7 @@ export class Header extends React.Component {
                 <Icon name="search-lg-18" />
               </div>
               <div className="searchContainer">
-                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} goToPage={this.props.goToPage}/> : <div className="empty" />}
+                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={this.props.goToPage}/> : <div className="empty" />}
               </div>
               <div className="moreIcon">
                 <MoreMenuComponent store={this.props.store} />
@@ -257,7 +257,7 @@ export class Header extends React.Component {
             isET1={this.props.isET1}
           />
        {this.props.isET1 ? <div className="preferences-container-eT1">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />} </div>  
-       : <div className="preferences-container">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />} </div>} 
+       : <div className="preferences-container">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} preferenceUpdate = {this.props.preferenceUpdate} preferenceBackgroundColor  = { this.props.preferenceBackgroundColor }/></div> : <div className="empty" />} </div>} 
      
       </div>
     );

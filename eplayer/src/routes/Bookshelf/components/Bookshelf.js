@@ -18,12 +18,10 @@ constructor(props) {
 componentWillMount() {
     const sessionid=this.props.login.data.token;
     const piToken = this.props.login.data.piToken;
-
+    
     //const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
-    this.props.storeSsoKey(sessionid, );
+    this.props.storeSsoKey(sessionid);
     console.log('sessionid:: '+sessionid);
-
-    console.log('piToken:: '+piToken);
 
     //const urn ='http://10.102.88.150:8080/JavaSampleWebApp/TestServlet';
     var userlogin = this.props.login.data.userName;
@@ -31,8 +29,7 @@ componentWillMount() {
     
     //var urn = 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext/bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
     var urn = 'bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
-    //console.log(urn);
-
+    
     /*var postData = {
       chk_old: 'true',
       password: 'a17a41337551d6542fd005e18b43afd4',
@@ -41,11 +38,7 @@ componentWillMount() {
     }*/
     this.props.fetch(urn, piToken);
     console.log(urn);
-    //this.props.fetch(urn);
-    /*console.log("********"+this.props.login.data.token+"********");
-    console.log("password "+this.props.login.data.password);
-    console.log("User "+this.props.login.data.userName);*/
-
+    
   }
 
 
@@ -89,13 +82,15 @@ componentWillMount() {
            updfUrl: bookRef.uPdfUrl,
            globalBookId: bookRef.globalBookId,
            bookeditionid: bookRef.bookeditionid,
-           iseT1: bookRef.iseT1
+           iseT1: bookRef.iseT1,
+           bookServerUrl: bookRef.bookServerUrl,
+           userInfoLastModifiedDate: bookRef.userInfoLastModifiedDate,
+           userBookLastModifiedDate: bookRef.userBookLastModifiedDate,
+           userBookScenarioLastModifiedDate: bookRef.userBookScenarioLastModifiedDate
         };
         booksdata.push(book);
-        console.log("globalBookId :: "+book.globalBookId);
-        console.log("bookeditionid :: "+book.bookeditionid);
+        //console.log("globalBookId :: "+book.globalBookId);
       });
-    //});
     }
 
     if (error) {
@@ -104,9 +99,9 @@ componentWillMount() {
 
     return (
       <div id="bookshelf-page">
-        <BookshelfHeader userName={this.props.login.data.userName}/>
+        <BookshelfHeader firstName={this.props.login.data.firstName} lastName={this.props.login.data.lastName}/>
         {fetching ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
-        {fetched ? <BookshelfComponent books={booksdata} onBookClick={this.handleBookClick} storeUPdfUrl={this.props.storeUPdfUrl} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey}/> : null}
+        {fetched ? <BookshelfComponent books={booksdata} onBookClick={this.handleBookClick} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey}/> : null}
 
       </div>
     );
@@ -116,7 +111,8 @@ componentWillMount() {
 BookshelfPage.propTypes = {
   bookshelf: React.PropTypes.object.isRequired,
   fetch: React.PropTypes.func.isRequired,
-  storeUPdfUrl: React.PropTypes.func,
+  //storeUPdfUrl: React.PropTypes.func,
+  //storeBookServerDetails: React.PropTypes.func,
   storeBookDetails: React.PropTypes.func,
   storeSsoKey: React.PropTypes.func,
    fetchcdnToken:React.PropTypes.func

@@ -72,6 +72,8 @@ class DrawerComponent extends React.Component {
     this.drawerListFocus();
   }
   componentWillReceiveProps(nextprops){
+   if(this.props.isET1!=='Y')
+   {
     if(nextprops.bookData.pxeTocData.bookConfig && nextprops.bookData.pxeTocData.content) { 
       const tocContent = nextprops.bookData.pxeTocData.content;
       const bookConfigDetails = nextprops.bookData.pxeTocData.bookConfig;
@@ -104,11 +106,20 @@ class DrawerComponent extends React.Component {
         tocData:tocContent2
       })
     }
+    }
+    else
+    {
+    const tocContent2 = this.props.bookData.toc;
+    this.setState({
+      tocData:tocContent2
+    })
+    }
+    
   }
   componentDidUpdate() {
     this.drawerListFocus();
   }
- 
+
   drawerListFocus = () => {
     if (this.state.slideIndex === 0) {
       this.onActive('contents');
@@ -255,7 +266,6 @@ class DrawerComponent extends React.Component {
   }
 
   render() {
-    console.log("this.props.bookData.bookmarks--",this.props.bookData.bookmarks)
     const drawerTab = {
       tabHeader: {
         backgroundColor: bkgColor,
@@ -360,7 +370,7 @@ class DrawerComponent extends React.Component {
                 clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
               />
-             }
+            }
           < /SwipeableViews> < /div > < /Drawer>
     );
   }

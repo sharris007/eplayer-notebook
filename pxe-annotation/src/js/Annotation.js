@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from 'react';
 import { map, zipObject} from 'lodash';
 
 class Annotation extends Component {
-  constructor(props) {
+ constructor(props) {
     super(props);   
     this.annotationEventHandler = this.annotationEventHandler.bind(this);
     this.annotationEvent = this.annotationEvent.bind(this);

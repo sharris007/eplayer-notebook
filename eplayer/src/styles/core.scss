@@ -10,22 +10,23 @@ $main-max-width: 760px;
 $svg-width-height: 18px;
 $min-width: 768px;
 
-
 html {
   box-sizing: border-box;
-  color : green;
-  background-color: grey;
 }
 
 html,
-body {
+/*body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  background: #fff;
+  background: #f5f5f5;
+  min-width:$min-width; 
+}*/
+body {
+  margin: 0;
+  padding: 0;
   min-width:$min-width; 
 }
-
 *,
 *:before,
 *:after {
@@ -62,6 +63,17 @@ svg[class$="-18"] {
 svg[class$="-24"] {
   width: $svg-width-height;
   height: $svg-width-height;
+}
+
+[class^="icon-"] {
+  display: inline-block !important;
+}
+.printBlock{
+  width: 100%;
+  text-align: right;
+  padding-right: 25px;
+  position: absolute;
+  top: 80px;
 }
 
 .zoomPDF{

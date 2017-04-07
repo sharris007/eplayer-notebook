@@ -29,21 +29,34 @@ export const fetch = (urn, piToken) => {
     };
 };*/
 
-export const storeUPdfUrl = (uPdf) => {
+/*export const storeUPdfUrl = (uPdf) => {
   return {
     type: 'UPDF',
     uPdf
   }
 }
 
-export const storeBookDetails = (author,thumbnail,title,globalBookId,bookeditionid) => {
+export const storeBookServerDetails = (serverDetails) => {
+  return {
+    type: 'SERVERDETAILS',
+    serverDetails
+  }
+}*/
+
+export const storeBookDetails = (book) => {
   return {
     type: 'BOOK_DETAILS',
-    authorName:author,
-    thumbnail:thumbnail,
-    title:title,
-    globalBookId:globalBookId,
-    bookeditionid:bookeditionid
+    authorName:book.author,
+    thumbnail:book.thumbnail,
+    title:book.title,
+    globalBookId:book.globalBookId,
+    bookeditionid:book.bookeditionid,
+    uPdf:book.updfUrl,
+    serverDetails:book.bookServerUrl,
+    bookId:book.bookId,
+    uid:book.userInfoLastModifiedDate,
+    ubd:book.userBookLastModifiedDate,
+    ubsd:book.userBookScenarioLastModifiedDate
   }
 }
 
