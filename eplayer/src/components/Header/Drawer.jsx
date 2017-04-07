@@ -67,6 +67,7 @@ class DrawerComponent extends React.Component {
       tocContentData:''
     };
   }
+
   componentDidMount() {
     this.drawerListFocus();
   }
@@ -254,6 +255,7 @@ class DrawerComponent extends React.Component {
   }
 
   render() {
+    console.log("this.props.bookData.bookmarks--",this.props.bookData.bookmarks)
     const drawerTab = {
       tabHeader: {
         backgroundColor: bkgColor,
@@ -343,18 +345,18 @@ class DrawerComponent extends React.Component {
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
               />
-            }
-            
-              < BookmarkListComponent
+          
+            { this.props.bookData.bookmarks &&
+              <BookmarkListComponent
                 bookmarksArr={this.props.bookData.bookmarks}
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
-                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandlerForBookmarkList}
+                removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
                 isET1={this.props.isET1}
               />
-             
+            }
               < NoteListComponent
-                notes={this.props.bookData.annotations}
-                clickNoteHandler={this.props.bookCallbacks.goToPage}
+                notes={this.props.bookData.annTotalData}
+                clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
               />
             

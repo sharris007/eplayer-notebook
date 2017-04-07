@@ -1,6 +1,24 @@
 import AnnotationApi from '../api/annotationApi';
 import { typeConstants } from '../../const/Constants';
 
+// GET Total call for annotations
+export const getTotalAnnotationData = json => ({
+  type: typeConstants.GET_TOTALANNOTATION,
+  data: json,
+  loading: true
+});
+
+export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.dogetTotalAnnotation(filterData)
+    .then(
+        response => response.json()
+      )
+    .then(
+        json => dispatch(getTotalAnnotationData(json))
+    );
+
+
+
+
 // GET call for annotations
 export const getAnnotationData = json => ({
   type: typeConstants.GET_ANNOTATION,

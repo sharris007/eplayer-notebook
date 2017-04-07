@@ -1,5 +1,12 @@
 export default (state = { data: [], loading: false }, action) => {
   switch (action.type) {
+    case 'GET_TOTALANNOTATION': {
+      return {
+        ...state,
+        totalAnndata: action.data,
+        loading: action.loading
+      };
+    }
     case 'GET_ANNOTATION': {
       return {
         ...state,

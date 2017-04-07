@@ -1,5 +1,15 @@
 import { apiConstants } from '../../const/Constants';
 
+
+export const getTotalAnndata = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations`,{
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Identity-Id':data.user
+  }
+});
+
 export const getAnndata = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations?uri=${data.uri}`,{
   method: 'GET',
   headers: {
@@ -80,7 +90,7 @@ export const getTotalBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/co
 });
 
 // Bookmark Api GET Call,
-export const getBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/bookmarks?uri=${data.uri}`,{
+export const getBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/bookmarks?uri=${data.id}`,{
   method: 'GET',
   headers: {
     Accept: 'application/json',
