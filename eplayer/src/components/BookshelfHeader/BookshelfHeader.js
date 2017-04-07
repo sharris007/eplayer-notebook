@@ -48,7 +48,7 @@ export class BookshelfHeader extends React.Component {
         <div>
           <div className="logo" />
           <span className="rightComp">
-            <span className="label">{this.props.userName ? this.props.userName : 'Addie Learnerbee'}</span>
+            <span className="label">{this.props.firstName&&this.props.lastName ? this.props.firstName+' '+this.props.lastName : 'Addie Learnerbee'}</span>
             <span className="dropdown"><Icon name="dropdown-open-18" /></span>
           </span>
         </div>

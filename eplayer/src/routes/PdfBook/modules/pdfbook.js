@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import map from 'lodash/map';
 import { clients } from '../../../components/common/client';
+import axios from 'axios';
 
 // ------------------------------------
 // Constants
@@ -17,6 +18,9 @@ export const RECEIVEBOOKINFO_PENDING = 'RECEIVEBOOKINFO_PENDING';
 export const RECEIVEBOOKINFO_REJECTED = 'RECEIVEBOOKINFO_REJECTED';
 export const RECEIVEBOOKINFO_FULFILLED = 'RECEIVEBOOKINFO_FULFILLED';
 export const RECEIVE_PAGE_INFO = 'RECEIVE_PAGE_INFO';
+export const RECEIVE_USER_INFO_PENDING = 'RECEIVE_USER_INFO_PENDING';
+export const RECEIVE_USER_INFO_REJECTED = 'RECEIVE_USER_INFO_REJECTED';
+export const RECEIVE_USER_INFO_FULFILLED = 'RECEIVE_USER_INFO_FULFILLED';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -37,7 +41,7 @@ export function request(component) {
   }
 }
 
-export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
+export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey,bookServerURL) {
   const bookState = {
     bookmarks: [],
     isFetching: {
@@ -46,12 +50,14 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
   };
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.fetchBookmarks.get('getbookmarkreport?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return axios.get(''+bookServerURL+'/ebook/ipad/getbookmarkreport?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', 
+    {
       method: GET,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 20000
     })
     .then((response) => {
       if (response.status >= 400) {
@@ -82,15 +88,17 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey) {
   };
 }
 
-export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId,sessionKey) {
+export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId,sessionKey,userid,bookServerURL) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.addBookmarks.get('setbookmark?userID=116435&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return axios.get(''+bookServerURL+'/ebook/ipad/setbookmark?userID='+userid+'&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', 
+    {
       method: GET,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 20000
     }).then((response) => {
       if (response.status >= 400) {
         console.log(`Add bookmark error: ${response.statusText}`);
@@ -109,15 +117,17 @@ export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId
   };
 }
 
-export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId,sessionKey) {
+export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId,sessionKey,userid,bookServerURL) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.removeBookmark.get('resetbookmark?userID=116435&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', {
+    return axios.get(''+bookServerURL+'/ebook/ipad/resetbookmark?userID='+userid+'&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', 
+    {
       method: GET,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
-      }
+      },
+      timeout: 20000
     }).then((response) => {
       if (response.status >= 400) {
         console.log(`Remove bookmark error: ${response.statusText}`);
@@ -136,8 +146,7 @@ export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId
   };
 }
 
-export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,pageId,sessionKey){
-  console.log('bookeditionid==='+bookeditionid);
+export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL){
   const bookState = {
     toc: {
       content: {},
@@ -152,7 +161,10 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
   };
   return(dispatch) => {
     dispatch(request('toc'));
-    return clients.fetchTocAndViewer.get('getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc')
+    return axios.get(''+bookServerURL+'/ebook/ipad/getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc', 
+    {
+      timeout: 20000
+    })
     .then((response) => {
     response.data.forEach((allBaskets) =>{
     const basketData = allBaskets.basketsInfoTOList;
@@ -234,14 +246,15 @@ export function goToPage(pageId) {
   };
 }
 
-export function fetchBookInfo(bookid,sessionKey)
+export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL)
 {
   return{
   type: 'RECEIVEBOOKINFO',
-  payload: clients.fetchBookInfo.get('getbookinfo?userid=116435&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON')
+  payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookinfo?userid='+userid+'&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON'),
+  timeout: 20000
   };
 }
- export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,sessionKey)
+export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,sessionKey,bookServerURL)
  {
     const bookState = {
       bookInfo:{
@@ -249,7 +262,10 @@ export function fetchBookInfo(bookid,sessionKey)
       }
   };
   return(dispatch)=>{
-    return clients.fetchPageInfo.get('getpagebypageorder?userid=116435&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON')
+    return axios.get(''+bookServerURL+'/ebook/ipad/getpagebypageorder?userid='+userid+'&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON',
+    {
+      timeout: 20000
+    })
     .then((response) => {
       if (response.status >= 400) {
         console.log(`FetchPage info error: ${response.statusText}`);
@@ -278,6 +294,16 @@ export function fetchBookInfo(bookid,sessionKey)
 
  }
 
+ export function fetchUserInfo(globaluserid, bookid, uid, ubd, ubsd, sessionKey,bookServerURL)
+  {
+    return{
+    type: 'RECEIVE_USER_INFO',
+    payload: axios.get(''+bookServerURL+'/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid='+globaluserid+'&bookid='+bookid+'&uid='+ubd+'&ubd='+ubd+'&ubsd='+ubsd+'&authkey='+sessionKey+''),
+    timeout: 20000
+    };
+  }
+
+ 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -380,7 +406,30 @@ const ACTION_HANDLERS = {
             ...state.bookinfo,
             pages: state.bookinfo.pages===undefined ? action.bookState.bookInfo.pages : state.bookinfo.pages.concat(action.bookState.bookInfo.pages)
               }
-  })
+  }),
+  [RECEIVE_USER_INFO_PENDING]: (state, action) => ({
+    ...state,
+    userInfo: {
+            fetching:true,
+            fetched:false
+              }
+  }),
+  [RECEIVE_USER_INFO_FULFILLED]:  (state, action) => ({
+    ...state,
+    userInfo: {
+            fetching:false,
+            fetched:true,
+            //...state.userInfo,
+            userid: action.payload.data[0].userid
+              }
+  }),
+  [RECEIVE_USER_INFO_REJECTED]: (state, action) => ({
+    ...state,
+    userInfo: {
+            fetching:false,
+            fetched:false
+              }
+  }),
 };
 
 // ------------------------------------
@@ -404,6 +453,11 @@ const initialState = {
     fetching:false,
     fetched:false,
     pages: []
+  },
+  userInfo: {
+    fetching:false,
+    fetched:false,
+    userid : ""
   }
 };
 

@@ -26,8 +26,8 @@ export class PdfBookReader extends Component {
 
   }
   componentDidMount() {
-    this.props.fetchTocAndViewer(this.props.params.bookId,this.props.bookshelf.authorName,this.props.bookshelf.title,this.props.bookshelf.thumbnail,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey);
-    this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey);
+    this.props.fetchTocAndViewer(this.props.params.bookId,this.props.bookshelf.authorName,this.props.bookshelf.title,this.props.bookshelf.thumbnail,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
+    this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
     var etext_token =this.props.bookshelf.cdnToken;
     var headerParams = {
        'etext-cdn-token' : etext_token 
@@ -69,12 +69,13 @@ export class PdfBookReader extends Component {
      // If already page details are in store then we do not hit fetchPageInfo again
      if(currentPage===undefined)
      {
-     this.props.fetchPageInfo(this.props.params.bookId,
+      this.props.fetchPageInfo(this.props.book.userInfo.userid,
       this.props.params.bookId,
       this.props.params.bookId,
       this.props.book.bookinfo.book.bookeditionid,
       currentPageOrder,
-      this.props.bookshelf.ssoKey
+      this.props.bookshelf.ssoKey,
+      this.props.bookshelf.serverDetails
       );
    }
   }
@@ -179,7 +180,7 @@ export class PdfBookReader extends Component {
       createdTimestamp:currTimeInMillsc,
       pageID:currentPage.pageid
     };
-    this.props.addBookmark(this.props.params.bookId, bookmark,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,currentPage.pageid,this.props.bookshelf.ssoKey);
+    this.props.addBookmark(this.props.params.bookId, bookmark,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,currentPage.pageid,this.props.bookshelf.ssoKey,this.props.book.userInfo.userid,this.props.bookshelf.serverDetails);
   }
 
   removeBookmarkHandler = () => {
@@ -187,14 +188,14 @@ export class PdfBookReader extends Component {
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
     //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
     const targetBookmarkId = targetBookmark.uri;
-    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,targetBookmark.pageID,this.props.bookshelf.ssoKey);
+    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,targetBookmark.pageID,this.props.bookshelf.ssoKey,this.props.book.userInfo.userid,this.props.bookshelf.serverDetails);
   };
 
   removeBookmarkHandlerForBookmarkList = (bookmarkId) => {
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === bookmarkId);
     //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === bookmarkId);
     const targetBookmarkId = targetBookmark.uri;
-    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,targetBookmark.pageID,this.props.bookshelf.ssoKey);
+    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,targetBookmark.pageID,this.props.bookshelf.ssoKey,this.props.book.userInfo.userid,this.props.bookshelf.serverDetails);
   };
 
   isCurrentPageBookmarked = () => {
@@ -233,6 +234,7 @@ export class PdfBookReader extends Component {
           title={this.props.bookshelf.title}
           curbookID={this.props.params.bookId}
           isET1='Y'
+          serverDetails={this.props.bookshelf.serverDetails}
         /> 
       
        <div className="viewerContent">

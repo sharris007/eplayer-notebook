@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import {fetch,storeUPdfUrl,storeBookDetails,storeSsoKey,fetchcdnToken} from '../modules/bookshelfActions';
+import {fetch,storeBookDetails,storeSsoKey,fetchcdnToken} from '../modules/bookshelfActions';
 
 
 /*  This is a container component. Notice it does not contain any JSX,
@@ -15,7 +15,8 @@ import BookshelfPage from '../components/Bookshelf';
 
 const mapDispatchToProps = {
   fetch,
-  storeUPdfUrl,
+  //storeUPdfUrl,
+  //storeBookServerDetails,
   storeBookDetails,
   storeSsoKey,
   fetchcdnToken

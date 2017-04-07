@@ -37,13 +37,18 @@ const searchActions = {
  	const bookId=paramList.bookId;
  	const globalBookId=paramList.globalBookId;
  	const ssoKey=paramList.ssoKey;
-    const searchState = {
+  const serverDetails=paramList.serverDetails;
+
+  const searchState = {
       searchResult:{
         results: []
       }
   };
   return(dispatch)=>{
-    return clients.search.get('searchbook?bookid='+bookId+'&globalbookid='+globalBookId+'&searchtext='+searchText+'&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON')
+    return axios.get(''+serverDetails+'/ebook/ipad/searchbook?bookid='+bookId+'&globalbookid='+globalBookId+'&searchtext='+searchText+'&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON',
+    {
+      timeout: 20000
+    })
     .then((response) => {
       if (response.status >= 400) {
         console.log(`SearchBook info error: ${response.statusText}`);
