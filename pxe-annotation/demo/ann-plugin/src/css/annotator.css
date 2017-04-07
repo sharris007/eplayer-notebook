@@ -1058,3 +1058,19 @@
   color: #74797b;
   margin: 10px 19px;
 }
+.annotator-listing .annotator-item input{
+	font-family: sans-serif;
+    font-size: 14px;
+    text-align: left;
+    color: #252525;
+    width: 100%;
+    padding: 5px;
+    border: solid transparent;
+    border-bottom: solid 1px #e9e9e9;
+    pointer-events: none;
+    opacity: 0.3;
+}
+.MathJax_Display span.annotator-handle{
+	/*position: absolute;
+	bottom: 0;*/
+}
