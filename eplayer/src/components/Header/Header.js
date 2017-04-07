@@ -29,9 +29,9 @@ export class Header extends React.Component {
     }
     this.headerInterval = false;
   }
-  componentWillReceiveProps(){
-    if(this.state.drawerOpen == true){
-      this.setState({ drawerOpen: this.props.drawerOpen });
+  componentWillReceiveProps(nextprops){ 
+    if(!nextprops.drawerOpen){
+      this.setState({ drawerOpen: nextprops.drawerOpen });
     }
   }
   componentDidMount() {
@@ -249,8 +249,6 @@ export class Header extends React.Component {
               </div>
             </div>}
         />
-        {
-          this.state.drawerOpen &&
           <DrawerComponent
             bookData={this.props.bookData}
             bookCallbacks={this.props.bookCallbacks}
@@ -258,7 +256,6 @@ export class Header extends React.Component {
             hideDrawer={this.hideDrawer}
             isET1={this.props.isET1}
           />
-        }
        {this.props.isET1 ? <div className="preferences-container-eT1">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />} </div>  
        : <div className="preferences-container">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />} </div>} 
      

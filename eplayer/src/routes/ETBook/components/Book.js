@@ -162,18 +162,21 @@ export class Book extends Component {
     this.setState({ viewerContent: viewerCallBack });
   }
   goToPageCallback = (pageId) => {
+    const that=this;
     const currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
     const playpageDetails  = this.state.pageDetails ; 
     playpageDetails.currentPageURL =  currentData;
     playpageDetails.tocUpdated  = true;
     this.setState({
-      pageDetails: playpageDetails
-      
+      pageDetails: playpageDetails      
     });
     this.setState({ drawerOpen: false });
     this.viewerContentCallBack(true);
     const bookId = this.props.params.bookId;
     browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
+    setTimeout(function(){      
+      that.setState({ drawerOpen: true });
+    },1000);
   };
   annotationCallBack = (eventType, data) => {
       const receivedAnnotationData    = data;
