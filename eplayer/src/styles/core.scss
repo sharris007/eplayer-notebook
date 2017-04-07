@@ -69,10 +69,11 @@ svg[class$="-24"] {
   display: inline-block !important;
 }
 .printBlock{
-  margin-top: 70px;
   width: 100%;
   text-align: right;
   padding-right: 25px;
+  position: absolute;
+  top: 80px;
 }
 
 .zoomPDF{
