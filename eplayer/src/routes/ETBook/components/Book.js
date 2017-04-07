@@ -194,6 +194,11 @@ export class Book extends Component {
     },1000);
   };
   annotationCallBack = (eventType, data) => {
+      const that=this;
+      const queryString = {
+        context : this.props.params.bookId,
+        user    :'epluser'
+      }
       const receivedAnnotationData    = data;
       receivedAnnotationData.user     = "epluser";
       receivedAnnotationData.context  = this.props.params.bookId;
@@ -259,6 +264,11 @@ export class Book extends Component {
     }
     const annListArray = [];
     if(this.props.annotionTotalData){
+      const colorArr = {
+        '#55DF49':"Green",
+        '#FC92CF':"Pink",
+        '#FCF37F':"Yellow"
+      }
       const annTotalList = this.props.annotionTotalData.rows;
       if(annTotalList && annTotalList.length>0){
         for(let i=0;i<annTotalList.length;i++){
@@ -268,8 +278,8 @@ export class Book extends Component {
             author: annTotalList[i].user,
             time: annTotalList[i].createdTimestamp,
             text: annTotalList[i].quote,
-            comment: '',
-            color: 'Green'
+            comment: annTotalList[i].text||'',
+            color: colorArr[annTotalList[i].color]||"Green"
           }
           annListArray.push(setArray);
         }

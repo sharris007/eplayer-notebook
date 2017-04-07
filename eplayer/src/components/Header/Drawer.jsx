@@ -76,7 +76,7 @@ class DrawerComponent extends React.Component {
       const tocContent = nextprops.bookData.pxeTocData.content;
       const bookConfigDetails = nextprops.bookData.pxeTocData.bookConfig;
       tocContent.mainTitle = bookConfigDetails.title;
-      tocContent.author = bookConfigDetails.creator;
+      tocContent.author = bookConfigDetails.creator.substring(0,20)+'...';
       tocContent.thumbnail =bookConfigDetails.coverImageUrl;
       tocContent.list = [];
       const chapterPageObj = tocContent.items;
@@ -345,7 +345,7 @@ class DrawerComponent extends React.Component {
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
               />
-          
+            }
             { this.props.bookData.bookmarks &&
               <BookmarkListComponent
                 bookmarksArr={this.props.bookData.bookmarks}
@@ -353,13 +353,14 @@ class DrawerComponent extends React.Component {
                 removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
                 isET1={this.props.isET1}
               />
-            }
+             }
+             { this.props.bookData.annTotalData &&
               < NoteListComponent
                 notes={this.props.bookData.annTotalData}
                 clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
               />
-            
+             }
           < /SwipeableViews> < /div > < /Drawer>
     );
   }
