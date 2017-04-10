@@ -194,11 +194,11 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
           });
         }
           });
-        var tocLevel_1_Obj = new Node();
+        /*var tocLevel_1_Obj = new Node();
         tocLevel_1_Obj.id=tocLevel_1.basketID;
         tocLevel_1_Obj.title=tocLevel_1.name;
-        tocLevel_1_Obj.children=tocLevel_1_ChildList;
-        bookState.toc.content.list.push(tocLevel_1_Obj);
+        tocLevel_1_Obj.children=tocLevel_1_ChildList;*/
+        bookState.toc.content.list=tocLevel_1_ChildList;
         console.log();
         });
       });

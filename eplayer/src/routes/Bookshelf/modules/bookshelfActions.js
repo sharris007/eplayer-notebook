@@ -47,7 +47,7 @@ export const storeBookDetails = (book) => {
   return {
     type: 'BOOK_DETAILS',
     authorName:book.author,
-    thumbnail:book.thumbnail,
+    thumbnail:book.image,
     title:book.title,
     globalBookId:book.globalBookId,
     bookeditionid:book.bookeditionid,
