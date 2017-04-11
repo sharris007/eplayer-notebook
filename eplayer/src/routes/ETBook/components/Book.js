@@ -306,7 +306,7 @@ export class Book extends Component {
     if(playlistReceived){
         this.state.pageDetails.baseUrl                = playlistData.baseUrl;
         if(this.state.pageDetails.currentPageURL === ""){
-          this.state.pageDetails.currentPageURL =playlistData.content[1];
+          this.state.pageDetails.currentPageURL =(playlistData.content[0].playOrder==0)?playlistData.content[1]:playlistData.content[0];
         }
         this.state.pageDetails.playListURL            = playlistData.content; 
         this.state.tocUrl                             = playlistData.provider;
