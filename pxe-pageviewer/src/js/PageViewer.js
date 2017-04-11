@@ -8,11 +8,12 @@ import $ from 'jquery';
 // import renderHTML from 'react-render-html';
 
 import FooterNav from './FooterNav';
-import crossRef from './CrossRef';
+import {crossRef} from './CrossRef';
 import copyCharLimit from './CopyCharLimit';
 import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
 import { loadMathMLScript, reloadMathMl } from './MathML';
+import LightBox from './LightBox';
 
 class PageViewer extends React.Component {
   
@@ -36,7 +37,20 @@ class PageViewer extends React.Component {
       isLastPage: initPageIndex === playListURL.length - 1,
       prevPageTitle: (initPageIndex === 0) ? '' : playListURL[initPageIndex - 1].title,
       nextPageTitle: (initPageIndex === playListURL.length - 1) ? '' : playListURL[initPageIndex+1].title,*/
-      currentStatePlayListUrl:playListURL[initPageIndex]
+      currentStatePlayListUrl:playListURL[initPageIndex],
+      lightBoxProps:{
+        url:'',
+        isOpen:false,
+        callback:()=>{
+          const lightBoxProps=Object.assign({}, this.state.lightBoxProps, {
+            url:'',
+            isOpen:false
+          });
+          this.setState({
+            lightBoxProps:lightBoxProps
+          });
+        }
+      }
     };
 
     this.getResponse(this.state.currentPage, true, 'initPage', this.scrollWindowTop);
@@ -269,6 +283,7 @@ class PageViewer extends React.Component {
         {this.props.src.enableGoToPage ?this.getGoToElement():''} 
         <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
         <div ref = {(el) => { this.drmBlockRef = el; }}> </div >
+        <LightBox lightBoxProps={this.state.lightBoxProps}/>
       </div>
     );
   };
