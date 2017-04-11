@@ -7,7 +7,7 @@ import { ExternalLinkPreview } from '@pearson-incubator/aquila-js-basics';
 import { ImageViewerPreview, VideoPlayerPreview, AudioPlayer } from '@pearson-incubator/aquila-js-media';
 
 //Here pageViewerRef refers to "this" of PageViewer.js
-const crossRef = (pageViewerRef) => {
+export const crossRef = (pageViewerRef) => {
   //destructuring props and state of PageViewer
   const {props, state}=pageViewerRef;
 
@@ -78,7 +78,7 @@ const crossRef = (pageViewerRef) => {
       break;
     };
   };
-  const contentLightBoxSettings = (element, eleInnerHtml, targetUrl) =>{
+  const contentLightBoxSettings = (element, classList, targetUrl) =>{
        // logic for content light box
        // For current page links
     
@@ -95,11 +95,10 @@ const crossRef = (pageViewerRef) => {
       targetUrl = props.src.baseUrl+ props.src.playListURL[currentTargetPlayListIndex].href.split('#')[0]+(targetUrl.split('#')[1]?'#'+targetUrl.split('#')[1]:'');
     }
     const externalLinkPreviewProps={
-      'title': element.innerText,
+      'title': element.innerText.trim().length?element.innerText:' ',
       'src':targetUrl,
       'type': 'External Links',
       'node':element  
-
     };
     const component=<MuiThemeProvider muiTheme={pageViewerRef.muiTheme}>
                         <ExternalLinkPreview 
@@ -112,8 +111,9 @@ const crossRef = (pageViewerRef) => {
     // temp.setAttribute('class', classList.join(' '));
     ReactDOM.render(component, temp);
     temp.getElementsByTagName('a')[0].setAttribute('from-external-preview', true);
+    temp.getElementsByTagName('a')[0].setAttribute('class-list', [...classList].join(' '));
     temp.getElementsByTagName('a')[0].style.cursor = 'pointer';
-    temp.getElementsByTagName('a')[0].innerHTML=eleInnerHtml;
+    temp.getElementsByTagName('a')[0].innerHTML=element.innerHTML;
     element.parentNode.replaceChild(temp.getElementsByTagName('a')[0], element);
     // element.innerHTML=eleInnerHtml;
       
@@ -124,7 +124,7 @@ const crossRef = (pageViewerRef) => {
       for (let i=figures.length-1;i>=0;i--) {
         const figure=figures[i];
         const image=figure.getElementsByTagName('img')[0];
-        if (!image) {
+        if (!image || image.classList.contains('design-icon')) {
           continue;
         }
         const cloneImg=image.cloneNode(true); 
@@ -197,7 +197,6 @@ const crossRef = (pageViewerRef) => {
       }
     }
   };
-
   const audioLightBoxSettings = () => {
     const audioElements = pageViewerRef.bookContainerRef.querySelectorAll('[data-type=audio]');
     if (audioElements.length) {
@@ -220,14 +219,67 @@ const crossRef = (pageViewerRef) => {
       }
     }
   };
+  const gadgetClickHandler=(e)=>{
+    e.preventDefault();
+    const lightBoxProps=Object.assign({}, pageViewerRef.state.lightBoxProps, {
+      url:e.currentTarget.getAttribute('href'),
+      isOpen:true
+    });
+    pageViewerRef.setState({
+      lightBoxProps:lightBoxProps
+    });
+  };
+  // For lightBox gadget
+  const lightBoxGadgetBindEvents=()=>{
+  // classes 'lightbox' 'lightbox image' 'ls_large-image' 'fx-lightbox' 'fx-lightbox gadget' 'lightbox gadget'
+    const gadgetClasses=['gadget'];
+    const lightBoxClasses=['lightbox', 'ls_large-image', 'fx-lightbox']; //gets all elements of lightbox including gadgets
+    gadgetClasses.map(el=>{
+      const gadgetElements = pageViewerRef.bookContainerRef.getElementsByClassName(el);
+      for (let i=0;i<gadgetElements.length;i++) {
+        if (!gadgetElements[i].getAttribute('added-gadget-lightbox')) {
+          gadgetElements[i].addEventListener('click', gadgetClickHandler, false);
+          gadgetElements[i].setAttribute('added-gadget-lightbox', true);
+        }
+      }
+    });
+
+    lightBoxClasses.map(className=>{
+      const elements = pageViewerRef.bookContainerRef.getElementsByClassName(className);
+      for (let i=elements.length-1;i>=0;i--) {
+        const element=elements[i];
+        if (!element.classList.contains('gadget') && element.getAttribute('from-external-preview')!=='true') {
+          contentLightBoxSettings(element, element.classList, element.getAttribute('href'));
+          /*const externalLinkPreviewProps={
+            'title': 'Light Box',
+            'src':element.getAttribute('href'),
+            'type': 'External Links',
+            'node':element  
+
+          };
+          const component=<MuiThemeProvider muiTheme={pageViewerRef.muiTheme}>
+                        <ExternalLinkPreview 
+                          title={externalLinkPreviewProps.title} 
+                          src={externalLinkPreviewProps.src} 
+                          type={externalLinkPreviewProps.type}
+                        />
+                      </MuiThemeProvider>;
+          const temp = document.createElement('span');
+          ReactDOM.render(component, temp);
+          temp.getElementsByTagName('a')[0].style.cursor = 'pointer';
+          temp.getElementsByTagName('a')[0].innerHTML=externalLinkPreviewProps.node.innerHTML;
+          element.parentNode.replaceChild(temp.getElementsByTagName('a')[0], element);*/
+        }
+      }
+    });
+  };
 
   const init = ()=>{ 
     const xrefs=pageViewerRef.bookContainerRef.getElementsByClassName('xref');
     // Kindly, don't change the for loop here to high order functions
     for (let i=xrefs.length-1;i>=0;i--) {
       const element=xrefs[i];
-      // const classList=element.classList;
-      const eleInnerHtml=element.innerHTML;
+      const classList=element.classList;
       if (props.src.crossRefSettings!==settings.lightBox && !element.getAttribute('custom-click-event-added')) {
         element.setAttribute('custom-click-event-added', true);
         element.addEventListener('click', hyperLinkEventHandler, false);
@@ -236,23 +288,29 @@ const crossRef = (pageViewerRef) => {
         if (!targetUrl) {
           continue;
         }
-        contentLightBoxSettings(element, eleInnerHtml, targetUrl);
+        if (element.getAttribute('from-external-preview')!=='true') {
+          contentLightBoxSettings(element, classList, targetUrl); 
+        }
       }
     }
-   // adding class xref to the added ExternalLinkPreview component
-    const externalPreview=pageViewerRef.bookContainerRef.querySelectorAll('[from-external-preview]');
-    for (const ele of externalPreview) {
-      ele.setAttribute('class', 'xref');
-    }
-
     // Adding light box for all images
     imageLightBoxSettings();
     // video light box settings
     videoLightBoxSettings();
     // audio light box settings
     audioLightBoxSettings();
+    // for gadgets lightbox
+    lightBoxGadgetBindEvents();
+    // PlaceHolder
+
+
+    //
+    // adding classes to the added ExternalLinkPreview component
+    const externalPreview=pageViewerRef.bookContainerRef.querySelectorAll('[from-external-preview]');
+    for (const ele of externalPreview) {
+      ele.setAttribute('class', ele.getAttribute('class-list'));
+    }
   };
  
   init();
 };
-export default crossRef;

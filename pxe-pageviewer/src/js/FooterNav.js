@@ -12,48 +12,10 @@ class FooterNav extends React.Component {
     };
   }
 
-  componentWillUnmount () {
-    this.navInterval && clearInterval(this.navInterval);
-    this.navInterval = false;
+  componentWillUnmount () {  
   }
 
   componentDidMount() {
-    const that = this;
-    let didScroll = false;
-    let lastScrollPosition = 0;
-    /* eslint-disable */
-    window.addEventListener('scroll', function() {
-      didScroll = true;
-    });
-
-    this.navInterval = setInterval(function() {
-      if (didScroll) {
-        const documentHeight = Math.max(
-          document.body.scrollHeight,
-          document.body.offsetHeight,
-          document.documentElement.clientHeight,
-          document.documentElement.scrollHeight,
-          document.documentElement.offsetHeight
-        );
-        const currentScrollPosition = window.pageYOffset;
-        const pageEndReached = currentScrollPosition + window.innerHeight === documentHeight;
-        // Scrolling down
-        if (currentScrollPosition > lastScrollPosition && !pageEndReached) {
-          that.setState({
-            classname: 'navigation nav-down'
-          });
-        }
-        // Scrolling Up
-        else {
-          that.setState({
-            classname: 'navigation'
-          });
-        }
-        lastScrollPosition = currentScrollPosition;
-        didScroll = false;
-      }
-    }, 100);
-    /* eslint-enable */
   }
 
   sectionClk = (isNext) => {
@@ -79,13 +41,13 @@ class FooterNav extends React.Component {
   removeFocus = (section) => {
     //console.log(this.refs);
     if (section === 'prevSection') {
-      this.ps.classList.remove('focus');
+      if (this.ps) {this.ps.classList.remove('focus');};
     }
     else if (section === 'currentSection') {
       this.cs.classList.remove('focus');
     }
     else if (section === 'nextSection') {
-      this.ns.classList.remove('focus');
+      if (this.ns) {this.ns.classList.remove('focus');};
     }
   };
 
@@ -121,7 +83,7 @@ class FooterNav extends React.Component {
     /* eslint-enable */
     return (
       <div className={this.state.classname}>
-        <div tabIndex="0" className={`prevSection section ${this.props.data.isFirstPage ? 'hide' : ''}`} ref = {(el) => { this.ps = el; }} title={this.props.data.prevPageTitle} 
+        <div tabIndex="0" className={`prevSection section ${this.props.data.isFirstPage||!this.props.data.prevPageTitle ? 'hide' : ''}`} ref = {(el) => { this.ps = el; }} title={this.props.data.prevPageTitle} 
           onClick={() => this.sectionClk(false)} onKeyPress={() => this.sectionClk(false)} onKeyUp={() => this.handleFocus('prevSection')} onBlur={() => this.removeFocus('prevSection')}>
           <div className="prevContent">
             <PrevBtn viewBox="24 28 18 9" style={style.prevBtn} />
@@ -132,7 +94,7 @@ class FooterNav extends React.Component {
           </div>
         </div>
 
-        <div className={`line ${this.props.data.isFirstPage ? 'hide' : ''}`} />
+        <div className={`line ${this.props.data.isFirstPage||!this.props.data.prevPageTitle ? 'hide' : ''}`} />
         <div tabIndex="0" className="currentSection section" ref = {(el) => { this.cs = el; }} onKeyUp={() => this.handleFocus('currentSection')} 
           onBlur={() => this.removeFocus('currentSection')}>Page {this.props.data.currentPage}</div>
         <div className={`line ${this.props.data.isLastPage ? 'hide' : ''}`} />
