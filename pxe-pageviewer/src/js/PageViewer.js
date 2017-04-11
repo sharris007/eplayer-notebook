@@ -13,7 +13,7 @@ import copyCharLimit from './CopyCharLimit';
 import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
 import { loadMathMLScript, reloadMathMl } from './MathML';
-import LightBox from './LightBox';
+import {LightBox} from './LightBox';
 
 class PageViewer extends React.Component {
   
