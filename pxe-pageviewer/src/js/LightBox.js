@@ -5,50 +5,40 @@ import Dialog from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
-const customContentStyle = {
-  dialogStyles: {
-    width: '80%',
-    maxWidth: 'none'
-  },
-  titleStyles:{
-    padding:0,
-    textAlign: 'right'
-  }
-};
 
-class LightBox extends React.Component {
-  
-  constructor(props) {
-    super(props);
+export const LightBox = (props) => {
+  const customContentStyle = {
+    dialogStyles: {
+      width: '80%',
+      maxWidth: 'none',
+      transform: 'none'
+    },
+    titleStyles:{
+      padding:0,
+      textAlign: 'right'
+    }
   };
-  handleLightBoxCloseModal () {
-    this.props.lightBoxProps.callback('closeLightBox', 'Close Light Box');
-  };
-
-  render() {
-    return (
+  return (
       <Dialog
-          title={<div><IconButton onClick={()=>this.handleLightBoxCloseModal()}><NavigationClose /></IconButton></div>}
+          title={<div><IconButton onClick={()=>props.lightBoxProps.callback()}><NavigationClose /></IconButton></div>}
           actions={[]}
           modal={false}
-          open={this.props.lightBoxProps.isOpen}
+          open={props.lightBoxProps.isOpen}
           onRequestClose={()=>this.handleLightBoxCloseModal()}
           autoScrollBodyContent={true}
           contentStyle={customContentStyle.dialogStyles}
           titleStyle={customContentStyle.titleStyles}
         >
-         <div ref = {(el) => { this.componentRef = el; }}>
-          <iframe src={this.props.lightBoxProps.url} height="350">
+         <div>
+          <iframe src={props.lightBoxProps.url} height="400">
               Sorry your browser does not support inline frames.
           </iframe>
          </div>
         </Dialog>
     );
-  }
 };
 
 LightBox.PropTypes = {
   lightBoxProps: PropTypes.object.isRequired
 };
 
-export default LightBox;
