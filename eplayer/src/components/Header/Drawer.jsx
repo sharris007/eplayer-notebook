@@ -9,45 +9,6 @@ import { BookmarkListComponent } from '@pearson-incubator/bookmarks';
 import { NoteListComponent } from '@pearson-incubator/notes';
 import './Drawer.scss';
 
-
-// const sampleList = {};
-//   sampleList.author = 'Charles Dickens';
-//   sampleList.mainTitle = 'Science';
-//   sampleList.thumbnail = 'http://content.stg-openclass.com/eps/pearson-reader/api/item/4eaf188e-1798-446b-b382-90a0c6da6629/1/file/cover_thumbnail.jpg';
-//   sampleList.list = [
-//   {
-//     'id': '1',
-//     'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000752.xhtml',
-//     'title': 'Chapter 1 Hypothesis Testing',
-//      children: [
-//       {
-//         'id': '2',
-//         'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml',
-//         'title': '1.1 The Process of Science',
-//       },
-//       {
-//         'id': '3',
-//         'href': 'OPS/s9ml/chapter01/filep700049577700000000000000000067f.xhtml',
-//         'title': '1.2 Can Science Cure the Common Cold'
-//       },
-//       {
-//         'href': 'OPS/s9ml/chapter01/filep7000495777000000000000000000806.xhtml',
-//         'id': 4,
-//         'title': '1.3 Understanding Statistics'
-//       },
-//       {
-//         'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000008ab.xhtml',
-//         'id': 5,
-//         'title': '1.4 Evaluating Scientific Information'
-//       }
-//     ]
-//   }
-// ];
-
-// const tocData = {content : sampleList};
-
-// console.log("tocData",tocData);
-// debugger;
 let counter = -1;
 let rowCount = 0;
 const grey = '#f5f5f5';

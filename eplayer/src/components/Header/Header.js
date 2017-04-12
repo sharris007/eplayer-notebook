@@ -29,11 +29,6 @@ export class Header extends React.Component {
     }
     this.headerInterval = false;
   }
-  componentWillReceiveProps(nextprops){ 
-    if(!nextprops.drawerOpen){
-      this.setState({ drawerOpen: nextprops.drawerOpen });
-    }
-  }
   componentDidMount() {
     let didScroll = false;
     let lastScrollPosition = 0;
@@ -135,6 +130,7 @@ export class Header extends React.Component {
   }
 
   render() {
+
     const style = {
       rightIcons: {
         margin: '15px 15px 0 0'
@@ -249,13 +245,16 @@ export class Header extends React.Component {
               </div>
             </div>}
         />
+        { 
+          this.state.drawerOpen &&
           <DrawerComponent
             bookData={this.props.bookData}
             bookCallbacks={this.props.bookCallbacks}
-            isOpen={this.state.drawerOpen}
+            isOpen={this.props.drawerOpen}
             hideDrawer={this.hideDrawer}
             isET1={this.props.isET1}
           />
+        }
        {this.props.isET1 ? <div className="preferences-container-eT1">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} /></div> : <div className="empty" />} </div>  
        : <div className="preferences-container">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} preferenceUpdate = {this.props.preferenceUpdate} preferenceBackgroundColor  = { this.props.preferenceBackgroundColor }/></div> : <div className="empty" />} </div>} 
      
