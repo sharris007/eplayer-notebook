@@ -242,6 +242,7 @@ Annotator.Editor = (function(_super) {
     if (!$('.annotator-item input').length) {
      $('.annotator-item').prepend('<input placeholder="Add title."/>');
     }
+    $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax_Display')){
       $('.annotator-item input').show();
       if(!annotation.id){

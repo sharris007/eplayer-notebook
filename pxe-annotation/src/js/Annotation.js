@@ -4,15 +4,15 @@ import { map, zipObject} from 'lodash';
 
 class Annotation extends Component {
  constructor(props) {
-    super(props);   
-    this.annotationEventHandler = this.annotationEventHandler.bind(this);
-    this.annotationEvent = this.annotationEvent.bind(this);
-    this.onDocumentClick=this.onDocumentClick.bind(this);
+   super(props);   
+   this.annotationEventHandler = this.annotationEventHandler.bind(this);
+   this.annotationEvent = this.annotationEvent.bind(this);
+   this.onDocumentClick=this.onDocumentClick.bind(this);
     //$('#' + props.contentId).annotator().annotator('loadAnnotations', props.annotationData);
-    $(document).on('mousedown', this.onDocumentClick);
-    $(document).keyup(this.onDocumentClick);
-    this.state = {'updated':false}
-  }
+   $(document).on('mousedown', this.onDocumentClick);
+   $(document).keyup(this.onDocumentClick);
+   this.state = {'updated':false}
+ }
 
   onDocumentClick(e) {
     if ((e.keyCode === 27 ||!$(e.target).closest('.annotator-editor').length) && !$('.annotator-editor').hasClass('annotator-hide')) {
@@ -26,9 +26,9 @@ class Annotation extends Component {
 
   componentWillReceiveProps(nextProps) {
     let firstLoad = this.state.firstLoad;
-    const checkPlayOrder = (this.props.currentPageDetails.playOrder != nextProps.currentPageDetails.playOrder);
+    const checkPlayOrder = (this.props.currentPageDetails.playOrder !== nextProps.currentPageDetails.playOrder);
     const initLoad = (this.props.annotationData === undefined) && (nextProps.annotationData !== undefined);
-    if(checkPlayOrder || initLoad) {
+    if (checkPlayOrder || initLoad) {
       this.setState({'firstLoad':true});
       firstLoad=true;
     }
@@ -62,6 +62,7 @@ class Annotation extends Component {
     const customAttributes = this.props.annAttributes;
     if (data.annotation||data) {
       const annData             =   data.annotation||data;
+      annData.text              =   annData.text||'';
       annData.createdTimestamp  =   new Date().toISOString();
       annData.updatedTimestamp  =   null;
       const customUnsourceObj   = _.mapKeys(annData, function(value, key) {
@@ -77,8 +78,7 @@ class Annotation extends Component {
       if (eventType==='annotationCreated') {
         this.setState({'updated':true});
       }
-      if (eventType==='annotationDeleted' && !annData.id) 
-        return;   
+      if (eventType==='annotationDeleted' && !annData.id) {return;}   
       this.props.annotationEventHandler(eventType, customUnsourceObj, viewer);
     }
   }

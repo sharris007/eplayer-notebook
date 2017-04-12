@@ -245,11 +245,11 @@ Annotator = (function(_super) {
       normed = normedRanges[_j];
       normed.color=annotation.color;
       normed.note=annotation.text;
-      if(!annotation.quote)annotation.quote.push($.trim(normed.text()));
+      if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
       annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
       $.merge(annotation.highlights, this.highlightRange(normed));
     }
-    if(!annotation.quote)annotation.quote = annotation.quote.join(' / ');
+    if(Array.isArray(annotation.quote))annotation.quote = annotation.quote.join(' / ');
     $(annotation.highlights).data('annotation', annotation);
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
     $(annotation.highlights).attr('data-ann-id', annotation.id);
