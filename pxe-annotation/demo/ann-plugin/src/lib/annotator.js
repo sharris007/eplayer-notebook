@@ -143,7 +143,7 @@ Annotator = (function(_super) {
     })()).join('');
     max = Util.maxZIndex($(document.body).find(sel));
     max = Math.max(max, 1000);
-    style.text([".annotator-adder, .annotator-outer, .annotator-notice {", "  z-index: " + (max + 20) + ";", "}", ".annotator-filter {", "  z-index: " + (max + 10) + ";", "}"].join("\n"));
+    style.text([".annotator-adder, .annotator-outer, .annotator-notice {", "  z-index: " + (10025) + ";", "}", ".annotator-filter {", "  z-index: " + (10025) + ";", "}"].join("\n"));
     return this;
   };
 
