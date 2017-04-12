@@ -46,7 +46,8 @@ import './Drawer.scss';
 
 // const tocData = {content : sampleList};
 
-
+// console.log("tocData",tocData);
+// debugger;
 let counter = -1;
 let rowCount = 0;
 const grey = '#f5f5f5';
@@ -64,57 +65,12 @@ class DrawerComponent extends React.Component {
     this.state = {
       slideIndex: 0,
       drawerOpen: false,
-      tocContentData:''
+      tocData:''
     };
   }
 
   componentDidMount() {
     this.drawerListFocus();
-  }
-  componentWillReceiveProps(nextprops){
-   if(this.props.isET1!=='Y')
-   {
-    if(nextprops.bookData.pxeTocData.bookConfig && nextprops.bookData.pxeTocData.content) { 
-      const tocContent = nextprops.bookData.pxeTocData.content;
-      const bookConfigDetails = nextprops.bookData.pxeTocData.bookConfig;
-      tocContent.mainTitle = bookConfigDetails.title;
-      tocContent.author = bookConfigDetails.creator.substring(0,20)+'...';
-      tocContent.thumbnail =bookConfigDetails.coverImageUrl;
-      tocContent.list = [];
-      const chapterPageObj = tocContent.items;
-      var repl = chapterPageObj.map(function(obj) {
-      var set = obj.items.map(function(n) {
-          return {
-            urn: n.id,
-            href:n.href,
-            id:n.id,
-            playorder:n.playorder,
-            title:n.title
-        }
-      });
-            return {
-                id: obj.id,
-                title: obj.title,
-                coPage: obj.coPage,
-                playOrder: obj.playOrder,
-                children: set
-            }
-      });
-      tocContent.list= repl;
-      const tocContent2 = {'content':tocContent}
-      this.setState({
-        tocData:tocContent2
-      })
-    }
-    }
-    else
-    {
-    const tocContent2 = this.props.bookData.toc;
-    this.setState({
-      tocData:tocContent2
-    })
-    }
-    
   }
   componentDidUpdate() {
     this.drawerListFocus();
@@ -266,6 +222,7 @@ class DrawerComponent extends React.Component {
   }
 
   render() {
+    
     const drawerTab = {
       tabHeader: {
         backgroundColor: bkgColor,
@@ -277,7 +234,7 @@ class DrawerComponent extends React.Component {
         fontStretch: normal,
         textAlign: center,
         paddingTop: fortyNine
-                    // borderRadius: 10
+        // borderRadius: 10
       },
       inlineinkBarStyle: {
         backgroundColor: bcolor,
@@ -346,10 +303,10 @@ class DrawerComponent extends React.Component {
             onChangeIndex={this.handleChange}
             className="swipeviewStyle"
           >
-            { this.state.tocData &&
+            { this.props.bookData.toc.content &&
               < TableOfContentsComponent
                 separateToggleIcon
-                data={ this.state.tocData }
+                data={ this.props.bookData.toc}
                 showDuplicateTitle
                 depth={5}
                 childField={'children'}
