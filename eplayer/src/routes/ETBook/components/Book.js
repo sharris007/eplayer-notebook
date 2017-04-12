@@ -142,6 +142,8 @@ export class Book extends Component {
 
   viewerContentCallBack = (viewerCallBack) => {
     this.setState({ viewerContent: viewerCallBack });
+    if(viewerCallBack==false)
+    this.setState({ drawerOpen: true });
   }
   goToPageCallback = (pageId) => {
     const that=this;
@@ -156,9 +158,6 @@ export class Book extends Component {
     this.viewerContentCallBack(true);
     const bookId = this.props.params.bookId;
     browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
-    setTimeout(function(){      
-      that.setState({ drawerOpen: true });
-    },1000);
   };
   annotationCallBack = (eventType, data) => {
       const that=this;
@@ -217,7 +216,7 @@ export class Book extends Component {
   }
 
   preferenceBackgroundColor = (theme) => {
-    console.log('theme---',theme);
+    // console.log('theme---',theme);
   }
   render() {
     
