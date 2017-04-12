@@ -181,7 +181,6 @@ export class Header extends React.Component {
     };
 
     const targetPageId = this.props.bookData.viewer.currentPageId;
-    this.props.bookData.pxeTocData = this.props.pxeTocbundle;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >

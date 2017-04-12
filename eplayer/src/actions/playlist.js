@@ -38,7 +38,34 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
       PlaylistApi.doGetTocDetails(bookId,tocUrl).then(response => response.json())
       .then(response =>{
         response.bookConfig =bookDetails; 
-        dispatch(getTocCompleteDetails(response));
+        const tocResponse = response.content;
+        tocResponse.mainTitle = bookDetails.title;
+        tocResponse.author    = bookDetails.creator.substring(0,20)+'...';
+        tocResponse.thumbnail = bookDetails.coverImageUrl;
+        tocResponse.list      = [];
+        const tocItems        = tocResponse.items;
+        const listData        = tocItems.map(function(itemObj) {
+                const subItems= itemObj.items.map(function(n) {
+                    return {
+                      urn: n.id,
+                      href:n.href,
+                      id:n.id,
+                      playorder:n.playorder,
+                      title:n.title
+                    }
+                });
+            return {
+                id: itemObj.id,
+                title: itemObj.title,
+                coPage: itemObj.coPage,
+                playOrder: itemObj.playOrder,
+                children: subItems
+            }
+        });
+        tocResponse.list = listData;
+        delete tocResponse.items;
+        const tocFinalModifiedData = {'content':tocResponse}
+        dispatch(getTocCompleteDetails(tocFinalModifiedData));
       });
 
       PlaylistApi.doGetPlaylistDetails(bookId,tocUrl).then(response => response.json())
