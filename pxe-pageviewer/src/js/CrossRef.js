@@ -274,7 +274,13 @@ export const crossRef = (pageViewerRef) => {
     });
   };
 
-  const init = ()=>{ 
+  const init = ()=>{
+    const allHyperlinks = pageViewerRef.bookContainerRef.getElementsByTagName('a');
+    for (let i=0;i<allHyperlinks.length;i++) {
+      // External links should open in new tab
+      // set all hyperlinks target to _blank and preventDefault is taken care by rest of functionalities like xref,lighbox,gadget
+      allHyperlinks[i].setAttribute('target', '_blank');
+    }
     const xrefs=pageViewerRef.bookContainerRef.getElementsByClassName('xref');
     // Kindly, don't change the for loop here to high order functions
     for (let i=xrefs.length-1;i>=0;i--) {

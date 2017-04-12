@@ -62,8 +62,13 @@ export const loadMathMLScript = () => {
 export const reloadMathMl = (pageViewerRef) => {
   const init = () => {
     try {
-      //MathJax comes from script added dynamically
-      MathJax.Hub.Queue(['Typeset', MathJax.Hub, pageViewerRef.bookContainerRef]); // eslint-disable-line
+      // MathJax comes from script added dynamically
+      window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, pageViewerRef.bookContainerRef]); // eslint-disable-line
+      window.MathJax.Hub.Config({ // eslint-disable-line
+        menuSettings: {
+          zoom: 'None'
+        }
+      });
     } catch (e) {}
   };
   init();
