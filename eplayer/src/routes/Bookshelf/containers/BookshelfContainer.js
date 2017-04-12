@@ -26,6 +26,7 @@ const mapStateToProps = state => ({
   bookshelf: state.bookshelf ? state.bookshelf : {},
   login: state.login ? state.login : {},
   cdnData:state.bookshelf.cdnToken ? state.bookshelf.cdnToken : {},
+  book: state.book ? state.book : {}
 });
 
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:

@@ -89,6 +89,7 @@ export class Header extends React.Component {
     {
       this.props.bookData.toc.content={};
       this.props.bookData.bookmarks=[];
+      this.props.bookData.bookinfo=[];
     }
     browserHistory.push('/eplayer/bookshelf');
     this.setState({ open: false });

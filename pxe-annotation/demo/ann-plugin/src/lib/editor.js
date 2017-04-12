@@ -103,11 +103,15 @@ Annotator.Editor = (function(_super) {
   }
   Editor.prototype.onDeleteIconClick=function(event) {  
     var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'), panel3Sec =  this.element.find('.annotator-panel-3'), panel4Sec = this.element.find('.annotator-panel-4');
-    panel1Sec.addClass('hide-popup').after(panel4);
-    panel4Sec.addClass('annotator-panel-triangle');
-    panel2Sec.addClass('overlay');
-    panel3Sec.addClass('overlay');
-
+    if($(panel2Sec).find('textarea').val().trim()) {
+        panel1Sec.addClass('hide-popup').after(panel4);
+        panel4Sec.addClass('annotator-panel-triangle');
+        panel2Sec.addClass('overlay');
+        panel3Sec.addClass('overlay');
+    }
+    else {
+        this.onDeleteClick(event);
+    }
   }
   Editor.prototype.onCancelClick=function(event) {  
     var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'), panel3Sec =  this.element.find('.annotator-panel-3'), panel4Sec = this.element.find('.annotator-panel-4') ;

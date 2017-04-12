@@ -30,7 +30,7 @@ function init() {
     highlightText:'',
     bgColor:'', 
     tocUpdated:false,
-    baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/', //'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/',
+    baseUrl: 'https://content.openclass.com/eps/pearson-reader/api/item/a97055cd-2562-425e-8cf3-b9c97153896f/100/file/pxe_hied_intl_samples_testing_v1_sjg/', //'https://content.stg-openclass.com/eps/pearson-reader/api/item/542d7ded-e63b-4bc5-9e82-62ccc7c6039c/1/file/LutgensAtm13-071415-MJ-DW/', 
     playListURL:[
       {
         'playOrder': 1,
@@ -55,7 +55,7 @@ function init() {
       }, {
         'playOrder': 6,
         'title': '1.4 Composition of the Atmosphere',
-        'href': 'OPS/s9ml/appendixe/filep70004967280000000000000000051ac.xhtml'//'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
+        'href': 'OPS/s9ml/imported_files01/reader_5.xhtml'//'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
       }, {
         'playOrder': 7,
         'title': '1.5 Vertical Structure of the Atmosphere',
@@ -76,7 +76,7 @@ function init() {
     currentPageURL:{
       'playOrder': 6,
       'title': '1.4 Composition of the Atmosphere',
-      'href': 'OPS/s9ml/appendixe/filep70004967280000000000000000051ac.xhtml'//'OPS/s9ml/chapter01/filep7000496728000000000000000000a55.xhtml#d65a27090854476e92950ae2685e2ffa'
+      'href': 'OPS/s9ml/imported_files01/reader_5.xhtml' //'OPS/s9ml/appendixe/filep70004967280000000000000000051ac.xhtml'
     }
   });
 }

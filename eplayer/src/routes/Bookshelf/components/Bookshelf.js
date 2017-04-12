@@ -16,6 +16,22 @@ constructor(props) {
     .then((data) => {})
   }
 componentWillMount() {
+
+  if(this.props.book.toc!==undefined )
+    {
+      this.props.book.toc.content={};
+    }
+
+    if(this.props.book.bookinfo!==undefined)
+    {
+      this.props.book.bookinfo=[];
+    }
+
+    if(this.props.book.bookmarks!==undefined)
+    {
+      this.props.book.bookmarks=[];
+    }
+
     const sessionid=this.props.login.data.token;
     const piToken = this.props.login.data.piToken;
     
