@@ -1367,7 +1367,7 @@ Annotator = (function(_super) {
     })()).join('');
     max = Util.maxZIndex($(document.body).find(sel));
     max = Math.max(max, 1000);
-    style.text([".annotator-adder, .annotator-outer, .annotator-notice {", "  z-index: " + (max + 20) + ";", "}", ".annotator-filter {", "  z-index: " + (max + 10) + ";", "}"].join("\n"));
+    style.text([".annotator-adder, .annotator-outer, .annotator-notice {", "  z-index: " + (10025) + ";", "}", ".annotator-filter {", "  z-index: " + (10025) + ";", "}"].join("\n"));
     return this;
   };
 
@@ -2013,7 +2013,7 @@ Annotator.Editor = (function(_super) {
     characters :3000
   }
 
-  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" value="#FCF37F"/><input type="button" class="annotator-color annotator-green" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" value="#FC92CF"/></div><div class="annotator-delete-container"></div><div class="annotator-edit-container"></div></div>'
+  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" value="#FFD232"/><input type="button" class="annotator-color annotator-green" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" value="#FC92CF"/></div><div class="annotator-delete-container"></div><div class="annotator-edit-container"></div></div>'
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 

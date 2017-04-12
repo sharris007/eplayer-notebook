@@ -121,3 +121,16 @@ export const tocData = [
     ]
   }
 ];
+
+export const customAttributes = {
+        playOrder: 'playOrder',
+        href     :'href',
+        createdTimestamp:'createdTimestamp',
+        updatedTimestamp:'updatedTimestamp',
+        text  :'text',
+        user:'user',
+        context:'context',
+        ranges :'ranges',
+        quote:'quote',
+        shareable:'shareable'
+    };
