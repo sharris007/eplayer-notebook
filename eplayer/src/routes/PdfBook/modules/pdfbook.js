@@ -170,6 +170,7 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
     const basketData = allBaskets.basketsInfoTOList;
       //bookState.toc.content.bookId = basketData[0].bookID || '';
       bookState.toc.content.id = basketData[0].bookID || '';
+      bookState.toc.showDuplicateTitle = true;
       bookState.toc.content.mainTitle = title || 'Sample Title';
       bookState.toc.content.author = authorName || 'Saha/Rai/Mahapatra/Pujari';
       bookState.toc.content.thumbnail = thumbnail || 'http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM21254346/assets/1256799653_Iannone_thumbnail.png';
@@ -254,7 +255,7 @@ export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL)
   timeout: 20000
   };
 }
-export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,sessionKey,bookServerURL)
+export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,sessionKey,bookServerURL,loadPdfPageCallback)
  {
     const bookState = {
       bookInfo:{
@@ -284,10 +285,12 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,s
           pageObj.bookeditionid=page.bookEditionID;
           pageObj.chaptername=page.chapterName;
           pageObj.isbookmark=page.isBookmark;
+          pageObj.pdfPath=page.pdfPath;
           bookState.bookInfo.pages.push(pageObj);
         });
       });
     }
+    loadPdfPageCallback(bookState.bookInfo.pages[0].pdfPath,bookState.bookInfo.pages[0].pageorder);
     dispatch({ type: 'RECEIVE_PAGE_INFO',bookState});
     });
   };
@@ -298,7 +301,7 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,s
   {
     return{
     type: 'RECEIVE_USER_INFO',
-    payload: axios.get(''+bookServerURL+'/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid='+globaluserid+'&bookid='+bookid+'&uid='+uid+'&ubd='+ubd+'&ubsd='+ubsd+'&authkey='+sessionKey+''),
+    payload: axios.get(''+bookServerURL+'/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid='+globaluserid+'&bookid='+bookid+'&uid='+ubd+'&ubd='+ubd+'&ubsd='+ubsd+'&authkey='+sessionKey+''),
     timeout: 20000
     };
   }
@@ -388,6 +391,7 @@ const ACTION_HANDLERS = {
                       },
                book:{
                   globalbookid: action.payload.data[0].userBookTOList[0].globalBookID,
+                  numberOfPages: action.payload.data[0].userBookTOList[0].numberOfPages,
                   bookid: action.payload.data[0].userBookTOList[0].bookID,
                   bookeditionid: action.payload.data[0].userBookTOList[0].bookEditionID
                   }
