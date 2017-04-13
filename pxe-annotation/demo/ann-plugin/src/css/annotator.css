@@ -1074,3 +1074,18 @@
 	/*position: absolute;
 	bottom: 0;*/
 }
+
+.noteContainer {
+    top: 20px;
+    position: relative;
+    padding-left: 20px;
+    font-family: sans-serif;
+    font-size: 16px;
+    height: 70px;
+    display: none;
+}
+
+.noteContainer a {
+    color: blue;
+    text-decoration: none;
+}
