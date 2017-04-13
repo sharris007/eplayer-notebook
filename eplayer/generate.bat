@@ -1,0 +1,1 @@
+allure generate allure-results
