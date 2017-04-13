@@ -4,7 +4,8 @@ import {PdfBookReader} from './PdfBookReader.js';
 export class PdfBook extends Component {
 
 async componentWillMount() {
-    await this.props.fetchUserInfo(this.props.login.data.identityId, this.props.params.bookId, this.props.bookshelf.ubd, this.props.bookshelf.ubd, this.props.bookshelf.ubsd, this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
+    
+    await this.props.fetchUserInfo(this.props.login.data.identityId, this.props.params.bookId, this.props.bookshelf.uid, this.props.bookshelf.ubd, this.props.bookshelf.ubsd, this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
     
     await this.props.fetchBookInfo(this.props.params.bookId,this.props.bookshelf.ssoKey,this.props.book.userInfo.userid,this.props.bookshelf.serverDetails);
 }

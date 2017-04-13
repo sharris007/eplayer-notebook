@@ -298,7 +298,7 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,s
   {
     return{
     type: 'RECEIVE_USER_INFO',
-    payload: axios.get(''+bookServerURL+'/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid='+globaluserid+'&bookid='+bookid+'&uid='+ubd+'&ubd='+ubd+'&ubsd='+ubsd+'&authkey='+sessionKey+''),
+    payload: axios.get(''+bookServerURL+'/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid='+globaluserid+'&bookid='+bookid+'&uid='+uid+'&ubd='+ubd+'&ubsd='+ubsd+'&authkey='+sessionKey+''),
     timeout: 20000
     };
   }
