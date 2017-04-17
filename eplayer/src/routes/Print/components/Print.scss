@@ -1,0 +1,23 @@
+$viewer-min-width: 768px;
+//$viewer-top: 66px;
+$cont-min-width: 675px;
+$cont-padding-top: 20px;
+$cont-padding-bottom: 85px;
+
+.viewerContent {
+  position: relative;
+  //top: $viewer-top;
+  background: #FFF;
+  min-width: $viewer-min-width;
+  .container {
+		min-width: $cont-min-width;
+		padding-top: $cont-padding-top;
+		padding-bottom: $cont-padding-bottom;
+	}
+}
+.fixedviewerContent{
+	position: fixed;
+	left:0;
+	right:0;
+}
+
