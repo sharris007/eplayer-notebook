@@ -19,8 +19,7 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
-    "intl": "^1.2.5",
-    "linkifyjs": "^2.1.4"
+    "intl": "^1.2.5"
   },
   "devDependencies": {
     "@pearson-components/npm-scripts": "^0.1.0",
