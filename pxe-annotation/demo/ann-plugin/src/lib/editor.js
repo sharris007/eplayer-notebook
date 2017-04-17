@@ -122,6 +122,8 @@ Annotator.Editor = (function(_super) {
   }
   Editor.prototype.onEditClick=function(event) {  
     this.element.addClass('show-edit-options');
+    $(this.element).find('textarea').show();
+    $(this.element).find('#myId').hide();
     this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     this.element.find('input').css({'pointer-events':'all', 'opacity':'1'});
   }
@@ -206,6 +208,14 @@ Annotator.Editor = (function(_super) {
     }
     this.element.find(":input:first").focus();
     this.setupDraggables();
+    if(this.element.find('textarea').val().length > 0) {
+      $(this.element).find('#myId').html(linkifyStr(this.element.find('textarea').val()));
+      $(this.element.find('textarea')).hide();
+      $(this.element).find('#myId').show();
+    } else {
+      $(this.element.find('textarea')).show();
+      $(this.element).find('#myId').hide();
+    }
     return this.publish('show');
   };
 
@@ -242,7 +252,6 @@ Annotator.Editor = (function(_super) {
     if (!$('.annotator-item input').length) {
      $('.annotator-item').prepend('<input placeholder="Add title."/>');
     }
-    $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax_Display')){
       $('.annotator-item input').show();
       if(!annotation.id){
@@ -297,7 +306,7 @@ Annotator.Editor = (function(_super) {
     field.element = element[0];
     switch (field.type) {
     case 'textarea':
-      input = $('<textarea maxlength="3000"/>');
+      input = $('<div><div id = "myId" class = "noteContainer"> </div><textarea maxlength="3000"/><div>');
       break;
     case 'input':
     case 'checkbox':

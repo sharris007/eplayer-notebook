@@ -2,6 +2,7 @@
 import React, { PropTypes, Component } from 'react';
 import { map, zipObject} from 'lodash';
 
+
 class Annotation extends Component {
  constructor(props) {
    super(props);   

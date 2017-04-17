@@ -33,7 +33,8 @@ module.exports = {
         query: {
           cacheDirectory: true,
           presets: ['es2015', 'react', 'stage-0']
-        }
+        },
+        exclude: /node_modules/
       },
       {
         test: /\.json$/,
