@@ -50,7 +50,7 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey,bookSe
   };
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getbookmarkreport?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', 
+    return axios.get(''+bookServerURL+'/ebook/ipad/getbookmark?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', 
     {
       method: GET,
       headers: {
