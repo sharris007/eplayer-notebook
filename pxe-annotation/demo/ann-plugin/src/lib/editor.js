@@ -2,7 +2,6 @@
 var __bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-//var c = require('linkifyjs');
 
 Annotator.Editor = (function(_super) {
   __extends(Editor, _super);
@@ -156,7 +155,6 @@ Annotator.Editor = (function(_super) {
       var curAnn =this.currentAnnotation;   
       Object.assign(this.annotation, curAnn);   
     }
-    //document.getElementById('annotator-field-0').innerHTML = window.linkifyStr('www.fb.com')
     this.annotation.color=this.annotation.lastColor=event.target.value;
     $('.annotator-color').removeClass('active');
     $(event.target).addClass('active');
@@ -214,6 +212,9 @@ Annotator.Editor = (function(_super) {
       $(this.element).find('#myId').html(linkifyStr(this.element.find('textarea').val()));
       $(this.element.find('textarea')).hide();
       $(this.element).find('#myId').show();
+    } else {
+      $(this.element.find('textarea')).show();
+      $(this.element).find('#myId').hide();
     }
     return this.publish('show');
   };
@@ -305,7 +306,7 @@ Annotator.Editor = (function(_super) {
     field.element = element[0];
     switch (field.type) {
     case 'textarea':
-      input = $('<div><div id = "myId" class = "noteContainer" >  </div><textarea maxlength="3000"/><div>');
+      input = $('<div><div id = "myId" class = "noteContainer"> </div><textarea maxlength="3000"/><div>');
       break;
     case 'input':
     case 'checkbox':

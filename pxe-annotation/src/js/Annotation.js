@@ -1,7 +1,6 @@
 /* global $ */
 import React, { PropTypes, Component } from 'react';
 import { map, zipObject} from 'lodash';
-import linkifyStr from 'linkifyjs/string';
 
 
 class Annotation extends Component {
@@ -14,7 +13,6 @@ class Annotation extends Component {
    $(document).on('mousedown', this.onDocumentClick);
    $(document).keyup(this.onDocumentClick);
    this.state = {'updated':false}
-   window.linkifyStr = linkifyStr;
  }
 
   onDocumentClick(e) {
