@@ -6,7 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const config = require('../config');
 const debug = require('debug')('app:webpack:config');
 const path = require('path');
-const jquery = require('jquery');
+// const jquery = require('jquery');
 
 const paths = config.utils_paths;
 const __DEV__ = config.globals.__DEV__;
@@ -227,14 +227,6 @@ if (!__DEV__) {
   webpackConfig.plugins.push(
     new ExtractTextPlugin('[name].[contenthash].css', {
       allChunks: true
-    })
-  );
-  webpackConfig.plugins.push(
-    new webpack.ProvidePlugin({
-        $: "jquery",
-        jquery: "jquery",
-        jQuery: "jquery",
-        "windows.jQuery": "jquery"
     })
   );
 }
