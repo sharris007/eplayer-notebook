@@ -1022,8 +1022,8 @@ function getAssetURLForPDFDownload(config,cb){
         /*
           Triggers a method to call the PDFViewer.
         */
-        restoreHighlights: function(highlights) {
-          var currPage = _this.restoreHighlights(highlights);
+        restoreHighlights: function(highlights, deleteHighlight) {
+          var currPage = _this.restoreHighlights(highlights, deleteHighlight);
         },
         /*Get the total Number of Pages in the PDF*/    
          getPageCount: function() {
