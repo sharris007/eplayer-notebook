@@ -107,6 +107,10 @@ export class Book extends Component {
   }
 
   removeBookmarkHandler = (bookmarkId) => {
+    
+    if(!bookmarkId){
+      bookmarkId = this.state.currentPageDetails.id;
+    }
     const bookmarkDetails = this.state.currentPageDetails;
     const pageUri = encodeURIComponent(bookmarkDetails.href);  
     const deleteData = {
@@ -115,6 +119,16 @@ export class Book extends Component {
       uri:bookmarkId
     }  
     this.props.dispatch(deleteBookmarkCallService(deleteData));
+    const that = this;
+    const queryString = {
+      context : this.props.params.bookId,
+      uri     : this.props.params.pageId,
+      user    :'epluser',
+      id      : this.props.params.pageId
+    }
+    setTimeout(function(){
+      that.props.dispatch(getTotalBookmarkCallService(queryString));
+    },2000)
   };
 
   onPageChange = (type, data) => {
