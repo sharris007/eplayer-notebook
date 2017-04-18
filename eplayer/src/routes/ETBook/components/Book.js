@@ -242,7 +242,7 @@ export class Book extends Component {
       const colorArr = {
         '#55DF49':"Green",
         '#FC92CF':"Pink",
-        '#FCF37F':"Yellow"
+        '#FFD232':"Yellow"
       }
       const annTotalList = this.props.annotionTotalData.rows;
       if(annTotalList && annTotalList.length>0){

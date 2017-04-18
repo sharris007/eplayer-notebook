@@ -76,6 +76,11 @@ svg[class$="-24"] {
   top: 80px;
 }
 
+@media print {
+ html, body {
+   display: none; 
+ }
+}
 .zoomPDF{
       z-index: 1;
         left: 10px;
