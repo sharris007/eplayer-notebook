@@ -122,8 +122,8 @@ Annotator.Editor = (function(_super) {
   }
   Editor.prototype.onEditClick=function(event) {  
     this.element.addClass('show-edit-options');
-    $(this.element).find('textarea').show();
-    $(this.element).find('#noteContainer').hide();
+    /*$(this.element).find('textarea').show();
+    $(this.element).find('#noteContainer').hide();*/
     this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     this.element.find('input').css({'pointer-events':'all', 'opacity':'1'});
   }
@@ -208,14 +208,14 @@ Annotator.Editor = (function(_super) {
     }
     this.element.find(":input:first").focus();
     this.setupDraggables();
-    if(this.element.find('textarea').val().length > 0) {
+    /*if(this.element.find('textarea').val().length > 0) {
       $(this.element).find('#noteContainer').html(linkifyStr(this.element.find('textarea').val()));
       $(this.element.find('textarea')).hide();
       $(this.element).find('#noteContainer').show();
     } else {
       $(this.element.find('textarea')).show();
       $(this.element).find('#noteContainer').hide();
-    }
+    }*/
     return this.publish('show');
   };
 
@@ -306,7 +306,7 @@ Annotator.Editor = (function(_super) {
     field.element = element[0];
     switch (field.type) {
     case 'textarea':
-      input = $('<div><div id = "noteContainer" class = "noteContainer"> </div><textarea maxlength="3000"/><div>');
+      input = $('<div><textarea maxlength="3000"/><div>');
       break;
     case 'input':
     case 'checkbox':

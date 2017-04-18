@@ -6,7 +6,7 @@ module.exports = function(grunt) {
     uglify: {
         build: {
             files: {
-                'output/annotator.min.js': ["src/lib/vendor/linkify.min.js","src/lib/vendor/linkify-string.min.js",  "src/lib/vendor/json2.js","src/lib/util.js","src/lib/console.js","src/lib/class.js","src/lib/range.js","src/lib/annotator.js","src/lib/widget.js","src/lib/editor.js","src/lib/viewer.js","src/lib/notification.js","src/lib/xpath.js","src/lib/plugin/store.js","src/lib/plugin/permissions.js","src/lib/plugin/annotateitpermissions.js","src/lib/plugin/auth.js","src/lib/plugin/tags.js","src/lib/plugin/unsupported.js","src/lib/plugin/filter.js"]
+                'output/annotator.min.js': ["src/lib/vendor/json2.js","src/lib/util.js","src/lib/console.js","src/lib/class.js","src/lib/range.js","src/lib/annotator.js","src/lib/widget.js","src/lib/editor.js","src/lib/viewer.js","src/lib/notification.js","src/lib/xpath.js","src/lib/plugin/store.js","src/lib/plugin/permissions.js","src/lib/plugin/annotateitpermissions.js","src/lib/plugin/auth.js","src/lib/plugin/tags.js","src/lib/plugin/unsupported.js","src/lib/plugin/filter.js"]
             }
         }
     },
@@ -26,7 +26,7 @@ module.exports = function(grunt) {
       separator: ';',
     },
     distJS: {
-      src: ["src/lib/vendor/linkify.min.js", "src/lib/vendor/linkify-string.min.js", "src/lib/vendor/json2.js","src/lib/util.js","src/lib/console.js","src/lib/class.js","src/lib/range.js","src/lib/annotator.js","src/lib/widget.js","src/lib/editor.js","src/lib/viewer.js","src/lib/notification.js","src/lib/xpath.js","src/lib/plugin/store.js","src/lib/plugin/permissions.js","src/lib/plugin/annotateitpermissions.js","src/lib/plugin/auth.js","src/lib/plugin/tags.js","src/lib/plugin/unsupported.js","src/lib/plugin/filter.js"],
+      src: ["src/lib/vendor/json2.js","src/lib/util.js","src/lib/console.js","src/lib/class.js","src/lib/range.js","src/lib/annotator.js","src/lib/widget.js","src/lib/editor.js","src/lib/viewer.js","src/lib/notification.js","src/lib/xpath.js","src/lib/plugin/store.js","src/lib/plugin/permissions.js","src/lib/plugin/annotateitpermissions.js","src/lib/plugin/auth.js","src/lib/plugin/tags.js","src/lib/plugin/unsupported.js","src/lib/plugin/filter.js"],
       dest: 'output/annotator.js',
     },
     distCSS : {
