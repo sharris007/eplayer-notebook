@@ -1367,7 +1367,7 @@ Annotator = (function(_super) {
     })()).join('');
     max = Util.maxZIndex($(document.body).find(sel));
     max = Math.max(max, 1000);
-    style.text([".annotator-adder, .annotator-outer, .annotator-notice {", "  z-index: " + (10025) + ";", "}", ".annotator-filter {", "  z-index: " + (10025) + ";", "}"].join("\n"));
+    style.text([".annotator-adder, .annotator-outer, .annotator-notice {", "  z-index: " + (20) + ";", "}", ".annotator-filter {", "  z-index: " + (20) + ";", "}"].join("\n"));
     return this;
   };
 
@@ -1680,6 +1680,8 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.checkForEndSelection = function(event) {
+    if($(event.target).closest('.aquila-image-viewer, .ReactModalPortal').length)
+     return false;
     var container, range, _i, _len, _ref;
     this.mouseIsDown = false;
     this.ignoreMouseup=$(event.target).hasClass('annotator-confirm-delete')?false:this.ignoreMouseup;
