@@ -30,15 +30,10 @@ class LoginPage extends React.Component{
     console.log(this.state.loginname +" "+this.state.password);
     this.props.fetch(this.state.loginname, this.state.password)
     .then(() => {
-    let {data} = this.props.data;
-    data.password = this.state.password;
-    console.log(data);
-    this.props.storeLoginDetails(data);
-    const LoginToken = [];
-    const loginPiToken = [];
-    const firstName = [];
-    const lastName = [];;
-
+      const LoginToken = [];
+      const loginPiToken = [];
+      const firstName = [];
+      const lastName = [];
       if (this.props.fetched){
         LoginToken.push(this.props.data.token);
         loginPiToken.push(this.props.data.piToken);
@@ -46,7 +41,8 @@ class LoginPage extends React.Component{
         lastName.push(this.props.data.lastName);
         browserHistory.push(`/eplayer/bookshelf`);
           }
-      })
+    })
+    
   }
   componentWillMount() { 
 
@@ -54,6 +50,10 @@ class LoginPage extends React.Component{
   componentDidMount() {};
   
      render() {
+      if(this.props.error== true)
+        {
+            this.state.className = '';
+        }
        return (<div className="login-wrapper">
         <LoginHeader/>
         <div className="form-container">
@@ -65,10 +65,12 @@ class LoginPage extends React.Component{
             <div className="form-group">
               <label>Password</label>
               <input type="password" name='password' onChange={this.handleChange}  required />
+              {this.props.error == true ? <p className="errorClass">{this.props.errorMessage}</p> : null}
             </div>
             <button type="submit"  className="form_button">Sign In</button>
-          </form>
+          </form>          
           {this.props.fetching == true ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
+          
         </div>
         </div>);
      }

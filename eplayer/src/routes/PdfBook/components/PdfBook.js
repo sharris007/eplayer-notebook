@@ -20,6 +20,9 @@ async componentWillMount() {
     					removeBookmark={this.props.removeBookmark}
     					fetchBookInfo={this.props.fetchBookInfo}
                         fetchPageInfo={this.props.fetchPageInfo}
+                        saveHighlight={this.props.saveHighlight}
+                        fetchHighlight={this.props.fetchHighlight}
+                        removeHighlight={this.props.removeHighlight}
     					goToPage={this.props.goToPage}
     					book={this.props.book}
     					bookshelf={this.props.bookshelf}

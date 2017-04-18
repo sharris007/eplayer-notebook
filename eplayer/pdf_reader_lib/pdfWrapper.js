@@ -273,8 +273,8 @@ $('#fwr-textSelect-context-menu-container').remove();
 $('#fwr-annots-context-menu-container').remove();
 $('#docViewerFxMenuContainer').remove();
 
-//WebPDF.ViewerInstance.setCurrentToolByName(WebPDF.Tools.TOOL_NAME_SELECTTEXT);
-WebPDF.ViewerInstance.setCurrentToolByName(WebPDF.Tools.TOOL_NAME_HAND);
+WebPDF.ViewerInstance.setCurrentToolByName(WebPDF.Tools.TOOL_NAME_SELECTTEXT);
+//WebPDF.ViewerInstance.setCurrentToolByName(WebPDF.Tools.TOOL_NAME_HAND);
 /*
 To put OnClick Event Listener on the Page once the page is Loaded for the Links annot on the Page.
 */
@@ -688,6 +688,9 @@ function getAssetURLForPDFDownload(config,cb){
       _this.removeExistingHighlightElement = function() {
         $('.pdfHighlight').remove();
       }
+      _this.removeHighlightElement = function(id){
+        $('#'+id).remove();
+      }
 
       _this.triggerEvent = function(eventName, eventData) {
        var eventCallback = eventMap[eventName];
@@ -726,7 +729,7 @@ function getAssetURLForPDFDownload(config,cb){
       /*
           Restore Highlights on the Page.
         */
-      _this.restoreHighlights = function(highlights) {       
+      _this.restoreHighlights = function(highlights,deleteHighlight) {       
          var scrollPercentage = 0;
         try{
           scrollPercentage = WebPDF.ViewerInstance.getDocView().getScrollApi().getPercentScrolledY();           
@@ -778,7 +781,7 @@ function getAssetURLForPDFDownload(config,cb){
               try {
                 page = childDiv[i].getAttribute("page-index");
                 WebPDF.ViewerInstance.highlightText((page -1), pdfRectArray);                
-               _this.saveHighlight(page, highlightHashes, hId);
+               _this.saveHighlight(page, highlightHashes, hId,deleteHighlight);
               }catch(e){
                 console.log("Error Saving Highlight");
               }
@@ -863,7 +866,7 @@ function getAssetURLForPDFDownload(config,cb){
       /*
        This method is used create Highlight Element on the Page.
       */
-      _this.saveHighlight = function(pageIndex, highlightHash, id) { 
+      _this.saveHighlight = function(pageIndex, highlightHash, id,deleteHighlight) { 
         var highlightElements = document.querySelectorAll('.fwr-search-text-highlight');
         var parentElement = document.createElement('div');
         parentElement.setAttribute('id', id);
@@ -881,6 +884,11 @@ function getAssetURLForPDFDownload(config,cb){
           childElement.style.backgroundColor = "yellow" ;
           childElement.onclick = function() {
           _this.triggerEvent("highlightClicked", id);
+          }
+          childElement.ondblclick = function() {
+          console.log("on double click ********");
+          _this.removeHighlightElement(id);
+          deleteHighlight(id);                  
           }
           parentElement.appendChild(childElement);
         }

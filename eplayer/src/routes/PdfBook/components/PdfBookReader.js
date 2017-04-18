@@ -17,7 +17,8 @@ export class PdfBookReader extends Component {
         isFirstPage : true,
         isLastPage : false
       },
-      isET1: 'Y'
+      isET1: 'Y',
+      highlightList: []
      
     };
     this.nodesToUnMount = [];
@@ -25,7 +26,7 @@ export class PdfBookReader extends Component {
     document.body.addEventListener('navChanged', this.navChanged);
 
   }
-  componentWillMount() {
+ /* componentWillMount() {
       this.props.fetchPageInfo(this.props.book.userInfo.userid,
       this.props.params.bookId,
       this.props.params.bookId,
@@ -35,7 +36,8 @@ export class PdfBookReader extends Component {
       this.props.bookshelf.serverDetails,
       this.loadPdfPage
       );
-  }
+
+  }*/
   componentDidMount() {
     this.props.fetchTocAndViewer(this.props.params.bookId,this.props.bookshelf.authorName,this.props.bookshelf.title,this.props.bookshelf.thumbnail,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
     this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
@@ -99,6 +101,8 @@ export class PdfBookReader extends Component {
      }
      data.currentPageNo = currentPageOrder;
      this.setState({data : data});
+     this.displayHighlight();
+   
      // If already page details are in store then we do not hit fetchPageInfo again
      /*if(currentPage===undefined)
      {
@@ -296,6 +300,67 @@ export class PdfBookReader extends Component {
     console.log(level);
     __pdfInstance.setCurrentZoomLevel(level);
   }
+  saveHighlightHandler = (currentHighlight) => {
+    var highlightID = '';
+    var highlights = [];
+    const currentPageId=this.state.currPageIndex;
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
+    var highlightHashes = currentHighlight.highlightHash;
+    var highlightHash = highlightHashes.split("@")[0].trim().replace(/(\r\n|\n|\r)/gm,"").replace(/['"]+/g, '');
+    console.log("highlightHash "+highlightHash);
+    var outerHash = highlightHashes.split("@")[1]; 
+    console.log("outerHash "+outerHash);        
+    var hId =currentHighlight.id;
+    var highLightHashArray = [];
+    highLightHashArray = highlightHash.split(":");
+    console.log("highLightHashArray "+highLightHashArray);
+     for(var j=0 ; j<highLightHashArray.length - 1; j=j+4) {
+      var firstValue = highLightHashArray[j+1].split(',')[0];
+      console.log("firstValue "+firstValue);
+      var secondValue = highLightHashArray[j+2].split(',')[0];
+      console.log("secondValue "+secondValue);
+      var thirdValue = highLightHashArray[j+3].split(',')[0];
+      console.log("thirdValue "+thirdValue);
+      var fourthValue = highLightHashArray[j+4].split('}')[0];
+      console.log("fourthValue "+fourthValue);
+      this.props.saveHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.userbook.userbookid, this.props.book.bookinfo.book.bookeditionid, currentPage.pageid, currentPage.pagenumber, firstValue, secondValue, thirdValue, fourthValue, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+      .then(() => {
+        highlightID = this.props.book.highlightID
+        currentHighlight.id = highlightID;
+        console.log("++++++++++++++++++++++"+currentHighlight.id);
+        highlights.push(currentHighlight);
+        //__pdfInstance.restoreHighlights(highlights, this.deleteHighlight);
+        this.displayHighlight();
+      })
+    }
+   
+ 
+}
+  createHighlight(e) {
+  var currentHighlight={};
+  var highlightList = this.state.highlightList;
+  var highlightData = __pdfInstance.createHighlight();
+  var highlightsLength = highlightList.length;
+  currentHighlight.id = highlightsLength + 1;
+  currentHighlight.highlightHash = highlightData.serializedHighlight;
+  console.log("======== "+currentHighlight.highlightHash);
+  currentHighlight.pageIndex = highlightData.pageInformation.pageNumber;
+   this.saveHighlightHandler(currentHighlight);
+   highlightList.push(currentHighlight);
+   
+  }
+  displayHighlight = () =>{
+    this.props.fetchHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.book.bookeditionid, this.state.currPageIndex, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+    .then(()=> {
+     this.setState({highlightList : this.props.book.highlights});
+     __pdfInstance.restoreHighlights(this.state.highlightList, this.deleteHighlight);
+   })
+  }
+  deleteHighlight = (id) => {
+
+    this.props.removeHighlight(id, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+
+  }
 
   render() {
     const callbacks = {};
@@ -337,7 +402,7 @@ export class PdfBookReader extends Component {
                 <div id="right" className="pdf-fwr-pc-right">
                  <div id="toolbar" className="pdf-fwr-toolbar"></div>
                   <div id="frame">
-                    <div id="docViewer"  className="docViewer" ></div>
+                    <div id="docViewer"  className="docViewer" onMouseUp={this.createHighlight.bind(this)}></div>
                   </div>
                  </div>
                 </div>

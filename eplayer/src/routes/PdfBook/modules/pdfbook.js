@@ -21,6 +21,10 @@ export const RECEIVE_PAGE_INFO = 'RECEIVE_PAGE_INFO';
 export const RECEIVE_USER_INFO_PENDING = 'RECEIVE_USER_INFO_PENDING';
 export const RECEIVE_USER_INFO_REJECTED = 'RECEIVE_USER_INFO_REJECTED';
 export const RECEIVE_USER_INFO_FULFILLED = 'RECEIVE_USER_INFO_FULFILLED';
+export const SAVE_HIGHLIGHT = 'SAVE_HIGHLIGHT';
+export const REQUEST_HIGHLIGHTS = 'REQUEST_HIGHLIGHTS';
+export const RECIEVE_HIGHLIGHTS = 'RECIEVE_HIGHLIGHTS';
+export const REMOVE_HIGHLIGHT = 'REMOVE_HIGHLIGHT';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -36,6 +40,8 @@ export function request(component) {
       return { type: REQUEST_BOOKMARKS };
     case 'toc':
       return { type: REQUEST_TOC };
+    case 'highlights' :
+      return {type: REQUEST_HIGHLIGHTS};
     default:
       return {};
   }
@@ -69,7 +75,7 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey,bookSe
     .then((bookmarkResponse) => {
       if (bookmarkResponse.length) {
         bookmarkResponse.forEach((bookmarkList) => {
-          const bookmarks=bookmarkList.bookMarkReportList
+          const bookmarks=bookmarkList.bookMarkList
         bookmarks.forEach((bookmark) => {
           const bmObj = {
             id: bookmark.pageOrder,
@@ -142,6 +148,115 @@ export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId
             }
         });
       }
+    });
+  };
+}
+export function removeHighlight(highlightID, sessionKey, bookServerURL){
+  return (dispatch) => {
+    dispatch(request('highlights'));
+    axios.get(''+bookServerURL+'/ebook/ipad/deleteuserhighlight?highlightid='+highlightID+'&authkey='+sessionKey+'&outputformat=JSON',
+    {
+      method: GET,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      timeout: 20000
+    }).then((response) => {
+          if(response.status >= 400){
+            console.log(`Error in remove highlight: ${response.statusText}`)
+          }
+          return response.data
+        }).then((highlightResponse) => {
+          if(highlightResponse.length){
+            highlightResponse.forEach((highlight) =>{
+                console.log('------------------------'+highlightID);
+                return dispatch({ type: REMOVE_HIGHLIGHT, highlightID })
+              
+            })
+          }
+        })
+    }
+  }
+export function saveHighlight(userid,bookid,userbookid,bookeditionid,pageid,bookpagenumber,xcoord,ycoord,width,height,sso,bookServerURL) {
+     const bookState = {
+    highlightID : ''
+  };
+    return (dispatch) => {
+    dispatch(request('highlights'));
+    return axios.get(''+bookServerURL+'/ebook/ipad/saveuserhighlight?userid='+userid+'&bookid='+bookid+'&userroleid=3&userbookid='+userbookid+'&bookeditionid='+bookeditionid+'&roletypeid=3&pageid='+pageid+'&bookpagenumber='+bookpagenumber+'&shareacrosscourse=Y&xcoord='+xcoord+'&ycoord='+ycoord+'&sharewithstudent=Y&width='+width+'&height='+height+'&colorname=Yellow&authkey='+sso+'&outputformat=JSON', {
+      method: GET,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((response) => {
+     if (response.status >= 400) {
+        console.log(`${response.statusText}`);
+      }
+      return response.data;
+
+    })
+    .then((highlightResponse) => {
+      if (highlightResponse.length) {
+        highlightResponse.forEach((highlights)=>{
+        var highLightList = highlights.highLightList;
+        highLightList.forEach((highlight) => {
+          bookState.highlightID = highlight.highlightID;
+          return dispatch({ type: SAVE_HIGHLIGHT, bookState })
+        })    
+      });
+    }
+  });
+}
+ /* return{
+  type: 'SAVE_HIGHLIGHT',
+  payload: axios.get(''+bookServerURL+'/ebook/ipad/saveuserhighlight?userid='+userid+'&bookid='+bookid+'&userroleid=3&userbookid='+userbookid+'&bookeditionid='+bookeditionid+'&roletypeid=3&pageid='+pageid+'&bookpagenumber='+bookpagenumber+'&shareacrosscourse=Y&xcoord='+xcoord+'&ycoord='+ycoord+'&sharewithstudent=Y&width='+width+'&height='+height+'&colorname=Yellow&authkey='+sso+'&outputformat=JSON')
+  };*/
+}
+export function fetchHighlight(userid,bookId,bookEditionID,listval,sessionKey,bookServerURL) {
+  const bookState = {
+   highlights: [],
+    isFetching: {
+      highlights: true
+    }
+  };
+  return (dispatch) => {
+    dispatch(request('highlights'));
+    return axios.get(''+bookServerURL+'/ebook/ipad/getuserhighlightbypageorder?userid='+userid+'&userroleid=3&bookid='+bookId+'&bookeditionid='+bookEditionID+'&listval='+listval+'&authkey='+sessionKey+'&outputformat=JSON', {
+      method: GET,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((response) => {
+      if (response.status >= 400) {
+        bookState.isFetching.highlights = false;
+        return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
+      }
+      return response.data;
+
+    })
+    .then((highlightResponse) => {
+    if (highlightResponse.length) {
+        highlightResponse.forEach((highlights) => {
+          var highLightList = highlights.highLightList;
+          highLightList.forEach((highlight) => {
+           const hlObj = {
+            id: highlight.highlightID,
+            pageIndex: 1,
+            highlightHash: "[{\"left\":\""+ highlight.xcoord + "\",\"top\":\""  + highlight.ycoord + "\",\"right\":\""  + highlight.width + "\",\"bottom\":\"" + highlight.height + "\"}]"
+           }
+          
+          bookState.highlights.push(hlObj);
+          
+         })
+        });
+      }
+      bookState.isFetching.highlights = false;
+      return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
     });
   };
 }
@@ -351,6 +466,33 @@ const ACTION_HANDLERS = {
       ...state.isFetching,
       bookmarks: false
     }
+  }),
+  [REQUEST_HIGHLIGHTS]: state => ({
+    ...state,
+    isFetching: {
+      ...state.isFetching,
+      highlights: true
+    }
+  }),
+  [RECIEVE_HIGHLIGHTS]: (state, action) => ({
+    ...state,
+    highlights: action.bookState.highlights,
+    isFetching: {
+      ...state.isFetching,
+      highlights: action.bookState.isFetching.highlights
+    }
+  }),
+  [REMOVE_HIGHLIGHT]: (state, action) => ({
+    ...state,
+    highlights: state.highlights.filter(highlight => highlight.id !== action.highlightID),
+    isFetching: {
+      ...state.isFetching,
+      highlights: false
+    }
+  }),
+  [SAVE_HIGHLIGHT]: (state, action) => ({
+    ...state,
+    highlightID: action.bookState.highlightID
   }),
   [REQUEST_TOC]: state => ({
     ...state,

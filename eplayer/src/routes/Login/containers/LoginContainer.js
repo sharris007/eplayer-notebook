@@ -11,7 +11,8 @@ const mapStateToProps = state => ({
 fetching: state.login.fetching ? state.login.fetching : {},
 fetched: state.login.fetched ? state.login.fetched : {}, 
 error: state.login.error ? state.login.error : {},
-data:state.login.data ? state.login.data : {}
+data:state.login.data ? state.login.data : {},
+errorMessage: state.login.errorMessage ? state.login.errorMessage : {},
 });
 
 
