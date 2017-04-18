@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { IntlProvider } from 'react-intl';
 import { cyan500 } from 'material-ui/styles/colors';
 import { ExternalLinkPreview } from '@pearson-incubator/aquila-js-basics';
 import { ImageViewerPreview, VideoPlayerPreview, AudioPlayer } from '@pearson-incubator/aquila-js-media';
@@ -101,11 +102,13 @@ export const crossRef = (pageViewerRef) => {
       'node':element  
     };
     const component=<MuiThemeProvider muiTheme={pageViewerRef.muiTheme}>
+                        <IntlProvider locale="en">
                         <ExternalLinkPreview 
                           title={externalLinkPreviewProps.title} 
                           src={externalLinkPreviewProps.src} 
                           type={externalLinkPreviewProps.type}
                         />
+                        </IntlProvider>
                       </MuiThemeProvider>;
     const temp = document.createElement('span');
     // temp.setAttribute('class', classList.join(' '));
@@ -249,7 +252,11 @@ export const crossRef = (pageViewerRef) => {
       for (let i=elements.length-1;i>=0;i--) {
         const element=elements[i];
         if (!element.classList.contains('gadget') && element.getAttribute('from-external-preview')!=='true') {
-          contentLightBoxSettings(element, element.classList, element.getAttribute('href'));
+          const targetUrl=element.getAttribute('href');
+          if (!targetUrl) {
+            continue;
+          }
+          contentLightBoxSettings(element, element.classList, targetUrl);
           /*const externalLinkPreviewProps={
             'title': 'Light Box',
             'src':element.getAttribute('href'),
