@@ -1,0 +1,21 @@
+#printBtn{
+    background: #eee;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ccc #ccc #b3b3b3;
+    padding-top: 0.33333em;
+    padding-bottom: 0.33333em;
+    padding-right: 1em;
+    padding-left: 1em;
+    margin: 0em;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #070707;
+    font-weight: normal;
+    font-size: 14px;
+}
+.printContainer{
+  padding:10px;
+}

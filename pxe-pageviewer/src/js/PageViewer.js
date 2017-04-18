@@ -3,7 +3,6 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import $ from 'jquery';
 // import CircularProgress from 'material-ui/CircularProgress';
 // import renderHTML from 'react-render-html';
 
