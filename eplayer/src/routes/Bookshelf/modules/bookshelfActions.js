@@ -67,13 +67,6 @@ export const storeSsoKey = (ssoKey) => {
   }
 }
 
-export const fetchcdnToken = () => {
-  const request = axios.get('https://etext-qa-stg.pearson.com/api/nextext-api/api/nextext/eps/authtoken');
-      return{
-        type: 'ETEXT_CDN_TOKEN',
-        payload: request
-      }       
-  
-};
+
 
 /*export default bookshelfActions;*/

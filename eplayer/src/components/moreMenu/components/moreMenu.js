@@ -12,7 +12,13 @@ class MoreMenuComponent extends React.Component {
     injectReducer(this.props.store, { key: 'moreMenu', reducer });
   }
   handleClick = () => {
-    //alert("logout");
+    var i = sessionStorage.length;
+    while(i--) {
+      var key = sessionStorage.key(i);
+      if((key)) {
+        sessionStorage.removeItem(key);
+      }  
+    }
     browserHistory.push(`/eplayer`);
     //this.props.logout();
   }

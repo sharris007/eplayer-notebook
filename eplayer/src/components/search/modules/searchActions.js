@@ -31,14 +31,20 @@ const searchActions = {
     };
   }
 };*/
+var globalBookId,ssoKey,serverDetails;
 const searchActions = {
  fetch(paramList,searchText)
  {
- 	const bookId=paramList.bookId;
- 	const globalBookId=paramList.globalBookId;
- 	const ssoKey=paramList.ssoKey;
-  const serverDetails=paramList.serverDetails;
-
+   const bookId=paramList.bookId;
+ 	 globalBookId=paramList.globalBookId ;
+   ssoKey=paramList.ssoKey;
+   serverDetails=paramList.serverDetails;
+  if(paramList.globalBookId === undefined){
+    globalBookId=sessionStorage.getItem('globalbookid');
+    ssoKey=sessionStorage.getItem('ssoKey');
+    serverDetails=sessionStorage.getItem('serverDetails');
+  }
+  
   const searchState = {
       searchResult:{
         results: []

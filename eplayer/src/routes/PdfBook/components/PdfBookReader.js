@@ -5,6 +5,7 @@ import WidgetManager from '../../../components/widget-integration/widgetManager'
 import Header from '../../../components/Header';
 import './PdfBook.scss';
 import {Link, browserHistory } from 'react-router';
+var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails;
 
 export class PdfBookReader extends Component {
   constructor(props) {
@@ -39,8 +40,27 @@ export class PdfBookReader extends Component {
 
   }*/
   componentDidMount() {
-    this.props.fetchTocAndViewer(this.props.params.bookId,this.props.bookshelf.authorName,this.props.bookshelf.title,this.props.bookshelf.thumbnail,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
-    this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
+    console.log('PdfBookReader'+this.props.bookshelf.length);
+      if(this.props.bookshelf.uPdf === undefined){
+        title = sessionStorage.getItem('title');
+        authorName = sessionStorage.getItem('authorName');
+        thumbnail = sessionStorage.getItem('thumbnail');
+        ssoKey = sessionStorage.getItem('ssoKey');
+        serverDetails = sessionStorage.getItem('serverDetails');
+    }else{
+        sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
+        sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
+        sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
+        sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
+        sessionStorage.setItem('globalbookid',this.props.book.bookinfo.book.globalbookid);
+        title = this.props.bookshelf.title;
+        authorName = this.props.bookshelf.authorName;
+        thumbnail = this.props.bookshelf.thumbnail;
+        ssoKey = this.props.bookshelf.ssoKey;
+        serverDetails = this.props.bookshelf.serverDetails;
+    }
+    this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
+    this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
     const firstPage="firstPage";
     this.goToPage(firstPage);
     /*var etext_token =this.props.bookshelf.cdnToken;
@@ -62,16 +82,12 @@ export class PdfBookReader extends Component {
   }
   loadPdfPage = (pdfPath,currentPageIndex) =>
   {
-    var etext_token =this.props.bookshelf.cdnToken;
-    var headerParams = {
-       'etext-cdn-token' : etext_token 
-     }
+    
     var config = {
     host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
     //PDFassetURL: this.props.bookshelf.uPdf,
     //PDFassetURL: "http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM31206032/ipadpdfs/"+pdfPath,
-    PDFassetURL: this.props.bookshelf.serverDetails+"/ebookassets/ebook"+this.props.book.bookinfo.book.globalbookid+"/ipadpdfs/"+pdfPath,
-    headerParams: headerParams,
+    PDFassetURL: serverDetails+"/ebookassets/ebook"+this.props.book.bookinfo.book.globalbookid+"/ipadpdfs/"+pdfPath,
     encpwd: null,
     zip: false,
     callbackOnPageChange : this.pdfBookCallback
@@ -147,8 +163,8 @@ export class PdfBookReader extends Component {
       this.props.params.bookId,
       this.props.book.bookinfo.book.bookeditionid,
       pageIndexToLoad,
-      this.props.bookshelf.ssoKey,
-      this.props.bookshelf.serverDetails,this.loadPdfPage
+      ssoKey,
+      serverDetails,this.loadPdfPage
       );
     }
     else
@@ -172,8 +188,8 @@ export class PdfBookReader extends Component {
       this.props.params.bookId,
       this.props.book.bookinfo.book.bookeditionid,
       pageNum,
-      this.props.bookshelf.ssoKey,
-      this.props.bookshelf.serverDetails,this.loadPdfPage
+      ssoKey,
+      serverDetails,this.loadPdfPage
       );
     }
     else
@@ -262,7 +278,9 @@ export class PdfBookReader extends Component {
       createdTimestamp:currTimeInMillsc,
       pageID:currentPage.pageid
     };
-    this.props.addBookmark(this.props.params.bookId, bookmark,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,currentPage.pageid,this.props.bookshelf.ssoKey,this.props.book.userInfo.userid,this.props.bookshelf.serverDetails);
+    this.props.addBookmark(this.props.params.bookId, bookmark,this.props.book.bookinfo.book.bookeditionid,
+      this.props.book.bookinfo.userbook.userbookid,currentPage.pageid,ssoKey,
+      this.props.book.userInfo.userid,serverDetails);
   }
 
   removeBookmarkHandler = (bookmarkId) => {
@@ -279,7 +297,9 @@ export class PdfBookReader extends Component {
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
     //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
     const targetBookmarkId = targetBookmark.uri;
-    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,this.props.book.bookinfo.userbook.userbookid,targetBookmark.pageID,this.props.bookshelf.ssoKey,this.props.book.userInfo.userid,this.props.bookshelf.serverDetails);
+    this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,
+      this.props.book.bookinfo.userbook.userbookid,targetBookmark.pageID,ssoKey,
+      this.props.book.userInfo.userid,serverDetails);
   };
 
   /*removeBookmarkHandlerForBookmarkList = (bookmarkId) => {

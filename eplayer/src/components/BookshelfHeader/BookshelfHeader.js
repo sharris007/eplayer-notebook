@@ -37,7 +37,13 @@ export class BookshelfHeader extends React.Component {
     });
   };
   onClick = () => {
-    //alert("logout");
+    var i = sessionStorage.length;
+    while(i--) {
+      var key = sessionStorage.key(i);
+      if((key)) {
+        sessionStorage.removeItem(key);
+      }  
+    }
     browserHistory.push(`/eplayer/login`);
     //this.props.logout();
   }

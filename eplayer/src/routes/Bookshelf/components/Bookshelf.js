@@ -12,8 +12,7 @@ import { clients } from '../../../components/common/client';
 export default class BookshelfPage extends React.Component {
 constructor(props) {
     super(props);
-    this.props.fetchcdnToken()
-    .then((data) => {})
+    
   }
 componentWillMount() {
 
@@ -32,16 +31,24 @@ componentWillMount() {
       this.props.book.bookmarks=[];
     }
 
-    const sessionid=this.props.login.data.token;
-    const piToken = this.props.login.data.piToken;
+    //const sessionid=this.props.login.data.token;
+    //const piToken = this.props.login.data.piToken;
+    var sessionid, piToken;
+    if(this.props.login.data === undefined){
+      piToken = sessionStorage.getItem('piToken');
+      sessionid = sessionStorage.getItem('sessionid');
+    }else{
+      piToken = this.props.login.data.piToken;
+      sessionid=this.props.login.data.token;
+    }
     
     //const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
     this.props.storeSsoKey(sessionid);
     console.log('sessionid:: '+sessionid);
 
     //const urn ='http://10.102.88.150:8080/JavaSampleWebApp/TestServlet';
-    var userlogin = this.props.login.data.userName;
-    var password = this.props.login.data.password;
+    //var userlogin = this.props.login.data.userName;
+    //var password = this.props.login.data.password;
     
     //var urn = 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext/bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
     var urn = 'bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
@@ -71,7 +78,18 @@ componentWillMount() {
   }
 
   render() {
-    console.log(this.props.bookshelf.cdnToken);
+    //console.log(this.props.bookshelf);
+      sessionStorage.setItem('ubd',this.props.bookshelf.uid);
+      sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
+      sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
+      sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
+      sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
+      sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
+      sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
+      sessionStorage.setItem('title',this.props.bookshelf.title);
+      sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+    const firstName =  sessionStorage.getItem('firstName');
+    const lastName = sessionStorage.getItem('lastName');
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {
@@ -115,7 +133,7 @@ componentWillMount() {
 
     return (
       <div id="bookshelf-page">
-        <BookshelfHeader firstName={this.props.login.data.firstName} lastName={this.props.login.data.lastName}/>
+        <BookshelfHeader firstName={firstName} lastName={lastName}/>
         {fetching ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
         {fetched ? <BookshelfComponent books={booksdata} onBookClick={this.handleBookClick} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey}/> : null}
 
@@ -131,5 +149,4 @@ BookshelfPage.propTypes = {
   //storeBookServerDetails: React.PropTypes.func,
   storeBookDetails: React.PropTypes.func,
   storeSsoKey: React.PropTypes.func,
-   fetchcdnToken:React.PropTypes.func
 };

@@ -1,13 +1,31 @@
 import React, { Component } from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 import {PdfBookReader} from './PdfBookReader.js';
+var identityId,ubd,ubsd,ssoKey,serverDetails,uid;
 export class PdfBook extends Component {
 
 async componentWillMount() {
-    
-    await this.props.fetchUserInfo(this.props.login.data.identityId, this.props.params.bookId, this.props.bookshelf.uid, this.props.bookshelf.ubd, this.props.bookshelf.ubsd, this.props.bookshelf.ssoKey,this.props.bookshelf.serverDetails);
-    
-    await this.props.fetchBookInfo(this.props.params.bookId,this.props.bookshelf.ssoKey,this.props.book.userInfo.userid,this.props.bookshelf.serverDetails);
+    if(this.props.login.data === undefined || this.props.bookshelf.ssoKey === undefined){
+           identityId = sessionStorage.getItem('identityId');
+           uid = sessionStorage.getItem('uid');
+           ubd = sessionStorage.getItem('ubd');
+           ubsd = sessionStorage.getItem('ubsd');
+           ssoKey = sessionStorage.getItem('ssoKey');
+           serverDetails = sessionStorage.getItem('serverDetails');
+        }else{ 
+            sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
+            sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
+            sessionStorage.setItem('title',this.props.bookshelf.title);
+            sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+            identityId = this.props.login.data.identityId;
+            ubd = this.props.bookshelf.ubd;
+            uid = this.props.bookshelf.uid;
+            ubsd = this.props.bookshelf.ubsd;
+            ssoKey = this.props.bookshelf.ssoKey;
+            serverDetails = this.props.bookshelf.serverDetails;
+        }
+       await this.props.fetchUserInfo(identityId, this.props.params.bookId, ubd, ubd, ubsd, ssoKey, serverDetails);
+       await this.props.fetchBookInfo(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails);
 }
   render()
   {
