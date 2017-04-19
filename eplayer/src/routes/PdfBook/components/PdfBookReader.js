@@ -343,7 +343,7 @@ export class PdfBookReader extends Component {
       console.log("thirdValue "+thirdValue);
       var fourthValue = highLightHashArray[j+4].split('}')[0];
       console.log("fourthValue "+fourthValue);
-      this.props.saveHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.userbook.userbookid, this.props.book.bookinfo.book.bookeditionid, currentPage.pageid, currentPage.pagenumber, firstValue, secondValue, thirdValue, fourthValue, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+      this.props.saveHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.userbook.userbookid, this.props.book.bookinfo.book.bookeditionid, currentPage.pageid, currentPage.pagenumber, firstValue, secondValue, thirdValue, fourthValue, ssoKey, serverDetails)
       .then(() => {
         highlightID = this.props.book.highlightID
         currentHighlight.id = highlightID;
@@ -370,7 +370,7 @@ export class PdfBookReader extends Component {
    
   }
   displayHighlight = () =>{
-    this.props.fetchHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.book.bookeditionid, this.state.currPageIndex, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+    this.props.fetchHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.book.bookeditionid, this.state.currPageIndex, ssoKey, serverDetails)
     .then(()=> {
      this.setState({highlightList : this.props.book.highlights});
      __pdfInstance.restoreHighlights(this.state.highlightList, this.deleteHighlight);
@@ -378,7 +378,7 @@ export class PdfBookReader extends Component {
   }
   deleteHighlight = (id) => {
 
-    this.props.removeHighlight(id, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+    this.props.removeHighlight(id, ssoKey, serverDetails)
 
   }
 
