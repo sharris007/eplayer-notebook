@@ -5,6 +5,7 @@ import WidgetManager from '../../../components/widget-integration/widgetManager'
 import Header from '../../../components/Header';
 import './PdfBook.scss';
 import {Link, browserHistory } from 'react-router';
+import CircularProgress from 'material-ui/CircularProgress';
 var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails;
 
 export class PdfBookReader extends Component {
@@ -13,6 +14,8 @@ export class PdfBookReader extends Component {
     this.state = {
       classname: 'headerBar',
       currPageIndex:'',
+      pageLoaded: false,
+      isFirstPageBeingLoad: true,
       data  : {
         currentPageNo : '',
         isFirstPage : true,
@@ -94,13 +97,26 @@ export class PdfBookReader extends Component {
   };
     __pdfInstance.createPDFViewer(config);
     this.setState({currPageIndex: currentPageIndex});
+    var data = this.state.data;
+     if(currentPageIndex == 1){
+      data.isFirstPage =true;
+     }else{
+       data.isFirstPage =false; 
+     }
+     if(currentPageIndex == this.getPageCount()){
+       data.isLastPage =true;
+     }else{
+      data.isLastPage =false;
+     }
+     data.currentPageNo = currentPageIndex;
+     this.setState({data : data});
   }
   pdfBookCallback = (currentPageIndex) => {
      //this.setState({currPageIndex : currentPageIndex});
      const currentPageOrder=this.state.currPageIndex;
      //const currentPageOrder = 2;
      //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageOrder);
-     var data = this.state.data;
+     /*var data = this.state.data;
      if(currentPageOrder == 1){
       data.isFirstPage =true;
       //this.setState({data : data})
@@ -116,7 +132,12 @@ export class PdfBookReader extends Component {
       //this.setState({data : data})
      }
      data.currentPageNo = currentPageOrder;
-     this.setState({data : data});
+     this.setState({data : data});*/
+     this.setState({pageLoaded : true});
+     if(currentPageOrder===1 && this.state.isFirstPageBeingLoad === true)
+     {
+      this.setState({isFirstPageBeingLoad:false});
+     } 
      this.displayHighlight();
    
      // If already page details are in store then we do not hit fetchPageInfo again
@@ -136,6 +157,7 @@ export class PdfBookReader extends Component {
   goToPage = (navType) =>{
      //var currPageIndex=__pdfInstance.getCurrentPage();
      //this.setState({currPageIndex: currPageIndex});
+     this.setState({pageLoaded : false});
     var currPageIndex=this.state.currPageIndex;
     var pageIndexToLoad;
     if(navType=="prev"){
@@ -175,6 +197,7 @@ export class PdfBookReader extends Component {
 
   goToPageCallback(pageNum)
   {  
+    this.setState({pageLoaded : false}); 
     //pageNum=pageNum-1;
     if(pageNum>0)
     {
@@ -391,6 +414,15 @@ export class PdfBookReader extends Component {
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPageCallback.bind(this);
     const drawerOpen=true;
+    var viewerClassName;
+    if(this.state.pageLoaded!==true)
+    {
+      viewerClassName="hideViewerContent";
+    }
+    else
+    {
+      viewerClassName="";
+    }
     return (
  
     <div className={'add'} >
@@ -412,8 +444,8 @@ export class PdfBookReader extends Component {
           drawerOpen={drawerOpen}
         /> 
       
-       <div className="viewerContent">
-       <ViewerComponent data={this.state.data} pages={this.props.book.viewer.pages} goToPageCallback={this.goToPage} getPrevNextPage={this.getPrevNextPage} isET1='Y'/>
+      <div className="eT1viewerContent">
+       {this.state.isFirstPageBeingLoad !== true ? <ViewerComponent data={this.state.data} pages={this.props.book.viewer.pages} goToPageCallback={this.goToPage} getPrevNextPage={this.getPrevNextPage} isET1='Y'/>:null}
       </div>
       </div>
         <div>
@@ -421,14 +453,17 @@ export class PdfBookReader extends Component {
             <div id="mainContainer" className="pdf-fwr-pc-main">
                 <div id="right" className="pdf-fwr-pc-right">
                  <div id="toolbar" className="pdf-fwr-toolbar"></div>
-                  <div id="frame">
+                  <div id="frame" className={viewerClassName}>
                     <div id="docViewer"  className="docViewer" onMouseUp={this.createHighlight.bind(this)}></div>
                   </div>
                  </div>
                 </div>
             </div>
         </div>
-        
+         {this.state.pageLoaded !== true ?
+                  <div className="centerCircularBar">
+                  <CircularProgress style={{ margin: '40px auto', display: 'block' }} />
+                  </div> : null}
     </div>
     );
   }
