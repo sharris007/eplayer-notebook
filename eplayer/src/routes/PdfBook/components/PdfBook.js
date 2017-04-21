@@ -6,13 +6,17 @@ export class PdfBook extends Component {
 
 async componentWillMount() {
     if(this.props.login.data === undefined || this.props.bookshelf.ssoKey === undefined){
-           identityId = sessionStorage.getItem('identityId');
-           uid = sessionStorage.getItem('uid');
-           ubd = sessionStorage.getItem('ubd');
-           ubsd = sessionStorage.getItem('ubsd');
-           ssoKey = sessionStorage.getItem('ssoKey');
-           serverDetails = sessionStorage.getItem('serverDetails');
+             identityId = sessionStorage.getItem('identityId');
+             uid = sessionStorage.getItem('uid');
+             ubd = sessionStorage.getItem('ubd');
+             ubsd = sessionStorage.getItem('ubsd');
+             ssoKey = sessionStorage.getItem('ssoKey');
+             serverDetails = sessionStorage.getItem('serverDetails');
         }else{ 
+            sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
+            sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
+            sessionStorage.setItem('title',this.props.bookshelf.title);
+            sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
             sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
             sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
             sessionStorage.setItem('title',this.props.bookshelf.title);
