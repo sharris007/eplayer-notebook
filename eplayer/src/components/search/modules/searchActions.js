@@ -50,6 +50,28 @@ const searchActions = {
         results: []
       }
   };
+  if(paramList.isET2) {
+    return (dispatch) => {
+     if(searchText.length >= 4) {
+      return fetch('https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm/search?indexId=' + paramList.indexId + '&q=' + searchText + '&s=0&n=100')
+        .then(response => response.json())
+        .then(function(response) {
+          console.log(response);
+          response.hits.forEach((data, i) =>{
+            let obj = {};
+            obj.contentPreview = data.contentPreview;
+            obj.id = i;
+            obj.title = data.title;
+            obj.urn = data.url
+            searchState.searchResult.results.push(obj);
+          })
+          dispatch({ type: 'SEARCH',searchState});
+      });
+    } else {
+      dispatch({ type: 'SEARCH',searchState});
+    }
+   }
+  }
   return(dispatch)=>{
     return axios.get(''+serverDetails+'/ebook/ipad/searchbook?bookid='+bookId+'&globalbookid='+globalBookId+'&searchtext='+searchText+'&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON',
     {
