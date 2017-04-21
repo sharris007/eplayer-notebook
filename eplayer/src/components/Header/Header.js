@@ -19,7 +19,8 @@ export class Header extends React.Component {
       drawerOpen: false,
       prefOpen: false,
       headerExists: false,
-      searchOpen: false
+      searchOpen: false,
+      goToTextVal:''
     };
   }
 
@@ -119,6 +120,13 @@ export class Header extends React.Component {
       this.setState({ prefOpen: false });
     }
   }
+ goToTextChange = (e) => {
+  this.setState({ goToTextVal: e.target.value });
+ } 
+
+ goToPageClick = () => {
+    return  this.state.goToTextVal.trim();   
+  }
 
   searchKeySelect = (event) => {
     if ((event.which || event.keyCode) === 13) {
@@ -173,7 +181,9 @@ export class Header extends React.Component {
     const bookmarkIconData = {
       addBookmarkHandler: this.props.bookCallbacks.addBookmarkHandler,
       removeBookmarkHandler: this.props.bookCallbacks.removeBookmarkHandler,
-      isCurrentPageBookmarked: this.props.bookCallbacks.isCurrentPageBookmarked
+      isCurrentPageBookmarked: this.props.bookCallbacks.isCurrentPageBookmarked,
+      goToPageClick : this.props.bookCallbacks.goToPageClick,
+      goToTextChange : this.props.bookCallbacks.goToTextChange
     };
 
     const targetPageId = this.props.bookData.viewer.currentPageId;
@@ -216,6 +226,12 @@ export class Header extends React.Component {
           }
           iconElementRight={
             <div>
+              <div className="gotopage-wrapper">
+                <input type="text" id="pageNum" placeholder="Go to page" title="Go to page - Enter a page number, like 34, xii, or A-15. Press enter to submit" onChange={ this.goToTextChange }/>
+                 <button className="btn btn-link gotopage-button" onClick={this.goToPageClick}>
+                 <i className="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                </button>
+              </div>
               <div className="bookmarkIcon" role="button" tabIndex="0">
                 <BookmarkIcon data={bookmarkIconData} />
               </div>
@@ -269,7 +285,9 @@ Header.propTypes = {
   bookData: React.PropTypes.object,
   bookCallbacks: React.PropTypes.object,
   store: React.PropTypes.object,
-  viewerContentCallBack: React.PropTypes.func
+  viewerContentCallBack: React.PropTypes.func,
+  goToTextChange : React.PropTypes.func,
+  goToPageClick : React.PropTypes.func
 };
 
 export default Header;

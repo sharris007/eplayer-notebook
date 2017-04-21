@@ -116,7 +116,15 @@ export const deleteBookmarkData = deleteData => fetch(`${apiConstants.PXESERVICE
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'Identity-Id':deleteData.user
+    'Content-Type': 'application/json'
+  }
+});
+
+// Go to page Get call
+export const getGotoPage = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/navigation?pageNumber=40&provider=${apiConstants.GOTOPAGEPROVIDER}/ba26dc5c-f1d0-43dd-9d37-e3e30c6c7cca/1/file/LutgensAtm13-071415-MJ-DW`,{
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
   }
 });

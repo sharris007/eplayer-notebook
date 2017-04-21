@@ -6,8 +6,10 @@ export const apiConstants = {
   PAPERBASE :'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
  // PAPERBASE :'https://etext-stg.pearson.com/api/nextext-api/api/nextext',
   BOOK: 'https://api.mongolab.com/api/1/databases/team4/collections/students',
-  APIKEY: 'AgffBG36UOuFvRNORM8Y1ACvA1FdJwN8'
+  APIKEY: 'AgffBG36UOuFvRNORM8Y1ACvA1FdJwN8',
+  GOTOPAGEPROVIDER : 'https://content.stg-openclass.com/eps/pearson-reader/api/item'
 };
+
 export const typeConstants = {
   GET_TOTALANNOTATION: 'GET_TOTALANNOTATION',
   GET_ANNOTATION: 'GET_ANNOTATION',
@@ -19,5 +21,6 @@ export const typeConstants = {
   GET_BOOKMARK:'GET_BOOKMARK',
   POST_BOOKMARK:'POST_BOOKMARK',
   DELETE_BOOKMARK:'DELETE_BOOKMARK',
-  GET_TOTALBOOKMARK:'GET_TOTALBOOKMARK'
+  GET_TOTALBOOKMARK:'GET_TOTALBOOKMARK',
+  GET_GOTOPAGE:'GET_GOTOPAGE'
 };

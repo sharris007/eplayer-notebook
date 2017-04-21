@@ -94,3 +94,50 @@ $padding-right: 30px;
 .book-container{
   width:675px !important;
 }
+.gotopage-wrapper {
+    float:left;
+    margin: 15px 15px;
+    display: inline-block;
+    padding: 4px 0 4px 10px;
+    border: 1px solid #4f4b4a;
+    border-radius: 2px;
+    background-color: #252629;
+    padding: 1px 0 3px 10px;
+    color: #999;
+}
+.gotopage-wrapper input {
+    max-width: 105px;
+    width: auto;
+    text-align: left;
+    height: 23px;
+    font-size: 14px;
+    vertical-align: baseline;
+    box-shadow: none;
+    background-color: #252629;
+    border: 0;
+    color: #fff;
+    width: 40px;
+    padding: 0;
+    margin: 0;
+}
+.gotopage-wrapper .btn {
+    line-height: 20px;
+    margin-right: 2px;
+}
+.gotopage-wrapper .gotopage-button {
+    margin: 0;
+    padding: 0;
+    background: 0 0;
+    line-height: normal;
+    text-shadow: none;
+    border-radius: 0;
+}
+.gotopage-wrapper :placeholder-shown {
+    color: #959595;
+    outline: none;
+}
+.gotopage-wrapper .gotopage-button i.fa {
+    font-size: 18px;
+    margin-right: 6px;
+    color: #959595;
+}

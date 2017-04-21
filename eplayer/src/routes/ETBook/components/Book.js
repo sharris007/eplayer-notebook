@@ -19,6 +19,7 @@ import {PopUpInfo} from '@pearson-incubator/popup-info';
 export class Book extends Component {
   constructor(props) {
       super(props);
+      console.log('props: ', props);
       this.state = {
         classname: 'headerBar',
         viewerContent: true,
@@ -29,7 +30,8 @@ export class Book extends Component {
         annAttributes :'',
         popUpCollection:'',
         tocUrl :'',
-        tocUpdated:false
+        tocUpdated:false,
+        goToTextVal:''
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -153,6 +155,15 @@ export class Book extends Component {
   isCurrentPageBookmarked = () => {
     return this.props.isBookmarked;
   };
+ 
+  goToTextChange = (goToTextChangeCallBack) => {
+ // this.setState({ goToTextVal: e.target.value });
+ } 
+
+ goToPageClick = (goToTextClickCallBack) => {
+  console.log(goToTextClickCallBack);
+   // let goToTextValue = this.state.goToTextVal.trim();   
+  }
 
   viewerContentCallBack = (viewerCallBack) => {
     this.setState({ viewerContent: viewerCallBack });
@@ -293,6 +304,9 @@ export class Book extends Component {
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
+    callbacks.goToTextChange          = this.goToTextChange;
+    callbacks.goToPageClick           = this.goToPageClick;
+
     return (
       <div>
         <Header
