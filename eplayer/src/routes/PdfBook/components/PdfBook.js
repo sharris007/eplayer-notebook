@@ -13,10 +13,7 @@ async componentWillMount() {
              ssoKey = sessionStorage.getItem('ssoKey');
              serverDetails = sessionStorage.getItem('serverDetails');
         }else{ 
-            sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
-            sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
-            sessionStorage.setItem('title',this.props.bookshelf.title);
-            sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+            
             sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
             sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
             sessionStorage.setItem('title',this.props.bookshelf.title);

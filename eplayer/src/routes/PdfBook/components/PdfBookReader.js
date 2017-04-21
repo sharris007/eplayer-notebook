@@ -51,11 +51,16 @@ export class PdfBookReader extends Component {
         ssoKey = sessionStorage.getItem('ssoKey');
         serverDetails = sessionStorage.getItem('serverDetails');
     }else{
+        sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
+        sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
+        sessionStorage.setItem('title',this.props.bookshelf.title);
+        sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
         sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
         sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
         sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
         sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
         sessionStorage.setItem('globalbookid',this.props.book.bookinfo.book.globalbookid);
+        sessionStorage.removeItem('currentPageOrder');
         title = this.props.bookshelf.title;
         authorName = this.props.bookshelf.authorName;
         thumbnail = this.props.bookshelf.thumbnail;
@@ -65,7 +70,13 @@ export class PdfBookReader extends Component {
     this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
     this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
     const firstPage="firstPage";
-    this.goToPage(firstPage);
+    //this.goToPage(firstPage);
+    if(sessionStorage.getItem("currentPageOrder")){
+       this.goToPageCallback(sessionStorage.getItem("currentPageOrder"));
+    }else{
+      this.goToPage(firstPage);
+   }
+
     /*var etext_token =this.props.bookshelf.cdnToken;
     var headerParams = {
        'etext-cdn-token' : etext_token 
@@ -114,6 +125,7 @@ export class PdfBookReader extends Component {
   pdfBookCallback = (currentPageIndex) => {
      //this.setState({currPageIndex : currentPageIndex});
      const currentPageOrder=this.state.currPageIndex;
+     sessionStorage.setItem("currentPageOrder",this.state.currPageIndex);
      //const currentPageOrder = 2;
      //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageOrder);
      /*var data = this.state.data;
