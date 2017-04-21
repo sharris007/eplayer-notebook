@@ -16,6 +16,8 @@ import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallServ
 import {Wrapper} from 'pxe-wrapper';
 import {PopUpInfo} from '@pearson-incubator/popup-info';
 
+import {apiConstants} from '../../../../const/Constants'
+
 export class Book extends Component {
   constructor(props) {
       super(props);
@@ -250,7 +252,7 @@ export class Book extends Component {
   render() {
     
     const callbacks = {};
-    let annData = [], bookIndexId = '';
+    let annData = [], bookIndexId = {}, searchUrl = '';
     const { annotionData, loading ,playlistData, playlistReceived, tocData ,tocReceived} = this.props;// eslint-disable-line react/prop-types
     annData  = annotionData.rows;
     const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
@@ -309,7 +311,8 @@ export class Book extends Component {
     callbacks.goToPageCallback        = this.goToPageCallback;
 
     if(typeof tocData === "object" && tocData && tocData.bookDetails && tocData.bookDetails.indexId ) {
-      bookIndexId = tocData.bookDetails.indexId
+      bookIndexId = tocData.bookDetails.indexId;
+      searchUrl = apiConstants.SEARCHURL  + bookIndexId +  '&q=searchText' + apiConstants.SEARCHLIMIT;
     }
     return (
       <div>
@@ -324,11 +327,11 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
+          
           isET2 = {true}
-          bookId = {this.props.params.bookId}
-          bookIndexId = {bookIndexId}
+          indexId = { {'indexId' : bookIndexId, 'searchUrl' : searchUrl} }
           goToPage = {(pageId) => this.goToPage(pageId)}
-          listClick = {this.listClick}
+          listClick = {() => this.listClick()}
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <div className="printBlock"><button type="button" onClick={this.printFun} >Print</button> </div>: '' }

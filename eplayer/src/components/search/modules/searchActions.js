@@ -50,29 +50,25 @@ const searchActions = {
         results: []
       }
   };
-  if(paramList.isET2) {
-    return (dispatch) => {
-     if(searchText.length >= 4) {
-      return fetch('https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm/search?indexId=' + paramList.indexId + '&q=' + searchText + '&s=0&n=100')
-        .then(response => response.json())
-        .then(function(response) {
-          console.log(response);
+  return (dispatch) => {
+    return fetch(paramList.searchUrl.replace('searchText',searchText))
+      .then(response => response.json())
+      .then(function(response) {
+        if(response && response.hits && searchText.length >= 4) {
           response.hits.forEach((data, i) =>{
-            let obj = {};
-            obj.contentPreview = data.contentPreview;
-            obj.id = i;
-            obj.title = data.title;
-            obj.urn = data.url
+            let obj = {
+              contentPreview:data.contentPreview,
+              id:i,
+              title:data.title,
+              urn:data.url
+            };
             searchState.searchResult.results.push(obj);
           })
-          dispatch({ type: 'SEARCH',searchState});
-      });
-    } else {
-      dispatch({ type: 'SEARCH',searchState});
-    }
-   }
+        }
+        dispatch({ type: 'SEARCH',searchState});
+    });
   }
-  return(dispatch)=>{
+ /* return(dispatch)=>{
     return axios.get(''+serverDetails+'/ebook/ipad/searchbook?bookid='+bookId+'&globalbookid='+globalBookId+'&searchtext='+searchText+'&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON',
     {
       timeout: 20000
@@ -98,7 +94,7 @@ const searchActions = {
     }
     dispatch({ type: 'SEARCH',searchState});
     });
-  };
+  };*/
 
  }
 };
