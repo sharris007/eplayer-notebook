@@ -55,10 +55,15 @@ export const getTotalBookmarkData = json => ({
 
 export const getTotalBookmarkCallService = filterData => dispatch => 
     BookmarkApi.doTotalBookmark(filterData)
-    .then(
-        response => response.json()
-      )
-    .then(
-        json => dispatch(getTotalBookmarkData(json))
+    .then(response => response.json())
+    .then(json => {
+        const bookmarksDataMap = json.bookmarks;
+          if(bookmarksDataMap && bookmarksDataMap.length>0){
+            for(let i=0;i<bookmarksDataMap.length;i++){
+              bookmarksDataMap[i].id =bookmarksDataMap[i].uri;
+            }
+          }
+          dispatch(getTotalBookmarkData(bookmarksDataMap))
+        }
     );
  

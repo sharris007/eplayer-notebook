@@ -51,6 +51,7 @@ export class Book extends Component {
     this.props.dispatch(getTotalAnnCallService(queryString));
   }
   componentDidMount() {   
+    
     this.setState({
       annAttributes:customAttributes
     });
@@ -62,7 +63,20 @@ export class Book extends Component {
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   };
-
+  componentWillReceiveProps(nextProps){
+    const playlistData = nextProps.playlistData;
+    if(nextProps.playlistReceived){
+       const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
+        this.state.pageDetails.baseUrl                = playlistData.baseUrl;
+        if(this.state.pageDetails.currentPageURL === ""){
+          this.state.pageDetails.currentPageURL =(playlistData.content[0].playOrder==0)?playlistData.content[1]:playlistData.content[0];
+        }
+        this.state.pageDetails.playListURL            = playlistData.content; 
+        if(this.props.params.pageId){
+           this.state.pageDetails.currentPageURL        =filteredData;
+        }
+    }
+  }
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
     this.nodesToUnMount = [];
@@ -189,7 +203,7 @@ export class Book extends Component {
           "playOrder": this.state.currentPageDetails.playOrder,
           "baseUrl": this.state.currentPageDetails.baseUrl
       }
-      
+
       switch (eventType) {
           case 'annotationCreated': {
             return this.props.dispatch(postAnnCallService(receivedAnnotationData));
@@ -233,61 +247,14 @@ export class Book extends Component {
     // console.log('theme---',theme);
   }
   render() {
-    
     const callbacks = {};
-    let annData = [];
-    const { annotionData, loading ,playlistData, playlistReceived, tocData ,tocReceived} = this.props;// eslint-disable-line react/prop-types
-
-    annData  = annotionData.rows;
-    const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
-    if(Array.isArray(annotionData)==false && annotionData.rows==undefined){
-      annData = [];
-      annData.push(annotionData);
-    }
-
-    const bookmarksDataMap = this.props.bookMarkData.bookmarksData.bookmarks;
-    if(bookmarksDataMap && bookmarksDataMap.length>0){
-      for(let i=0;i<bookmarksDataMap.length;i++){
-        bookmarksDataMap[i].id =bookmarksDataMap[i].uri;
-      }
-    }
-    const annListArray = [];
-    if(this.props.annotionTotalData){
-      const colorArr = {
-        '#55DF49':"Green",
-        '#FC92CF':"Pink",
-        '#FFD232':"Yellow"
-      }
-      const annTotalList = this.props.annotionTotalData.rows;
-      if(annTotalList && annTotalList.length>0){
-        for(let i=0;i<annTotalList.length;i++){
-          const setArray = {
-            pageId: annTotalList[i].source.id,
-            id: annTotalList[i].id,
-            author: annTotalList[i].user,
-            time: annTotalList[i].createdTimestamp,
-            text: annTotalList[i].quote,
-            comment: annTotalList[i].text||'',
-            color: colorArr[annTotalList[i].color]||"Green"
-          }
-          annListArray.push(setArray);
-        }
-      }
-      this.props.book.annTotalData = annListArray;
-    }
+    const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
+    const annData  = annotationData.rows;
     
-    this.props.book.toc       = tocData;
-    this.props.book.bookmarks = bookmarksDataMap;
-    if(playlistReceived){
-        this.state.pageDetails.baseUrl                = playlistData.baseUrl;
-        if(this.state.pageDetails.currentPageURL === ""){
-          this.state.pageDetails.currentPageURL =(playlistData.content[0].playOrder==0)?playlistData.content[1]:playlistData.content[0];
-        }
-        this.state.pageDetails.playListURL            = playlistData.content; 
-        if(this.props.params.pageId){
-           this.state.pageDetails.currentPageURL =filteredData;
-        }
-    }
+    this.props.book.annTotalData  = annotationTotalData;
+    this.props.book.toc           = tocData;
+    this.props.book.bookmarks     = bookMarkData;
+    
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
     callbacks.addBookmarkHandler      = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
@@ -329,7 +296,6 @@ Book.propTypes = {
   addBookmark: React.PropTypes.func,
   removeBookmark: React.PropTypes.func,
   fetchPreferences: React.PropTypes.func,
-  // goToPage: React.PropTypes.func,
   book: React.PropTypes.object,
   params: React.PropTypes.object,
   dispatch: React.PropTypes.func
@@ -340,18 +306,20 @@ Book.contextTypes = {
   muiTheme: React.PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => (
-      { 
-        annotionData: state.annotationReducer.data,
-        annotionTotalData: state.annotationReducer.totalAnndata,  
-        loading: state.annotationReducer.loading, 
-        playlistData: state.playlistReducer.data,
-        playlistReceived :state.playlistReducer.playlistReceived,
-        tocData: state.playlistReducer.tocdata,
-        tocReceived :state.playlistReducer.tocReceived,
-        isBookmarked :state.bookmarkReducer.data.isBookmarked,
-        bookMarkData : state.bookmarkReducer
-      }
-);// eslint-disable-line max-len
+const mapStateToProps = state => {
+ return  { 
+    annotationData       : state.annotationReducer.highlightPageData,
+    annDataloaded        : state.annotationReducer.annDataloaded, 
+    annotationTotalData  : state.annotationReducer.highlightTotalData,  
+    annTotalDataLoaded   : state.annotationReducer.annTotalDataLoaded, 
+    playlistData         : state.playlistReducer.data,
+    playlistReceived     : state.playlistReducer.playlistReceived,
+    tocData              : state.playlistReducer.tocdata,
+    tocReceived          : state.playlistReducer.tocReceived,
+    isBookmarked         : state.bookmarkReducer.data.isBookmarked,
+    bookMarkData         : state.bookmarkReducer.bookmarksData
+
+  }
+};// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign
 export default Book;
