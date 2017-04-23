@@ -30,7 +30,9 @@ export const getAnnotationData = json => ({
 
 export const getAnnCallService = filterData => dispatch => AnnotationApi.doGetAnnotation(filterData)
     .then(response => response.json())
-    .then(json => dispatch(getAnnotationData(json)));
+    .then(json =>{   
+        dispatch(getAnnotationData(json))
+    });
 
  // POST call annotations
 export const postAnnotationData = json => ({
@@ -84,7 +86,6 @@ export const deleteAnnCallService = data => dispatch => AnnotationApi.doDeleteAn
    .then(response => response.json())
    .then(json => {
       dispatch(deleteAnnotationData(json));
-
    });
    
 
