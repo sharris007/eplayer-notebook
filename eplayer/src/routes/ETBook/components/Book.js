@@ -1,8 +1,6 @@
   /* eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { PageViewer } from '@pearson-incubator/pxe-pageviewer';
-import { Annotation } from 'pxe-annotation';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
@@ -11,10 +9,12 @@ import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
-
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
-import {Wrapper} from 'pxe-wrapper';
-import {PopUpInfo} from '@pearson-incubator/popup-info';
+import { PageViewer } from '@pearson-incubator/pxe-pageviewer';
+import { Annotation } from 'pxe-annotation';
+import { Wrapper } from 'pxe-wrapper';
+import { PopUpInfo } from '@pearson-incubator/popup-info';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 export class Book extends Component {
   constructor(props) {
@@ -51,7 +51,6 @@ export class Book extends Component {
     this.props.dispatch(getTotalAnnCallService(queryString));
   }
   componentDidMount() {   
-    
     this.setState({
       annAttributes:customAttributes
     });
@@ -66,13 +65,13 @@ export class Book extends Component {
   componentWillReceiveProps(nextProps){
     const playlistData = nextProps.playlistData;
     if(nextProps.playlistReceived){
-       const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
+       const filteredData = find(playlistData.content, list => list.id === nextProps.params.pageId);
         this.state.pageDetails.baseUrl                = playlistData.baseUrl;
         if(this.state.pageDetails.currentPageURL === ""){
           this.state.pageDetails.currentPageURL =(playlistData.content[0].playOrder==0)?playlistData.content[1]:playlistData.content[0];
         }
         this.state.pageDetails.playListURL            = playlistData.content; 
-        if(this.props.params.pageId){
+        if(nextProps.params.pageId){
            this.state.pageDetails.currentPageURL        =filteredData;
         }
     }
@@ -111,12 +110,11 @@ export class Book extends Component {
       user    :'epluser',
       id      : this.props.params.pageId
     }
-    
     this.props.dispatch(postBookmarkCallService(bookmark));
-    const that = this;
-    setTimeout(function(){
-      that.props.dispatch(getTotalBookmarkCallService(queryString));
-    },2000)
+    // const that = this;
+    // setTimeout(function(){
+    //   that.props.dispatch(getTotalBookmarkCallService(queryString));
+    // },2000)
     
   }
 
@@ -133,16 +131,16 @@ export class Book extends Component {
       uri:bookmarkId
     }  
     this.props.dispatch(deleteBookmarkCallService(deleteData));
-    const that = this;
-    const queryString = {
-      context : this.props.params.bookId,
-      uri     : this.props.params.pageId,
-      user    :'epluser',
-      id      : this.props.params.pageId
-    }
-    setTimeout(function(){
-      that.props.dispatch(getTotalBookmarkCallService(queryString));
-    },2000)
+    // const that = this;
+    // const queryString = {
+    //   context : this.props.params.bookId,
+    //   uri     : this.props.params.pageId,
+    //   user    :'epluser',
+    //   id      : this.props.params.pageId
+    // }
+    // setTimeout(function(){
+    //   that.props.dispatch(getTotalBookmarkCallService(queryString));
+    // },2000)
   };
 
   onPageChange = (type, data) => {
@@ -185,6 +183,7 @@ export class Book extends Component {
     this.setState({ drawerOpen: false });
     this.viewerContentCallBack(true);
     const bookId = this.props.params.bookId;
+    debugger; 
     browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
   };
   annotationCallBack = (eventType, data) => {
@@ -246,7 +245,7 @@ export class Book extends Component {
   preferenceBackgroundColor = (theme) => {
     // console.log('theme---',theme);
   }
-  render() {
+    render() {
     const callbacks = {};
     const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
     const annData  = annotationData.rows;
@@ -260,6 +259,18 @@ export class Book extends Component {
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
+    const circularstyle = {
+          container: {
+          position: 'relative'
+        },
+        refresh: {
+          display: 'inline-block',
+          position: 'relative'
+        }
+    };
+  console.log(circularstyle)
+
+
     return (
       <div>
         <Header
@@ -274,13 +285,15 @@ export class Book extends Component {
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
         />
+           
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
+            {!playlistReceived ? <RefreshIndicator size={50} left={650} top={200} status="loading" /> :''}
             {playlistReceived ? <div className="printBlock"><button type="button" onClick={this.printFun} >Print</button> </div>: '' }
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
             currentPageDetails={ this.state.pageDetails.currentPageURL} annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
             {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = 'book-container'/> : '' }
-            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
+            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryryRef = dom }} style = {{ display: 'none' }}>  </div>
           </div>
       </div>
     );
