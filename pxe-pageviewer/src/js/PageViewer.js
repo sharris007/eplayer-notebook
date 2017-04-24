@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import FooterNav from './FooterNav';
 import {crossRef} from './CrossRef';
 import copyCharLimit from './CopyCharLimit';
+import audioWbWHighlight from './AudioWBWHighlight';
 import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
 import { loadMathMLScript, reloadMathMl } from './MathML';
@@ -257,6 +258,7 @@ class PageViewer extends React.Component {
       reloadMathMl(this);
     } 
     this.setPageTheme();
+    audioWbWHighlight(this);
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
