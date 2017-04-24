@@ -80,7 +80,7 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey,bookSe
           const bmObj = {
             id: bookmark.pageOrder,
             uri: bookmark.pageOrder,
-            title: 'Page '+bookmark.pageOrder,
+            title: 'Page '+bookmark.bookPageNumber,
             pageID: bookmark.pageID,
             createdTimestamp: bookmark.updatedDate
           };
@@ -370,7 +370,7 @@ export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL)
   timeout: 20000
   };
 }
-export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,sessionKey,bookServerURL,loadPdfPageCallback)
+export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexToLoad,totalPagesToHit,sessionKey,bookServerURL,loadPdfPageCallback)
  {
     const bookState = {
       bookInfo:{
@@ -378,7 +378,7 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,s
       }
   };
   return(dispatch)=>{
-    return axios.get(''+bookServerURL+'/ebook/ipad/getpagebypageorder?userid='+userid+'&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageOrder+'&authkey='+sessionKey+'&outputformat=JSON',
+    return axios.get(''+bookServerURL+'/ebook/ipad/getpagebypageorder?userid='+userid+'&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+totalPagesToHit+'&authkey='+sessionKey+'&outputformat=JSON',
     {
       timeout: 20000
     })
@@ -405,8 +405,9 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageOrder,s
         });
       });
     }
-    loadPdfPageCallback(bookState.bookInfo.pages[0].pdfPath,bookState.bookInfo.pages[0].pageorder);
     dispatch({ type: 'RECEIVE_PAGE_INFO',bookState});
+    loadPdfPageCallback(pageIndexToLoad);
+    
     });
   };
 
@@ -449,7 +450,7 @@ const ACTION_HANDLERS = {
       {
         id: action.bookmarkToAdd.id,
         uri: action.bookmarkToAdd.uri,
-        title:'Page '+action.bookmarkToAdd.uri,
+        title:'Page '+action.bookmarkToAdd.bookPageNumber,
         pageID: action.bookmarkToAdd.pageID,
         createdTimestamp: action.bookmarkToAdd.createdTimestamp
       }

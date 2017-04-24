@@ -68,7 +68,7 @@ const searchActions = {
           resultObj.id=i;
           resultObj.urn=result.pageOrder;
           resultObj.title=result.chapterName;
-          resultObj.pageNo=result.pageOrder;
+          resultObj.pageNo=result.bookPageNumber;
           resultObj.contentPreview=result.bestTextSnippet;
           searchState.searchResult.results.push(resultObj);
         });
