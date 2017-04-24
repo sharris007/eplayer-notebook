@@ -51,10 +51,10 @@ export class PdfBookReader extends Component {
         ssoKey = sessionStorage.getItem('ssoKey');
         serverDetails = sessionStorage.getItem('serverDetails');
     }else{
-        sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
-        sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
-        sessionStorage.setItem('title',this.props.bookshelf.title);
-        sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+        // sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
+        // sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
+        // sessionStorage.setItem('title',this.props.bookshelf.title);
+        // sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
         sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
         sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
         sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
@@ -146,7 +146,7 @@ export class PdfBookReader extends Component {
      data.currentPageNo = currentPageOrder;
      this.setState({data : data});*/
      this.setState({pageLoaded : true});
-     if(currentPageOrder===1 && this.state.isFirstPageBeingLoad === true)
+     if(this.state.isFirstPageBeingLoad === true)
      {
       this.setState({isFirstPageBeingLoad:false});
      } 
