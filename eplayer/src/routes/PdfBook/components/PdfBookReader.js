@@ -151,7 +151,7 @@ export class PdfBookReader extends Component {
      {
       this.setState({isFirstPageBeingLoad:false});
      } 
-     this.displayHighlight();
+     //this.displayHighlight();
    
      // If already page details are in store then we do not hit fetchPageInfo again
      /*if(currentPage===undefined)
@@ -508,7 +508,7 @@ export class PdfBookReader extends Component {
                 <div id="right" className="pdf-fwr-pc-right">
                  <div id="toolbar" className="pdf-fwr-toolbar"></div>
                   <div id="frame" className={viewerClassName}>
-                    <div id="docViewer"  className="docViewer" onMouseUp={this.createHighlight.bind(this)}></div>
+                    <div id="docViewer"  className="docViewer" ></div>
                   </div>
                  </div>
                 </div>
