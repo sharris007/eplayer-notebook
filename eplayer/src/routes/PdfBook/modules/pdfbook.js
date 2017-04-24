@@ -285,7 +285,7 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
     const basketData = allBaskets.basketsInfoTOList;
       //bookState.toc.content.bookId = basketData[0].bookID || '';
       bookState.toc.content.id = basketData[0].bookID || '';
-      bookState.toc.showDuplicateTitle = true;
+      //bookState.toc.showDuplicateTitle = true;
       bookState.toc.content.mainTitle = title || 'Sample Title';
       bookState.toc.content.author = authorName || 'Saha/Rai/Mahapatra/Pujari';
       bookState.toc.content.thumbnail = thumbnail || 'http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM21254346/assets/1256799653_Iannone_thumbnail.png';
@@ -314,7 +314,8 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
         tocLevel_1_Obj.id=tocLevel_1.basketID;
         tocLevel_1_Obj.title=tocLevel_1.name;
         tocLevel_1_Obj.children=tocLevel_1_ChildList;*/
-        bookState.toc.content.list=tocLevel_1_ChildList;
+        //bookState.toc.content.list=tocLevel_1_ChildList;
+        bookState.toc.content.list=flatten1(tocLevel_1_ChildList);
         console.log();
         });
       });
@@ -323,6 +324,77 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
       });
     };
   } 
+
+ function flatten1(input)
+  {
+    var finalChildList = [];
+    input.forEach((node,i) =>{
+      if(node.children.length!==0)
+        {
+          var child1=[];
+          var tempList=[];
+          node.children.forEach((kids,j) => {
+          var child=flatten2(kids);
+          if(child instanceof Array)
+          {
+            kids.children=child;
+            tempList.push(kids);
+          }
+          else
+          {
+            child1.push(child);
+          }
+        });
+          node.children=child1;
+          finalChildList.push(node);
+          finalChildList=finalChildList.concat(tempList);
+        }
+        else
+        {
+          finalChildList.push(node);
+        }
+       });
+    return finalChildList;
+  }
+  function flatten2(input)
+  {
+   if(input.children!==undefined && input.children.length!==0) 
+   {
+    return flatten3(input);
+   }
+   else
+   {
+    return input;
+   }
+  }
+  function flatten3(input)
+  {
+    var childlist=[];
+    if(input.children!==undefined && input.children.length!==0) 
+    {
+      var firstNode = new Node();
+      firstNode.id =input.id;
+      firstNode.title =input.title;
+      firstNode.urn =input.urn;
+      childlist.push(firstNode);
+      input.children.forEach((node,i) =>{
+          childlist=childlist.concat(flatten3(node));
+       });
+    }
+    else 
+    {
+      var tempList = [];
+      var output = new Node();
+      output.id =input.id;
+      output.title =input.title;
+      output.children =input.children;
+      output.urn =input.urn; 
+      tempList.push(output);
+      return tempList;
+
+    }
+    return childlist;
+  }
 
  function Node() {
    this.id =""

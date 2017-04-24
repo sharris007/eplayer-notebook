@@ -72,7 +72,7 @@ export class PdfBookReader extends Component {
     const firstPage="firstPage";
     //this.goToPage(firstPage);
     if(sessionStorage.getItem("currentPageOrder")){
-       this.goToPageCallback(sessionStorage.getItem("currentPageOrder"));
+       this.goToPageCallback(Number(sessionStorage.getItem("currentPageOrder")));
     }else{
       this.goToPage(firstPage);
    }
@@ -96,7 +96,7 @@ export class PdfBookReader extends Component {
   }
   loadPdfPage = (currentPageIndex) =>
   {
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageIndex);
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageIndex);
     const pdfPath=currentPage.pdfPath;
     var config = {
     host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
@@ -246,7 +246,7 @@ export class PdfBookReader extends Component {
     var totalPageCount=this.getPageCount();
     while(prevPageCount<=5 && pageOrder>0)
     {
-      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageOrder);
+      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageOrder);
       if(currentPage===undefined)
       {
         totalPagesToHit=totalPagesToHit+pageOrder+",";
@@ -257,7 +257,7 @@ export class PdfBookReader extends Component {
     pageOrder=pageOrderToNav+1;
     while(nextPageCount<5 && pageOrder<=totalPageCount)
     {
-      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageOrder);
+      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageOrder);
       if(currentPage===undefined)
       {
         totalPagesToHit=totalPagesToHit+pageOrder+",";
@@ -288,7 +288,7 @@ export class PdfBookReader extends Component {
     else if(pageType=="last"){
       pageNo=this.getPageCount();   
     }
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageNo);
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageNo);
     if(currentPage===undefined)
     {
       return pageNo;
@@ -346,7 +346,7 @@ export class PdfBookReader extends Component {
   addBookmarkHandler = () => {
     //const currentPageId=__pdfInstance.getCurrentPage()+1;
     const currentPageId = this.state.currPageIndex; 
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
     var currTimeInMillsc = (new Date).getTime();
     const bookmark = {
       id: currentPageId,
@@ -371,7 +371,7 @@ export class PdfBookReader extends Component {
       //currentPageId =__pdfInstance.getCurrentPage()+1;
       currentPageId = this.state.currPageIndex;
     }
-    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
+    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri == currentPageId);
     //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
     const targetBookmarkId = targetBookmark.uri;
     this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,
@@ -389,7 +389,7 @@ export class PdfBookReader extends Component {
   isCurrentPageBookmarked = () => {
     //const currentPageId=__pdfInstance.getCurrentPage()+1;
     const currentPageId = this.state.currPageIndex;
-    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
+    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri == currentPageId);
     return !(targetBookmark === undefined);
   };
 
@@ -401,7 +401,7 @@ export class PdfBookReader extends Component {
     var highlightID = '';
     var highlights = [];
     const currentPageId=this.state.currPageIndex;
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
     var highlightHashes = currentHighlight.highlightHash;
     var highlightHash = highlightHashes.split("@")[0].trim().replace(/(\r\n|\n|\r)/gm,"").replace(/['"]+/g, '');
     console.log("highlightHash "+highlightHash);
