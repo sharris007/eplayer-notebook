@@ -18,8 +18,11 @@ export class Search extends React.Component {
       globalBookId:this.props.globalBookId,
       serverDetails:this.props.serverDetails
     };
+
     return (
-      <SearchComponent fetch={this.props.fetch} indexId={indexId} searchData={this.props.search} searchListClick={this.props.goToPage} isET1='Y'/>
+      <div>
+         <SearchComponent fetch={this.props.fetch} searchData={ this.props.search }  indexId = { this.props.indexId } searchListClick = {this.props.goToPage} listClick = {this.props.listClick}/> 
+      </div>
     );
   }
 }

@@ -50,7 +50,27 @@ const searchActions = {
         results: []
       }
   };
-  return(dispatch)=>{
+
+  return (dispatch) => {
+    return fetch(paramList.searchUrl.replace('searchText',searchText))
+      .then(response => response.json())
+      .then((response) => {
+        if(response && response.hits && searchText.length >= 4) {
+          response.hits.forEach((data, i) => {
+            let obj = {
+              contentPreview:data.contentPreview,
+              id:i,
+              title:data.title,
+              urn:data.url
+            };
+            searchState.searchResult.results.push(obj);
+          })
+        }
+        dispatch({ type: 'SEARCH',searchState});
+    });
+  }
+
+ /* return(dispatch)=>{
     return axios.get(''+serverDetails+'/ebook/ipad/searchbook?bookid='+bookId+'&globalbookid='+globalBookId+'&searchtext='+searchText+'&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON',
     {
       timeout: 20000
@@ -76,7 +96,7 @@ const searchActions = {
     }
     dispatch({ type: 'SEARCH',searchState});
     });
-  };
+  };*/
 
  }
 };

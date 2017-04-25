@@ -64,7 +64,7 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
         });
         tocResponse.list = listData;
         delete tocResponse.items;
-        const tocFinalModifiedData = {'content':tocResponse}
+        const tocFinalModifiedData = {'content':tocResponse,'bookDetails' : bookDetails }
         dispatch(getTocCompleteDetails(tocFinalModifiedData));
       });
 
