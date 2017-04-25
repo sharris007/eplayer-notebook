@@ -327,8 +327,6 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
-          
-          isET2 = {true}
           indexId = { {'indexId' : bookIndexId, 'searchUrl' : searchUrl} }
           goToPage = {(pageId) => this.goToPage(pageId)}
           listClick = {() => this.listClick()}

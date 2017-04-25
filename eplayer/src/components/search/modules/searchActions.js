@@ -50,12 +50,13 @@ const searchActions = {
         results: []
       }
   };
+
   return (dispatch) => {
     return fetch(paramList.searchUrl.replace('searchText',searchText))
       .then(response => response.json())
-      .then(function(response) {
+      .then((response) => {
         if(response && response.hits && searchText.length >= 4) {
-          response.hits.forEach((data, i) =>{
+          response.hits.forEach((data, i) => {
             let obj = {
               contentPreview:data.contentPreview,
               id:i,
@@ -68,6 +69,7 @@ const searchActions = {
         dispatch({ type: 'SEARCH',searchState});
     });
   }
+
  /* return(dispatch)=>{
     return axios.get(''+serverDetails+'/ebook/ipad/searchbook?bookid='+bookId+'&globalbookid='+globalBookId+'&searchtext='+searchText+'&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON',
     {
