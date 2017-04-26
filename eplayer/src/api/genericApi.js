@@ -70,7 +70,7 @@ export const getTocDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}
   }
 });
 
-export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=false', { // eslint-disable-line no-undef
+export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=true', { // eslint-disable-line no-undef
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -121,7 +121,7 @@ export const deleteBookmarkData = deleteData => fetch(`${apiConstants.PXESERVICE
 });
 
 // Go to page Get call
-export const getGotoPage = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/navigation?pageNumber=40&provider=${apiConstants.GOTOPAGEPROVIDER}/ba26dc5c-f1d0-43dd-9d37-e3e30c6c7cca/1/file/LutgensAtm13-071415-MJ-DW`,{
+export const getGotoPage = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/navigation/?pageNumber=${data.pagenumber}&provider=${data.baseurl}`,{
   method: 'GET',
   headers: {
     Accept: 'application/json',

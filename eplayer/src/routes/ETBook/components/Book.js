@@ -11,6 +11,7 @@ import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
+import { getGotoPageCall } from '../../../actions/gotopage';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
 import {Wrapper} from 'pxe-wrapper';
@@ -160,8 +161,18 @@ export class Book extends Component {
  // this.setState({ goToTextVal: e.target.value });
  } 
 
- goToPageClick = (goToTextClickCallBack) => {
-  console.log(goToTextClickCallBack);
+ goToPageClick = (getPageNumber) => {
+  console.log("goToTextClickCallBack", getPageNumber);
+  if(getPageNumber){
+  const bookId = this.props.params.bookId;
+  const goToPageObj = {
+      context : bookId,
+      user    :'epluser',
+      pagenumber:getPageNumber,
+      baseurl: this.state.pageDetails.baseUrl
+    }
+  this.props.dispatch(getGotoPageCall(goToPageObj));
+  }
    // let goToTextValue = this.state.goToTextVal.trim();   
   }
 
@@ -247,7 +258,7 @@ export class Book extends Component {
     
     const callbacks = {};
     let annData = [];
-    const { annotionData, loading ,playlistData, playlistReceived, tocData ,tocReceived} = this.props;// eslint-disable-line react/prop-types
+    const { annotionData, loading ,playlistData, playlistReceived, tocData ,tocReceived, gotoPageObj, isGoToPageRecived} = this.props;// eslint-disable-line react/prop-types
 
     annData  = annotionData.rows;
     const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
@@ -298,14 +309,35 @@ export class Book extends Component {
         if(this.props.params.pageId){
            this.state.pageDetails.currentPageURL =filteredData;
         }
+        //console.log("params", this.state.pageDetails);
+        if(isGoToPageRecived){
+          const goToPageHref = gotoPageObj.page.href;
+          const ghref = goToPageHref.split('#')[0];
+          //console.log("1goToPageHref", goToPageHref);
+          const getGoToPageData = [];
+          //const getGoToPageData = find(this.state.pageDetails.playListURL, list => list.href === goToPageHref);
+           find(this.state.pageDetails.playListURL, function(list) { 
+             if( list.hasOwnProperty('href')) { 
+              //console.log("$$$", list.href + 'ddd' +list.playOrder);
+              if(list.href && list.href.match(ghref)) {
+                 console.log("List1 >>>>>>>>>", list);
+                 this.state.pageDetails.currentPageURL = list;
+                 this.setState({pageDetails : pageDetails});
+
+               }                 
+              }
+            
+             });
+           
+          //this.state.pageDetails.currentPageURL = getGoToPageData;
+          console.log("123", getGoToPageData);
+        }
     }
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
     callbacks.addBookmarkHandler      = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
-    callbacks.goToTextChange          = this.goToTextChange;
-    callbacks.goToPageClick           = this.goToPageClick;
 
     return (
       <div>
@@ -320,6 +352,7 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
+          goToPageClick = {this.goToPageClick}
         />
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {playlistReceived ? <div className="printBlock"><button type="button" onClick={this.printFun} >Print</button> </div>: '' }
@@ -354,8 +387,9 @@ Book.contextTypes = {
   muiTheme: React.PropTypes.object.isRequired
 };
 
-const mapStateToProps = state => (
-      { 
+const mapStateToProps = state => {
+  console.log("storeData", state.gotopageReducer.gotoPageObj);
+      return { 
         annotionData: state.annotationReducer.data,
         annotionTotalData: state.annotationReducer.totalAnndata,  
         loading: state.annotationReducer.loading, 
@@ -364,8 +398,10 @@ const mapStateToProps = state => (
         tocData: state.playlistReducer.tocdata,
         tocReceived :state.playlistReducer.tocReceived,
         isBookmarked :state.bookmarkReducer.data.isBookmarked,
-        bookMarkData : state.bookmarkReducer
+        bookMarkData : state.bookmarkReducer,
+        gotoPageObj : state.gotopageReducer.gotoPageObj,
+        isGoToPageRecived : state.gotopageReducer.isGoToPageRecived
       }
-);// eslint-disable-line max-len
+};// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign
 export default Book;

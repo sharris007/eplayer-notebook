@@ -2,7 +2,7 @@
 import { getGotoPage } from './genericApi';
 
 class GotopageApi {
-  static doGetGotoPage    = filterData => getGoToPage(filterData)
+  static doGetGotoPage    = data => getGotoPage(data)
 }
 
 export default GotopageApi;

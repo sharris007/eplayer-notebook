@@ -125,7 +125,16 @@ export class Header extends React.Component {
  } 
 
  goToPageClick = () => {
-    return  this.state.goToTextVal.trim();   
+    console.log("goToTextVal", this.state.goToTextVal);
+    this.props.goToPageClick(this.state.goToTextVal);
+    //return  this.state.goToTextVal.trim();   
+  }
+  
+  goToPageOnKeyUp = (e) => {
+    if (e.keyCode === 13) {
+      this.setState({ goToTextVal: e.target.value });
+      this.goToPageClick();
+    }
   }
 
   searchKeySelect = (event) => {
@@ -227,7 +236,7 @@ export class Header extends React.Component {
           iconElementRight={
             <div>
               <div className="gotopage-wrapper">
-                <input type="text" id="pageNum" placeholder="Go to page" title="Go to page - Enter a page number, like 34, xii, or A-15. Press enter to submit" onChange={ this.goToTextChange }/>
+                <input type="text" id="pageNum" placeholder="Go to page" title="Go to page - Enter a page number, like 34, xii, or A-15. Press enter to submit" onChange={ this.goToTextChange } onKeyDown = {(e) => this.goToPageOnKeyUp(e)}/>
                  <button className="btn btn-link gotopage-button" onClick={this.goToPageClick}>
                  <i className="fa fa-arrow-circle-right" aria-hidden="true"></i>
                 </button>

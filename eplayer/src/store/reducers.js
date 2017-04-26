@@ -3,6 +3,7 @@ import locationReducer from './location';
 import annotationReducer from './annotation';
 import playlistReducer from './playlist';
 import bookmarkReducer from './bookmark';
+import gotopageReducer from './gotopage';
 
 export const makeRootReducer = asyncReducers =>
    combineReducers({
@@ -10,6 +11,7 @@ export const makeRootReducer = asyncReducers =>
      annotationReducer,
      playlistReducer,
      bookmarkReducer,
+     gotopageReducer,
      ...asyncReducers
    })
 ;
