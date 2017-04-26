@@ -2111,7 +2111,7 @@ Annotator.Editor = (function(_super) {
   }
   
   Editor.prototype.onNoteChange=function(event) {
-    this.element[(event.target.value.length)?'addClass':'removeClass']('show-edit-options');
+    this.element.addClass('show-edit-options');
     if(!event.target.value.length){
       $(this.element).find('.annotator-share-text, .annotator-share').hide();
     }
@@ -2289,7 +2289,7 @@ Annotator.Editor = (function(_super) {
     field.element = element[0];
     switch (field.type) {
     case 'textarea':
-      input = $('<div><textarea maxlength="3000"/><div>');
+      input = $('<textarea maxlength="3000"/>');
       break;
     case 'input':
     case 'checkbox':
@@ -2334,7 +2334,8 @@ Annotator.Editor = (function(_super) {
     if (event.keyCode === 27) {
       return this.hide();
     } else if (event.keyCode === 13 && !event.shiftKey) {
-      return this.submit();
+      // return this.submit();
+      event.stopPropagation();
     }
   };
 
