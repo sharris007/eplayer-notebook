@@ -6,7 +6,7 @@ import Header from '../../../components/Header';
 import './PdfBook.scss';
 import {Link, browserHistory } from 'react-router';
 import CircularProgress from 'material-ui/CircularProgress';
-var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails;
+var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails,globalbookid;
 
 export class PdfBookReader extends Component {
   constructor(props) {
@@ -50,6 +50,7 @@ export class PdfBookReader extends Component {
         thumbnail = sessionStorage.getItem('thumbnail');
         ssoKey = sessionStorage.getItem('ssoKey');
         serverDetails = sessionStorage.getItem('serverDetails');
+        globalbookid = sessionStorage.getItem('globalbookid');
     }else{
         // sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
         // sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
@@ -66,6 +67,7 @@ export class PdfBookReader extends Component {
         thumbnail = this.props.bookshelf.thumbnail;
         ssoKey = this.props.bookshelf.ssoKey;
         serverDetails = this.props.bookshelf.serverDetails;
+        globalbookid = this.props.book.bookinfo.book.globalbookid;
     }
     this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
     this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
@@ -477,6 +479,7 @@ export class PdfBookReader extends Component {
     {
       viewerClassName="";
     }
+    var searchUrl = ''+serverDetails+'/ebook/ipad/searchbook?bookid='+this.props.params.bookId+'&globalbookid='+globalbookid+'&searchtext=searchText&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON'
     return (
  
     <div className={'add'} >
@@ -496,6 +499,7 @@ export class PdfBookReader extends Component {
           isET1='Y'
           serverDetails={this.props.bookshelf.serverDetails}
           drawerOpen={drawerOpen}
+          indexId={ {'searchUrl' : searchUrl} }
         /> 
       
       <div className="eT1viewerContent">
