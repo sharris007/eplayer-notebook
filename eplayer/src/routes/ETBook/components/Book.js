@@ -112,9 +112,11 @@ export class Book extends Component {
       urlParams:parameters
     },function(){
       // eslint-disable-next-line
-      this.props.dispatch(getAnnCallService(this.state.urlParams));
-      this.props.dispatch(getBookmarkCallService(this.state.urlParams));
       browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+      setTimeout(()=>{
+        this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+        this.props.dispatch(getAnnCallService(this.state.urlParams));
+      },2000)
     });
   }
 
@@ -145,8 +147,8 @@ export class Book extends Component {
       receivedAnnotationData.context  = this.props.params.bookId;
       receivedAnnotationData.source   = this.state.currentPageDetails;
       receivedAnnotationData.source.baseUrl = this.state.pageDetails.baseUrl;
-      delete receivedAnnotationData.source.href;
-      delete receivedAnnotationData.source.title;
+      // delete receivedAnnotationData.source.href;
+      // delete receivedAnnotationData.source.title;
       switch (eventType) {
           case 'annotationCreated': {
             return this.props.dispatch(postAnnCallService(receivedAnnotationData));
