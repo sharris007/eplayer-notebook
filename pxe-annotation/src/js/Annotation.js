@@ -26,23 +26,17 @@ class Annotation extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let firstLoad = this.state.firstLoad;
-    const checkPlayOrder = (this.props.currentPageDetails.playOrder !== nextProps.currentPageDetails.playOrder);
-    const initLoad = (this.props.annotationData === undefined) && (nextProps.annotationData !== undefined);
-    if (checkPlayOrder || initLoad) {
-      this.setState({'firstLoad':true});
-      firstLoad=true;
+   if(nextProps.annotationData && nextProps.annotationData.length){
+     console.log("componentWillReceiveProps",nextProps);
+    let flag = 'loadAnnotations';
+    if(this.state.updated){
+      flag = 'updateAnnotationId';
+      this.setState({'updated':false});
     }
-    if (firstLoad && nextProps.annotationData && nextProps.annotationData.length && nextProps.annotationData[0].color) {
-      $('#' + nextProps.contentId).annotator().annotator('loadAnnotations', nextProps.annotationData);
-      this.setState({'firstLoad':false});
-      firstLoad=false;
-    }
-    if (this.state.updated) {
-      $('#' + nextProps.contentId).annotator().annotator('updateAnnotationId', nextProps.annotationData[0]);
-    }
-    this.setState({'updated':false});
-  }  
+    const annData = (flag=='updateAnnotationId')?nextProps.annotationData[0]:nextProps.annotationData;
+    $('#' + nextProps.contentId).annotator().annotator(flag, annData);
+   }
+ } 
 
 
   annotationEventHandler() {

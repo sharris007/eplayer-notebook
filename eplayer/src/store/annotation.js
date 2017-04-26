@@ -43,10 +43,9 @@ export default (state = initialAnnotationData , action) => {
     case 'DELETE_LISTANNOTATION': {
       const annId = action.deleteAnnData.id;
       const  totalData = state.highlightTotalData.filter(ann => ann.id !== annId);
-      const  filteredAnn = state.highlightPageData.filter(pageAnn => pageAnn.id !== annId);
+      // const  filteredAnn = state.highlightPageData.filter(pageAnn => pageAnn.id !== annId);
       return {
         ...state,
-        highlightPageData: filteredAnn,
         highlightTotalData: totalData
       };
     }
