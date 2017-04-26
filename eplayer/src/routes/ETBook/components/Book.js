@@ -15,6 +15,7 @@ import { Annotation } from 'pxe-annotation';
 import { Wrapper } from 'pxe-wrapper';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
+import {apiConstants} from '../../../../const/Constants'
 
 export class Book extends Component {
   constructor(props) {
@@ -189,6 +190,21 @@ export class Book extends Component {
   preferenceBackgroundColor = (theme) => {
     // console.log('theme---',theme);
   }
+
+  goToPage = (pageId) => {
+    let bookObj = {};
+    this.state.pageDetails.playListURL.forEach( (data) => { 
+      if(data.href && data.href.match(pageId.split("OPS")[1]) ) { 
+        bookObj = data;
+      } 
+    });
+    this.goToPageCallback(bookObj.id)
+  }
+
+  listClick = () => {
+    console.log("....** listClick function...")
+  }
+
   render() {
     const callbacks = {};
     const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
@@ -203,6 +219,11 @@ export class Book extends Component {
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
+
+    if(typeof tocData === "object" && tocData && tocData.bookDetails && tocData.bookDetails.indexId ) {
+      bookIndexId = tocData.bookDetails.indexId;
+      searchUrl = apiConstants.SEARCHURL  + bookIndexId +  '&q=searchText' + apiConstants.SEARCHLIMIT;
+    }
     return (
       <div>
         <Header
@@ -216,6 +237,9 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
+          indexId = { {'indexId' : bookIndexId, 'searchUrl' : searchUrl} }
+          goToPage = {(pageId) => this.goToPage(pageId)}
+          listClick = {() => this.listClick()}
         />
            
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
@@ -241,6 +265,7 @@ Book.propTypes = {
   addBookmark: React.PropTypes.func,
   removeBookmark: React.PropTypes.func,
   fetchPreferences: React.PropTypes.func,
+  // goToPage: React.PropTypes.func,
   book: React.PropTypes.object,
   params: React.PropTypes.object,
   dispatch: React.PropTypes.func

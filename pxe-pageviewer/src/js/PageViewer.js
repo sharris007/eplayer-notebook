@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import FooterNav from './FooterNav';
 import {crossRef} from './CrossRef';
 import copyCharLimit from './CopyCharLimit';
+import audioWbWHighlight from './AudioWBWHighlight';
 import HighlightText from './HighlightText';
 import replaceAllRelByAbs from './ConstructUrls';
 import { loadMathMLScript, reloadMathMl } from './MathML';
@@ -257,6 +258,7 @@ class PageViewer extends React.Component {
       reloadMathMl(this);
     } 
     this.setPageTheme();
+    audioWbWHighlight(this);
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
@@ -271,7 +273,7 @@ class PageViewer extends React.Component {
  
   render() {
     const zommLevel = this.props.src.pageZoom ? this.props.src.pageZoom + '%' : '100%';
-    const fontSize = this.props.src.pageFontSize ? this.props.src.pageFontSize + 'px' : '16px';
+    const fontSize = this.props.src.pageFontSize ? (this.props.src.pageFontSize/3.5) + 'px' : '16px';
     return ( 
       <div id = "book-render-component" ref = {(el) => { this.bookComBlock = el; }} tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>

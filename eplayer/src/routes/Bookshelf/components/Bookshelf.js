@@ -79,15 +79,14 @@ componentWillMount() {
 
   render() {
     //console.log(this.props.bookshelf);
-      sessionStorage.setItem('ubd',this.props.bookshelf.uid);
-      sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
-      sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
-      sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
-      sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
-      sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
-      sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
-      sessionStorage.setItem('title',this.props.bookshelf.title);
-      sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+    // sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
+    // sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
+    // sessionStorage.setItem('title',this.props.bookshelf.title);
+    // sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+    // sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
+    // sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
+    // sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
+    // sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
     const firstName =  sessionStorage.getItem('firstName');
     const lastName = sessionStorage.getItem('lastName');
     const { books, fetching, fetched, error } = this.props.bookshelf;
