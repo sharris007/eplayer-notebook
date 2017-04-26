@@ -352,7 +352,8 @@ Annotator.Editor = (function(_super) {
     if (event.keyCode === 27) {
       return this.hide();
     } else if (event.keyCode === 13 && !event.shiftKey) {
-      return this.submit();
+      // return this.submit();
+      event.stopPropagation();
     }
   };
 
