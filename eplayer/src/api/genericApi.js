@@ -70,7 +70,7 @@ export const getTocDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}
   }
 });
 
-export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=true', { // eslint-disable-line no-undef
+export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=false', { // eslint-disable-line no-undef
   method: 'GET',
   headers: {
     Accept: 'application/json',

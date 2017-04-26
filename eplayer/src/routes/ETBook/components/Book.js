@@ -69,6 +69,26 @@ export class Book extends Component {
         if(nextProps.params.pageId){
            pageParameters.currentPageURL        =filteredData;
         }
+
+    }
+    if(nextProps.isGoToPageRecived){
+          const goToHref = nextProps.gotoPageObj.page.href.split('#')[0]; 
+          const goToArr = [];      
+           find(pageParameters.playListURL, function(list) {
+             if( list.hasOwnProperty('href')) { 
+              if(list.href && list.href.match(goToHref)) {
+                goToArr.push(list);
+               }                 
+            }
+        });
+        pageParameters.currentPageURL =goToArr[0];
+        this.setState({pageDetails : pageParameters});
+        const gotoFlag = true;
+        // if(gotoFlag){
+        //   browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${goToArr[0].id}`);   
+        //   gotoFlag =false;
+        // }
+        
     }
   }
   navChanged = () => {
@@ -130,7 +150,6 @@ export class Book extends Component {
  } 
 
  goToPageClick = (getPageNumber) => {
-  console.log("goToTextClickCallBack", getPageNumber);
   if(getPageNumber){
   const bookId = this.props.params.bookId;
   const goToPageObj = {
@@ -139,9 +158,8 @@ export class Book extends Component {
       pagenumber:getPageNumber,
       baseurl: this.state.pageDetails.baseUrl
     }
-  this.props.dispatch(getGotoPageCall(goToPageObj));
-  }
-   // let goToTextValue = this.state.goToTextVal.trim();   
+    this.props.dispatch(getGotoPageCall(goToPageObj));
+    }
   }
 
   viewerContentCallBack = (viewerCallBack) => {
@@ -228,10 +246,10 @@ export class Book extends Component {
   
 
   render() {
+
     const callbacks = {};
-    const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
+    const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived, gotoPageObj, isGoToPageRecived} = this.props; // eslint-disable-line react/prop-types
     const annData  = annotationData.rows;
-    
     this.props.book.annTotalData  = annotationTotalData;
     this.props.book.toc           = tocData;
     this.props.book.bookmarks     = bookMarkData;
@@ -242,10 +260,11 @@ export class Book extends Component {
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
 
-    if(typeof tocData === "object" && tocData && tocData.bookDetails && tocData.bookDetails.indexId ) {
-      bookIndexId = tocData.bookDetails.indexId;
-      searchUrl = apiConstants.SEARCHURL  + bookIndexId +  '&q=searchText' + apiConstants.SEARCHLIMIT;
-    }
+    // if(typeof tocData === "object" && tocData && tocData.bookDetails && tocData.bookDetails.indexId ) {
+
+    //   bookIndexId = tocData.bookDetails.indexId;
+    //   searchUrl = apiConstants.SEARCHURL  + bookIndexId +  '&q=searchText' + apiConstants.SEARCHLIMIT;
+    // }
     return (
       <div>
         <Header
@@ -259,9 +278,10 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
-          indexId = { {'indexId' : bookIndexId, 'searchUrl' : searchUrl} }
+          // indexId = { {'indexId' : bookIndexId, 'searchUrl' : searchUrl} }
           goToPage = {(pageId) => this.goToPage(pageId)}
           listClick = {() => this.listClick()}
+          goToPageClick = {this.goToPageClick}
         />
            
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
@@ -310,8 +330,8 @@ const mapStateToProps = state => {
     tocReceived          : state.playlistReducer.tocReceived,
     isBookmarked         : state.bookmarkReducer.data.isBookmarked,
     bookMarkData         : state.bookmarkReducer.bookmarksData,
-    gotoPageObj : state.gotopageReducer.gotoPageObj,
-    isGoToPageRecived : state.gotopageReducer.isGoToPageRecived
+    gotoPageObj          : state.gotopageReducer.gotoPageObj,
+    isGoToPageRecived    : state.gotopageReducer.isGoToPageRecived
   }
 };// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign
