@@ -497,6 +497,7 @@ export class PdfBookReader extends Component {
           title={this.props.bookshelf.title}
           curbookID={this.props.params.bookId}
           isET1='Y'
+          disableBackgroundColor='true'
           serverDetails={this.props.bookshelf.serverDetails}
           drawerOpen={drawerOpen}
           indexId={ {'searchUrl' : searchUrl} }
