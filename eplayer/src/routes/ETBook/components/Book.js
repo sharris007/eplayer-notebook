@@ -1,8 +1,6 @@
   /* eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { PageViewer } from '@pearson-incubator/pxe-pageviewer';
-import { Annotation } from 'pxe-annotation';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
@@ -14,13 +12,16 @@ import { getBookCallService, getPlaylistCallService} from '../../../actions/play
 import { getGotoPageCall } from '../../../actions/gotopage';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
-import {Wrapper} from 'pxe-wrapper';
-import {PopUpInfo} from '@pearson-incubator/popup-info';
+import { PageViewer } from '@pearson-incubator/pxe-pageviewer';
+import { Annotation } from 'pxe-annotation';
+import { Wrapper } from 'pxe-wrapper';
+import { PopUpInfo } from '@pearson-incubator/popup-info';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
+import {apiConstants} from '../../../../const/Constants'
 
 export class Book extends Component {
   constructor(props) {
       super(props);
-      console.log('props: ', props);
       this.state = {
         classname: 'headerBar',
         viewerContent: true,
@@ -30,8 +31,12 @@ export class Book extends Component {
         currentPageTitle:'',
         annAttributes :'',
         popUpCollection:'',
-        tocUrl :'',
         tocUpdated:false,
+        urlParams:{
+          context :this.props.params.bookId,
+          user:'epluser'
+        },
+        annAttributes:customAttributes,
         goToTextVal:''
       };
       this.divGlossaryRef = '';
@@ -41,31 +46,31 @@ export class Book extends Component {
       document.body.addEventListener('navChanged', this.navChanged);
   }
   componentWillMount  = () => {
-    const bookId      = this.props.params.bookId;
-    const pageId      = this.props.params.pageId;
-    const userId      = 'epluser';
-    const queryString = {
-        context : bookId,
-        user    : userId,
-        id      : pageId
-    }
-    this.props.dispatch(getTotalBookmarkCallService(queryString));
-    this.props.dispatch(getBookCallService(bookId));
-    this.props.dispatch(getTotalAnnCallService(queryString));
+    this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
+    this.props.dispatch(getBookCallService(this.state.urlParams.context));
+    this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
   }
-  componentDidMount() {   
-    this.setState({
-      annAttributes:customAttributes
-    });
-  }
-
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
   }
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   };
-
+  componentWillReceiveProps(nextProps){
+    const playlistData = nextProps.playlistData;
+    const pageParameters = this.state.pageDetails;
+    if(nextProps.playlistReceived){
+       const filteredData = find(playlistData.content, list => list.id === nextProps.params.pageId);
+          pageParameters.baseUrl                = playlistData.baseUrl;
+        if(pageParameters.currentPageURL === ""){
+          pageParameters.currentPageURL =(playlistData.content[0].playOrder==0)?playlistData.content[1]:playlistData.content[0];
+        }
+        pageParameters.playListURL            = playlistData.content; 
+        if(nextProps.params.pageId){
+           pageParameters.currentPageURL        =filteredData;
+        }
+    }
+  }
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
     this.nodesToUnMount = [];
@@ -73,84 +78,47 @@ export class Book extends Component {
   }
 
   removeAnnotationHandler = (annotationId) => {
-    const queryString = {
-        context : this.props.params.bookId,
-        user    :'epluser',
-        id      : annotationId
-    }
-    this.props.dispatch(deleteAnnCallService(queryString));
+    const deleteAnnData = $.extend(this.state.urlParams,{annId:annotationId});
+    this.props.dispatch(deleteAnnCallService(deleteAnnData));
   };
 
   addBookmarkHandler = () => {
-    const bookmarkDetails = this.state.currentPageDetails;
-    
+    const bMarkData = this.state;
     const bookmark = {
-        uri: bookmarkDetails.id,
+        uri: bMarkData.urlParams.id,
         data: {
-          baseUrl: this.state.pageDetails.baseUrl
+          baseUrl: bMarkData.pageDetails.baseUrl
         },
-        title: bookmarkDetails.title,
-        labels:[bookmarkDetails.title],
-        user:'epluser',
-        context:this.props.params.bookId
+        title: bMarkData.currentPageTitle,
+        labels:[bMarkData.currentPageTitle],
+        context:bMarkData.urlParams.context,
+        user:bMarkData.urlParams.user
     };
-    const queryString = {
-      context : this.props.params.bookId,
-      uri     : this.props.params.pageId,
-      user    :'epluser',
-      id      : this.props.params.pageId
-    }
-    
-    this.props.dispatch(postBookmarkCallService(bookmark));
-    const that = this;
-    setTimeout(function(){
-      that.props.dispatch(getTotalBookmarkCallService(queryString));
-    },2000)
-    
+    this.props.dispatch(postBookmarkCallService(bookmark));    
   }
 
   removeBookmarkHandler = (bookmarkId) => {
-    
-    if(!bookmarkId){
-      bookmarkId = this.state.currentPageDetails.id;
-    }
-    const bookmarkDetails = this.state.currentPageDetails;
-    const pageUri = encodeURIComponent(bookmarkDetails.href);  
-    const deleteData = {
-      user:'epluser',
-      context:this.props.params.bookId,
-      uri:bookmarkId
-    }  
-    this.props.dispatch(deleteBookmarkCallService(deleteData));
-    const that = this;
-    const queryString = {
-      context : this.props.params.bookId,
-      uri     : this.props.params.pageId,
-      user    :'epluser',
-      id      : this.props.params.pageId
-    }
-    setTimeout(function(){
-      that.props.dispatch(getTotalBookmarkCallService(queryString));
-    },2000)
+    this.state.urlParams.uri = (bookmarkId ? bookmarkId : this.state.currentPageDetails.id);
+    this.forceUpdate();
+    this.props.dispatch(deleteBookmarkCallService(this.state.urlParams));
   };
 
   onPageChange = (type, data) => {
-    this.setState({ currentPageDetails: data  });
-    const pageId = data.id;
-    const bookId = this.props.params.bookId;
-    const playOrder = data.playOrder;
-    this.setState({ currentPageTitle :data.title  });
-    // eslint-disable-next-line
-    const pageUri = encodeURIComponent(data.href);
-    const queryString = {
-      context : bookId,
-      uri     : pageUri,
-      user    :'epluser',
-      id:pageId
-    }
-    this.props.dispatch(getAnnCallService(queryString));
-    this.props.dispatch(getBookmarkCallService(queryString));
-    browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
+    const parameters = this.state.urlParams;
+    parameters.id    = data.id,
+    parameters.uri   = encodeURIComponent(data.href),
+    data.uri         = data.href;
+    data.label       = data.title;
+    this.setState({ 
+      currentPageDetails :data,
+      currentPageTitle   :data.title, 
+      urlParams:parameters
+    },function(){
+      // eslint-disable-next-line
+      this.props.dispatch(getAnnCallService(this.state.urlParams));
+      this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+      browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+    });
   }
 
   isCurrentPageBookmarked = () => {
@@ -182,36 +150,25 @@ export class Book extends Component {
     this.setState({ drawerOpen: true });
   }
   goToPageCallback = (pageId) => {
-    const that=this;
     const currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
     const playpageDetails  = this.state.pageDetails ; 
     playpageDetails.currentPageURL =  currentData;
     playpageDetails.tocUpdated  = true;
     this.setState({
-      pageDetails: playpageDetails      
+      pageDetails: playpageDetails,
+      drawerOpen: false      
     });
-    this.setState({ drawerOpen: false });
     this.viewerContentCallBack(true);
-    const bookId = this.props.params.bookId;
-    browserHistory.replace(`/eplayer/ETbook/${bookId}/page/${pageId}`);
+    browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
   };
   annotationCallBack = (eventType, data) => {
-      const that=this;
-      const queryString = {
-        context : this.props.params.bookId,
-        user    :'epluser'
-      }
       const receivedAnnotationData    = data;
       receivedAnnotationData.user     = "epluser";
       receivedAnnotationData.context  = this.props.params.bookId;
-      receivedAnnotationData.source   = {
-          "uri": this.state.currentPageDetails.href,
-          "id":  this.state.currentPageDetails.id,
-          "label": this.state.currentPageDetails.title,
-          "playOrder": this.state.currentPageDetails.playOrder,
-          "baseUrl": this.state.currentPageDetails.baseUrl
-      }
-      
+      receivedAnnotationData.source   = this.state.currentPageDetails;
+      receivedAnnotationData.source.baseUrl = this.state.pageDetails.baseUrl;
+      delete receivedAnnotationData.source.href;
+      delete receivedAnnotationData.source.title;
       switch (eventType) {
           case 'annotationCreated': {
             return this.props.dispatch(postAnnCallService(receivedAnnotationData));
@@ -220,6 +177,7 @@ export class Book extends Component {
             return this.props.dispatch(putAnnCallService(receivedAnnotationData));
           }
           case 'annotationDeleted': {
+              receivedAnnotationData.annId    = data.id;
               return this.props.dispatch(deleteAnnCallService(receivedAnnotationData));
           }
           default : {
@@ -254,91 +212,40 @@ export class Book extends Component {
   preferenceBackgroundColor = (theme) => {
     // console.log('theme---',theme);
   }
+   goToPage = (pageId) => {
+    let bookObj = {};
+    this.state.pageDetails.playListURL.forEach( (data) => { 
+      if(data.href && data.href.match(pageId.split("OPS")[1]) ) { 
+        bookObj = data;
+      } 
+    });
+    this.goToPageCallback(bookObj.id)
+  }
+
+  listClick = () => {
+    console.log("....** listClick function...")
+  }
+  
+
   render() {
-    
     const callbacks = {};
-    let annData = [];
-    const { annotionData, loading ,playlistData, playlistReceived, tocData ,tocReceived, gotoPageObj, isGoToPageRecived} = this.props;// eslint-disable-line react/prop-types
-
-    annData  = annotionData.rows;
-    const filteredData = find(playlistData.content, list => list.id === this.props.params.pageId);
-    if(Array.isArray(annotionData)==false && annotionData.rows==undefined){
-      annData = [];
-      annData.push(annotionData);
-    }
-
-    const bookmarksDataMap = this.props.bookMarkData.bookmarksData.bookmarks;
-    if(bookmarksDataMap && bookmarksDataMap.length>0){
-      for(let i=0;i<bookmarksDataMap.length;i++){
-        bookmarksDataMap[i].id =bookmarksDataMap[i].uri;
-      }
-    }
-    const annListArray = [];
-    if(this.props.annotionTotalData){
-      const colorArr = {
-        '#55DF49':"Green",
-        '#FC92CF':"Pink",
-        '#FFD232':"Yellow"
-      }
-      const annTotalList = this.props.annotionTotalData.rows;
-      if(annTotalList && annTotalList.length>0){
-        for(let i=0;i<annTotalList.length;i++){
-          const setArray = {
-            pageId: annTotalList[i].source.id,
-            id: annTotalList[i].id,
-            author: annTotalList[i].user,
-            time: annTotalList[i].createdTimestamp,
-            text: annTotalList[i].quote,
-            comment: annTotalList[i].text||'',
-            color: colorArr[annTotalList[i].color]||"Green"
-          }
-          annListArray.push(setArray);
-        }
-      }
-      this.props.book.annTotalData = annListArray;
-    }
+    const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
+    const annData  = annotationData.rows;
     
-    this.props.book.toc       = tocData;
-    this.props.book.bookmarks = bookmarksDataMap;
-    if(playlistReceived){
-        this.state.pageDetails.baseUrl                = playlistData.baseUrl;
-        if(this.state.pageDetails.currentPageURL === ""){
-          this.state.pageDetails.currentPageURL =(playlistData.content[0].playOrder==0)?playlistData.content[1]:playlistData.content[0];
-        }
-        this.state.pageDetails.playListURL            = playlistData.content; 
-        if(this.props.params.pageId){
-           this.state.pageDetails.currentPageURL =filteredData;
-        }
-        //console.log("params", this.state.pageDetails);
-        if(isGoToPageRecived){
-          const goToPageHref = gotoPageObj.page.href;
-          const ghref = goToPageHref.split('#')[0];
-          //console.log("1goToPageHref", goToPageHref);
-          const getGoToPageData = [];
-          //const getGoToPageData = find(this.state.pageDetails.playListURL, list => list.href === goToPageHref);
-           find(this.state.pageDetails.playListURL, function(list) { 
-             if( list.hasOwnProperty('href')) { 
-              //console.log("$$$", list.href + 'ddd' +list.playOrder);
-              if(list.href && list.href.match(ghref)) {
-                 console.log("List1 >>>>>>>>>", list);
-                 this.state.pageDetails.currentPageURL = list;
-                 this.setState({pageDetails : pageDetails});
-
-               }                 
-              }
-            
-             });
-           
-          //this.state.pageDetails.currentPageURL = getGoToPageData;
-          console.log("123", getGoToPageData);
-        }
-    }
+    this.props.book.annTotalData  = annotationTotalData;
+    this.props.book.toc           = tocData;
+    this.props.book.bookmarks     = bookMarkData;
+    
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
     callbacks.addBookmarkHandler      = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
 
+    if(typeof tocData === "object" && tocData && tocData.bookDetails && tocData.bookDetails.indexId ) {
+      bookIndexId = tocData.bookDetails.indexId;
+      searchUrl = apiConstants.SEARCHURL  + bookIndexId +  '&q=searchText' + apiConstants.SEARCHLIMIT;
+    }
     return (
       <div>
         <Header
@@ -352,15 +259,19 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
-          goToPageClick = {this.goToPageClick}
+          indexId = { {'indexId' : bookIndexId, 'searchUrl' : searchUrl} }
+          goToPage = {(pageId) => this.goToPage(pageId)}
+          listClick = {() => this.listClick()}
         />
+           
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
+            {!playlistReceived ? <RefreshIndicator size={50} left={650} top={200} status="loading" /> :''}
             {playlistReceived ? <div className="printBlock"><button type="button" onClick={this.printFun} >Print</button> </div>: '' }
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
-            currentPageDetails={ this.state.pageDetails.currentPageURL} annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
+            annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
             {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = 'book-container'/> : '' }
-            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
+            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryryRef = dom }} style = {{ display: 'none' }}>  </div>
           </div>
       </div>
     );
@@ -388,20 +299,20 @@ Book.contextTypes = {
 };
 
 const mapStateToProps = state => {
-  console.log("storeData", state.gotopageReducer.gotoPageObj);
-      return { 
-        annotionData: state.annotationReducer.data,
-        annotionTotalData: state.annotationReducer.totalAnndata,  
-        loading: state.annotationReducer.loading, 
-        playlistData: state.playlistReducer.data,
-        playlistReceived :state.playlistReducer.playlistReceived,
-        tocData: state.playlistReducer.tocdata,
-        tocReceived :state.playlistReducer.tocReceived,
-        isBookmarked :state.bookmarkReducer.data.isBookmarked,
-        bookMarkData : state.bookmarkReducer,
-        gotoPageObj : state.gotopageReducer.gotoPageObj,
-        isGoToPageRecived : state.gotopageReducer.isGoToPageRecived
-      }
+ return  { 
+    annotationData       : state.annotationReducer.highlightPageData,
+    annDataloaded        : state.annotationReducer.annDataloaded, 
+    annotationTotalData  : state.annotationReducer.highlightTotalData,  
+    annTotalDataLoaded   : state.annotationReducer.annTotalDataLoaded, 
+    playlistData         : state.playlistReducer.data,
+    playlistReceived     : state.playlistReducer.playlistReceived,
+    tocData              : state.playlistReducer.tocdata,
+    tocReceived          : state.playlistReducer.tocReceived,
+    isBookmarked         : state.bookmarkReducer.data.isBookmarked,
+    bookMarkData         : state.bookmarkReducer.bookmarksData,
+    gotoPageObj : state.gotopageReducer.gotoPageObj,
+    isGoToPageRecived : state.gotopageReducer.isGoToPageRecived
+  }
 };// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign
 export default Book;

@@ -146,6 +146,11 @@ export class Header extends React.Component {
     }
   }
 
+  goToPage = (pageId) => {
+    this.props.goToPage(pageId);
+    this.setState({ searchOpen: false });
+  }
+
   render() {
 
     const style = {
@@ -264,7 +269,7 @@ export class Header extends React.Component {
                 <Icon name="search-lg-18" />
               </div>
               <div className="searchContainer">
-                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={this.props.goToPage}/> : <div className="empty" />}
+                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={(pageId)=>this.goToPage(pageId)} indexId = {this.props.indexId} listClick = {this.props.listClick}/> : <div className="empty" />}
               </div>
               <div className="moreIcon">
                 <MoreMenuComponent store={this.props.store} />

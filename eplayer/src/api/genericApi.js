@@ -40,7 +40,7 @@ export const putAnnData = data => fetch(`${apiConstants.PXESERVICE}/context/${da
 });
 
 export const deleteAnnData = data =>
- fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
+ fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations/${data.annId}`, {// eslint-disable-line no-undef
   method: 'DELETE',
   headers: {
     Accept: 'application/json',

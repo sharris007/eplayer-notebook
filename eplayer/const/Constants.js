@@ -7,7 +7,8 @@ export const apiConstants = {
  // PAPERBASE :'https://etext-stg.pearson.com/api/nextext-api/api/nextext',
   BOOK: 'https://api.mongolab.com/api/1/databases/team4/collections/students',
   APIKEY: 'AgffBG36UOuFvRNORM8Y1ACvA1FdJwN8',
-  GOTOPAGEPROVIDER : 'https://content.stg-openclass.com/eps/pearson-reader/api/item'
+  SEARCHURL: 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm/search?indexId=',
+  SEARCHLIMIT: '&s=0&n=100'
 };
 
 export const typeConstants = {
@@ -15,7 +16,7 @@ export const typeConstants = {
   GET_ANNOTATION: 'GET_ANNOTATION',
   POST_ANNOTATION: 'POST_ANNOTATION',
   PUT_ANNOTATION: 'PUT_ANNOTATION',
-  DELETE_ANNOTATION: 'DELETE_ANNOTATION',
+  DELETE_LISTANNOTATION: 'DELETE_LISTANNOTATION',
   GET_PLAYLIST: 'GET_PLAYLIST',
   GET_TOC: 'GET_TOC',
   GET_BOOKMARK:'GET_BOOKMARK',

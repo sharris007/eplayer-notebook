@@ -25,12 +25,17 @@ export const postBookmarkData = json => ({
 });
 
 export const postBookmarkCallService = filterData => dispatch => BookmarkApi.doPostBookmark(filterData)
-    .then(
-        response => response.json()
-      )
-    .then(
-        json => dispatch(postBookmarkData(json))
-    );
+    .then(response => response.json())
+    .then(json => {
+      dispatch(postBookmarkData(json))
+      const bookmarks = [];
+      bookmarks.push(json);
+      const bdata = {
+          bookmarks :bookmarks
+      }
+      const bookmarksDataMap = bookmarkStructureChange(bdata);
+      dispatch(getTotalBookmarkData(bookmarksDataMap));
+    });
  
  // DELETE call for Bookmark
 export const deleteBookmarkData = json => ({
@@ -55,10 +60,19 @@ export const getTotalBookmarkData = json => ({
 
 export const getTotalBookmarkCallService = filterData => dispatch => 
     BookmarkApi.doTotalBookmark(filterData)
-    .then(
-        response => response.json()
-      )
-    .then(
-        json => dispatch(getTotalBookmarkData(json))
+    .then(response => response.json())
+    .then(json => {
+          const bookmarksDataMap = bookmarkStructureChange(json);
+          dispatch(getTotalBookmarkData(bookmarksDataMap))
+        }
     );
  
+ function bookmarkStructureChange(blist){
+    const bookmarksDataMap = blist.bookmarks;
+    if(bookmarksDataMap && bookmarksDataMap.length>0){
+        for(let i=0;i<bookmarksDataMap.length;i++){
+          bookmarksDataMap[i].id =bookmarksDataMap[i].uri;
+        }
+    }
+    return bookmarksDataMap;
+ }

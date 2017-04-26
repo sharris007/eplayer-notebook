@@ -5,6 +5,7 @@ import WidgetManager from '../../../components/widget-integration/widgetManager'
 import Header from '../../../components/Header';
 import './PdfBook.scss';
 import {Link, browserHistory } from 'react-router';
+import CircularProgress from 'material-ui/CircularProgress';
 var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails;
 
 export class PdfBookReader extends Component {
@@ -13,6 +14,8 @@ export class PdfBookReader extends Component {
     this.state = {
       classname: 'headerBar',
       currPageIndex:'',
+      pageLoaded: false,
+      isFirstPageBeingLoad: true,
       data  : {
         currentPageNo : '',
         isFirstPage : true,
@@ -48,11 +51,16 @@ export class PdfBookReader extends Component {
         ssoKey = sessionStorage.getItem('ssoKey');
         serverDetails = sessionStorage.getItem('serverDetails');
     }else{
+        // sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
+        // sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
+        // sessionStorage.setItem('title',this.props.bookshelf.title);
+        // sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
         sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
         sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
         sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
         sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
         sessionStorage.setItem('globalbookid',this.props.book.bookinfo.book.globalbookid);
+        sessionStorage.removeItem('currentPageOrder');
         title = this.props.bookshelf.title;
         authorName = this.props.bookshelf.authorName;
         thumbnail = this.props.bookshelf.thumbnail;
@@ -62,7 +70,13 @@ export class PdfBookReader extends Component {
     this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
     this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
     const firstPage="firstPage";
-    this.goToPage(firstPage);
+    //this.goToPage(firstPage);
+    if(sessionStorage.getItem("currentPageOrder")){
+       this.goToPageCallback(Number(sessionStorage.getItem("currentPageOrder")));
+    }else{
+      this.goToPage(firstPage);
+   }
+
     /*var etext_token =this.props.bookshelf.cdnToken;
     var headerParams = {
        'etext-cdn-token' : etext_token 
@@ -80,9 +94,10 @@ export class PdfBookReader extends Component {
   };
     __pdfInstance.createPDFViewer(config);*/
   }
-  loadPdfPage = (pdfPath,currentPageIndex) =>
+  loadPdfPage = (currentPageIndex) =>
   {
-    
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageIndex);
+    const pdfPath=currentPage.pdfPath;
     var config = {
     host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
     //PDFassetURL: this.props.bookshelf.uPdf,
@@ -94,13 +109,27 @@ export class PdfBookReader extends Component {
   };
     __pdfInstance.createPDFViewer(config);
     this.setState({currPageIndex: currentPageIndex});
+    var data = this.state.data;
+     if(currentPageIndex == 1){
+      data.isFirstPage =true;
+     }else{
+       data.isFirstPage =false; 
+     }
+     if(currentPageIndex == this.getPageCount()){
+       data.isLastPage =true;
+     }else{
+      data.isLastPage =false;
+     }
+     data.currentPageNo = currentPageIndex;
+     this.setState({data : data});
   }
   pdfBookCallback = (currentPageIndex) => {
      //this.setState({currPageIndex : currentPageIndex});
      const currentPageOrder=this.state.currPageIndex;
+     sessionStorage.setItem("currentPageOrder",this.state.currPageIndex);
      //const currentPageOrder = 2;
      //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageOrder);
-     var data = this.state.data;
+     /*var data = this.state.data;
      if(currentPageOrder == 1){
       data.isFirstPage =true;
       //this.setState({data : data})
@@ -116,8 +145,13 @@ export class PdfBookReader extends Component {
       //this.setState({data : data})
      }
      data.currentPageNo = currentPageOrder;
-     this.setState({data : data});
-     this.displayHighlight();
+     this.setState({data : data});*/
+     this.setState({pageLoaded : true});
+     if(this.state.isFirstPageBeingLoad === true)
+     {
+      this.setState({isFirstPageBeingLoad:false});
+     } 
+     //this.displayHighlight();
    
      // If already page details are in store then we do not hit fetchPageInfo again
      /*if(currentPage===undefined)
@@ -136,6 +170,7 @@ export class PdfBookReader extends Component {
   goToPage = (navType) =>{
      //var currPageIndex=__pdfInstance.getCurrentPage();
      //this.setState({currPageIndex: currPageIndex});
+     this.setState({pageLoaded : false});
     var currPageIndex=this.state.currPageIndex;
     var pageIndexToLoad;
     if(navType=="prev"){
@@ -155,50 +190,83 @@ export class PdfBookReader extends Component {
       //this.setState({currPageIndex: 1});
       pageIndexToLoad=1;
     }
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageIndexToLoad);
-    if(currentPage===undefined)
+    //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageIndexToLoad);
+    const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
+    if(totalPagesToHit!==undefined)
     {
     this.props.fetchPageInfo(this.props.book.userInfo.userid,
       this.props.params.bookId,
       this.props.params.bookId,
       this.props.book.bookinfo.book.bookeditionid,
       pageIndexToLoad,
+      totalPagesToHit,
       ssoKey,
       serverDetails,this.loadPdfPage
       );
     }
-    else
+    /*else
     {
       this.loadPdfPage(currentPage.pdfPath,currentPage.pageorder);
-    }
+    }*/
   };
 
   goToPageCallback(pageNum)
   {  
+    this.setState({pageLoaded : false}); 
     //pageNum=pageNum-1;
     if(pageNum>0)
     {
       //__pdfInstance.gotoPdfPage(pageNum);
       //var currPageIndex=__pdfInstance.getCurrentPage();
-      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageNum);
-    if(currentPage===undefined)
+      //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageNum);
+     const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageNum);
+    if(totalPagesToHit!=="")
     {
     this.props.fetchPageInfo(this.props.book.userInfo.userid,
       this.props.params.bookId,
       this.props.params.bookId,
       this.props.book.bookinfo.book.bookeditionid,
       pageNum,
+      totalPagesToHit,
       ssoKey,
       serverDetails,this.loadPdfPage
       );
     }
-    else
+    /*else
     {
       this.loadPdfPage(currentPage.pdfPath,currentPage.pageorder);
-    }
+    }*/
     }
   }
-
+  getPageOrdersToGetPageDetails = (pageOrderToNav) => {
+    var prevPageCount=0;
+    var nextPageCount=0;
+    var totalPagesToHit="";
+    var pageOrder=pageOrderToNav;
+    var totalPageCount=this.getPageCount();
+    while(prevPageCount<=5 && pageOrder>0)
+    {
+      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageOrder);
+      if(currentPage===undefined)
+      {
+        totalPagesToHit=totalPagesToHit+pageOrder+",";
+        prevPageCount++;
+      }
+      pageOrder--;
+    }
+    pageOrder=pageOrderToNav+1;
+    while(nextPageCount<5 && pageOrder<=totalPageCount)
+    {
+      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageOrder);
+      if(currentPage===undefined)
+      {
+        totalPagesToHit=totalPagesToHit+pageOrder+",";
+        nextPageCount++;
+      }
+      pageOrder++;
+    }
+    return totalPagesToHit;
+  }
   getPageCount = () => {
 
     //var pagecount = __pdfInstance.getPageCount();
@@ -210,17 +278,25 @@ export class PdfBookReader extends Component {
     //var currPageIndex=__pdfInstance.getCurrentPage();
     //var currPageNumber=currPageIndex + 1;
     var currPageNumber = this.state.currPageIndex;
-    var page;
+    var pageNo;
     if(pageType=="prev"){
-      page=currPageNumber - 1;
+      pageNo=currPageNumber - 1;
     }
     else if(pageType=="next"){
-      page=currPageNumber + 1;
+      pageNo=currPageNumber + 1;
     }
     else if(pageType=="last"){
-      page=this.getPageCount();   
+      pageNo=this.getPageCount();   
     }
-    return (page);
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageNo);
+    if(currentPage===undefined)
+    {
+      return pageNo;
+    }
+    else
+    {
+      return (currentPage.pagenumber);
+    }
   }
 
   /*getCurrentPageIndex = () => {
@@ -270,13 +346,14 @@ export class PdfBookReader extends Component {
   addBookmarkHandler = () => {
     //const currentPageId=__pdfInstance.getCurrentPage()+1;
     const currentPageId = this.state.currPageIndex; 
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
     var currTimeInMillsc = (new Date).getTime();
     const bookmark = {
       id: currentPageId,
       uri:currentPageId,
       createdTimestamp:currTimeInMillsc,
-      pageID:currentPage.pageid
+      pageID:currentPage.pageid,
+      bookPageNumber:currentPage.pagenumber
     };
     this.props.addBookmark(this.props.params.bookId, bookmark,this.props.book.bookinfo.book.bookeditionid,
       this.props.book.bookinfo.userbook.userbookid,currentPage.pageid,ssoKey,
@@ -294,7 +371,7 @@ export class PdfBookReader extends Component {
       //currentPageId =__pdfInstance.getCurrentPage()+1;
       currentPageId = this.state.currPageIndex;
     }
-    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
+    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri == currentPageId);
     //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
     const targetBookmarkId = targetBookmark.uri;
     this.props.removeBookmark(this.props.params.bookId, targetBookmarkId,this.props.book.bookinfo.book.bookeditionid,
@@ -312,7 +389,7 @@ export class PdfBookReader extends Component {
   isCurrentPageBookmarked = () => {
     //const currentPageId=__pdfInstance.getCurrentPage()+1;
     const currentPageId = this.state.currPageIndex;
-    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
+    const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri == currentPageId);
     return !(targetBookmark === undefined);
   };
 
@@ -324,7 +401,7 @@ export class PdfBookReader extends Component {
     var highlightID = '';
     var highlights = [];
     const currentPageId=this.state.currPageIndex;
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageId);
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
     var highlightHashes = currentHighlight.highlightHash;
     var highlightHash = highlightHashes.split("@")[0].trim().replace(/(\r\n|\n|\r)/gm,"").replace(/['"]+/g, '');
     console.log("highlightHash "+highlightHash);
@@ -343,7 +420,7 @@ export class PdfBookReader extends Component {
       console.log("thirdValue "+thirdValue);
       var fourthValue = highLightHashArray[j+4].split('}')[0];
       console.log("fourthValue "+fourthValue);
-      this.props.saveHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.userbook.userbookid, this.props.book.bookinfo.book.bookeditionid, currentPage.pageid, currentPage.pagenumber, firstValue, secondValue, thirdValue, fourthValue, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+      this.props.saveHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.userbook.userbookid, this.props.book.bookinfo.book.bookeditionid, currentPage.pageid, currentPage.pagenumber, firstValue, secondValue, thirdValue, fourthValue, ssoKey, serverDetails)
       .then(() => {
         highlightID = this.props.book.highlightID
         currentHighlight.id = highlightID;
@@ -370,7 +447,7 @@ export class PdfBookReader extends Component {
    
   }
   displayHighlight = () =>{
-    this.props.fetchHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.book.bookeditionid, this.state.currPageIndex, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+    this.props.fetchHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.book.bookeditionid, this.state.currPageIndex, ssoKey, serverDetails)
     .then(()=> {
      this.setState({highlightList : this.props.book.highlights});
      __pdfInstance.restoreHighlights(this.state.highlightList, this.deleteHighlight);
@@ -378,7 +455,7 @@ export class PdfBookReader extends Component {
   }
   deleteHighlight = (id) => {
 
-    this.props.removeHighlight(id, this.props.bookshelf.ssoKey, this.props.bookshelf.serverDetails)
+    this.props.removeHighlight(id, ssoKey, serverDetails)
 
   }
 
@@ -391,6 +468,15 @@ export class PdfBookReader extends Component {
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPageCallback.bind(this);
     const drawerOpen=true;
+    var viewerClassName;
+    if(this.state.pageLoaded!==true)
+    {
+      viewerClassName="hideViewerContent";
+    }
+    else
+    {
+      viewerClassName="";
+    }
     return (
  
     <div className={'add'} >
@@ -412,8 +498,8 @@ export class PdfBookReader extends Component {
           drawerOpen={drawerOpen}
         /> 
       
-       <div className="viewerContent">
-       <ViewerComponent data={this.state.data} pages={this.props.book.viewer.pages} goToPageCallback={this.goToPage} getPrevNextPage={this.getPrevNextPage} isET1='Y'/>
+      <div className="eT1viewerContent">
+       {this.state.isFirstPageBeingLoad !== true ? <ViewerComponent data={this.state.data} pages={this.props.book.viewer.pages} goToPageCallback={this.goToPage} getPrevNextPage={this.getPrevNextPage} isET1='Y'/>:null}
       </div>
       </div>
         <div>
@@ -421,14 +507,17 @@ export class PdfBookReader extends Component {
             <div id="mainContainer" className="pdf-fwr-pc-main">
                 <div id="right" className="pdf-fwr-pc-right">
                  <div id="toolbar" className="pdf-fwr-toolbar"></div>
-                  <div id="frame">
-                    <div id="docViewer"  className="docViewer" onMouseUp={this.createHighlight.bind(this)}></div>
+                  <div id="frame" className={viewerClassName}>
+                    <div id="docViewer"  className="docViewer" ></div>
                   </div>
                  </div>
                 </div>
             </div>
         </div>
-        
+         {this.state.pageLoaded !== true ?
+                  <div className="centerCircularBar">
+                  <CircularProgress style={{ margin: '40px auto', display: 'block' }} />
+                  </div> : null}
     </div>
     );
   }
