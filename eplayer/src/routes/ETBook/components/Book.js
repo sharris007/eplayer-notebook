@@ -85,10 +85,7 @@ export class Book extends Component {
             }
         });
         pageParameters.currentPageURL =goToArr[0];
-
-        this.goToPageCallback(goToArr[0].id);
-        
-         
+        this.goToPageCallback(goToArr[0].id);   
     }
   }
   
@@ -267,12 +264,6 @@ export class Book extends Component {
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
-
-    // if(typeof tocData === "object" && tocData && tocData.bookDetails && tocData.bookDetails.indexId ) {
-
-    //   bookIndexId = tocData.bookDetails.indexId;
-    //   searchUrl = apiConstants.SEARCHURL  + bookIndexId +  '&q=searchText' + apiConstants.SEARCHLIMIT;
-    // }
     return (
       <div>
         <Header
