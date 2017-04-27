@@ -43,6 +43,8 @@ export class Book extends Component {
       this.divGlossaryRef = '';
       this.wrapper = '';
       this.nodesToUnMount = [];  
+      this.bookIndexId = {};
+      this.searchUrl = '';
       document.body.addEventListener('contentLoaded', this.parseDom);
       document.body.addEventListener('navChanged', this.navChanged);
   }
@@ -72,6 +74,10 @@ export class Book extends Component {
         }
 
     }
+    if(typeof nextProps.tocData === "object" && nextProps.tocData && nextProps.tocData.bookDetails && nextProps.tocData.bookDetails.indexId ) {
+      this.bookIndexId = nextProps.tocData.bookDetails.indexId;
+      this.searchUrl = `${apiConstants.SEARCHURL}${this.bookIndexId}&q=searchText${apiConstants.SEARCHLIMIT}`;
+    } 
     let gotoCheckVal = nextProps.isGoToPageRecived;
     if(nextProps.isGoToPageRecived && !this.state.gotoCheck){
           const goToHref = nextProps.gotoPageObj.page.href.split('#')[0]; 
@@ -136,6 +142,10 @@ export class Book extends Component {
       this.props.dispatch(getAnnCallService(this.state.urlParams));
       this.props.dispatch(getBookmarkCallService(this.state.urlParams));
       browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+      setTimeout(()=>{
+        this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+        this.props.dispatch(getAnnCallService(this.state.urlParams));
+      },2000)
     });
   }
 
@@ -190,8 +200,8 @@ export class Book extends Component {
       receivedAnnotationData.context  = this.props.params.bookId;
       receivedAnnotationData.source   = this.state.currentPageDetails;
       receivedAnnotationData.source.baseUrl = this.state.pageDetails.baseUrl;
-      delete receivedAnnotationData.source.href;
-      delete receivedAnnotationData.source.title;
+      // delete receivedAnnotationData.source.href;
+      // delete receivedAnnotationData.source.title;
       switch (eventType) {
           case 'annotationCreated': {
             return this.props.dispatch(postAnnCallService(receivedAnnotationData));
@@ -235,7 +245,8 @@ export class Book extends Component {
   preferenceBackgroundColor = (theme) => {
     // console.log('theme---',theme);
   }
-   goToPage = (pageId) => {
+
+  goToPage = (pageId) => {
     let bookObj = {};
     this.state.pageDetails.playListURL.forEach( (data) => { 
       if(data.href && data.href.match(pageId.split("OPS")[1]) ) { 
@@ -253,7 +264,7 @@ export class Book extends Component {
   render() {
 
     const callbacks = {};
-    const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived, gotoPageObj, isGoToPageRecived} = this.props; // eslint-disable-line react/prop-types
+    const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
     const annData  = annotationData.rows;
     this.props.book.annTotalData  = annotationTotalData;
     this.props.book.toc           = tocData;
@@ -264,6 +275,7 @@ export class Book extends Component {
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
+ 
     return (
       <div>
         <Header
@@ -277,7 +289,7 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
-          // indexId = { {'indexId' : bookIndexId, 'searchUrl' : searchUrl} }
+          indexId = { {'indexId' : this.bookIndexId, 'searchUrl' : this.searchUrl} }
           goToPage = {(pageId) => this.goToPage(pageId)}
           listClick = {() => this.listClick()}
           goToPageClick = {this.goToPageClick}

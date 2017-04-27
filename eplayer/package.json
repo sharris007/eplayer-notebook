@@ -90,7 +90,7 @@
     "@pearson-incubator/bookshelf": "^0.1.28",
     "@pearson-incubator/notes": "^0.1.25",
     "@pearson-incubator/popup-info": "^1.1.5",
-    "@pearson-incubator/preferences": "^0.1.9",
+    "@pearson-incubator/preferences": "^0.1.21",
     "@pearson-incubator/pxe-pageviewer": "^1.0.3",
     "@pearson-incubator/pxe-printpage": "^1.0.0",
     "@pearson-incubator/react-image-lightbox": "^3.1.3",

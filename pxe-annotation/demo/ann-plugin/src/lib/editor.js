@@ -122,14 +122,14 @@ Annotator.Editor = (function(_super) {
   }
   Editor.prototype.onEditClick=function(event) {  
     this.element.addClass('show-edit-options');
-    /*$(this.element).find('textarea').show();
-    $(this.element).find('#noteContainer').hide();*/
+    $(this.element).find('textarea').show();
+    $(this.element).find('#noteContainer').hide();
     this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     this.element.find('input').css({'pointer-events':'all', 'opacity':'1'});
   }
   
   Editor.prototype.onNoteChange=function(event) {
-    this.element[(event.target.value.length)?'addClass':'removeClass']('show-edit-options');
+    this.element.addClass('show-edit-options');
     if(!event.target.value.length){
       $(this.element).find('.annotator-share-text, .annotator-share').hide();
     }
@@ -208,14 +208,14 @@ Annotator.Editor = (function(_super) {
     }
     this.element.find(":input:first").focus();
     this.setupDraggables();
-    /*if(this.element.find('textarea').val().length > 0) {
+    if(this.element.find('textarea').val().length > 0) {
       $(this.element).find('#noteContainer').html(linkifyStr(this.element.find('textarea').val()));
       $(this.element.find('textarea')).hide();
       $(this.element).find('#noteContainer').show();
     } else {
       $(this.element.find('textarea')).show();
       $(this.element).find('#noteContainer').hide();
-    }*/
+    }
     return this.publish('show');
   };
 
@@ -250,7 +250,7 @@ Annotator.Editor = (function(_super) {
     else      
       $('.annotator-share-text, .annotator-share').show();
     if (!$('.annotator-item input').length) {
-     $('.annotator-item').prepend('<input placeholder="Add title."/>');
+     $('.annotator-item').prepend('<input placeholder="Add title."/><div class="noteContainer" id = "noteContainer"></div>');
     }
     $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax_Display')){
@@ -307,7 +307,7 @@ Annotator.Editor = (function(_super) {
     field.element = element[0];
     switch (field.type) {
     case 'textarea':
-      input = $('<div><textarea maxlength="3000"/><div>');
+      input = $('<textarea maxlength="3000"/>');
       break;
     case 'input':
     case 'checkbox':

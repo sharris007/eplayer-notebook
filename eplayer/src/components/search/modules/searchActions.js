@@ -35,16 +35,7 @@ var globalBookId,ssoKey,serverDetails;
 const searchActions = {
  fetch(paramList,searchText)
  {
-   const bookId=paramList.bookId;
- 	 globalBookId=paramList.globalBookId ;
-   ssoKey=paramList.ssoKey;
-   serverDetails=paramList.serverDetails;
-  if(paramList.globalBookId === undefined){
-    globalBookId=sessionStorage.getItem('globalbookid');
-    ssoKey=sessionStorage.getItem('ssoKey');
-    serverDetails=sessionStorage.getItem('serverDetails');
-  }
-  
+   
   const searchState = {
       searchResult:{
         results: []
@@ -65,39 +56,29 @@ const searchActions = {
             };
             searchState.searchResult.results.push(obj);
           })
+        }else {
+    if (response.status >= 400) {
+        console.log(`SearchBook info error: ${response.statusText}`);
+    } else if (response.length) {
+        response.forEach((jsonData) => {
+            const searchResults = jsonData.searchTextList;
+            searchResults.forEach((result, i) => {
+                const resultObj = {
+
+                };
+                resultObj.id = i;
+                resultObj.urn = result.pageOrder;
+                resultObj.title = result.chapterName;
+                resultObj.pageNo = result.bookPageNumber;
+                resultObj.contentPreview = result.bestTextSnippet;
+                searchState.searchResult.results.push(resultObj);
+              });
+            });
+          }
         }
         dispatch({ type: 'SEARCH',searchState});
-    });
-  }
-
- /* return(dispatch)=>{
-    return axios.get(''+serverDetails+'/ebook/ipad/searchbook?bookid='+bookId+'&globalbookid='+globalBookId+'&searchtext='+searchText+'&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON',
-    {
-      timeout: 20000
-    })
-    .then((response) => {
-      if (response.status >= 400) {
-        console.log(`SearchBook info error: ${response.statusText}`);
-      } else if(response.data.length) {
-        response.data.forEach((jsonData) =>{
-          const searchResults =jsonData.searchTextList;
-          searchResults.forEach((result,i) =>{
-            const resultObj={
-
-            };
-          resultObj.id=i;
-          resultObj.urn=result.pageOrder;
-          resultObj.title=result.chapterName;
-          resultObj.pageNo=result.bookPageNumber;
-          resultObj.contentPreview=result.bestTextSnippet;
-          searchState.searchResult.results.push(resultObj);
-        });
       });
     }
-    dispatch({ type: 'SEARCH',searchState});
-    });
-  };*/
-
- }
+  }
 };
 export default searchActions;

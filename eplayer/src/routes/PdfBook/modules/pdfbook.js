@@ -324,7 +324,6 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
       });
     };
   } 
-
  function flatten1(input)
   {
     var finalChildList = [];
@@ -333,21 +332,26 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
         {
           var child1=[];
           var tempList=[];
+          finalChildList = finalChildList.concat(node);
           node.children.forEach((kids,j) => {
-          var child=flatten2(kids);
+          var child=flatten2(kids,finalChildList);
           if(child instanceof Array)
           {
-            kids.children=child;
-            tempList.push(kids);
+            finalChildList = child;
           }
           else
           {
             child1.push(child);
           }
         });
-          node.children=child1;
-          finalChildList.push(node);
-          finalChildList=finalChildList.concat(tempList);
+        for(var i=0;i<finalChildList.length;i++)
+          {
+            if(node.id==finalChildList[i].id && node.urn==finalChildList[i].urn && node.title==finalChildList[i].title)
+              {
+            break;
+              }
+          }
+          finalChildList[i].children = child1;
         }
         else
         {
@@ -356,18 +360,18 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
        });
     return finalChildList;
   }
-  function flatten2(input)
+  function flatten2(input,finalChildList)
   {
    if(input.children!==undefined && input.children.length!==0) 
    {
-    return flatten3(input);
+    return flatten3(input,finalChildList);
    }
    else
    {
     return input;
    }
   }
-  function flatten3(input)
+  function flatten3(input,finalChildList)
   {
     var childlist=[];
     if(input.children!==undefined && input.children.length!==0) 
@@ -377,23 +381,38 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
       firstNode.title =input.title;
       firstNode.urn =input.urn;
       childlist.push(firstNode);
+      finalChildList = finalChildList.concat(input);
       input.children.forEach((node,i) =>{
-          childlist=childlist.concat(flatten3(node));
+          var templist = flatten3(node,finalChildList);
+          if(templist instanceof Array)
+          {
+            finalChildList = templist;
+          }
+          else
+          {
+            childlist=childlist.concat(templist);
+          }
+          
        });
+      for(var i=0;i<finalChildList.length;i++)
+       {
+        if(input.id==finalChildList[i].id && input.urn==finalChildList[i].urn && input.title==finalChildList[i].title)
+        {
+          break;
+        }
+      }
+      finalChildList[i].children = childlist;
     }
     else 
     {
-      var tempList = [];
       var output = new Node();
       output.id =input.id;
       output.title =input.title;
       output.children =input.children;
       output.urn =input.urn; 
-      tempList.push(output);
-      return tempList;
-
+      return output;
     }
-    return childlist;
+    return finalChildList;
   }
 
  function Node() {
