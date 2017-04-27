@@ -39,6 +39,8 @@ export class Book extends Component {
       this.divGlossaryRef = '';
       this.wrapper = '';
       this.nodesToUnMount = [];  
+      this.bookIndexId = {};
+      this.searchUrl = '';
       document.body.addEventListener('contentLoaded', this.parseDom);
       document.body.addEventListener('navChanged', this.navChanged);
   }
@@ -67,6 +69,10 @@ export class Book extends Component {
            pageParameters.currentPageURL        =filteredData;
         }
     }
+    if(typeof nextProps.tocData === "object" && nextProps.tocData && nextProps.tocData.bookDetails && nextProps.tocData.bookDetails.indexId ) {
+      this.bookIndexId = nextProps.tocData.bookDetails.indexId;
+      this.searchUrl = `${apiConstants.SEARCHURL}${this.bookIndexId}&q=searchText${apiConstants.SEARCHLIMIT}`;
+    } 
   }
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
@@ -211,7 +217,6 @@ export class Book extends Component {
     const callbacks = {};
     const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
     const annData  = annotationData.rows;
-    
     this.props.book.annTotalData  = annotationTotalData;
     this.props.book.toc           = tocData;
     this.props.book.bookmarks     = bookMarkData;
@@ -221,11 +226,7 @@ export class Book extends Component {
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
-
-    if(typeof tocData === "object" && tocData && tocData.bookDetails && tocData.bookDetails.indexId ) {
-      bookIndexId = tocData.bookDetails.indexId;
-      searchUrl = apiConstants.SEARCHURL  + bookIndexId +  '&q=searchText' + apiConstants.SEARCHLIMIT;
-    }
+ 
     return (
       <div>
         <Header
@@ -239,7 +240,7 @@ export class Book extends Component {
           viewerContentCallBack={this.viewerContentCallBack}
           preferenceUpdate = {this.preferenceUpdate}
           preferenceBackgroundColor = {this.preferenceBackgroundColor}
-          indexId = { {'indexId' : bookIndexId, 'searchUrl' : searchUrl} }
+          indexId = { {'indexId' : this.bookIndexId, 'searchUrl' : this.searchUrl} }
           goToPage = {(pageId) => this.goToPage(pageId)}
           listClick = {() => this.listClick()}
         />
