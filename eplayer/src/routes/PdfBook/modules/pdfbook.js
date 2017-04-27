@@ -331,7 +331,11 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
       if(node.children.length!==0)
         {
           var child1=[];
-          var tempList=[];
+          var firstNode = new Node();
+          firstNode.id =node.id;
+          firstNode.title =node.title;
+          firstNode.urn =node.urn;
+          child1.push(firstNode);
           finalChildList = finalChildList.concat(node);
           node.children.forEach((kids,j) => {
           var child=flatten2(kids,finalChildList);
