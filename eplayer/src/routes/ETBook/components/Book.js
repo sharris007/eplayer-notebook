@@ -37,7 +37,8 @@ export class Book extends Component {
           user:'epluser'
         },
         annAttributes:customAttributes,
-        goToTextVal:''
+        goToTextVal:'',
+        gotoCheck:false
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -71,26 +72,26 @@ export class Book extends Component {
         }
 
     }
-    if(nextProps.isGoToPageRecived){
+    let gotoCheckVal = nextProps.isGoToPageRecived;
+    if(nextProps.isGoToPageRecived && !this.state.gotoCheck){
           const goToHref = nextProps.gotoPageObj.page.href.split('#')[0]; 
           const goToArr = [];      
            find(pageParameters.playListURL, function(list) {
              if( list.hasOwnProperty('href')) { 
               if(list.href && list.href.match(goToHref)) {
+                list.href = nextProps.gotoPageObj.page.href;
                 goToArr.push(list);
                }                 
             }
         });
         pageParameters.currentPageURL =goToArr[0];
-        this.setState({pageDetails : pageParameters});
-        const gotoFlag = true;
-        // if(gotoFlag){
-        //   browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${goToArr[0].id}`);   
-        //   gotoFlag =false;
-        // }
+
+        this.goToPageCallback(goToArr[0].id);
         
+         
     }
   }
+  
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
     this.nodesToUnMount = [];
@@ -174,10 +175,17 @@ export class Book extends Component {
     playpageDetails.tocUpdated  = true;
     this.setState({
       pageDetails: playpageDetails,
-      drawerOpen: false      
+      drawerOpen: false,
+      gotoCheck:true
     });
     this.viewerContentCallBack(true);
     browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
+    const self = this;
+    setTimeout(function(){
+      self.setState({
+          gotoCheck:false
+      });
+    },2000)
   };
   annotationCallBack = (eventType, data) => {
       const receivedAnnotationData    = data;
