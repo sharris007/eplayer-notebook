@@ -302,7 +302,7 @@ export class Book extends Component {
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
             annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
             {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = 'book-container'/> : '' }
-            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryryRef = dom }} style = {{ display: 'none' }}>  </div>
+            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
           </div>
       </div>
     );
