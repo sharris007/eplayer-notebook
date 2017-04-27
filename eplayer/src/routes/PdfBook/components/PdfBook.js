@@ -6,25 +6,36 @@ export class PdfBook extends Component {
 
 async componentWillMount() {
     if(this.props.login.data === undefined || this.props.bookshelf.ssoKey === undefined){
-             if(this.props.bookshelf.uPdf){
-              sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
-              sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
-              sessionStorage.setItem('title',this.props.bookshelf.title);
-              sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
-              sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
-             }
+             //alert("if"+sessionStorage.getItem('ubd'));
              identityId = sessionStorage.getItem('identityId');
-             uid = sessionStorage.getItem('uid');
+             //uid = sessionStorage.getItem('uid');
              ubd = sessionStorage.getItem('ubd');
              ubsd = sessionStorage.getItem('ubsd');
              ssoKey = sessionStorage.getItem('ssoKey');
              serverDetails = sessionStorage.getItem('serverDetails');
+             if(this.props.bookshelf.uPdf){
+              //alert("uPdf");
+                  sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
+                  sessionStorage.setItem('title',this.props.bookshelf.title);
+                  sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+                  identityId = sessionStorage.getItem('identityId');
+                  ubd = this.props.bookshelf.ubd;
+                  uid = this.props.bookshelf.uid;
+                  ubsd = this.props.bookshelf.ubsd;
+                  ssoKey = this.props.bookshelf.ssoKey;
+                  serverDetails = this.props.bookshelf.serverDetails;
+             }
         }else{ 
-            
+            //alert("else");
             sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
             sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
             sessionStorage.setItem('title',this.props.bookshelf.title);
             sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+            sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
+            sessionStorage.setItem('ubd',this.props.bookshelf.uid);
+            sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
+            sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
+            sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
             identityId = this.props.login.data.identityId;
             ubd = this.props.bookshelf.ubd;
             uid = this.props.bookshelf.uid;
