@@ -85,7 +85,6 @@ export class Book extends Component {
            find(pageParameters.playListURL, function(list) {
              if( list.hasOwnProperty('href')) { 
               if(list.href && list.href.match(goToHref)) {
-                list.href = nextProps.gotoPageObj.page.href;
                 goToArr.push(list);
                }                 
             }
@@ -139,8 +138,6 @@ export class Book extends Component {
       urlParams:parameters
     },function(){
       // eslint-disable-next-line
-      this.props.dispatch(getAnnCallService(this.state.urlParams));
-      this.props.dispatch(getBookmarkCallService(this.state.urlParams));
       browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
       setTimeout(()=>{
         this.props.dispatch(getBookmarkCallService(this.state.urlParams));
@@ -187,9 +184,8 @@ export class Book extends Component {
     });
     this.viewerContentCallBack(true);
     browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
-    const self = this;
-    setTimeout(function(){
-      self.setState({
+    setTimeout(()=>{
+      this.setState({
           gotoCheck:false
       });
     },2000)
