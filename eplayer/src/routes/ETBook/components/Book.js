@@ -87,7 +87,6 @@ export class Book extends Component {
                   gotoPageData = list;
                }   
           });   
-          gotoPageData.href = nextProps.gotoPageObj.page.href;
           playpageDetails1.currentPageURL =  gotoPageData;
           playpageDetails1.tocUpdated  = true;
           browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}`);
