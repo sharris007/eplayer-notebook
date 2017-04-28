@@ -7,6 +7,13 @@ export default (state = { gotoPageObj: [], isGoToPageRecived : false }, action) 
         isGoToPageRecived: true
       };
     }
+    case 'GOT_GOTOPAGE': {
+      return {
+        ...state,
+        gotoPageObj: [],
+        isGoToPageRecived: false
+      };
+    }
     default :
       return state;
   }

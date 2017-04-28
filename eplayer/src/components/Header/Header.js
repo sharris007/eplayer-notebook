@@ -125,12 +125,13 @@ export class Header extends React.Component {
  } 
 
  goToPageClick = () => {
-    console.log("goToTextVal", this.state.goToTextVal);
+    
     this.props.goToPageClick(this.state.goToTextVal);
     //return  this.state.goToTextVal.trim();   
   }
   
   goToPageOnKeyUp = (e) => {
+   
     if (e.keyCode === 13) {
       this.setState({ goToTextVal: e.target.value });
       this.goToPageClick();

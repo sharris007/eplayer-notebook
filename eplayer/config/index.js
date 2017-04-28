@@ -8,6 +8,13 @@ debug('Creating default configuration.')
 // ========================================================
 // Default Configuration
 // ========================================================
+var envHostDetails = {
+  "development":'localhost',
+  "production" : ip.address()
+}
+var environementCheck = process.env.NODE_ENV || 'development';
+var serverHost = envHostDetails[environementCheck];
+console.log("Server Host Details --",serverHost);
 const config = {
   env : process.env.NODE_ENV || 'development',
   
@@ -23,7 +30,7 @@ const config = {
   // ----------------------------------
   // Server Configuration
   // ----------------------------------
-  server_host : ip.address(),
+  server_host : serverHost,
   // server_host : 'localhost', // use string 'localhost' to prevent exposure on local network
   server_port : process.env.PORT || 3000,
 

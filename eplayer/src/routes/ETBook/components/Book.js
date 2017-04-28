@@ -37,8 +37,7 @@ export class Book extends Component {
           user:'epluser'
         },
         annAttributes:customAttributes,
-        goToTextVal:'',
-        gotoCheck:false
+        goToTextVal:''
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -78,20 +77,27 @@ export class Book extends Component {
       this.bookIndexId = nextProps.tocData.bookDetails.indexId;
       this.searchUrl = `${apiConstants.SEARCHURL}${this.bookIndexId}&q=searchText${apiConstants.SEARCHLIMIT}`;
     } 
-    let gotoCheckVal = nextProps.isGoToPageRecived;
-    if(nextProps.isGoToPageRecived && !this.state.gotoCheck){
+    if(nextProps.isGoToPageRecived ){
+      if(nextProps.gotoPageObj.page && nextProps.gotoPageObj.page.href){
           const goToHref = nextProps.gotoPageObj.page.href.split('#')[0]; 
-          const goToArr = [];      
-           find(pageParameters.playListURL, function(list) {
-             if( list.hasOwnProperty('href')) { 
-              if(list.href && list.href.match(goToHref)) {
-                goToArr.push(list);
-               }                 
-            }
-        });
-        pageParameters.currentPageURL =goToArr[0];
-        this.goToPageCallback(goToArr[0].id);   
-    }
+          let gotoPageData  = '';   
+          const playpageDetails1  = this.state.pageDetails ; 
+          const currentData = find(pageParameters.playListURL, list =>{
+            if(list.href && list.href.match(goToHref)) {
+                  gotoPageData = list;
+               }   
+          });   
+          gotoPageData.href = nextProps.gotoPageObj.page.href;
+          playpageDetails1.currentPageURL =  gotoPageData;
+          playpageDetails1.tocUpdated  = true;
+          browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}`);
+          this.props.dispatch({
+            type: "GOT_GOTOPAGE",
+            data: [],
+            isGoToPageRecived: false
+          });
+        }
+      }
   }
   
   navChanged = () => {
@@ -179,16 +185,10 @@ export class Book extends Component {
     playpageDetails.tocUpdated  = true;
     this.setState({
       pageDetails: playpageDetails,
-      drawerOpen: false,
-      gotoCheck:true
+      drawerOpen: false
     });
     this.viewerContentCallBack(true);
     browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
-    setTimeout(()=>{
-      this.setState({
-          gotoCheck:false
-      });
-    },2000)
   };
   annotationCallBack = (eventType, data) => {
       const receivedAnnotationData    = data;
@@ -196,8 +196,6 @@ export class Book extends Component {
       receivedAnnotationData.context  = this.props.params.bookId;
       receivedAnnotationData.source   = this.state.currentPageDetails;
       receivedAnnotationData.source.baseUrl = this.state.pageDetails.baseUrl;
-      // delete receivedAnnotationData.source.href;
-      // delete receivedAnnotationData.source.title;
       switch (eventType) {
           case 'annotationCreated': {
             return this.props.dispatch(postAnnCallService(receivedAnnotationData));
@@ -293,7 +291,7 @@ export class Book extends Component {
            
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {!playlistReceived ? <RefreshIndicator size={50} left={650} top={200} status="loading" /> :''}
-            {playlistReceived ? <div className="printBlock"><button type="button" onClick={this.printFun} >Print</button> </div>: '' }
+            {playlistReceived ? <div className="printBlock"><img className="printer-epl" src={"https://cdn1.iconfinder.com/data/icons/nuvola2/128x128/devices/print_printer.png"} onClick={this.printFun} /> </div>: '' }
             {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
             {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
             annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
@@ -307,22 +305,22 @@ export class Book extends Component {
 
 
 Book.propTypes = {
-  fetchTocAndViewer: React.PropTypes.func,
-  fetchAnnotations: React.PropTypes.func,
-  removeAnnotation: React.PropTypes.func,
-  fetchBookmarks: React.PropTypes.func,
-  addBookmark: React.PropTypes.func,
-  removeBookmark: React.PropTypes.func,
-  fetchPreferences: React.PropTypes.func,
-  // goToPage: React.PropTypes.func,
-  book: React.PropTypes.object,
-  params: React.PropTypes.object,
-  dispatch: React.PropTypes.func
+  fetchTocAndViewer      : React.PropTypes.func,
+  fetchAnnotations       : React.PropTypes.func,
+  removeAnnotation       : React.PropTypes.func,
+  fetchBookmarks         : React.PropTypes.func,
+  addBookmark            : React.PropTypes.func,
+  removeBookmark         : React.PropTypes.func,
+  fetchPreferences       : React.PropTypes.func,
+  // goToPage            : React.PropTypes.func,
+  book                   : React.PropTypes.object,
+  params                 : React.PropTypes.object,
+  dispatch               : React.PropTypes.func
 };
 
 Book.contextTypes = {
-  store: React.PropTypes.object.isRequired,
-  muiTheme: React.PropTypes.object.isRequired
+  store                  : React.PropTypes.object.isRequired,
+  muiTheme               : React.PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => {
