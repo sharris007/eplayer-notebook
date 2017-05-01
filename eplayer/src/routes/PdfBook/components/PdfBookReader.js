@@ -101,7 +101,8 @@ export class PdfBookReader extends Component {
     const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageIndex);
     const pdfPath=currentPage.pdfPath;
     var config = {
-    host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
+    //host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
+    host: "https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/",
     //PDFassetURL: this.props.bookshelf.uPdf,
     //PDFassetURL: "http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM31206032/ipadpdfs/"+pdfPath,
     PDFassetURL: serverDetails+"/ebookassets/ebook"+this.props.book.bookinfo.book.globalbookid+"/ipadpdfs/"+pdfPath,
