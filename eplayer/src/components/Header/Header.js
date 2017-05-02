@@ -270,7 +270,7 @@ export class Header extends React.Component {
                 <Icon name="search-lg-18" />
               </div>
               <div className="searchContainer">
-                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={(pageId)=>this.goToPage(pageId)} indexId = {this.props.indexId} listClick = {this.props.listClick} isET1={this.props.isET1}/> : <div className="empty" />}
+                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={(pageId)=>this.goToPage(pageId)} indexId = {this.props.indexId} listClick = {this.props.listClick} isET1 = 'Y'/> : <div className="empty" />}
               </div>
               <div className="moreIcon">
                 <MoreMenuComponent store={this.props.store} />
