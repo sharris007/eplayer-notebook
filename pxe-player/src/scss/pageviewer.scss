@@ -1,0 +1,157 @@
+////
+/// Custom SCSS for component-specific styling goes here
+////
+html, body {
+  height:100%;
+}
+div#book-render-component{
+    position: relative;
+    outline: none;
+    height:100%;
+}
+
+.book-container{
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    line-height:2em;
+    padding-bottom:70px; 
+}
+
+.navigation {
+  height: 65px;
+  border-top: 1px solid #c7c7c7;
+  padding: 1% 1.7%;
+  line-height: normal;
+  position: fixed;
+  bottom: 0;
+  background-color: #FFF;
+  width: 100%;
+  z-index:21;
+  -webkit-transition: all .25s;
+  transition: all .25s;
+  .hide {
+    visibility: hidden;
+  }
+  .section {
+    object-fit: contain;
+    font-family: Open Sans;
+    font-size: 16px;
+    font-style: normal;
+    font-stretch: normal;
+    color: #3e3e3e;
+  }
+  .currentSection {
+    display: inline-block;
+    width: 35%;
+    text-align: center;
+    margin-top: 12px;
+    vertical-align: top;
+    min-width: 215px;
+    outline: none;
+    visibility: hidden;
+  }
+  .nextSection {
+    display: inline-block;
+    color: #007fa3;
+    width: 32%;
+    padding-left: 4%;
+    float: right;
+    outline: none;
+    cursor: pointer;
+    .nextContent {
+      width: 100%;
+      float: left;
+      min-width: 215px; 
+      .wrapper {
+        width: 88%;
+        float: left;
+        .content {
+          width: 100%;
+        }
+        .label {
+          color: #007fa3;
+          font-size: 16px;
+          text-align: left;
+        }
+      }
+    }
+  }
+  .prevSection {
+    display: inline-block;
+    color: #007fa3;
+    width: 32%;
+    cursor: pointer;
+    outline: none;
+    .prevContent {
+      width: 100%;
+      float: left;
+      min-width: 215px; 
+      .wrapper {
+        width: 88%;
+        float: left;
+        margin: 0 0 0 5.5%;
+        .label {
+          color: #007fa3;
+          font-size: 16px;
+          text-align: left;
+        }
+      }
+    }
+  }
+  .content {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 95%;
+  }
+  .line {
+    width: 2px;
+    height: 30px;
+    border: solid 1px #c7c7c7;
+    display: inline-block;
+    margin-top: 6px;
+    vertical-align: top;
+  }
+}
+
+.navigation.nav-down {
+  bottom: -65px;
+}
+.goto-group {
+  float:right;
+}
+.goto-group hr {
+  border-bottom :none;
+  margin : 4px;
+}
+.react-highlighted-text{
+  background-color: #ff9632 !important;
+}
+
+.pagebreak { 
+  -webkit-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  user-select: none; 
+  pointer-events: none;
+}
+
+.pagebreak span{
+  background: none !important;
+}
+//video lightbox componenet over ride css
+figure.video .modal{
+  display:flex;
+  top: 0;
+  left: 0;
+  background: #000;
+}
+ figure.video .video-card-holder{
+   text-align: center;
+ }
+ figure button.poster-play-icon:hover{
+    
+ }
+//end of video lightbox componenet over ride css
