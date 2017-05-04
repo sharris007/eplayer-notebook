@@ -25,7 +25,7 @@ function getTocUrlOnResp(resp)
             tocUrl = value;
         });
         if (!tocUrl)
-          tocUrl = resp.toc[0];
+          tocUrl = resp[0];
      }
     return tocUrl ? tocUrl.replace('http:', 'https:') : null;
 }

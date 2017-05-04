@@ -37,15 +37,18 @@ export class Book extends Component {
           user:'epluser'
         },
         annAttributes:customAttributes,
-        goToTextVal:''
+        goToTextVal:'',
+        pageScrollValue:''
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
       this.nodesToUnMount = [];  
       this.bookIndexId = {};
       this.searchUrl = '';
+      this.handleScroll = this.handleScroll.bind(this);
       document.body.addEventListener('contentLoaded', this.parseDom);
       document.body.addEventListener('navChanged', this.navChanged);
+       
   }
   componentWillMount  = () => {
     this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
@@ -85,6 +88,7 @@ export class Book extends Component {
           const currentData = find(pageParameters.playListURL, list =>{
             if(list.href && list.href.match(goToHref)) {
                   gotoPageData = list;
+                  gotoPageData.pageFragmentId = nextProps.gotoPageObj.page.href.split('#')[1];
                }   
           });   
           playpageDetails1.currentPageURL =  gotoPageData;
@@ -98,7 +102,49 @@ export class Book extends Component {
         }
       }
   }
-  
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.pageDetails.currentPageURL.pageFragmentId){
+      const scrollTopVal = $('#'+prevState.pageDetails.currentPageURL.pageFragmentId).offset().top+80;
+        $('html, body').animate({
+          scrollTop: scrollTopVal
+      }, 1000);
+    }
+    let pagenumberArr = {};
+    const pageBreakClass = $("#book-render-component").find(".pagebreak");
+    pageBreakClass.each(function(i,item) {
+        var pageno = $(this).attr("title");
+        if (pageno) {
+            var top = $(this).offset().top;
+            pagenumberArr[pageno] = parseInt(top);
+        }
+    });
+    $("#pageNum").val(Object.keys(pagenumberArr)[0]);
+    this.state.pageScrollValue  = pagenumberArr; 
+  }
+   
+  componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll);
+  }
+  handleScroll(event) {
+    let currentScrollVal = $(window).scrollTop()+80;
+    let vale = this.getScrollIndex(currentScrollVal);
+    if(vale){
+      $("#pageNum").val(vale);
+    }else{
+      $("#pageNum").val(Object.keys(this.state.pageScrollValue)[0]);
+    }
+    
+    
+  }
+  getScrollIndex = (currentScrollVal) =>{ 
+    let num ='';
+    $.each(this.state.pageScrollValue, function(index, value) {   
+      if(currentScrollVal >= value){
+        num = index;
+      }   
+    });
+    return num;
+  }
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
     this.nodesToUnMount = [];
@@ -255,7 +301,6 @@ export class Book extends Component {
   
 
   render() {
-
     const callbacks = {};
     const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
     const annData  = annotationData.rows;
