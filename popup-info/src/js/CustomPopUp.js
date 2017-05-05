@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import renderHTML from 'react-render-html';
 
-export class CustomPopUp extends Component {
+export default class CustomPopUp extends Component {
     constructor(props) {
       super(props);
       console.log(props);

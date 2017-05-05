@@ -3,7 +3,7 @@ import { injectIntl } from 'react-intl';
 import renderHTML from 'react-render-html';
 
 import PopUpInfo from './PopUpInfo';
-import {CustomPopUp} from './CustomPopUp';
+import CustomPopUp from './CustomPopUp';
 import PopupApi from '../api/PopupApi';
 import BookViewer from '../../demo/BookViewer';
 import {PopupCallBacks} from './PopupCallBacks';
