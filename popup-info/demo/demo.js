@@ -24,7 +24,8 @@ function init() {
 
   // Create new instance of PopUpInfo Component
   new PopUpInfoComponent({
-    contentId:'demo-content'
+    contentId:'demo-content',
+    ParagraphNumeroUno : 'ParagraphNumeroUno'
   });  
 }
 
