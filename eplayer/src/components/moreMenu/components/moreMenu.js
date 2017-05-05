@@ -20,6 +20,7 @@ class MoreMenuComponent extends React.Component {
       }  
     }
     browserHistory.push(`/eplayer`);
+    this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails);
     //this.props.logout();
   }
   render() {

@@ -3,7 +3,8 @@ import moreMenuActions from '../modules/moreMenuActions';
 import MoreMenuComponent from '../components/moreMenu'; // eslint-disable-line import/no-named-as-default
 
 const mapDispatchToProps = {
-  logout: moreMenuActions.logout
+  logout: moreMenuActions.logout,
+  logoutUserSession: moreMenuActions.logoutUserSession
 };
 
 const mapStateToProps = state => ({

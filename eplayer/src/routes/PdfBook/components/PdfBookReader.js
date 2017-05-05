@@ -502,6 +502,7 @@ export class PdfBookReader extends Component {
           serverDetails={this.props.bookshelf.serverDetails}
           drawerOpen={drawerOpen}
           indexId={ {'searchUrl' : searchUrl} }
+          userid={this.props.book.userInfo.userid}
         /> 
       
       <div className="eT1viewerContent">
