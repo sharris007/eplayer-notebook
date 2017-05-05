@@ -7,7 +7,7 @@ import { Annotation } from 'pxe-annotation';
 import { Wrapper } from 'pxe-wrapper';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 
-import {apiConstants, customAttributes} from './constants';
+import {customAttributes} from './constants';
 
 class PxePlayer extends React.Component {
   constructor(props) {
@@ -38,6 +38,7 @@ class PxePlayer extends React.Component {
     });
   };
   annotationCallDispatch = (method, data) => {
+    const {pageDetails} = this.props.bootstrapParams;
     const payload={ // eslint-disable-line no-undef
       method: method,
       headers: {
@@ -50,7 +51,7 @@ class PxePlayer extends React.Component {
       payload.body=JSON.stringify(data);
     }
     //for post url
-    let requestUrl=`${apiConstants.PXESERVICE}/context/${this.state.urlParams.context}/annotations`;
+    let requestUrl=`${pageDetails.endPoints.services}/context/${this.state.urlParams.context}/annotations`;
     switch (method) {
     case 'GET': {
       requestUrl=requestUrl+`?uri=${this.state.urlParams.uri}`;
@@ -71,44 +72,12 @@ class PxePlayer extends React.Component {
         throw new Error('Network response was not ok.');
       }).then((res) => { 
         // console.log(res);
-        // return res;
-        if (method!=='GET') {
-          this.annotationCallDispatch('GET');
-        }else if (method==='GET') {
-          let annotationData=this.state.annotationData;
-          annotationData=res;
-          this.setState({annotationData:annotationData});
-        }
-        this.forceUpdate();
+        return res;
       }).catch((error) => {
         console.log('There has been a problem with your fetch operation: ' + error.message);
         return false;
       });
   };
-  /*getAnnotationData = () => {
-    return fetch(`${apiConstants.PXESERVICE}/context/${this.state.urlParams.context}/annotations?uri=${this.state.urlParams.uri}`,
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Identity-Id':this.state.urlParams.user
-        }
-      }).then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Network response was not ok.');
-      }).then((res) => { 
-        console.log(res);
-        // return res;
-        const annotationData={...res};
-        this.setState({annotationData:annotationData});
-      }).catch((error) => {
-        console.log('There has been a problem with your fetch operation: ' + error.message);
-        return false;
-      });
-  };*/
   onBookLoaded = (isBookLoaded) => {
     if (isBookLoaded) {
       const that = this;  
@@ -118,87 +87,17 @@ class PxePlayer extends React.Component {
       this.setState({ popUpCollection : [] });
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'}); // import Wrapper
       this.wrapper.bindPopUpCallBacks();
-      // this.props.applnCallback(type, data);
-      // setTimeout(()=>{
-      //   this.props.dispatch(getAnnCallService(this.state.urlParams)); // Enable when Annotation component added
-      // },0);
-      // this.getAnnotationData().then((responseAnnotaionData)=>{
-      //   const annotationData={...responseAnnotaionData};
-      //   this.setState({annotationData:annotationData});
-      // });
-      //this.getAnnotationData();
-      this.annotationCallDispatch('GET');
+      // this.getAnnotationData();
+      this.annotationCallDispatch('GET').then((res) => { 
+        const annotationData={...res};
+        this.setState({annotationData:annotationData});
+      });
     }
   };
-  /*createAnnotation = (data) => {
-    return fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations`, 
-      { // eslint-disable-line no-undef
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Identity-Id':data.user
-        },
-        body: JSON.stringify(data)
-      }).then(function(response) {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Network response was not ok.');
-      }).then(function(res) { 
-                    // console.log(res);
-        return res;
-      }).catch(function(error) {
-        console.log('There has been a problem with your fetch operation: ' + error.message);
-        return false;
-      });
-  };*/
-  /*updateAnnotation = (data) => {
-    return fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Identity-Id':data.user
-      },
-      body: JSON.stringify(data)
-    }).then(function(response) {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error('Network response was not ok.');
-    }).then(function(res) { 
-                    // console.log(res);
-      return res;
-    }).catch(function(error) {
-      console.log('There has been a problem with your fetch operation: ' + error.message);
-      return false;
-    });
-  };*/
-  /*deleteAnnotation = (data) => {
-    return fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Identity-Id':data.user
-      }
-    }).then(function(response) {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error('Network response was not ok.');
-    }).then(function(res) { 
-                    // console.log(res);
-      return res;
-    }).catch(function(error) {
-      console.log('There has been a problem with your fetch operation: ' + error.message);
-      return false;
-    });
-  };*/
+
   annotationCallBack = (eventType, data) => {
     const receivedAnnotationData    = data;
-    receivedAnnotationData.user     = 'epluser';
+    receivedAnnotationData.user     = this.state.urlParams.user;
     receivedAnnotationData.context  = this.state.urlParams.context;
     receivedAnnotationData.source   = this.state.currentPageDetails;
     receivedAnnotationData.source.baseUrl = this.props.bootstrapParams.pageDetails.baseUrl;
@@ -212,35 +111,22 @@ class PxePlayer extends React.Component {
       //   annotationData.rows.push(newAnnotation);
       //   this.setState({annotationData:annotationData});
       // });
-      this.annotationCallDispatch('POST', receivedAnnotationData);
+      this.annotationCallDispatch('POST', receivedAnnotationData).then((newAnnotation)=>{
+        const annotationData={...this.state.annotationData};
+        annotationData.total=annotationData.total+1;
+        annotationData.rows.push(newAnnotation);
+        this.setState({annotationData:annotationData});
+      });
       break;
     }
     case 'annotationUpdated': {
-      // this.updateAnnotation(receivedAnnotationData).then((updatedAnnotation)=>{
-      //   const annotationData={...this.state.annotationData};
-      //   for (let i=0;i<annotationData.rows.length;i++) {
-      //     let dest=annotationData.rows[i];
-      //     if (dest.id===updatedAnnotation.id) {
-      //       dest=Object.assign(dest, updatedAnnotation);
-      //     }
-      //   }
-      //   this.setState({annotationData:annotationData});
-      // });
+      // this.updateAnnotation(receivedAnnotationData);
       this.annotationCallDispatch('PUT', receivedAnnotationData);
       break;
     }
     case 'annotationDeleted': {
       // receivedAnnotationData.annId    = data.id;
-      // this.deleteAnnotation(receivedAnnotationData).then((deletedAnnotation)=>{
-      //   const annotationData={...this.state.annotationData};
-      //   for (let i=0;i<annotationData.rows.length;i++) {
-      //     const dest=annotationData.rows[i];
-      //     if (dest.id===deletedAnnotation.id) {
-      //       annotationData.splice(i, 1);
-      //     }
-      //   }
-      //   this.setState({annotationData:annotationData});
-      // });
+      // this.deleteAnnotation(receivedAnnotationData);
       this.annotationCallDispatch('DELETE', receivedAnnotationData);
       break;
     }

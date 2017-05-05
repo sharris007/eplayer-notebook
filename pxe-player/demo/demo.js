@@ -67,21 +67,28 @@ function init() {
         'title': 'Chapter 2: Heating Earthâ€™s Surface and Atmosphere',
         'href': 'OPS/s9ml/chapter02/filep7000496728000000000000000000c93.xhtml'
       }, {
-        title: 'Concepts in Review',
-        playOrder: 9,
-        href: 'OPS/s9ml/chapter01/filep7000496728000000000000000000b62.xhtml#e7a18705605b4bf09f2e0258dd4fb74f'
+        'title': 'Concepts in Review',
+        'playOrder': 9,
+        'href': 'OPS/s9ml/chapter01/filep7000496728000000000000000000b62.xhtml#e7a18705605b4bf09f2e0258dd4fb74f'
       }, {
-        title: '2.4 What Happens to Incoming Solar Radiation?',
-        playOrder: 10,
-        href: 'OPS/s9ml/chapter02/filep7000496728000000000000000000e71.xhtml#eff7d7ad567942dd97edc7a1bbd4b498'
+        'title': '2.4 What Happens to Incoming Solar Radiation?',
+        'playOrder': 10,
+        'href': 'OPS/s9ml/chapter02/filep7000496728000000000000000000e71.xhtml#eff7d7ad567942dd97edc7a1bbd4b498'
       }],
     currentPageURL:{
       'id':'afab597007b81dd25ee588e12856b3db25b309841-f1a0c0e3fc9c4f36a06ea462c6f9fd78',
       'playOrder': 6,
       'title': '1.1 The Process of Science',
       'href': 'OPS/s9ml/chapter01/filep70004957770000000000000000006cf.xhtml#f1a0c0e3fc9c4f36a06ea462c6f9fd78' //'OPS/s9ml/appendixe/filep70004967280000000000000000051ac.xhtml'
+    },
+    endPoints: {
+      'services': 'https://pxe-sdk-qa.stg-openclass.com/services-api/api/3.1',
+      'search': 'https://content-service.dev-prsn.com/csg',
+      'pi': '',
+      'ingest': 'http://dragonfly.dev-openclass.com/pxereader-cm/api/cm'
     }
-  }, 'urlParams':{
+  }, 
+  urlParams:{
     'context' :'1Q98UHDD1E1',
     'user':'epluser'
   }});
