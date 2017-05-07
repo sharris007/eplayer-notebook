@@ -21,6 +21,7 @@ import {apiConstants} from '../../../../const/Constants'
 
 export class Book extends Component {
   constructor(props) {
+
       super(props);
       this.state = {
         classname: 'headerBar',
@@ -48,6 +49,7 @@ export class Book extends Component {
       this.handleScroll = this.handleScroll.bind(this);
       document.body.addEventListener('contentLoaded', this.parseDom);
       document.body.addEventListener('navChanged', this.navChanged);
+      this.state.pageDetails.currentPageURL = '';
        
   }
   componentWillMount  = () => {
@@ -57,6 +59,7 @@ export class Book extends Component {
   }
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
+    this.props.dispatch({type: "CLEAR_PLAYLIST"});
   }
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
@@ -178,23 +181,26 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
-    const parameters = this.state.urlParams;
-    parameters.id    = data.id,
-    parameters.uri   = encodeURIComponent(data.href),
-    data.uri         = data.href;
-    data.label       = data.title;
-    this.setState({ 
-      currentPageDetails :data,
-      currentPageTitle   :data.title, 
-      urlParams:parameters
-    },function(){
-      // eslint-disable-next-line
-      browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
-      setTimeout(()=>{
-        this.props.dispatch(getBookmarkCallService(this.state.urlParams));
-        this.props.dispatch(getAnnCallService(this.state.urlParams));
-      },2000)
-    });
+    if(data){
+      const parameters = this.state.urlParams;
+      parameters.id    = data.id,
+      parameters.uri   = encodeURIComponent(data.href),
+      data.uri         = data.href;
+      data.label       = data.title;
+      this.setState({ 
+        currentPageDetails :data,
+        currentPageTitle   :data.title, 
+        urlParams:parameters
+      },function(){
+        // eslint-disable-next-line
+        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+        setTimeout(()=>{
+          this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+          this.props.dispatch(getAnnCallService(this.state.urlParams));
+        },2000)
+      });  
+    }
+    
   }
 
   isCurrentPageBookmarked = () => {
