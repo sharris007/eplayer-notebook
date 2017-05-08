@@ -38,7 +38,6 @@ export default (state = initialData, action) => {
       };
     }
     case 'CLEAR_BOOKMARKS': {
-      debugger;
       return {
         ...state,
         bookmarksData: []

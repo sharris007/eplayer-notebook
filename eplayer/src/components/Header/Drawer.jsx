@@ -206,8 +206,6 @@ class DrawerComponent extends React.Component {
       overflow: 'hidden',
       backgroundColor: grey
     };
-console.log("this.props.bookData", this.props.bookData);
-debugger;
     return (< Drawer
       docked={false}
       width={400}
