@@ -15,7 +15,6 @@ export default (state = initialData, action) => {
       };
     }
     case 'GET_TOTALBOOKMARK': {
-      debugger;
       return {
         ...state,
         bookmarksData: state.bookmarksData.concat(action.data)
