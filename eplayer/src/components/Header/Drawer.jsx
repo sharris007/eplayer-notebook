@@ -206,7 +206,6 @@ class DrawerComponent extends React.Component {
       overflow: 'hidden',
       backgroundColor: grey
     };
-
     return (< Drawer
       docked={false}
       width={400}
