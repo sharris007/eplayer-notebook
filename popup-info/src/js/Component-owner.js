@@ -3,6 +3,7 @@ import { injectIntl } from 'react-intl';
 import renderHTML from 'react-render-html';
 
 import PopUpInfo from './PopUpInfo';
+import CustomPopUp from './CustomPopUp';
 import PopupApi from '../api/PopupApi';
 import BookViewer from '../../demo/BookViewer';
 import {PopupCallBacks} from './PopupCallBacks';
@@ -14,7 +15,9 @@ class ComponentOwner extends React.Component {
     this.state = {
       isBookLoaded: false,
       bookHTML: '',
-      glossaryResponse: ''
+      glossaryResponse: '',
+      popUpCollection : [],
+      renderCustomPopUp : false
     };  
     this.divGlossaryRef = '';
     //this.wrapper = ''
@@ -41,11 +44,16 @@ class ComponentOwner extends React.Component {
     }
   }
 
+ 
   onBookLoad() {
     this.setState({
       isBookLoaded : true
     });
-    new PopupCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv'});
+    const that = this;
+    window.renderCustomPopUp = function(obj) {
+      that.setState({renderCustomPopUp : true, popUpCollection : obj.popUpCollection })
+    }
+    new PopupCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv', 'ParagraphNumeroUno': this.props.ParagraphNumeroUno});
   }
 
   render() {    
@@ -55,7 +63,7 @@ class ComponentOwner extends React.Component {
           {this.state.bookHTML ? <BookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} /> : ''}
         </div>  
         <div>     
-          <div>{this.state.isBookLoaded ? <PopUpInfo/> : ''}</div>
+          <div>{(this.state.renderCustomPopUp) ? <CustomPopUp divGlossaryRef = {this.divGlossaryRef} bookId = "bookDiv" ParagraphNumeroUno = {this.props.ParagraphNumeroUno} popUpCollection = {this.state.popUpCollection} /> : (this.state.isBookLoaded ? <PopUpInfo /> :  '')}</div>
           <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}> {renderHTML(this.state.glossaryResponse)} </div>
         </div>  
         </div>
