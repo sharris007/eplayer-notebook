@@ -208,7 +208,7 @@ export const crossRef = (pageViewerRef) => {
         const audio=audioElements[i];
         const parentNodeToReplace=audio.parentNode;
         const audioPlayerData={
-          source:parentNodeToReplace.getElementsByTagName('iframe')[0].src.replace('embed', 'pmd').concat('?mimeType=mp3&bitrate=600'),
+          source: parentNodeToReplace.getElementsByTagName('iframe')[0].src.replace('embed', 'pmd').replace('_audio', '_pmd').concat('?mimeType=mp3&bitrate=600'),
           title:parentNodeToReplace.innerText
         };
         const container = document.createElement('div');

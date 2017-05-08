@@ -60,6 +60,8 @@ export class Book extends Component {
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
     this.props.dispatch({type: "CLEAR_PLAYLIST"});
+    this.props.dispatch({type: "CLEAR_ANNOTATIONS"});
+    this.props.dispatch({type: "CLEAR_BOOKMARKS"});
   }
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);

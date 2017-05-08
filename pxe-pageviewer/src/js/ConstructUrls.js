@@ -16,7 +16,7 @@ const rel_to_abs = (url, baseUrl) => {
       {url = '.' + url;}
     else if (/^\s*$/.test(url))
       {return ''; }//Empty = Return nothing
-    else {url = '../' + url;}
+    else {url = '/' + url;}
 
   url = base_url + url;
 	//console.log("url ----",url);

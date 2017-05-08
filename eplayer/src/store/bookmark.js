@@ -15,7 +15,7 @@ export default (state = initialData, action) => {
       };
     }
     case 'GET_TOTALBOOKMARK': {
-
+      debugger;
       return {
         ...state,
         bookmarksData: state.bookmarksData.concat(action.data)
@@ -35,6 +35,13 @@ export default (state = initialData, action) => {
         ...state,
         bookmarksData: getDeletedbookmark,
         data: action.data
+      };
+    }
+    case 'CLEAR_BOOKMARKS': {
+      debugger;
+      return {
+        ...state,
+        bookmarksData: []
       };
     }
     default :
