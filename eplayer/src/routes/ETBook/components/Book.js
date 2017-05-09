@@ -67,7 +67,6 @@ export class Book extends Component {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   };
   componentWillReceiveProps(nextProps){
-    console.log("componentWillReceiveProps---called")
     const playlistData = nextProps.playlistData;
     const pageParameters = this.state.pageDetails;
     if(nextProps.playlistReceived){
