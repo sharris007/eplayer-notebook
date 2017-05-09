@@ -1,5 +1,5 @@
 import AnnotationApi from '../api/annotationApi';
-import { typeConstants } from '../../const/Constants';
+import { typeConstants } from '../../const/Settings';
 
 // GET Total call for annotations
 export const getTotalAnnotationData = json => ({

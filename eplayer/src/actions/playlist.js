@@ -1,5 +1,5 @@
 import PlaylistApi from '../api/playlistApi';
-import { typeConstants } from '../../const/Constants';
+import { typeConstants } from '../../const/Settings';
 
 // GET Book Details
 export const getPlaylistCompleteDetails = json => ({

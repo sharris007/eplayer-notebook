@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
-import { pageDetails , customAttributes } from '../../../../const/Mocdata'; 
+import { pageDetails , customAttributes } from '../../../../const/Mockdata'; 
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
@@ -17,11 +17,10 @@ import { Annotation } from 'pxe-annotation';
 import { Wrapper } from 'pxe-wrapper';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
-import {apiConstants} from '../../../../const/Constants'
+import {resources , domain} from '../../../../const/Settings'
 
 export class Book extends Component {
   constructor(props) {
-
       super(props);
       this.state = {
         classname: 'headerBar',
@@ -83,7 +82,7 @@ export class Book extends Component {
     }
     if(typeof nextProps.tocData === "object" && nextProps.tocData && nextProps.tocData.bookDetails && nextProps.tocData.bookDetails.indexId ) {
       this.bookIndexId = nextProps.tocData.bookDetails.indexId;
-      this.searchUrl = `${apiConstants.SEARCHURL}${this.bookIndexId}&q=searchText${apiConstants.SEARCHLIMIT}`;
+      this.searchUrl = resources.links.etextSearchUrl[domain.getEnvType()]+'/search?indexId='+this.bookIndexId+'&q=searchText&s=0&n='+resources.constants.TextSearchLimit;
     } 
     if(nextProps.isGoToPageRecived ){
       if(nextProps.gotoPageObj.page && nextProps.gotoPageObj.page.href){

@@ -1,7 +1,9 @@
-import { apiConstants } from '../../const/Constants';
+import { resources , domain } from '../../const/Settings';
+const etextService = resources.links.etextServiceUrl;
+const pxeService   = resources.links.pxeServiceUrl;
+const envType      = domain.getEnvType();
 
-
-export const getTotalAnndata = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations`,{
+export const getTotalAnndata = data => fetch(pxeService[envType]+'/context/'+data.context+'/annotations',{
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -10,7 +12,7 @@ export const getTotalAnndata = data => fetch(`${apiConstants.PXESERVICE}/context
   }
 });
 
-export const getAnndata = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations?uri=${data.uri}`,{
+export const getAnndata = data => fetch(pxeService[envType]+'/context/'+data.context+'/annotations?uri='+data.uri,{
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -19,7 +21,7 @@ export const getAnndata = data => fetch(`${apiConstants.PXESERVICE}/context/${da
   }
 });// eslint-disable-line
 
-export const postAnnData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations`, { // eslint-disable-line no-undef
+export const postAnnData = data => fetch(pxeService[envType]+'/context/'+data.context+'/annotations', { // eslint-disable-line no-undef
   method: 'POST',
   headers: {
     Accept: 'application/json',
@@ -29,7 +31,7 @@ export const postAnnData = data => fetch(`${apiConstants.PXESERVICE}/context/${d
   body: JSON.stringify(data)
 });
 
-export const putAnnData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
+export const putAnnData = data => fetch(pxeService[envType]+'/context/'+data.context+'/annotations/'+data.id, {// eslint-disable-line no-undef
   method: 'PUT',
   headers: {
     Accept: 'application/json',
@@ -40,7 +42,7 @@ export const putAnnData = data => fetch(`${apiConstants.PXESERVICE}/context/${da
 });
 
 export const deleteAnnData = data =>
- fetch(`${apiConstants.PXESERVICE}/context/${data.context}/annotations/${data.annId}`, {// eslint-disable-line no-undef
+ fetch(pxeService[envType]+'/context/'+data.context+'/annotations/'+data.annId, {// eslint-disable-line no-undef
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
@@ -52,8 +54,7 @@ export const deleteAnnData = data =>
 // ----Play list toc----------------------------------
 
 export const getBookDetails = bookId => 
-fetch(apiConstants.PAPERBASE+'/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true',
-//fetch(apiConstants.PAPERBASE+'/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=staging_inst2&courseInfo=true&includeBookData=true',
+ fetch(etextService[envType]+'/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true',
  {
     method: 'GET',
     headers: {
@@ -62,7 +63,7 @@ fetch(apiConstants.PAPERBASE+'/books/'+bookId+'/details?platformId=&profile=yes&
     }
 });
 
-export const getTocDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/toc/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef
+export const getTocDetails = (bookId,tocurl) => fetch(etextService[envType]+'/custom/toc/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -70,7 +71,7 @@ export const getTocDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}
   }
 });
 
-export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPERBASE}`+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=false', { // eslint-disable-line no-undef
+export const getPlaylistDetails = (bookId,tocurl) => fetch(etextService[envType]+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=false', { // eslint-disable-line no-undef
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -80,7 +81,7 @@ export const getPlaylistDetails = (bookId,tocurl) => fetch(`${apiConstants.PAPER
 
 
 // Bookmark Api Total GET Call,
-export const getTotalBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/bookmarks`,{
+export const getTotalBookmarkData = data => fetch(pxeService[envType]+'/context/'+data.context+'/identities/'+data.user+'/bookmarks',{
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -90,7 +91,7 @@ export const getTotalBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/co
 });
 
 // Bookmark Api GET Call,
-export const getBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/identities/${data.user}/bookmarks?uri=${data.id}`,{
+export const getBookmarkData = data => fetch(pxeService[envType]+'/context/'+data.context+'/identities/'+data.user+'/bookmarks?uri='+data.id,{
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -100,7 +101,7 @@ export const getBookmarkData = data => fetch(`${apiConstants.PXESERVICE}/context
 });
 // Bookmark Api Post Call,
 
-export const postBookmarkData = postData => fetch(`${apiConstants.PXESERVICE}/context/${postData.context}/identities/${postData.user}/bookmarks`,{
+export const postBookmarkData = postData => fetch(pxeService[envType]+'/context/'+postData.context+'/identities/'+postData.user+'/bookmarks',{
   method: 'POST',
   headers: {
     Accept: 'application/json',
@@ -112,7 +113,7 @@ export const postBookmarkData = postData => fetch(`${apiConstants.PXESERVICE}/co
 
 // Bookmark Api Delete Call,
 
-export const deleteBookmarkData = deleteData => fetch(`${apiConstants.PXESERVICE}/context/${deleteData.context}/identities/${deleteData.user}/bookmarks?uri=${deleteData.uri}`,{
+export const deleteBookmarkData = deleteData => fetch(pxeService[envType]+'/context/'+deleteData.context+'/identities/'+deleteData.user+'/bookmarks?uri='+deleteData.uri,{
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
@@ -121,7 +122,7 @@ export const deleteBookmarkData = deleteData => fetch(`${apiConstants.PXESERVICE
 });
 
 // Go to page Get call
-export const getGotoPage = data => fetch(`${apiConstants.PXESERVICE}/context/${data.context}/navigation/?pageNumber=${data.pagenumber}&provider=${data.baseurl}`,{
+export const getGotoPage = data => fetch(pxeService[envType]+'/context/'+data.context+'/navigation/?pageNumber='+data.pagenumber+'&provider='+data.baseurl,{
   method: 'GET',
   headers: {
     Accept: 'application/json',

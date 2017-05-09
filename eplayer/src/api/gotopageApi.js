@@ -1,4 +1,3 @@
-// import { apiConstants } from '../../const/Constants';
 import { getGotoPage } from './genericApi';
 
 class GotopageApi {
