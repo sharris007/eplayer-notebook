@@ -68,7 +68,8 @@ class PageViewer extends React.Component {
   };
 
   getResponse = (currentPage, isInitOrGo, goToPage, scrollWindowTopCallBack, pageFragmentID) => {
-    this.props.onBookLoaded(false);
+    // if (goToPage !== 'Next' && goToPage !== 'Prev')
+    //   { this.props.onBookLoaded(false); }
     // this.setState({pageLoading:true});
     const thisRef = this;
     const playListURL = thisRef.props.src.playListURL;
@@ -99,7 +100,6 @@ class PageViewer extends React.Component {
         nextPageTitle: (currentPage === playListURL.length - 1) ? '' : playListURL[currentPage+1].title,
         currentStatePlayListUrl: playListURL[currentPage]
       });
-      this.props.onBookLoaded(true);
       // this.setState({pageLoading:false});
       //callback
       if (pageFragmentID && document.getElementById(pageFragmentID)) {
@@ -107,8 +107,10 @@ class PageViewer extends React.Component {
       }else  {
         scrollWindowTopCallBack();
       }
-    }).catch(() => {//err param
-      //console.log(err);
+      if (goToPage !== 'Next' && goToPage !== 'Prev')
+        { this.props.onBookLoaded(true); }
+    }).catch(() => { // err param
+      // console.log(err);
     });
   }
 
@@ -118,21 +120,6 @@ class PageViewer extends React.Component {
 
   goToPrev = () => {
     this.getResponse(-1, false, 'Prev', this.scrollWindowTop);
-  };
-
-  handlerGoEvent = () => {
-    this.getResponse(parseInt(this.state.goTo), true, 'Goto', this.scrollWindowTop);
-  };
-
-  updateGoTo = (e) => {
-    this.setState({ goTo: e.target.value });
-  };
-
-  goToKeyUp = (e) => {
-    if (e.keyCode === 13) {
-      this.updateGoTo(e);
-      this.getResponse(parseInt(this.state.goTo), true, this.scrollWindowTop);
-    }
   };
 
   arrowNavigation = (e) => {
@@ -238,12 +225,11 @@ class PageViewer extends React.Component {
 
   componentWillReceiveProps(newProps) {
 
-    if (this.props.src.tocUpdated===true || parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
+    if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
       const pageIndex=this.props.src.playListURL.findIndex(el =>{
         return parseInt(el.playOrder)===parseInt(newProps.src.currentPageURL.playOrder); 
       });
       this.getResponse(parseInt(pageIndex), true, 'propChanged', this.scrollWindowTop);
-      this.props.src.tocUpdated = false;
     }
   };
   
@@ -262,15 +248,7 @@ class PageViewer extends React.Component {
     // const difference_ms = new Date()-this.startTimer;
     // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
-  getGoToElement = () =>{
-    return (
-      <div className = "goto-group" >
-        < TextField hintText = "Page No" value = {this.state.goTo} onChange = {(e) => this.updateGoTo(e)}  onKeyDown = {(e) => this.goToKeyUp(e)}/><RaisedButton label="Go.." primary={true} onClick={() => this.handlerGoEvent()}/>
-      </div>
-      );
-  };
 
- 
   render() {
     const zommLevel = this.props.src.pageZoom ? this.props.src.pageZoom + '%' : '100%';
     const fontSize = this.props.src.pageFontSize ? (this.props.src.pageFontSize/3.5) + 'px' : '16px';
@@ -281,7 +259,6 @@ class PageViewer extends React.Component {
             {this.state.renderSrc ?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} 
           </div>
         </div>
-        {this.props.src.enableGoToPage ?this.getGoToElement():''} 
         <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
         <div ref = {(el) => { this.drmBlockRef = el; }}> </div >
         <LightBox lightBoxProps={this.state.lightBoxProps}/>

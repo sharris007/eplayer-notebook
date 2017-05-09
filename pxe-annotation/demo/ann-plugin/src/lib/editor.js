@@ -41,7 +41,7 @@ Annotator.Editor = (function(_super) {
 
   var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">Confirm?</label></div><div class="ann-canceldelete-section"><a class="annotator-confirm-cancel">' + _t('CANCEL') + '</a><a class="annotator-confirm-delete">' + _t('DELETE') + '</a></div></div></div>';
 
-  var panel5 ='<li class="characters-left"><span id="letter-count">'+(Editor.prototype.const.characters)+'</span id="letter-text">  Characters left<span><span></li>';
+  var panel5 ='<li style="font-size:0px"; class="characters-left"><span id="letter-count">'+(Editor.prototype.const.characters)+'</span id="letter-text">  Characters left<span><span></li>';
 
   Editor.prototype.html = '<div class="annotator-outer annotator-editor hide-note"><form class="annotator-widget">'+panel1+ panel2+panel3+'</form></div>';
   
@@ -136,6 +136,7 @@ Annotator.Editor = (function(_super) {
     var inputCharLength = event.currentTarget.value.length, actualChar = this.const.characters;
     var remainingCount = actualChar-inputCharLength;
     this.element.find('#letter-count').text(remainingCount);
+    $('.characters-left').css('font-size', (remainingCount < 51)?'':'0px');
     var selectors = this.element.find('.annotator-item textarea'); 
     var temp = this.textareaHeight;
     this.textareaHeight = $('#annotator-field-0')[0].scrollHeight;

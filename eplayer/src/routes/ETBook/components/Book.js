@@ -17,7 +17,7 @@ import { Annotation } from 'pxe-annotation';
 import { Wrapper } from 'pxe-wrapper';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
-import {apiConstants} from '../../../../const/Constants'
+import {apiConstants, annotationTypes} from '../../../../const/Constants'
 
 export class Book extends Component {
   constructor(props) {
@@ -182,38 +182,53 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
-    if(type!=='continue' && data){
-      const parameters = this.state.urlParams;
-      parameters.id    = data.id,
-      parameters.uri   = encodeURIComponent(data.href),
-      data.uri         = data.href;
-      data.label       = data.title;
-      this.setState({ 
-        currentPageDetails :data,
-        currentPageTitle   :data.title, 
-        urlParams:parameters
-      },function(){
-        // eslint-disable-next-line
-        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
-        setTimeout(()=>{
-          this.props.dispatch(getBookmarkCallService(this.state.urlParams));
-          // this.props.dispatch(getAnnCallService(this.state.urlParams));
-        },2000)
-      });
-    }else if(type==='continue' && data){
-       this.setState({isPanelOpen:true},()=>{
-          const pageDetails={...this.state.pageDetails};
-          pageDetails.currentPageURL=data;
-          this.props.dispatch({
-            type: 'CREATE_MULTIPANEL_BOOTSTRAP_PARAMS',
-            data: {pageDetails:pageDetails,urlParams:this.state.urlParams}
+    switch(type){
+      case 'continue':{
+        if(data){
+          this.setState({isPanelOpen:true},()=>{
+              const pageDetails={...this.state.pageDetails};
+              pageDetails.currentPageURL=data;
+              this.props.dispatch({
+                type: 'CREATE_MULTIPANEL_BOOTSTRAP_PARAMS',
+                data: {pageDetails:pageDetails,urlParams:this.state.urlParams}
+              });
+              browserHistory.replace(`/eplayer/MultiTaskPanel`);
+              // window.open(`/eplayer/MultiTaskPanel`, 'panel');
+              // window.open(`http://localhost:3000/eplayer/ETbook/1Q98UHDD1E1/page/${data.id}`,'panel');
           });
-          browserHistory.replace(`/eplayer/MultiTaskPanel`);
-          // window.open(`/eplayer/MultiTaskPanel`, 'panel');
-          // window.open(`http://localhost:3000/eplayer/ETbook/1Q98UHDD1E1/page/${data.id}`,'panel');
-       });
+        }
+        break;
+      }
+      case annotationTypes.ANNOTATION_CREATED:
+      case annotationTypes.ANNOTATION_UPDATED:
+      case annotationTypes.ANNOTATION_DELETED:{
+         // this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+         break;
+      }
+      default:{
+        // other than continue
+        if(data){
+          const parameters = this.state.urlParams;
+          parameters.id    = data.id,
+          parameters.uri   = encodeURIComponent(data.href),
+          data.uri         = data.href;
+          data.label       = data.title;
+          this.setState({ 
+            currentPageDetails :data,
+            currentPageTitle   :data.title, 
+            urlParams:parameters
+          },function(){
+            // eslint-disable-next-line
+            browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+            setTimeout(()=>{
+              this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+              // this.props.dispatch(getAnnCallService(this.state.urlParams));
+            },2000)
+          });
+        }
+        break;
+      }
     }
-    
   }
 
   isCurrentPageBookmarked = () => {
