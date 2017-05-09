@@ -363,7 +363,6 @@ export class Book extends Component {
       urlParams:{...this.state.urlParams}		
     }		
     //End of Wrapper PxePlayer
-    console.log("render called ")
     return (
       <div>
         <Header
