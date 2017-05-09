@@ -49,6 +49,13 @@ export default (state = initialAnnotationData , action) => {
         highlightTotalData: totalData
       };
     }
+    case 'CLEAR_ANNOTATIONS': {
+      return {
+        ...state,
+        highlightTotalData: [],
+        annTotalDataLoaded: false
+      };
+    }
     default :
       return state;
   }

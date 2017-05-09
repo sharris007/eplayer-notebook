@@ -19,7 +19,7 @@ export class BindGlossaryCallBacks {
           return true;
         }
       });
-
+      console.log(glossaryurl)
       if (glossaryurl) {
         PopupApi.getData(glossaryurl).then((response) => {
           return response.text();
@@ -56,7 +56,13 @@ export class BindGlossaryCallBacks {
               console.log(item)
             });
           });
-          new PopUpInfo({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv});
+          if (props.ParagraphNumeroUno) {
+            window.renderCustomPopUp({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv, ParagraphNumeroUno : props.ParagraphNumeroUno});
+            /*new CustomPopUp({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv, ParagraphNumeroUno : props.ParagraphNumeroUno});*/
+          } else {
+            new PopUpInfo({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv});
+          }
+          
         }).catch((err) => {
           console.debug(err);
         });

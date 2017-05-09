@@ -13,6 +13,13 @@ export default (state = initalData, action) => {
         playlistReceived: action.playlistReceived
       };
     }
+    case 'CLEAR_PLAYLIST': {
+      return {
+        ...state,
+        data: [],
+        playlistReceived: false
+      };
+    }
     case 'GET_TOC': {
       return {
         ...state,

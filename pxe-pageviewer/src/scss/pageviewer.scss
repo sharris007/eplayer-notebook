@@ -13,7 +13,6 @@ div#book-render-component{
 .book-container{
     width: 100%;
     position: absolute;
-    top: 60px;
     line-height:2em;
     padding-bottom:70px; 
 }
@@ -154,6 +153,17 @@ figure.video .modal{
  figure button.poster-play-icon:hover{
     
  }
+.video-player-wrapper > .responsive-container > div >div {
+  width:100%;
+  height:100%;
+}
+.video-player-wrapper video{
+  object-fit: inherit;
+}
+.image-lightbox-footer > .fig-caption {
+  line-height: normal;
+}
+ 
 //end of video lightbox componenet over ride css
 .audioHighlight{
   background : #FFA441;

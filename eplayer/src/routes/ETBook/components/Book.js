@@ -21,6 +21,7 @@ import {apiConstants} from '../../../../const/Constants'
 
 export class Book extends Component {
   constructor(props) {
+
       super(props);
       this.state = {
         classname: 'headerBar',
@@ -48,6 +49,7 @@ export class Book extends Component {
       this.handleScroll = this.handleScroll.bind(this);
       document.body.addEventListener('contentLoaded', this.parseDom);
       document.body.addEventListener('navChanged', this.navChanged);
+      this.state.pageDetails.currentPageURL = '';
        
   }
   componentWillMount  = () => {
@@ -57,12 +59,14 @@ export class Book extends Component {
   }
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
+    this.props.dispatch({type: "CLEAR_PLAYLIST"});
+    this.props.dispatch({type: "CLEAR_ANNOTATIONS"});
+    this.props.dispatch({type: "CLEAR_BOOKMARKS"});
   }
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   };
   componentWillReceiveProps(nextProps){
-    console.log("componentWillReceiveProps------")
     const playlistData = nextProps.playlistData;
     const pageParameters = this.state.pageDetails;
     if(nextProps.playlistReceived){
@@ -178,7 +182,7 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
-    if(type!=='continue'){
+    if(type!=='continue' && data){
       const parameters = this.state.urlParams;
       parameters.id    = data.id,
       parameters.uri   = encodeURIComponent(data.href),
@@ -196,7 +200,7 @@ export class Book extends Component {
           // this.props.dispatch(getAnnCallService(this.state.urlParams));
         },2000)
       });
-    }else if(type==='continue'){
+    }else if(type==='continue' && data){
        this.setState({isPanelOpen:true},()=>{
           const pageDetails={...this.state.pageDetails};
           pageDetails.currentPageURL=data;
@@ -209,6 +213,7 @@ export class Book extends Component {
           // window.open(`http://localhost:3000/eplayer/ETbook/1Q98UHDD1E1/page/${data.id}`,'panel');
        });
     }
+    
   }
 
   isCurrentPageBookmarked = () => {
@@ -241,7 +246,6 @@ export class Book extends Component {
     const currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
     const playpageDetails  = this.state.pageDetails ; 
     playpageDetails.currentPageURL =  currentData;
-     
     this.setState({
       pageDetails: playpageDetails,
       drawerOpen: false
