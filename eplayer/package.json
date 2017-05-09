@@ -127,6 +127,7 @@
     "postcss-loader": "^0.13.0",
     "pxe-annotation": "^1.2.0",
     "pxe-pageviewer": "^1.0.14",
+    "pxe-player":"~0.0.1",
     "pxe-wrapper": "^1.0.9",
     "raw-loader": "^0.5.1",
     "react": "^15.4.0",
