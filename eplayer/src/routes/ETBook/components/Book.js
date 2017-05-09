@@ -7,7 +7,7 @@ import Header from '../../../components/Header';
 import { pageDetails , customAttributes } from '../../../../const/Mocdata'; 
 import './Book.scss';
 import { browserHistory } from 'react-router';
-import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
+import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 
@@ -67,6 +67,7 @@ export class Book extends Component {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   };
   componentWillReceiveProps(nextProps){
+    console.log("componentWillReceiveProps---called")
     const playlistData = nextProps.playlistData;
     const pageParameters = this.state.pageDetails;
     if(nextProps.playlistReceived){
@@ -199,11 +200,20 @@ export class Book extends Component {
         }
         break;
       }
-      case annotationTypes.ANNOTATION_CREATED:
-      case annotationTypes.ANNOTATION_UPDATED:
-      case annotationTypes.ANNOTATION_DELETED:{
-         // this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+      case annotationTypes.ANNOTATION_CREATED:{
+         const annList = annStructureChange([data]);
+         this.props.dispatch(getTotalAnnotationData(annList));
          break;
+      }
+      case annotationTypes.ANNOTATION_UPDATED:{
+        const annList=annStructureChange([data]);
+        this.props.dispatch(deleteAnnotationData(data));
+        this.props.dispatch(getTotalAnnotationData(annList));
+        break;
+      }
+      case annotationTypes.ANNOTATION_DELETED:{
+        this.props.dispatch(deleteAnnotationData(data));
+        break;
       }
       default:{
         // other than continue
@@ -353,7 +363,7 @@ export class Book extends Component {
       urlParams:{...this.state.urlParams}		
     }		
     //End of Wrapper PxePlayer
- 
+    console.log("render called ")
     return (
       <div>
         <Header
