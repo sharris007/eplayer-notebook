@@ -1,4 +1,3 @@
-// import { apiConstants } from '../../const/Constants';
 import { getTotalAnndata, getAnndata, postAnnData, putAnnData, deleteAnnData } from './genericApi';
 
 class AnnotationApi {

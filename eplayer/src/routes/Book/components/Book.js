@@ -11,7 +11,7 @@ import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
 // import { BookList } from '../../../../const/MockData';
-import { pageDetails } from '../../../../const/Mocdata';// booksdata, tocData
+import { pageDetails } from '../../../../const/Mockdata';// booksdata, tocData
 
 import './Book.scss';
 

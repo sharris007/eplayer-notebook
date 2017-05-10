@@ -1,5 +1,5 @@
 import BookmarkApi from '../api/bookmarkApi';
-import { typeConstants } from '../../const/Constants';
+import { typeConstants } from '../../const/Settings';
 
 // GET call for Bookmark
 export const getBookmarkData = json => ({

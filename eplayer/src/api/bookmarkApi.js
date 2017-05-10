@@ -1,4 +1,3 @@
-// import { apiConstants } from '../../const/Constants';
 import { getBookmarkData ,postBookmarkData ,deleteBookmarkData,getTotalBookmarkData } from './genericApi';
 
 class BookmarkApi {
