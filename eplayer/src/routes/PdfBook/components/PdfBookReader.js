@@ -6,6 +6,7 @@ import Header from '../../../components/Header';
 import './PdfBook.scss';
 import {Link, browserHistory } from 'react-router';
 import CircularProgress from 'material-ui/CircularProgress';
+import _ from 'lodash';
 var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails,globalbookid;
 
 export class PdfBookReader extends Component {
@@ -78,6 +79,7 @@ export class PdfBookReader extends Component {
     }else{
       this.goToPage(firstPage);
    }
+   
 
     /*var etext_token =this.props.bookshelf.cdnToken;
     var headerParams = {
@@ -400,7 +402,7 @@ export class PdfBookReader extends Component {
     console.log(level);
     __pdfInstance.setCurrentZoomLevel(level);
   }
-  saveHighlightHandler = (currentHighlight) => {
+ /* saveHighlightHandler = (currentHighlight) => {
     var highlightID = '';
     var highlights = [];
     const currentPageId=this.state.currPageIndex;
@@ -435,7 +437,7 @@ export class PdfBookReader extends Component {
     }
    
  
-}
+}*/
   createHighlight(e) {
   var currentHighlight={};
   var highlightList = this.state.highlightList;
@@ -443,22 +445,34 @@ export class PdfBookReader extends Component {
   var highlightsLength = highlightList.length;
   currentHighlight.id = highlightsLength + 1;
   currentHighlight.highlightHash = highlightData.serializedHighlight;
+  currentHighlight.selection = highlightData.selection;
   console.log("======== "+currentHighlight.highlightHash);
   currentHighlight.pageIndex = highlightData.pageInformation.pageNumber;
-   this.saveHighlightHandler(currentHighlight);
-   highlightList.push(currentHighlight);
+  highlightList.push(currentHighlight);
+  const currentPageId=this.state.currPageIndex;
+  const courseId = '-1';
+  const note = '';
+  const selectedText = currentHighlight.selection;
+  const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
+  this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPageId), _.toString(courseId), true, currentHighlight.highlightHash, note, selectedText, 'yellow').then(() => {
+    this.setState({highlightList : highlightList});
+    this.displayHighlight();
+  })
    
   }
   displayHighlight = () =>{
-    this.props.fetchHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.book.bookeditionid, this.state.currPageIndex, ssoKey, serverDetails)
-    .then(()=> {
-     this.setState({highlightList : this.props.book.highlights});
+   const currentPageId=this.state.currPageIndex;
+    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
+    const courseId = '-1';
+   this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid, this.props.params.bookId, currentPage.pageid,true,courseId).then(() => {
+    this.setState({highlightList : this.props.book.highlights});
      __pdfInstance.restoreHighlights(this.state.highlightList, this.deleteHighlight);
    })
+    
   }
   deleteHighlight = (id) => {
 
-    this.props.removeHighlight(id, ssoKey, serverDetails)
+    //this.props.removeHighlight(id, ssoKey, serverDetails)
 
   }
 

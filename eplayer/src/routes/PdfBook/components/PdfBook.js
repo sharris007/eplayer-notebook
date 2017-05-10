@@ -48,31 +48,33 @@ async componentWillMount() {
 }
   render()
   {
-  	if(this.props.book.bookinfo.fetched)
+    if(this.props.book.bookinfo.fetched)
     {
-    	return(<PdfBookReader 
+      return(<PdfBookReader 
                         fetchTocAndViewer={this.props.fetchTocAndViewer}
-    					fetchBookmarks={this.props.fetchBookmarks}
-    					addBookmark={this.props.addBookmark}
-    					removeBookmark={this.props.removeBookmark}
-    					fetchBookInfo={this.props.fetchBookInfo}
+              fetchBookmarks={this.props.fetchBookmarks}
+              addBookmark={this.props.addBookmark}
+              removeBookmark={this.props.removeBookmark}
+              fetchBookInfo={this.props.fetchBookInfo}
                         fetchPageInfo={this.props.fetchPageInfo}
                         saveHighlight={this.props.saveHighlight}
                         fetchHighlight={this.props.fetchHighlight}
                         removeHighlight={this.props.removeHighlight}
-    					goToPage={this.props.goToPage}
-    					book={this.props.book}
-    					bookshelf={this.props.bookshelf}
+              goToPage={this.props.goToPage}
+              book={this.props.book}
+              bookshelf={this.props.bookshelf}
                         login={this.props.login}
-    					params={this.props.params}
+              params={this.props.params}
+              fetchHighlightUsingReaderApi = {this.props.fetchHighlightUsingReaderApi}
+              saveHighlightUsingReaderApi = {this.props.saveHighlightUsingReaderApi}
                         />);
     }
     else
     {
-    	return(
-    	<div className="centerCircularBar">
-    	<CircularProgress style={{ margin: '40px auto', display: 'block' }} />
-    	</div>);
+      return(
+      <div className="centerCircularBar">
+      <CircularProgress style={{ margin: '40px auto', display: 'block' }} />
+      </div>);
     }
 
   }

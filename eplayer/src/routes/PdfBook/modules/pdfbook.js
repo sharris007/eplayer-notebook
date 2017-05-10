@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch';
 import map from 'lodash/map';
 import { clients } from '../../../components/common/client';
 import axios from 'axios';
+import Hawk from 'hawk';
 
 // ------------------------------------
 // Constants
@@ -151,7 +152,7 @@ export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId
     });
   };
 }
-export function removeHighlight(highlightID, sessionKey, bookServerURL){
+/*export function removeHighlight(highlightID, sessionKey, bookServerURL){
   return (dispatch) => {
     dispatch(request('highlights'));
     axios.get(''+bookServerURL+'/ebook/ipad/deleteuserhighlight?highlightid='+highlightID+'&authkey='+sessionKey+'&outputformat=JSON',
@@ -177,8 +178,8 @@ export function removeHighlight(highlightID, sessionKey, bookServerURL){
           }
         })
     }
-  }
-export function saveHighlight(userid,bookid,userbookid,bookeditionid,pageid,bookpagenumber,xcoord,ycoord,width,height,sso,bookServerURL) {
+  }*/
+/*export function saveHighlight(userid,bookid,userbookid,bookeditionid,pageid,bookpagenumber,xcoord,ycoord,width,height,sso,bookServerURL) {
      const bookState = {
     highlightID : ''
   };
@@ -210,12 +211,9 @@ export function saveHighlight(userid,bookid,userbookid,bookeditionid,pageid,book
     }
   });
 }
- /* return{
-  type: 'SAVE_HIGHLIGHT',
-  payload: axios.get(''+bookServerURL+'/ebook/ipad/saveuserhighlight?userid='+userid+'&bookid='+bookid+'&userroleid=3&userbookid='+userbookid+'&bookeditionid='+bookeditionid+'&roletypeid=3&pageid='+pageid+'&bookpagenumber='+bookpagenumber+'&shareacrosscourse=Y&xcoord='+xcoord+'&ycoord='+ycoord+'&sharewithstudent=Y&width='+width+'&height='+height+'&colorname=Yellow&authkey='+sso+'&outputformat=JSON')
-  };*/
-}
-export function fetchHighlight(userid,bookId,bookEditionID,listval,sessionKey,bookServerURL) {
+
+}*/
+/*export function fetchHighlight(userid,bookId,bookEditionID,listval,sessionKey,bookServerURL) {
   const bookState = {
    highlights: [],
     isFetching: {
@@ -259,7 +257,7 @@ export function fetchHighlight(userid,bookId,bookEditionID,listval,sessionKey,bo
       return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
     });
   };
-}
+}*/
 
 export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL){
   const bookState = {
@@ -516,6 +514,117 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
     timeout: 20000
     };
   }
+  function createAuthorizationToken(uri,method){
+    const credentials = {
+      id: 'tArkNWL2dK',
+      key: 'Fc0C9w05bZy6U9TB7wN6CBgKyM32yk6Q',
+      algorithm: 'sha256'
+    }
+ 
+   var randomString = function(length) {
+       var text = "";
+       var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+       for(var i = 0; i < length; i++) {
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+       }
+       return text;
+   }
+   const header = Hawk.client.header(uri, method, { credentials: credentials, ext: '', timestamp: Math.round(Date.now()/1000), nonce: randomString(6)});
+   const authorizationVal = header.field;
+
+const authorizationHeaderVal = authorizationVal.replace("Hawk id=","ReaderPlus key=");
+return authorizationHeaderVal;
+}
+
+export function fetchHighlightUsingReaderApi(userId,bookId,pageId,shared,courseId){
+
+const bookState = {
+   highlights: [],
+    isFetching: {
+      highlights: true
+    }
+  };
+  //var uri = 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared=true&userId='+userId+'&bookId='+bookId+'&pageId='+pageId;
+  const authorizationHeaderVal = createAuthorizationToken('https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId, 'GET')
+  console.log("Authorization : "+ authorizationHeaderVal);
+  return (dispatch) => {
+    dispatch(request('highlights'));
+    
+    return axios({
+    method : 'get',
+    url: 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId,
+    headers: {
+      'Accept' : 'application/json',
+      'Authorization' : authorizationHeaderVal
+    }
+
+  }).then((response) =>{
+     if (response.status >= 400) {
+        bookState.isFetching.highlights = false;
+        return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
+      }
+      return response.data;
+   }).then((response) => {
+    if(response.data.length){
+       response.data.forEach((highlight) => {
+        var hlObj={
+
+        }
+        hlObj.userId = highlight.userId;
+        hlObj.bookId = highlight.bookId;
+        hlObj.pageId = highlight.pageId;
+        hlObj.courseId = highlight.courseId;
+        hlObj.shared = highlight.shared;
+        hlObj.highlightHash = highlight.highlightHash;
+        hlObj.note = highlight.note;
+        hlObj.selectedText = highlight.selectedText;
+        hlObj.colour = highlight.colour;
+        hlObj.id = highlight.id;
+        hlObj.pageIndex = 1;        //For Foxit
+
+        bookState.highlights.push(hlObj);
+      })
+    }
+    bookState.isFetching.highlights = false;
+    return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
+  })
+
+  }
+
+}
+
+export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour){
+  
+  const authorizationHeaderVal = createAuthorizationToken('https://api-sandbox.readerplatform.pearson-intl.com/highlight', 'POST')
+  console.log("Authorization : "+ authorizationHeaderVal);
+
+  return{
+  type: 'SAVE_HIGHLIGHT',
+  payload: axios({
+    method : 'post',
+    url: 'https://api-sandbox.readerplatform.pearson-intl.com/highlight',
+    headers: {
+      'Accept' : 'application/json',
+      'Authorization' : authorizationHeaderVal
+    },
+    data: {
+      "userId" : userId,
+      "bookId" : bookId,
+      "pageId" : pageId,
+      "pageNo" : pageNo,
+      "courseId" : courseId,
+      "shared" : shared,
+      "highlightHash" : highlightHash,
+      "note" : note,
+      "selectedText" : selectedText,
+      "colour" : colour
+    }
+
+
+  })
+  }
+}
+
 
  
 // ------------------------------------
