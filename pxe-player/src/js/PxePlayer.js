@@ -56,16 +56,16 @@ class PxePlayer extends React.Component {
     // for post url
     let requestUrl = `${pageDetails.endPoints.services}/context/${this.state.urlParams.context}/annotations`;
     switch (method) {
-      case 'GET': {
-        requestUrl += `?uri=${this.state.urlParams.uri}`;
+    case 'GET': {
+      requestUrl += `?uri=${this.state.urlParams.uri}`;
+      break;
+    }
+    case 'PUT':
+    case 'DELETE':
+      {
+        requestUrl += `/${data.id}`;
         break;
       }
-      case 'PUT':
-      case 'DELETE':
-        {
-          requestUrl += `/${data.id}`;
-          break;
-        }
     }
     return fetch(requestUrl, payload)
       .then((response) => {
@@ -106,43 +106,46 @@ class PxePlayer extends React.Component {
       // delete receivedAnnotationData.source.href;
       // delete receivedAnnotationData.source.title;
     switch (eventType) {
-      case 'annotationCreated': {
+    case 'annotationCreated': {
       // this.createAnnotation(receivedAnnotationData).then((newAnnotation)=>{
       //   const annotationData={...this.state.annotationData};
       //   annotationData.total=annotationData.total+1;
       //   annotationData.rows.push(newAnnotation);
       //   this.setState({annotationData:annotationData});
       // });
-        this.annotationCallDispatch('POST', receivedAnnotationData).then((newAnnotation) => {
-          const annotationData = { ...this.state.annotationData };
-          annotationData.total += 1;
-          annotationData.rows.push(newAnnotation);
-          this.setState({ annotationData }, () => {
+      this.annotationCallDispatch('POST', receivedAnnotationData).then((newAnnotation) => {
+        const annotationData = { ...this.state.annotationData };
+        annotationData.total += 1;
+        annotationData.rows.push(newAnnotation);
+        this.setState({ annotationData }, () => {
             // Making empty so that Annotation component loads with new annotation created and duplicates the existing one.
-            this.setState({ annotationData: [] });
-          });
-          this.props.applnCallback(playerConstants.ANNOTATION_CREATED, newAnnotation);
+          this.setState({ annotationData: {
+            rows: [],
+            total: 0
+          } });
         });
-        break;
-      }
-      case 'annotationUpdated': {
+        this.props.applnCallback(playerConstants.ANNOTATION_CREATED, newAnnotation);
+      });
+      break;
+    }
+    case 'annotationUpdated': {
       // this.updateAnnotation(receivedAnnotationData);
-        this.annotationCallDispatch('PUT', receivedAnnotationData).then((updatedAnnotation) => {
-          this.props.applnCallback(playerConstants.ANNOTATION_UPDATED, updatedAnnotation);
-        });
-        break;
-      }
-      case 'annotationDeleted': {
+      this.annotationCallDispatch('PUT', receivedAnnotationData).then((updatedAnnotation) => {
+        this.props.applnCallback(playerConstants.ANNOTATION_UPDATED, updatedAnnotation);
+      });
+      break;
+    }
+    case 'annotationDeleted': {
       // receivedAnnotationData.annId    = data.id;
       // this.deleteAnnotation(receivedAnnotationData);
-        this.annotationCallDispatch('DELETE', receivedAnnotationData).then((deletedAnnotation) => {
-          this.props.applnCallback(playerConstants.ANNOTATION_DELETED, deletedAnnotation);
-        });
-        break;
-      }
-      default : {
-        return eventType;
-      }
+      this.annotationCallDispatch('DELETE', receivedAnnotationData).then((deletedAnnotation) => {
+        this.props.applnCallback(playerConstants.ANNOTATION_DELETED, deletedAnnotation);
+      });
+      break;
+    }
+    default : {
+      return eventType;
+    }
     }
   }
   render() {
