@@ -56,6 +56,13 @@ const searchActions = {
             };
             searchState.searchResult.results.push(obj);
           })
+          const glossaryCollection = _.find(searchState.searchResult.results, {title : "Glossary"});
+          if(glossaryCollection && glossaryCollection.title) {
+            _.remove(searchState.searchResult.results, function (result) {
+              return result.title == "Glossary";
+            });
+            searchState.searchResult.results.unshift(glossaryCollection);
+          }
         }else {
     if (response.status >= 400) {
         console.log(`SearchBook info error: ${response.statusText}`);
