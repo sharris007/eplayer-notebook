@@ -79,7 +79,7 @@ export const domain = {
     if (locationOrigin.indexOf('localhost') !== -1)
           { return 'local'; }
     else if (locationOrigin.indexOf('pxe-sdk.dev-openclass.com') !== -1)
-          { return 'dev'; }
+          { return 'qa'; }
     else if (locationOrigin.indexOf('pxe-sdk-qa.stg-openclass.com') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('pxe-sdk.stg-openclass.com') !== -1)
