@@ -7,17 +7,17 @@ import Header from '../../../components/Header';
 import { pageDetails , customAttributes } from '../../../../const/Mockdata'; 
 import './Book.scss';
 import { browserHistory } from 'react-router';
-import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService } from '../../../actions/annotation';
+import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
 import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
-import { PageViewer } from '@pearson-incubator/pxe-pageviewer';
+import { PxePlayer } from 'pxe-player';
 import { Annotation } from 'pxe-annotation';
 import { Wrapper } from 'pxe-wrapper';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
-import {resources , domain} from '../../../../const/Settings'
+import {resources , domain ,typeConstants} from '../../../../const/Settings'
 
 export class Book extends Component {
   constructor(props) {
@@ -31,14 +31,14 @@ export class Book extends Component {
         currentPageTitle:'',
         annAttributes :'',
         popUpCollection:'',
-        tocUpdated:false,
         urlParams:{
           context :this.props.params.bookId,
           user:'epluser'
         },
         annAttributes:customAttributes,
         goToTextVal:'',
-        pageScrollValue:''
+        pageScrollValue:'',
+        isPanelOpen:false
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -182,26 +182,62 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
-    if(data){
-      const parameters = this.state.urlParams;
-      parameters.id    = data.id,
-      parameters.uri   = encodeURIComponent(data.href),
-      data.uri         = data.href;
-      data.label       = data.title;
-      this.setState({ 
-        currentPageDetails :data,
-        currentPageTitle   :data.title, 
-        urlParams:parameters
-      },function(){
-        // eslint-disable-next-line
-        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
-        setTimeout(()=>{
-          this.props.dispatch(getBookmarkCallService(this.state.urlParams));
-          this.props.dispatch(getAnnCallService(this.state.urlParams));
-        },2000)
-      });  
+    switch(type){
+      case 'continue':{
+        if(data){
+          this.setState({isPanelOpen:true},()=>{
+              const pageDetails={...this.state.pageDetails};
+              pageDetails.currentPageURL=data;
+              this.props.dispatch({
+                type: 'CREATE_MULTIPANEL_BOOTSTRAP_PARAMS',
+                data: {pageDetails:pageDetails,urlParams:this.state.urlParams}
+              });
+              browserHistory.replace(`/eplayer/MultiTaskPanel`);
+              // window.open(`/eplayer/MultiTaskPanel`, 'panel');
+              // window.open(`http://localhost:3000/eplayer/ETbook/1Q98UHDD1E1/page/${data.id}`,'panel');
+          });
+        }
+        break;
+      }
+      case typeConstants.ANNOTATION_CREATED:{
+         const annList = annStructureChange([data]);
+         this.props.dispatch(getTotalAnnotationData(annList));
+         break;
+      }
+      case typeConstants.ANNOTATION_UPDATED:{
+        const annList=annStructureChange([data]);
+        this.props.dispatch(deleteAnnotationData(data));
+        this.props.dispatch(getTotalAnnotationData(annList));
+        break;
+      }
+      case typeConstants.ANNOTATION_DELETED:{
+        this.props.dispatch(deleteAnnotationData(data));
+        break;
+      }
+      default:{
+        // other than continue
+        if(data){
+          const parameters = this.state.urlParams;
+          parameters.id    = data.id,
+          parameters.uri   = encodeURIComponent(data.href),
+          data.uri         = data.href;
+          data.label       = data.title;
+          this.setState({ 
+            currentPageDetails :data,
+            currentPageTitle   :data.title, 
+            urlParams:parameters
+          },function(){
+            // eslint-disable-next-line
+            browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+            setTimeout(()=>{
+              this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+              // this.props.dispatch(getAnnCallService(this.state.urlParams));
+            },2000)
+          });
+        }
+        break;
+      }
     }
-    
   }
 
   isCurrentPageBookmarked = () => {
@@ -234,7 +270,6 @@ export class Book extends Component {
     const currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
     const playpageDetails  = this.state.pageDetails ; 
     playpageDetails.currentPageURL =  currentData;
-    playpageDetails.tocUpdated  = true;
     this.setState({
       pageDetails: playpageDetails,
       drawerOpen: false
@@ -310,7 +345,7 @@ export class Book extends Component {
   render() {
     const callbacks = {};
     const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
-    const annData  = annotationData.rows;
+    // const annData  = annotationData.rows;
     this.props.book.annTotalData  = annotationTotalData;
     this.props.book.toc           = tocData;
     this.props.book.bookmarks     = bookMarkData;
@@ -320,7 +355,13 @@ export class Book extends Component {
     callbacks.removeBookmarkHandler   = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback        = this.goToPageCallback;
- 
+
+    //For Segregating to Wrapper component PxePlayer		
+    const bootstrapParams={		
+      pageDetails:{...this.state.pageDetails},		
+      urlParams:{...this.state.urlParams}		
+    }		
+    //End of Wrapper PxePlayer
     return (
       <div>
         <Header
@@ -343,12 +384,11 @@ export class Book extends Component {
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {!playlistReceived ? <RefreshIndicator size={50} left={650} top={200} status="loading" /> :''}
             {playlistReceived ? <div className="printBlock"><img className="printer-epl" src={"https://cdn1.iconfinder.com/data/icons/nuvola2/128x128/devices/print_printer.png"} onClick={this.printFun} /> </div>: '' }
-            {playlistReceived ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded = {(bload) => this.onBookLoaded(bload)} /> : ''}
-            {playlistReceived ? <Annotation annAttributes = {this.state.annAttributes} shareableAnnotations={this.state.pageDetails.annotationShareable} annotationData={annData} contentId="pxe-viewer"
-            annotationEventHandler={this.annotationCallBack.bind(this)} /> : ''}
-            {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = 'book-container'/> : '' }
-            <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}>  </div>
+            {playlistReceived ? <PxePlayer bootstrapParams={bootstrapParams}  applnCallback={this.onPageChange}/> : ''}
           </div>
+           {this.state.isPanelOpen?<div>		
+            <iframe name="panel" width="500" height="600" ></iframe>
+          </div>:''}
       </div>
     );
   }
@@ -376,7 +416,7 @@ Book.contextTypes = {
 
 const mapStateToProps = state => {
  return  { 
-    annotationData       : state.annotationReducer.highlightPageData,
+    // annotationData       : state.annotationReducer.highlightPageData,
     annDataloaded        : state.annotationReducer.annDataloaded, 
     annotationTotalData  : state.annotationReducer.highlightTotalData,  
     annTotalDataLoaded   : state.annotationReducer.annTotalDataLoaded, 

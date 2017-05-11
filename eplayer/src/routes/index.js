@@ -7,6 +7,7 @@ import ETbookshelfRoute from './ETBookshelf';
 import ETbookRoute from './ETBook';
 import pdfbookRoute from './PdfBook';
 import Print from './Print';
+import multiTaskPanel from './MultiTaskPanel';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -22,7 +23,8 @@ export const createRoutes = store => ({
     pdfbookRoute(store),
     ETbookshelfRoute(store),
     ETbookRoute(store),
-    Print(store)
+    Print(store),
+    multiTaskPanel(store)
   ]
 });
 

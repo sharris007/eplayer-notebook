@@ -4,6 +4,7 @@ import annotationReducer from './annotation';
 import playlistReducer from './playlist';
 import bookmarkReducer from './bookmark';
 import gotopageReducer from './gotopage';
+import multitaskpanelReducer from './multitaskpanel';
 
 export const makeRootReducer = asyncReducers =>
    combineReducers({
@@ -12,11 +13,14 @@ export const makeRootReducer = asyncReducers =>
      playlistReducer,
      bookmarkReducer,
      gotopageReducer,
+     multitaskpanelReducer,
      ...asyncReducers
    })
 ;
 
+
 export const injectReducer = (store, { key, reducer }) => {
+
   const myStore = store;
   myStore.asyncReducers[key] = reducer;
   myStore.replaceReducer(makeRootReducer(store.asyncReducers));

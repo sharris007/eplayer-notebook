@@ -10,12 +10,12 @@ export const getTotalAnnotationData = json => ({
 
 export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.dogetTotalAnnotation(filterData)
     .then(response => response.json())
-    .then(json => {
-      if(json.rows &&json.rows.length>0){
-          const annTotalList = json.rows;
-          const annListArray = annStructureChange(annTotalList);
-          dispatch(getTotalAnnotationData(annListArray));
-        }
+    .then((json) => {
+      if (json.rows && json.rows.length > 0) {
+        const annTotalList = json.rows;
+        const annListArray = annStructureChange(annTotalList);
+        dispatch(getTotalAnnotationData(annListArray));
+      }
     });
 
 
@@ -30,8 +30,8 @@ export const getAnnotationData = json => ({
 
 export const getAnnCallService = filterData => dispatch => AnnotationApi.doGetAnnotation(filterData)
     .then(response => response.json())
-    .then(json =>{   
-        dispatch(getAnnotationData(json))
+    .then((json) => {
+      dispatch(getAnnotationData(json));
     });
 
  // POST call annotations
@@ -43,20 +43,20 @@ export const postAnnotationData = json => ({
 
 export const postAnnCallService = data => dispatch => AnnotationApi.doPostAnnotation(data)
    .then(response => response.json())
-   .then(json => {
-    const postData = [];
-    postData.push(json);
-    const postModifiedData = {
-      rows :postData
-    }
-    const annListArray = annStructureChange(postModifiedData.rows);
-    dispatch(getTotalAnnotationData(annListArray));
-    dispatch(postAnnotationData(postModifiedData));
-     
-   });
-    
+   .then((json) => {
+     const postData = [];
+     postData.push(json);
+     const postModifiedData = {
+       rows: postData
+     };
+     const annListArray = annStructureChange(postModifiedData.rows);
+     dispatch(getTotalAnnotationData(annListArray));
+     dispatch(postAnnotationData(postModifiedData));
 
-//PUT annotation Call
+   });
+
+
+// PUT annotation Call
 export const putAnnotationData = json => ({
   type: typeConstants.PUT_ANNOTATION,
   pageFilterAnnPutData: json,
@@ -65,49 +65,49 @@ export const putAnnotationData = json => ({
 
 export const putAnnCallService = data => dispatch => AnnotationApi.doPutAnnotation(data)
    .then(response => response.json())
-   .then(json => {
-        const putData = [];
-        putData.push(json);
-        const annListArray = annStructureChange(putData);
-        dispatch(deleteAnnotationData(json));
-        dispatch(getTotalAnnotationData(annListArray));
-        dispatch(putAnnotationData(json));
-    });
-    
+   .then((json) => {
+     const putData = [];
+     putData.push(json);
+     const annListArray = annStructureChange(putData);
+     dispatch(deleteAnnotationData(json));
+     dispatch(getTotalAnnotationData(annListArray));
+     dispatch(putAnnotationData(json));
+   });
 
 
  // DELETE call annotations
 export const deleteAnnotationData = json => ({
   type: typeConstants.DELETE_LISTANNOTATION,
-  deleteAnnData: json,
+  deleteAnnData: json
 });
 
 export const deleteAnnCallService = data => dispatch => AnnotationApi.doDeleteAnnotation(data)
    .then(response => response.json())
-   .then(json => {
-      dispatch(deleteAnnotationData(json));
+   .then((json) => {
+     dispatch(deleteAnnotationData(json));
    });
-   
 
-function annStructureChange(annTotalList){
+
+export const annStructureChange = (annTotalList) => {
   const colorArr = {
-            '#55DF49':"Green",
-            '#FC92CF':"Pink",
-            '#FFD232':"Yellow"
-  },annListArray = [];
-  if(annTotalList && annTotalList.length>0){
-      for(let i=0;i<annTotalList.length;i++){
-        const setArray = {
-          pageId: annTotalList[i].source.id,
-          id: annTotalList[i].id,
-          author: annTotalList[i].user,
-          time: annTotalList[i].createdTimestamp,
-          text: annTotalList[i].quote,
-          comment: annTotalList[i].text||'',
-          color: colorArr[annTotalList[i].color]||"Green"
-        }
-        annListArray.push(setArray);
-      }
+    '#55DF49': 'Green',
+    '#FC92CF': 'Pink',
+    '#FFD232': 'Yellow'
+  };
+  const annListArray = [];
+  if (annTotalList && annTotalList.length > 0) {
+    for (let i = 0; i < annTotalList.length; i++) {
+      const setArray = {
+        pageId: annTotalList[i].source.id,
+        id: annTotalList[i].id,
+        author: annTotalList[i].user,
+        time: annTotalList[i].createdTimestamp,
+        text: annTotalList[i].quote,
+        comment: annTotalList[i].text || '',
+        color: colorArr[annTotalList[i].color] || 'Green'
+      };
+      annListArray.push(setArray);
     }
-    return annListArray;
-}
+  }
+  return annListArray;
+};

@@ -61,7 +61,7 @@ webpackConfig.plugins = [
     }
   }),
   new CopyWebpackPlugin([
-      { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf'}/*,
+      { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ])
 ];
@@ -106,18 +106,19 @@ webpackConfig.module.loaders = [{
   exclude: /node_modules/,
   loader: 'babel',
   query: config.compiler_babel
-},{
+}, {
   test: /\.(js|jsx)$/,
   include: [
-        path.join(__dirname, '../node_modules/pxe-pageviewer'),
-        path.join(__dirname, '../node_modules/pxe-glossary-popup'),
-        path.join(__dirname, '../node_modules/pxe-moreinfo-popup'),
-        path.join(__dirname, '../node_modules/pxe-annotation'),
-        path.join(__dirname, '../node_modules/@pearson-incubator'),
-        path.join(__dirname, '../node_modules/search'),
-        path.join(__dirname, '../node_modules/popup-info'),
-        path.join(__dirname, '../node_modules/pxe-wrapper')
-      ],
+    path.join(__dirname, '../node_modules/pxe-player'),
+    path.join(__dirname, '../node_modules/pxe-pageviewer'),
+    path.join(__dirname, '../node_modules/pxe-glossary-popup'),
+    path.join(__dirname, '../node_modules/pxe-moreinfo-popup'),
+    path.join(__dirname, '../node_modules/pxe-annotation'),
+    path.join(__dirname, '../node_modules/@pearson-incubator'),
+    path.join(__dirname, '../node_modules/search'),
+    path.join(__dirname, '../node_modules/popup-info'),
+    path.join(__dirname, '../node_modules/pxe-wrapper')
+  ],
   loader: 'babel',
   query: config.compiler_babel
 },
@@ -131,15 +132,15 @@ webpackConfig.module.loaders = [{
 // ------------------------------------
 // We use cssnano with the postcss loader, so we tell
 // css-loader not to duplicate minimization.
-const BASE_CSS_LOADER= 'css?sourceMap&-minimize';
+const BASE_CSS_LOADER = 'css?sourceMap&-minimize';
 const BASE_CSS_LOADER_NEW = 'css?url=false&sourceMap&-minimize';
 
 
 webpackConfig.module.loaders.push({
   test: /\.scss$/,
   exclude: [
-        path.join(__dirname, '../src/styles')
-      ],
+    path.join(__dirname, '../src/styles')
+  ],
   loaders: [
     'style',
     BASE_CSS_LOADER,
@@ -150,11 +151,11 @@ webpackConfig.module.loaders.push({
 webpackConfig.module.loaders.push({
   test: /\.scss$/,
   exclude: [
-        path.join(__dirname, '../node_modules')
-      ],
+    path.join(__dirname, '../node_modules')
+  ],
   include: [
-        path.join(__dirname, '../src/styles')
-      ],
+    path.join(__dirname, '../src/styles')
+  ],
   loaders: [
     'style',
     BASE_CSS_LOADER_NEW,
