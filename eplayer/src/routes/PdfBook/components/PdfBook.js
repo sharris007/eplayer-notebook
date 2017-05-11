@@ -56,17 +56,15 @@ async componentWillMount() {
               addBookmark={this.props.addBookmark}
               removeBookmark={this.props.removeBookmark}
               fetchBookInfo={this.props.fetchBookInfo}
-                        fetchPageInfo={this.props.fetchPageInfo}
-                        saveHighlight={this.props.saveHighlight}
-                        fetchHighlight={this.props.fetchHighlight}
-                        removeHighlight={this.props.removeHighlight}
+              fetchPageInfo={this.props.fetchPageInfo}
               goToPage={this.props.goToPage}
               book={this.props.book}
               bookshelf={this.props.bookshelf}
-                        login={this.props.login}
+              login={this.props.login}
               params={this.props.params}
               fetchHighlightUsingReaderApi = {this.props.fetchHighlightUsingReaderApi}
               saveHighlightUsingReaderApi = {this.props.saveHighlightUsingReaderApi}
+              removeHighlightUsingReaderApi= {this.props.removeHighlightUsingReaderApi}
                         />);
     }
     else

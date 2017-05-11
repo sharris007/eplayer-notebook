@@ -183,7 +183,7 @@ export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId
      const bookState = {
     highlightID : ''
   };
-    return (dispatch) => {
+    return (dispatch) => {roletypeid
     dispatch(request('highlights'));
     return axios.get(''+bookServerURL+'/ebook/ipad/saveuserhighlight?userid='+userid+'&bookid='+bookid+'&userroleid=3&userbookid='+userbookid+'&bookeditionid='+bookeditionid+'&roletypeid=3&pageid='+pageid+'&bookpagenumber='+bookpagenumber+'&shareacrosscourse=Y&xcoord='+xcoord+'&ycoord='+ycoord+'&sharewithstudent=Y&width='+width+'&height='+height+'&colorname=Yellow&authkey='+sso+'&outputformat=JSON', {
       method: GET,
@@ -580,6 +580,10 @@ const bookState = {
         hlObj.selectedText = highlight.selectedText;
         hlObj.colour = highlight.colour;
         hlObj.id = highlight.id;
+        hlObj.pageNo = highlight.pageNumber;
+        hlObj.meta = highlight.meta
+        hlObj.creationTime = highlight.creationTime;
+        hlObj.updatedTime = highlight.updatedTime;
         hlObj.pageIndex = 1;        //For Foxit
 
         bookState.highlights.push(hlObj);
@@ -593,7 +597,7 @@ const bookState = {
 
 }
 
-export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour){
+export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta){
   
   const authorizationHeaderVal = createAuthorizationToken('https://api-sandbox.readerplatform.pearson-intl.com/highlight', 'POST')
   console.log("Authorization : "+ authorizationHeaderVal);
@@ -617,11 +621,36 @@ export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId
       "highlightHash" : highlightHash,
       "note" : note,
       "selectedText" : selectedText,
-      "colour" : colour
+      "colour" : colour,
+      "meta" : meta,
+      "highlightEngine" : "eT1PDFPlayer"
     }
 
 
   })
+  }
+}
+export function removeHighlightUsingReaderApi(id) {
+  const authorizationHeaderVal = createAuthorizationToken('https://api-sandbox.readerplatform.pearson-intl.com/highlight/'+id , 'DELETE');
+  console.log("Authorization : "+ authorizationHeaderVal);
+
+  return (dispatch) => {
+    dispatch(request('highlights'));
+    return axios({
+      method : 'delete',
+      url : 'https://api-sandbox.readerplatform.pearson-intl.com/highlight/'+id,
+      headers : {
+        Accept : 'application/json',
+        Authorization : authorizationHeaderVal 
+      }
+    }).then((response) => {
+       if(response.status >= 400){
+            console.log(`Error in remove highlight: ${response.statusText}`)
+          }
+          else{
+            return dispatch({ type: REMOVE_HIGHLIGHT, id })
+          }
+    })
   }
 }
 

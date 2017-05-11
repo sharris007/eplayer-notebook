@@ -747,6 +747,7 @@ function getAssetURLForPDFDownload(config,cb){
              var highlightHash = highlightHashes.split("@")[0].trim().replace(/(\r\n|\n|\r)/gm,"").replace(/['"]+/g, '');
              var outerHash = highlightHashes.split("@")[1];         
              var hId = highlights[i].id;
+             var highlightColor = highlights[i].colour;
              var highLightHashArray = [];
               highLightHashArray = highlightHash.split(":");
              if(page != null || page !=undefined)
@@ -781,7 +782,7 @@ function getAssetURLForPDFDownload(config,cb){
               try {
                 page = childDiv[i].getAttribute("page-index");
                 WebPDF.ViewerInstance.highlightText((page -1), pdfRectArray);                
-               _this.saveHighlight(page, highlightHashes, hId,deleteHighlight);
+               _this.saveHighlight(page, highlightHashes, hId, highlightColor, deleteHighlight);
               }catch(e){
                 console.log("Error Saving Highlight");
               }
@@ -866,7 +867,7 @@ function getAssetURLForPDFDownload(config,cb){
       /*
        This method is used create Highlight Element on the Page.
       */
-      _this.saveHighlight = function(pageIndex, highlightHash, id,deleteHighlight) { 
+      _this.saveHighlight = function(pageIndex, highlightHash, id, highlightColor, deleteHighlight) { 
         var highlightElements = document.querySelectorAll('.fwr-search-text-highlight');
         var parentElement = document.createElement('div');
         parentElement.setAttribute('id', id);
@@ -881,7 +882,7 @@ function getAssetURLForPDFDownload(config,cb){
           childElement.style.top = highlightElements[i].style.top;
           childElement.style.width = highlightElements[i].style.width;
           childElement.style.height = highlightElements[i].style.height;
-          childElement.style.backgroundColor = "yellow" ;
+          childElement.style.backgroundColor = highlightColor ;
           childElement.onclick = function() {
           _this.triggerEvent("highlightClicked", id);
           }

@@ -450,11 +450,20 @@ export class PdfBookReader extends Component {
   currentHighlight.pageIndex = highlightData.pageInformation.pageNumber;
   highlightList.push(currentHighlight);
   const currentPageId=this.state.currPageIndex;
-  const courseId = '-1';
+  const courseId = '0';
   const note = '';
+
+  const meta = {
+   "userroleid" : "2",
+   "userbookid" : _.toString(this.props.book.bookinfo.userbook.userbookid),
+   "bookeditionid" : _.toString(this.props.book.bookinfo.book.bookeditionid),
+   "roletypeid" : "2",
+   "colorcode" : "32CCFF"
+
+  }
   const selectedText = currentHighlight.selection;
   const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
-  this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPageId), _.toString(courseId), true, currentHighlight.highlightHash, note, selectedText, 'yellow').then(() => {
+  this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(courseId), true, currentHighlight.highlightHash, note, selectedText, 'Blue', meta).then(() => {
     this.setState({highlightList : highlightList});
     this.displayHighlight();
   })
@@ -463,7 +472,7 @@ export class PdfBookReader extends Component {
   displayHighlight = () =>{
    const currentPageId=this.state.currPageIndex;
     const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
-    const courseId = '-1';
+    const courseId = '0';
    this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid, this.props.params.bookId, currentPage.pageid,true,courseId).then(() => {
     this.setState({highlightList : this.props.book.highlights});
      __pdfInstance.restoreHighlights(this.state.highlightList, this.deleteHighlight);
@@ -472,7 +481,7 @@ export class PdfBookReader extends Component {
   }
   deleteHighlight = (id) => {
 
-    //this.props.removeHighlight(id, ssoKey, serverDetails)
+    this.props.removeHighlightUsingReaderApi(id);
 
   }
 
