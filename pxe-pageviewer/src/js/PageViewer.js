@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 // import CircularProgress from 'material-ui/CircularProgress';
 // import renderHTML from 'react-render-html';
 
@@ -33,6 +34,7 @@ class PageViewer extends React.Component {
       currentPage: initPageIndex ? initPageIndex : 0,
       goTo: '',
       pageNoDetails: '',
+      completeBookLoad : false,
       /*isFirstPage: initPageIndex === 0,
       isLastPage: initPageIndex === playListURL.length - 1,
       prevPageTitle: (initPageIndex === 0) ? '' : playListURL[initPageIndex - 1].title,
@@ -71,6 +73,8 @@ class PageViewer extends React.Component {
     // if (goToPage !== 'Next' && goToPage !== 'Prev')
     //   { this.props.onBookLoaded(false); }
     // this.setState({pageLoading:true});
+    let replacedText = '';
+    this.setState({completeBookLoad:false});
     const thisRef = this;
     const playListURL = thisRef.props.src.playListURL;
     currentPage = currentPage + (isInitOrGo ? 0 : thisRef.state.currentPage);
@@ -91,15 +95,19 @@ class PageViewer extends React.Component {
       }
       //text  = text.replace(/ epub:type\S*\B/g, '').replace('<body', '<body>');
       const currentHref=thisRef.state.currentStatePlayListUrl.href;
-      thisRef.setState({
-        renderSrc: replaceAllRelByAbs(text, thisRef.props.src.baseUrl+currentHref.substring(0, currentHref.lastIndexOf('/'))),
-        currentPage: currentPage,
-        isFirstPage: currentPage === 0,
-        isLastPage: currentPage >= playListURL.length - 1,
-        prevPageTitle: (currentPage === 0) ? '' : playListURL[currentPage - 1].title,
-        nextPageTitle: (currentPage === playListURL.length - 1) ? '' : playListURL[currentPage+1].title,
-        currentStatePlayListUrl: playListURL[currentPage]
-      });
+      replacedText = replaceAllRelByAbs(text, thisRef.props.src.baseUrl+currentHref.substring(0, currentHref.lastIndexOf('/')));
+      if (replacedText) {
+        thisRef.setState({
+          renderSrc: replacedText,
+          completeBookLoad:true,
+          currentPage: currentPage,
+          isFirstPage: currentPage === 0,
+          isLastPage: currentPage >= playListURL.length - 1,
+          prevPageTitle: (currentPage === 0) ? '' : playListURL[currentPage - 1].title,
+          nextPageTitle: (currentPage === playListURL.length - 1) ? '' : playListURL[currentPage+1].title,
+          currentStatePlayListUrl: playListURL[currentPage]
+        });
+      }
       // this.setState({pageLoading:false});
       //callback
       if (pageFragmentID && document.getElementById(pageFragmentID)) {
@@ -256,10 +264,12 @@ class PageViewer extends React.Component {
       <div id = "book-render-component" ref = {(el) => { this.bookComBlock = el; }} tabIndex = "0" onKeyUp = {this.arrowNavigation} >
         <div id={this.props.src.contentId}>
           <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel, fontSize : fontSize}}>
-            {this.state.renderSrc ?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} 
+            {!this.state.completeBookLoad ? <RefreshIndicator size={50} left={-20} top={10} status={'loading'} 
+            style={{marginLeft: '50%', marginTop: '25%'}} /> :''}
+            {this.state.completeBookLoad ?<div dangerouslySetInnerHTML={{__html: this.state.renderSrc}}></div>:''} 
           </div>
         </div>
-        <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> 
+        {this.state.completeBookLoad ? <FooterNav data = {this.state}  onClickNextCallBack = {this.goToNext} onClickPrevCallBack = {this.goToPrev}/> : ''}
         <div ref = {(el) => { this.drmBlockRef = el; }}> </div >
         <LightBox lightBoxProps={this.state.lightBoxProps}/>
       </div>

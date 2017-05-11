@@ -108,10 +108,13 @@ export class Book extends Component {
   }
   componentDidUpdate(prevProps, prevState){
     if(prevState.pageDetails.currentPageURL.pageFragmentId){
-      const scrollTopVal = $('#'+prevState.pageDetails.currentPageURL.pageFragmentId).offset().top+80;
-        $('html, body').animate({
-          scrollTop: scrollTopVal
-      }, 1000);
+      const scrollTopVal = $('#'+prevState.pageDetails.currentPageURL.pageFragmentId)
+      if(scrollTopVal.length > 0){
+            const topValue = scrollTopVal.offset().top+80;
+            $('html, body').animate({
+              scrollTop: topValue
+          }, 1000);
+      }
     }
     let pagenumberArr = {};
     const pageBreakClass = $("#book-render-component").find(".pagebreak");
