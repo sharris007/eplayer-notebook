@@ -2,6 +2,7 @@ import React from 'react';
 import { SearchComponent } from '@pearson-incubator/search';
 import reducer from '../modules/searchReducer';
 import { injectReducer } from '../../../store/reducers';
+import '../styles/search.scss';
 
 
 export class Search extends React.Component {
