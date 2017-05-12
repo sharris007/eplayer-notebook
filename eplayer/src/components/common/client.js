@@ -68,6 +68,13 @@ export const clients = {
       'Content-Type': 'application/json'
     }
   }),
+ readerApi: axios.create({
+    baseURL: 'https://api-sandbox.readerplatform.pearson-intl.com',
+    timeout: 20000,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }),
 
   /*getLogin: axios.create({
     baseURL: 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api',
@@ -88,6 +95,7 @@ export const clients = {
     headers: {
     }
   }),
+
   panera: contentful.createClient({
     space: '415o8j07ef07',
     accessToken: 'f80e9320e96f0eabbb2aac94a71755160a538cb989bdf6a8701cf2c229ce20e6'

@@ -514,7 +514,7 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
     timeout: 20000
     };
   }
-  function createAuthorizationToken(uri,method){
+  function createAuthorizationToken(relativeURL,method){
     const credentials = {
       id: 'tArkNWL2dK',
       key: 'Fc0C9w05bZy6U9TB7wN6CBgKyM32yk6Q',
@@ -529,6 +529,8 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
        }
        return text;
    }
+   var baseUrl = clients.readerApi.defaults.baseURL;
+   var uri = baseUrl + relativeURL; 
    const header = Hawk.client.header(uri, method, { credentials: credentials, ext: '', timestamp: Math.round(Date.now()/1000), nonce: randomString(6)});
    const authorizationVal = header.field;
 
@@ -544,21 +546,18 @@ const bookState = {
       highlights: true
     }
   };
+
   //var uri = 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared=true&userId='+userId+'&bookId='+bookId+'&pageId='+pageId;
-  const authorizationHeaderVal = createAuthorizationToken('https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId, 'GET')
+  const authorizationHeaderVal = createAuthorizationToken('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId, 'GET')
   console.log("Authorization : "+ authorizationHeaderVal);
   return (dispatch) => {
     dispatch(request('highlights'));
     
-    return axios({
-    method : 'get',
-    url: 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId,
-    headers: {
-      'Accept' : 'application/json',
-      'Authorization' : authorizationHeaderVal
-    }
-
-  }).then((response) =>{
+    return clients.readerApi.get('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId,{
+      headers : {
+        'Authorization' : authorizationHeaderVal
+      }
+    }).then((response) =>{
      if (response.status >= 400) {
         bookState.isFetching.highlights = false;
         return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
@@ -599,12 +598,28 @@ const bookState = {
 
 export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta){
   
-  const authorizationHeaderVal = createAuthorizationToken('https://api-sandbox.readerplatform.pearson-intl.com/highlight', 'POST')
+  const authorizationHeaderVal = createAuthorizationToken('/highlight', 'POST')
   console.log("Authorization : "+ authorizationHeaderVal);
-
+  var axiosInstance = clients.readerApi;
+  axiosInstance.defaults.headers.Authorization = authorizationHeaderVal;
+  var data = {
+      "userId" : userId,
+      "bookId" : bookId,
+      "pageId" : pageId,
+      "pageNo" : pageNo,
+      "courseId" : courseId,
+      "shared" : shared,
+      "highlightHash" : highlightHash,
+      "note" : note,
+      "selectedText" : selectedText,
+      "colour" : colour,
+      "meta" : meta,
+      "highlightEngine" : "eT1PDFPlayer"
+  }
   return{
   type: 'SAVE_HIGHLIGHT',
-  payload: axios({
+  payload: axiosInstance.post(`/highlight`, data)
+  /*axios({
     method : 'post',
     url: 'https://api-sandbox.readerplatform.pearson-intl.com/highlight',
     headers: {
@@ -627,21 +642,24 @@ export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId
     }
 
 
-  })
+  })*/
   }
 }
 export function removeHighlightUsingReaderApi(id) {
-  const authorizationHeaderVal = createAuthorizationToken('https://api-sandbox.readerplatform.pearson-intl.com/highlight/'+id , 'DELETE');
+  const authorizationHeaderVal = createAuthorizationToken('/highlight/'+id , 'DELETE');
   console.log("Authorization : "+ authorizationHeaderVal);
-
   return (dispatch) => {
     dispatch(request('highlights'));
-    return axios({
+   /* return axios({
       method : 'delete',
       url : 'https://api-sandbox.readerplatform.pearson-intl.com/highlight/'+id,
       headers : {
         Accept : 'application/json',
         Authorization : authorizationHeaderVal 
+      }
+    })*/return clients.readerApi.delete('/highlight/'+id,{
+      headers : {
+        'Authorization' : authorizationHeaderVal
       }
     }).then((response) => {
        if(response.status >= 400){
