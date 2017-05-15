@@ -21,6 +21,7 @@ class PageViewer extends React.Component {
   constructor(props) {
     super(props);
     this.startTimer=new Date();
+    document.addEventListener('scroll', this.handleMove);
   };
 
   init = (props) => {
@@ -35,6 +36,7 @@ class PageViewer extends React.Component {
       goTo: '',
       pageNoDetails: '',
       completeBookLoad : false,
+      pageTopVal:'',
       /*isFirstPage: initPageIndex === 0,
       isLastPage: initPageIndex === playListURL.length - 1,
       prevPageTitle: (initPageIndex === 0) ? '' : playListURL[initPageIndex - 1].title,
@@ -232,7 +234,7 @@ class PageViewer extends React.Component {
   };
 
   componentWillReceiveProps(newProps) {
-
+    
     if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
       const pageIndex=this.props.src.playListURL.findIndex(el =>{
         return parseInt(el.playOrder)===parseInt(newProps.src.currentPageURL.playOrder); 
@@ -240,21 +242,59 @@ class PageViewer extends React.Component {
       this.getResponse(parseInt(pageIndex), true, 'propChanged', this.scrollWindowTop);
     }
   };
-  
-  componentDidUpdate = () => {
+  handleMove = () =>{
+    const fixed = $('.headerBar');
+    const currentFixedDivPosition = fixed.height() + $(window).scrollTop() +250;
+    let elementPos;
+    const pageBreakClass = $("#book-render-component").find(".pagebreak");
+    elementPos = pageBreakClass[0];
+    pageBreakClass.each(function (i, s) {
+        if (currentFixedDivPosition > Math.abs($(s).offset().top)) {
+          elementPos = s;
+         }
+    });
+    const pageVal = ($(elementPos).attr('title')?$(elementPos).attr('title'):$("#pageNum").val());
+    this.props.sendPageDetails("pagescroll",pageVal); 
+  }
+
+  componentWillUpdate = (nextProps, nextState) => {
+    const pageBreakClass = $("#book-render-component").find(".pagebreak");
+    if(pageBreakClass.length>0){
+      const initPageNo = $(pageBreakClass[0]).attr('title');
+      this.props.sendPageDetails("pagescroll", initPageNo);
+    }
+    if(nextProps.src.currentPageURL.pageFragmentId){
+      const scrollTopVal = $('#'+nextProps.src.currentPageURL.pageFragmentId)
+      if(scrollTopVal.length > 0){
+        const topValue = scrollTopVal.offset().top;
+        
+        let pagenumberArr = {};
+        pageBreakClass.each(function (i, s) {
+            pagenumberArr[$(s).attr("title")] = $(s).offset().top-100;             
+        });
+        this.props.sendPageDetails("pagescroll",scrollTopVal.attr("title")); 
+        setTimeout(()=>{
+          $('html, body').animate({
+              scrollTop: pagenumberArr[scrollTopVal.attr("title")] 
+          }, 'slow');
+        },2000)
+      }
+    }
+  }
+   
+  componentDidUpdate = (prevProps, prevState) => {
     copyCharLimit(this);
     //prints page no in the page rendered
     this.enablePageNo();
     this.loadMultimediaNscrollToFragment();
     crossRef(this);
     document.addEventListener('click', this.clearSearchHighlights);
+    
     if (this.props.src.includeMathMLLib) {
       reloadMathMl(this);
     } 
     this.setPageTheme();
     audioWbWHighlight(this);
-    // const difference_ms = new Date()-this.startTimer;
-    // console.log('time took in seconds',  Math.floor(difference_ms % 60));
   };
 
   render() {

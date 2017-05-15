@@ -125,9 +125,7 @@ export class Header extends React.Component {
  } 
 
  goToPageClick = () => {
-    
     this.props.goToPageClick(this.state.goToTextVal);
-    //return  this.state.goToTextVal.trim();   
   }
   
   goToPageOnKeyUp = (e) => {
