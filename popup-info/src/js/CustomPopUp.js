@@ -58,7 +58,8 @@ export default class CustomPopUp extends Component {
         border: '1px solid #b8c8cc',
         borderRadius: '5px',
         boxShadow: '0 5px 20px 0 rgba(126, 137, 140, 0.2)',
-        display: 'none'
+        paddingLeft: '10px',
+        paddingRight: '10px'
       }
       this.setState({isModalOpen: true});
     }
@@ -70,20 +71,17 @@ export default class CustomPopUp extends Component {
 
     componentDidUpdate() {
       const popUp = document.getElementsByClassName('paragraphNumeroUno');
-      if (popUp && popUp[0]) {
-        popUp[0].style.display = 'block'
-      } else {
-        return ''
-      }
-      if (this.popupAlign === 'left') {
-        popUp[0].classList.add('popUpLeftAlign');
-      } else if (this.popupAlign === 'right') {
-        popUp[0].classList.add('popUpRightAlign');
-      } else if (this.popupAlign === 'center') {
-        popUp[0].style.top = `${parseInt(popUp[0].style.top.replace('px', '')) - popUp[0].clientHeight}px`
-        popUp[0].classList.add('popUpTopAlign');
-      }  
-    }
+      if (popUp && popUp.length > 0 && this.state.isModalOpen) {
+        if (this.popupAlign === 'left') {
+          popUp[popUp.length-1].classList.add('popUpLeftAlign');
+        } else if (this.popupAlign === 'right') {
+          popUp[popUp.length-1].classList.add('popUpRightAlign');
+        } else if (this.popupAlign === 'center') {
+          popUp[popUp.length-1].style.top = `${parseInt(popUp[popUp.length-1].style.top.replace('px', '')) - popUp[popUp.length-1].clientHeight}px`
+          popUp[popUp.length-1].classList.add('popUpTopAlign');
+        } 
+      } 
+    } 
 
     renderPopUp = () => {
       const backdropStyle = {
@@ -100,9 +98,9 @@ export default class CustomPopUp extends Component {
 
     render() {
       return(
-      		<div>
-				{this.state.isModalOpen === true ? this.renderPopUp() : <div> </div>}
-			</div>
-		)
+          <div>
+        {this.state.isModalOpen === true ? this.renderPopUp() : <div> </div>}
+      </div>
+    )
     }
 }
