@@ -37,7 +37,6 @@ export class Book extends Component {
         },
         annAttributes:customAttributes,
         goToTextVal:'',
-        pageScrollValue:'',
         isPanelOpen:false
       };
       this.divGlossaryRef = '';
@@ -45,7 +44,6 @@ export class Book extends Component {
       this.nodesToUnMount = [];  
       this.bookIndexId = {};
       this.searchUrl = '';
-      this.handleScroll = this.handleScroll.bind(this);
       document.body.addEventListener('contentLoaded', this.parseDom);
       document.body.addEventListener('navChanged', this.navChanged);
       this.state.pageDetails.currentPageURL = '';
@@ -97,6 +95,7 @@ export class Book extends Component {
           });   
           playpageDetails1.currentPageURL =  gotoPageData;
           playpageDetails1.tocUpdated  = true;
+          this.onPageChange("pagescroll",nextProps.gotoPageObj.page.title); 
           browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}`);
           this.props.dispatch({
             type: "GOT_GOTOPAGE",
@@ -105,52 +104,6 @@ export class Book extends Component {
           });
         }
       }
-  }
-  componentDidUpdate(prevProps, prevState){
-    if(prevState.pageDetails.currentPageURL.pageFragmentId){
-      const scrollTopVal = $('#'+prevState.pageDetails.currentPageURL.pageFragmentId)
-      if(scrollTopVal.length > 0){
-            const topValue = scrollTopVal.offset().top+80;
-            $('html, body').animate({
-              scrollTop: topValue
-          }, 1000);
-      }
-    }
-    let pagenumberArr = {};
-    const pageBreakClass = $("#book-render-component").find(".pagebreak");
-    pageBreakClass.each(function(i,item) {
-        var pageno = $(this).attr("title");
-        if (pageno) {
-            var top = $(this).offset().top;
-            pagenumberArr[pageno] = parseInt(top);
-        }
-    });
-    $("#pageNum").val(Object.keys(pagenumberArr)[0]);
-    this.state.pageScrollValue  = pagenumberArr; 
-  }
-   
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
-  }
-  handleScroll(event) {
-    let currentScrollVal = $(window).scrollTop()+80;
-    let vale = this.getScrollIndex(currentScrollVal);
-    if(vale){
-      $("#pageNum").val(vale);
-    }else{
-      $("#pageNum").val(Object.keys(this.state.pageScrollValue)[0]);
-    }
-    
-    
-  }
-  getScrollIndex = (currentScrollVal) =>{ 
-    let num ='';
-    $.each(this.state.pageScrollValue, function(index, value) {   
-      if(currentScrollVal >= value){
-        num = index;
-      }   
-    });
-    return num;
   }
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
@@ -185,6 +138,7 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
+
     switch(type){
       case 'continue':{
         if(data){
@@ -217,6 +171,9 @@ export class Book extends Component {
         this.props.dispatch(deleteAnnotationData(data));
         break;
       }
+      case 'pagescroll':
+        $("#pageNum").val(data);
+        break;
       default:{
         // other than continue
         if(data){
@@ -248,19 +205,19 @@ export class Book extends Component {
   };
  
   goToTextChange = (goToTextChangeCallBack) => {
- // this.setState({ goToTextVal: e.target.value });
- } 
+   // this.setState({ goToTextVal: e.target.value });
+  } 
 
  goToPageClick = (getPageNumber) => {
   if(getPageNumber){
-  const bookId = this.props.params.bookId;
-  const goToPageObj = {
-      context : bookId,
-      user    :'epluser',
-      pagenumber:getPageNumber,
-      baseurl: this.state.pageDetails.baseUrl
-    }
-    this.props.dispatch(getGotoPageCall(goToPageObj));
+      const bookId = this.props.params.bookId;
+      const goToPageObj = {
+          context : bookId,
+          user    :'epluser',
+          pagenumber:getPageNumber,
+          baseurl: this.state.pageDetails.baseUrl
+        }
+      this.props.dispatch(getGotoPageCall(goToPageObj));
     }
   }
 
@@ -279,30 +236,7 @@ export class Book extends Component {
     });
     this.viewerContentCallBack(true);
     browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
-  };
-  annotationCallBack = (eventType, data) => {
-      const receivedAnnotationData    = data;
-      receivedAnnotationData.user     = "epluser";
-      receivedAnnotationData.context  = this.props.params.bookId;
-      receivedAnnotationData.source   = this.state.currentPageDetails;
-      receivedAnnotationData.source.baseUrl = this.state.pageDetails.baseUrl;
-      switch (eventType) {
-          case 'annotationCreated': {
-            return this.props.dispatch(postAnnCallService(receivedAnnotationData));
-          }
-          case 'annotationUpdated':{
-            return this.props.dispatch(putAnnCallService(receivedAnnotationData));
-          }
-          case 'annotationDeleted': {
-              receivedAnnotationData.annId    = data.id;
-              return this.props.dispatch(deleteAnnCallService(receivedAnnotationData));
-          }
-          default : {
-              return eventType;
-          }
-      }
-  }
-  
+  }; 
   printFun = () => {
     const url = this.state.pageDetails.baseUrl + this.state.pageDetails.currentPageURL.href;
     window.open(`/eplayer/Print?${url}`, 'PrintPage', 'scrollbars=yes,toolbar=no,location=no,status=no,titlebar=no,toolbar=no,menubar=no, resizable=no,dependent=no');
@@ -419,7 +353,7 @@ Book.contextTypes = {
 
 const mapStateToProps = state => {
  return  { 
-    // annotationData       : state.annotationReducer.highlightPageData,
+  //annotationData       : state.annotationReducer.highlightPageData,
     annDataloaded        : state.annotationReducer.annDataloaded, 
     annotationTotalData  : state.annotationReducer.highlightTotalData,  
     annTotalDataLoaded   : state.annotationReducer.annTotalDataLoaded, 

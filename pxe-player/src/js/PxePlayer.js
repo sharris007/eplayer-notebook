@@ -24,21 +24,28 @@ class PxePlayer extends React.Component {
     };
   }
   onPageChange = (type, data) => {
-    const parameters = this.state.urlParams;
-    parameters.id = data.id;
-    parameters.uri = encodeURIComponent(data.href);
-    data.uri = data.href;
-    data.label = data.title;
-    this.setState({
-      currentPageDetails: data,
-      urlParams: parameters
-    }, function () {
-      if (this.props.applnCallback) {
-      // eslint-disable-next-line
-      // this.props.dispatch(getAnnCallService(this.state.urlParams)); // Enable when Annotation component added
+    switch(type){
+      case 'pagescroll':
         this.props.applnCallback(type, data);
-      }
-    });
+        break;
+      default:
+        const parameters = this.state.urlParams;
+        parameters.id = data.id;
+        parameters.uri = encodeURIComponent(data.href);
+        data.uri = data.href;
+        data.label = data.title;
+        this.setState({
+          currentPageDetails: data,
+          urlParams: parameters
+        }, function () {
+          if (this.props.applnCallback) {
+          // eslint-disable-next-line
+          // this.props.dispatch(getAnnCallService(this.state.urlParams)); // Enable when Annotation component added
+            this.props.applnCallback(type, data);
+          }
+        });
+    }
+    
   };
   annotationCallDispatch = (method, data) => {
     const { pageDetails } = this.props.bootstrapParams;
