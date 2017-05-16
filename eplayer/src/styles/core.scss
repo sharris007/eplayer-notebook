@@ -92,16 +92,18 @@ svg[class$="-24"] {
     top:60px;
     float: left;
     width: 100%;
-    height: 1000px;
+    /*height: 1000px;*/
     background-color: white;
-    position:fixed; 
-    padding-top:0px !important
+    /*position:fixed;*/
+    padding-top:0px !important;
+	  margin-top: 10px;
   }
   .docViewer {
     margin-left: 9%;
     width: 1250px;
-    height: 100%;
+    height: 89.8%;
     background: #fff;
+    padding-top:55px
   }
   .highlightText {
     z-index: 1;
@@ -135,10 +137,10 @@ svg[class$="-24"] {
     width: 1200px;
     position: fixed;
     min-width: 1200px;
-    height: 100%;
+    height: 90%;
   }
   #frame {
-   margin-top: 5px;
+   margin-top: 2px;
    height:100%;
   }
   .appBar {
