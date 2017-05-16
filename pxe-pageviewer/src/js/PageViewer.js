@@ -275,12 +275,12 @@ class PageViewer extends React.Component {
         setTimeout(()=>{
           $('html, body').animate({
               scrollTop: pagenumberArr[scrollTopVal.attr("title")] 
-          }, 2500);
+          }, 1500);
         },2000)
 
         setTimeout(()=>{
            nextProps.src.currentPageURL.pageFragmentId = '';
-        },6000)
+        },6500)
         
       }
     }
