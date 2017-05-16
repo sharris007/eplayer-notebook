@@ -52,7 +52,7 @@ const searchActions = {
               contentPreview:data.contentPreview,
               id:i,
               title:data.title,
-              urn:data.url
+              urn:`${data.url}*${searchText}`
             };
             searchState.searchResult.results.push(obj);
           })
