@@ -95,6 +95,9 @@ class PageViewer extends React.Component {
       if (this.props.src.highlightText) {
         text=HighlightText.highlightText(this, text);
       }
+      if(this.props.src.searchText) {
+        text=HighlightText.highlightSearchText(this, text);
+      }
       //text  = text.replace(/ epub:type\S*\B/g, '').replace('<body', '<body>');
       const currentHref=thisRef.state.currentStatePlayListUrl.href;
       replacedText = replaceAllRelByAbs(text, thisRef.props.src.baseUrl+currentHref.substring(0, currentHref.lastIndexOf('/')));
@@ -272,7 +275,7 @@ class PageViewer extends React.Component {
         setTimeout(()=>{
           $('html, body').animate({
               scrollTop: pagenumberArr[scrollTopVal.attr("title")] 
-          }, 'slow');
+          }, 2500);
         },2000)
 
         setTimeout(()=>{

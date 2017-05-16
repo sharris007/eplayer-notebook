@@ -7,6 +7,14 @@ class HighlightText {
       return htmlText;
     }
   }
+  static highlightSearchText = (getProps, htmlText) => {
+    if (getProps.props.src.highlightText) {
+      htmlText = htmlText.replace(new RegExp( getProps.props.src.searchText + '(?![^<>]*>)', 'gi'), function(e) {
+        return '<span class=\'pxereaderSearchHighlight\'>' + e + '</span>';
+      });
+      return htmlText;
+    }
+  }
 };
 
 export default HighlightText;	
