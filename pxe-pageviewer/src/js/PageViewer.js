@@ -111,6 +111,14 @@ class PageViewer extends React.Component {
           prevPageTitle: (currentPage === 0) ? '' : playListURL[currentPage - 1].title,
           nextPageTitle: (currentPage === playListURL.length - 1) ? '' : playListURL[currentPage+1].title,
           currentStatePlayListUrl: playListURL[currentPage]
+        }, ()=>{
+            if(this.props.src.searchText) {
+              setTimeout(() => {
+                $('html, body').animate({
+                  scrollTop: $('.pxereaderSearchHighlight')[0].offsetTop
+                  }, 2000);
+              }, 1000) 
+            }
         });
       }
       // this.setState({pageLoading:false});
