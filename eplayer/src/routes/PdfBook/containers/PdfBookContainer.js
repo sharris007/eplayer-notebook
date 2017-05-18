@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import { fetchAnnotations, addAnnotation, removeAnnotation,
-         fetchBookmarks, addBookmark, removeBookmark,
+         fetchBookmarksUsingReaderApi, addBookmarkUsingReaderApi, removeBookmarkUsingReaderApi,
          fetchPreferences,
-         fetchTocAndViewer, goToPage,fetchBookInfo,fetchPageInfo,fetchUserInfo, fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi } from '../modules/pdfbook';
-
+         fetchTocAndViewer, goToPage,fetchBookInfo,fetchPageInfo,fetchUserInfo, fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi  } from '../modules/pdfbook';
+         
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
     wiring in the actions and state necessary to render a presentational
@@ -17,9 +17,9 @@ import { PdfBook } from '../components/PdfBook';
 
 const mapDispatchToProps = {
   fetchTocAndViewer,
-  fetchBookmarks,
-  addBookmark,
-  removeBookmark,
+  fetchBookmarksUsingReaderApi,
+  addBookmarkUsingReaderApi,
+  removeBookmarkUsingReaderApi,
   goToPage,
   fetchBookInfo,
   fetchPageInfo,

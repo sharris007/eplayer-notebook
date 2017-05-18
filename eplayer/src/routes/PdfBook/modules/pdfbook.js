@@ -48,25 +48,27 @@ export function request(component) {
   }
 }
 
-export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey,bookServerURL) {
+
+export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
+  console.log('Inside fetchBookmarksUsingReaderApi - bookId = '+bookId+' ,shared = '+shared+' , courseId = '+courseId+' , userId = '+userId);
   const bookState = {
     bookmarks: [],
     isFetching: {
       bookmarks: true
     }
   };
+  const authorizationHeaderVal = createAuthorizationToken('/bookmark?includeShared='+shared+'&userId='+userId+'&bookId='+bookId+'&courseId='+courseId, 'GET')
+  console.log("fetchBookmarksUsingReaderApi Authorization : "+ authorizationHeaderVal);
+  
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getbookmark?userroleid=2&bookeditionid='+bookEditionID+'&userbookid='+userBookId+'&authkey='+sessionKey+'&outputformat=JSON', 
-    {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      timeout: 20000
-    })
-    .then((response) => {
+
+    return clients.readerApi.get('/bookmark?includeShared='+shared+'&userId='+userId+'&bookId='+bookId+'&courseId='+courseId,{
+      headers : {
+        'Accept' : 'application/json',
+        'Authorization' : authorizationHeaderVal
+      }
+    }).then((response) => {
       if (response.status >= 400) {
         bookState.isFetching.bookmarks = false;
         return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
@@ -74,20 +76,25 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey,bookSe
       return response.data;
     })
     .then((bookmarkResponse) => {
-      if (bookmarkResponse.length) {
-        bookmarkResponse.forEach((bookmarkList) => {
-          const bookmarks=bookmarkList.bookMarkList
-        bookmarks.forEach((bookmark) => {
-          const bmObj = {
-            id: bookmark.pageOrder,
-            uri: bookmark.pageOrder,
-            title: 'Page '+bookmark.bookPageNumber,
-            pageID: bookmark.pageID,
-            createdTimestamp: bookmark.updatedDate
-          };
-          bookState.bookmarks.push(bmObj);
-          });
-        });
+      if (bookmarkResponse.data.length) {
+        bookmarkResponse.data.forEach((bookmark) => {
+          var date = new Date(bookmark.updatedTime*1000);
+          var extID = Number(bookmark.externalId);
+          
+          const bmObj={
+            id : extID,
+            bkmarkId : bookmark.id,
+            userId : bookmark.userId,
+            bookId : bookmark.bookId,
+            pageId : bookmark.pageId,
+            pageNo : bookmark.pageNo,
+            createdTimestamp : date,
+            title: 'Page '+bookmark.pageNo,
+            uri: extID,
+            externalId: extID
+        };
+        bookState.bookmarks.push(bmObj);
+        })
       }
       bookState.isFetching.bookmarks = false;
       return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
@@ -95,63 +102,94 @@ export function fetchBookmarks(bookId,userBookId,bookEditionID,sessionKey,bookSe
   };
 }
 
-export function addBookmark(bookId,bookmarkToAdd,bookEditionID,userbookid,pageId,sessionKey,userid,bookServerURL) {
-  return (dispatch) => {
+
+export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared) {
+console.log('Inside addBookmarkUsingReaderApi userId = '+userId+' , bookId = '+bookId+' , pageId = '+pageId+' , pageNo = '+pageNo+' , externalId = '+externalId+' , courseId = '+courseId+' , shared = '+shared);
+
+const authorizationHeaderVal = createAuthorizationToken('/bookmark', 'POST')
+console.log("addBookmarkUsingReaderApi Authorization : "+ authorizationHeaderVal);
+
+clients.readerApi.defaults.headers.Authorization = authorizationHeaderVal;
+
+var data = {
+      "userId" : userId,
+      "bookId" : bookId,
+      "pageId" : pageId,
+      "pageNo" : pageNo,
+      "courseId" : courseId,
+      "shared" : shared,
+      "externalId" : externalId
+  }
+
+var bmObj;
+
+return (dispatch) => {
     dispatch(request('bookmarks'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/setbookmark?userID='+userid+'&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', 
-    {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      timeout: 20000
-    }).then((response) => {
+
+    return clients.readerApi.post('/bookmark', data)
+    .then((response) => {
       if (response.status >= 400) {
-        console.log(`Add bookmark error: ${response.statusText}`);
+       console.log(`Add bookmark error: ${response.statusText}`);
       }
       return response.data;
     }).then((bookmarkResponse) => {
-      if (bookmarkResponse.length) {
-        bookmarkResponse.forEach((bookmark)=>{
-            if(bookmark.setbookmark.pageid==pageId)
-            {
-              return dispatch({ type: ADD_BOOKMARK, bookmarkToAdd })
-            }
-        });
+      if (bookmarkResponse != undefined) {
+        
+        var date = new Date(bookmarkResponse.updatedTime*1000);
+        var extID = Number(bookmarkResponse.externalId);
+        
+            bmObj={
+            id : extID,
+            bkmarkId : bookmarkResponse.id,
+            userId : bookmarkResponse.userId,
+            bookId : bookmarkResponse.bookId,
+            pageId : bookmarkResponse.pageId,
+            pageNo : bookmarkResponse.pageNo,
+            createdTimestamp : date,
+            title: 'Page '+bookmarkResponse.pageNo,
+            uri: extID,
+            externalId: extID
+        };
       }
+      return dispatch({ type: ADD_BOOKMARK, bmObj });
     });
   };
 }
 
-export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId,sessionKey,userid,bookServerURL) {
-  return (dispatch) => {
-    dispatch(request('bookmarks'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/resetbookmark?userID='+userid+'&userroleid=3&bookeditionid='+bookEditionID+'&listval='+pageId+'&userbookid='+userbookid+'&authkey='+sessionKey+'&outputformat=JSON', 
-    {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      timeout: 20000
-    }).then((response) => {
-      if (response.status >= 400) {
-        console.log(`Remove bookmark error: ${response.statusText}`);
-      }
-      return response.data;
-    }).then((bookmarkResponse) => {
-      if (bookmarkResponse.length) {
-         bookmarkResponse.forEach((bookmark)=>{
-            if(bookmark.resetbookmark.pageid==pageId)
-            {
-              return dispatch({ type: REMOVE_BOOKMARK, bookmarkId })
-            }
-        });
-      }
-    });
+
+
+export function removeBookmarkUsingReaderApi(bookmarkId) {
+console.log('Inside removeBookmarkUsingReaderApi bookmarkId = '+bookmarkId);
+
+
+const bookState = {
+    bookmarks: [],
+    isFetching: {
+      bookmarks: true
+    }
   };
+
+const authorizationHeaderVal = createAuthorizationToken('/bookmark/'+bookmarkId, 'DELETE');
+console.log("Authorization removeBookmarkUsingReaderApi  : "+ authorizationHeaderVal);
+
+return (dispatch) => {
+    dispatch(request('bookmarks'));
+    return clients.readerApi.delete('/bookmark/'+bookmarkId,{
+      headers : {
+        'Authorization' : authorizationHeaderVal
+      }
+  }).then((response) => {
+      if (response.status >= 400) {
+        console.log(`Error in remove bookmark: ${response.statusText}`)
+      }
+      else{
+            return dispatch({ type: REMOVE_BOOKMARK, bookmarkId })
+          }
+    })
+  }
 }
+
+
 /*export function removeHighlight(highlightID, sessionKey, bookServerURL){
   return (dispatch) => {
     dispatch(request('highlights'));
@@ -259,7 +297,7 @@ export function removeBookmark(bookId,bookmarkId,bookEditionID,userbookid,pageId
   };
 }*/
 
-export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL){
+export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL,hastocflatten){
   const bookState = {
     toc: {
       content: {},
@@ -312,8 +350,19 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
         tocLevel_1_Obj.id=tocLevel_1.basketID;
         tocLevel_1_Obj.title=tocLevel_1.name;
         tocLevel_1_Obj.children=tocLevel_1_ChildList;*/
+        
+        console.log('hastocflatten = '+hastocflatten);
+
+        if(hastocflatten === "Y")
+        {
+          bookState.toc.content.list=flatten1(tocLevel_1_ChildList);
+        }
+        else{
+          bookState.toc.content.list=tocLevel_1_ChildList;
+        }
+
         //bookState.toc.content.list=tocLevel_1_ChildList;
-        bookState.toc.content.list=flatten1(tocLevel_1_ChildList);
+        //bookState.toc.content.list=flatten1(tocLevel_1_ChildList);
         console.log();
         });
       });
@@ -459,7 +508,7 @@ export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL)
 {
   return{
   type: 'RECEIVEBOOKINFO',
-  payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookinfo?userid='+userid+'&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON'),
+  payload: axios.get(''+bookServerURL+'/ebook/ipad/getuserbookinfo?userid='+userid+'&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON'),
   timeout: 20000
   };
 }
@@ -699,11 +748,13 @@ const ACTION_HANDLERS = {
     bookmarks: [
       ...state.bookmarks,
       {
-        id: action.bookmarkToAdd.id,
-        uri: action.bookmarkToAdd.uri,
-        title:'Page '+action.bookmarkToAdd.bookPageNumber,
-        pageID: action.bookmarkToAdd.pageID,
-        createdTimestamp: action.bookmarkToAdd.createdTimestamp
+        id: action.bmObj.id,
+        uri: action.bmObj.uri,
+        title:'Page '+action.bmObj.pageNo,
+        pageID: action.bmObj.pageId,
+        createdTimestamp: action.bmObj.createdTimestamp,
+        externalId: action.bmObj.externalId,
+        bkmarkId: action.bmObj.bkmarkId
       }
     ].sort(function(bkm1, bkm2){return bkm1.uri-bkm2.uri}),
     isFetching: {
@@ -713,7 +764,7 @@ const ACTION_HANDLERS = {
   }),
   [REMOVE_BOOKMARK]: (state, action) => ({
     ...state,
-    bookmarks: state.bookmarks.filter(bookmark => bookmark.uri !== action.bookmarkId),
+    bookmarks: state.bookmarks.filter(bookmark => bookmark.bkmarkId !== action.bookmarkId),
     isFetching: {
       ...state.isFetching,
       bookmarks: false
@@ -787,7 +838,8 @@ const ACTION_HANDLERS = {
                   globalbookid: action.payload.data[0].userBookTOList[0].globalBookID,
                   numberOfPages: action.payload.data[0].userBookTOList[0].numberOfPages,
                   bookid: action.payload.data[0].userBookTOList[0].bookID,
-                  bookeditionid: action.payload.data[0].userBookTOList[0].bookEditionID
+                  bookeditionid: action.payload.data[0].userBookTOList[0].bookEditionID,
+                  hastocflatten: action.payload.data[0].userBookTOList[0].hastocflatten
                   }
               }
   }),

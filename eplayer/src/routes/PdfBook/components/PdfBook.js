@@ -52,9 +52,9 @@ async componentWillMount() {
     {
       return(<PdfBookReader 
                         fetchTocAndViewer={this.props.fetchTocAndViewer}
-              fetchBookmarks={this.props.fetchBookmarks}
-              addBookmark={this.props.addBookmark}
-              removeBookmark={this.props.removeBookmark}
+              fetchBookmarksUsingReaderApi={this.props.fetchBookmarksUsingReaderApi}
+              addBookmarkUsingReaderApi={this.props.addBookmarkUsingReaderApi}
+              removeBookmarkUsingReaderApi={this.props.removeBookmarkUsingReaderApi}
               fetchBookInfo={this.props.fetchBookInfo}
               fetchPageInfo={this.props.fetchPageInfo}
               goToPage={this.props.goToPage}
