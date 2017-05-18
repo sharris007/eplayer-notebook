@@ -50,7 +50,6 @@ export function request(component) {
 
 
 export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
-  console.log('Inside fetchBookmarksUsingReaderApi - bookId = '+bookId+' ,shared = '+shared+' , courseId = '+courseId+' , userId = '+userId);
   const bookState = {
     bookmarks: [],
     isFetching: {
@@ -58,7 +57,6 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
     }
   };
   const authorizationHeaderVal = createAuthorizationToken('/bookmark?includeShared='+shared+'&userId='+userId+'&bookId='+bookId+'&courseId='+courseId, 'GET')
-  console.log("fetchBookmarksUsingReaderApi Authorization : "+ authorizationHeaderVal);
   
   return (dispatch) => {
     dispatch(request('bookmarks'));
@@ -104,10 +102,8 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
 
 
 export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared) {
-console.log('Inside addBookmarkUsingReaderApi userId = '+userId+' , bookId = '+bookId+' , pageId = '+pageId+' , pageNo = '+pageNo+' , externalId = '+externalId+' , courseId = '+courseId+' , shared = '+shared);
 
 const authorizationHeaderVal = createAuthorizationToken('/bookmark', 'POST')
-console.log("addBookmarkUsingReaderApi Authorization : "+ authorizationHeaderVal);
 
 clients.readerApi.defaults.headers.Authorization = authorizationHeaderVal;
 
@@ -159,8 +155,6 @@ return (dispatch) => {
 
 
 export function removeBookmarkUsingReaderApi(bookmarkId) {
-console.log('Inside removeBookmarkUsingReaderApi bookmarkId = '+bookmarkId);
-
 
 const bookState = {
     bookmarks: [],
@@ -170,7 +164,6 @@ const bookState = {
   };
 
 const authorizationHeaderVal = createAuthorizationToken('/bookmark/'+bookmarkId, 'DELETE');
-console.log("Authorization removeBookmarkUsingReaderApi  : "+ authorizationHeaderVal);
 
 return (dispatch) => {
     dispatch(request('bookmarks'));
@@ -351,8 +344,6 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
         tocLevel_1_Obj.title=tocLevel_1.name;
         tocLevel_1_Obj.children=tocLevel_1_ChildList;*/
         
-        console.log('hastocflatten = '+hastocflatten);
-
         if(hastocflatten === "Y")
         {
           bookState.toc.content.list=flatten1(tocLevel_1_ChildList);
@@ -363,7 +354,7 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
 
         //bookState.toc.content.list=tocLevel_1_ChildList;
         //bookState.toc.content.list=flatten1(tocLevel_1_ChildList);
-        console.log();
+        
         });
       });
       bookState.isFetching.toc = false;

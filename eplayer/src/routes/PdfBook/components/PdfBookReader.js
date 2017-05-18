@@ -218,7 +218,6 @@ export class PdfBookReader extends Component {
 
   goToPageCallback(pageNum)
   {  
-    console.log('goToPageCallback(pageNum) = '+pageNum);
     this.setState({pageLoaded : false}); 
     //pageNum=pageNum-1;
     if(pageNum>0)
@@ -282,7 +281,6 @@ export class PdfBookReader extends Component {
   }
 
   getPrevNextPage = (pageType) =>{
-    console.log('getPrevNextPage pageType= '+pageType);
     //var currPageIndex=__pdfInstance.getCurrentPage();
     //var currPageNumber=currPageIndex + 1;
     var currPageNumber = this.state.currPageIndex;
@@ -363,15 +361,13 @@ export class PdfBookReader extends Component {
       pageID:currentPage.pageid,
       bookPageNumber:currentPage.pagenumber
     };
-
-    console.log(' addBookmarkHandler currentPage.pagenumber = '+currentPage.pageorder);
     const courseId = '0';
+    
     this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder), courseId, true);
    
   }
 
   removeBookmarkHandler = (bookmarkId) => {
-    console.log('bookmarkId in removeBookmarkHandler= '+bookmarkId);
     let currentPageId;
     if(bookmarkId!==undefined)
     {
@@ -385,6 +381,7 @@ export class PdfBookReader extends Component {
 
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri == currentPageId);
     const targetBookmarkId = targetBookmark.bkmarkId;
+
     this.props.removeBookmarkUsingReaderApi(targetBookmarkId);
          
   };
