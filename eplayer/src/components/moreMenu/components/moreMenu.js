@@ -19,6 +19,16 @@ class MoreMenuComponent extends React.Component {
         sessionStorage.removeItem(key);
       }  
     }
+    const storagAarr = [];
+    const localStorageLength = localStorage.length;
+    for (let i = 0; i < localStorage.length; i++){
+        if (localStorage.key(i).indexOf('bookId') == 0 ) {
+            storagAarr.push(localStorage.key(i));
+        }
+    }
+    for (let i = 0; i < storagAarr.length; i++) {
+      localStorage.removeItem(storagAarr[i]);
+    }
     browserHistory.push(`/eplayer`);
     this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails);
     //this.props.logout();

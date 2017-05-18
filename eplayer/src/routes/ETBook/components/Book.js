@@ -61,6 +61,19 @@ export class Book extends Component {
     this.props.dispatch({type: "CLEAR_BOOKMARKS"});
     this.props.dispatch({type: "CLEAR_SEARCH"});
   }
+  componentDidMount() {    
+   let pageDetails = this.state.pageDetails;
+   if(localStorage.getItem('bookId'+this.props.params.bookId)) {
+     let getStorageObj = localStorage.getItem('bookId'+this.props.params.bookId);
+     pageDetails.pageFontSize =  parseInt(getStorageObj.split("/")[0]);
+     pageDetails.bgColor = getStorageObj.split("/")[1];     
+   }
+   else{
+     pageDetails.pageFontSize =  '12px';
+     pageDetails.bgColor = '';
+   }
+   this.setState({pageDetails : pageDetails});
+ }
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   };
@@ -258,11 +271,27 @@ export class Book extends Component {
   }
 
   preferenceUpdate = (pref) => {
-    let pageDetails = this.state.pageDetails;
-    pageDetails.bgColor = pref.theme;
-    pageDetails.pageFontSize =  pref.fontSize;
-    this.setState({pageDetails : pageDetails});
-  }
+   if (typeof(Storage) !== "undefined") {
+     if(localStorage.getItem('bookId'+this.props.params.bookId)) {
+       this.setPagePreferenceObj(pref);
+     }
+     else{
+       localStorage.setItem('bookId'+this.props.params.bookId, (pref.fontSize+"/"+pref.theme));
+       this.setPagePreferenceObj(pref);
+     }
+   }
+ }
+
+ setPagePreferenceObj = (pref) => {
+   let pageDetails = this.state.pageDetails;
+   let getStorageObj = localStorage.getItem('bookId'+this.props.params.bookId);
+   
+   getStorageObj = pref.fontSize+"/"+pref.theme;
+   pageDetails.pageFontSize =  pref.fontSize;
+   pageDetails.bgColor = pref.theme;
+   localStorage.setItem('bookId'+this.props.params.bookId, getStorageObj);
+   this.setState({pageDetails : pageDetails});
+ }
 
   preferenceBackgroundColor = (theme) => {
     // console.log('theme---',theme);

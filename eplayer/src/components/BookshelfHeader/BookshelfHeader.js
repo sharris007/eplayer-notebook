@@ -44,6 +44,16 @@ export class BookshelfHeader extends React.Component {
         sessionStorage.removeItem(key);
       }  
     }
+    const storagAarr = [];
+    const localStorageLength = localStorage.length;
+    for (let i = 0; i < localStorage.length; i++){
+        if (localStorage.key(i).indexOf('bookId') == 0 ) {
+            storagAarr.push(localStorage.key(i));
+        }
+    }
+    for (let i = 0; i < storagAarr.length; i++) {
+      localStorage.removeItem(storagAarr[i]);
+    }
     browserHistory.push(`/eplayer/login`);
     //this.props.logout();
   }
