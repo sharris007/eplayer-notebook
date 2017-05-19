@@ -670,10 +670,8 @@ input.fwr_search_box::-ms-clear {
 }
 
 .fwr-page {
-   margin-bottom: 0px;
    clear: both;
    background-color: white;
-   height:100% !important;
  /*  overflow: hidden;*/
 }
 
@@ -1164,5 +1162,3 @@ font-size: 16px;
 .fwr-catch-cursor-ie {
     cursor:url("../images/reader/cursor/catch.cur"),default !important;
 }
-
-#docViewer_ViewContainer_PageContainer_0{height:900px;}
