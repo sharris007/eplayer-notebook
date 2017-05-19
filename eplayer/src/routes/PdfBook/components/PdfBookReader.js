@@ -113,6 +113,8 @@ export class PdfBookReader extends Component {
     zip: false,
     callbackOnPageChange : this.pdfBookCallback
     };
+    __pdfInstance.registerEvent("textSelected",this.createHighlight1.bind(this));   
+    __pdfInstance.registerEvent("highlightClicked",this.handleHighlightClick.bind(this));
     __pdfInstance.createPDFViewer(config);
     this.setState({currPageIndex: currentPageIndex});
     var data = this.state.data;
@@ -437,6 +439,51 @@ export class PdfBookReader extends Component {
    
  
 }*/
+ createHighlight1(highlightData) {   
+  const highLightcordinates = {   
+      left:highlightData[0].offsetLeft,   
+      top:highlightData[0].offsetTop,   
+      width:highlightData[0].offsetWidth,   
+      height:highlightData[0].offsetHeight    
+  };    
+  var currentHighlight={};    
+  var highlightList = this.state.highlightList;   
+  var highlightData = __pdfInstance.createHighlight();    
+  var highlightsLength = highlightList.length;    
+  currentHighlight.id = highlightsLength + 1;   
+  currentHighlight.highlightHash = highlightData.serializedHighlight;   
+  currentHighlight.selection = highlightData.selection;   
+  console.log("======== "+currentHighlight.highlightHash);    
+  currentHighlight.pageIndex = highlightData.pageInformation.pageNumber;    
+  pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight,highLightcordinates,this.saveHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0');    
+}   
+saveHighlight(currentHighlight,highLightMetadata)   
+{   
+  var highlightList = this.state.highlightList;   
+  const currentPageId=this.state.currPageIndex;   
+  const courseId = '0';   
+  const note = highLightMetadata.noteText;    
+  const meta = {    
+   "userroleid" : "2",    
+   "userbookid" : _.toString(this.props.book.bookinfo.userbook.userbookid),   
+   "bookeditionid" : _.toString(this.props.book.bookinfo.book.bookeditionid),   
+   "roletypeid" : "2",    
+   "colorcode" : highLightMetadata.currHighlightColorCode   
+  }   
+  const selectedText = currentHighlight.selection;    
+  const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);    
+  this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(courseId), true, currentHighlight.highlightHash, note, selectedText, highLightMetadata.currHighlightColor, meta).then(() => {    
+    this.setState({highlightList : highlightList});   
+    this.displayHighlight();    
+  })    
+      
+}   
+handleHighlightClick(hId)   
+{   
+  const highlightClicked = find(this.state.highlightList, highlight => highlight.id == hId);    
+  pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,this.saveHighlight.bind(this),this.deleteHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0');   
+  console.log("Hightlight ID"+hId);   
+}
   createHighlight(e) {
   var currentHighlight={};
   var highlightList = this.state.highlightList;
@@ -479,7 +526,7 @@ export class PdfBookReader extends Component {
     
   }
   deleteHighlight = (id) => {
-
+    __pdfInstance.removeHighlightElement(id);
     this.props.removeHighlightUsingReaderApi(id);
 
   }
@@ -537,7 +584,7 @@ export class PdfBookReader extends Component {
                 <div id="right" className="pdf-fwr-pc-right">
                  <div id="toolbar" className="pdf-fwr-toolbar"></div>
                   <div id="frame" className={viewerClassName}>
-                    <div id="docViewer"  className="docViewer" onMouseUp={this.createHighlight.bind(this)}></div>
+                    <div id="docViewer"  className="docViewer"></div>
                   </div>
                  </div>
                 </div>

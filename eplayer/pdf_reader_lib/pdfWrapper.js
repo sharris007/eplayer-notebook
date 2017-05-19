@@ -888,8 +888,8 @@ function getAssetURLForPDFDownload(config,cb){
           }
           childElement.ondblclick = function() {
           console.log("on double click ********");
-          _this.removeHighlightElement(id);
-          deleteHighlight(id);                  
+          //_this.removeHighlightElement(id);
+          //deleteHighlight(id);                  
           }
           parentElement.appendChild(childElement);
         }
@@ -1025,6 +1025,10 @@ function getAssetURLForPDFDownload(config,cb){
         */
         restoreHighlights: function(highlights, deleteHighlight) {
           var currPage = _this.restoreHighlights(highlights, deleteHighlight);
+        },
+        removeHighlightElement: function(id)
+        {
+          _this.removeHighlightElement(id);
         },
         /*Get the total Number of Pages in the PDF*/    
          getPageCount: function() {
