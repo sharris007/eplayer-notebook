@@ -42,11 +42,13 @@ class PopUpInfo extends Component {
           noOverlay: true,
           position: function(box) {
             box.style.top = (element.getBoundingClientRect().top + window.scrollY + element.offsetHeight + 12) + 'px';
+            const bookIdRect = bookId.getBoundingClientRect();
+            const elementIdRect = element.getBoundingClientRect();
             if (window.innerHeight - element.getBoundingClientRect().top < 135) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpTopAlign');
               box.style.top = (element.getBoundingClientRect().top + window.scrollY - element.clientHeight - 15 - document.getElementsByClassName('mm-popup__box')[0].clientHeight) + 'px';
               box.style.left = (element.getBoundingClientRect().left-185+(element.offsetWidth/2)) + 'px';
-            } else if (bookId.offsetWidth - element.getBoundingClientRect().left < 365) {
+            } else if (elementIdRect.left - bookIdRect.left > 350) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
               box.style.left = (element.getBoundingClientRect().left - 350 +  element.offsetWidth/2) + 'px';
             } 
