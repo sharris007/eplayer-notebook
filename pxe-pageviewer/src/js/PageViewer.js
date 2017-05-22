@@ -224,13 +224,13 @@ class PageViewer extends React.Component {
 
     if ( this.bookContainerRef.querySelectorAll('link[title="'+ bgTheme +'"]').length ) {
       getAllLinkTags.forEach (function(link) {
-        link.setAttribute('disabled', 'disabled');
+        link.disabled = true;
       });
       $('link[title="'+ bgTheme +'"]', document.getElementById('book-container')).removeAttr('disabled');
     }
     else {
       getAllLinkTags.forEach (function(link) {
-        link.setAttribute('disabled', 'disabled');
+        link.disabled = true;
         if ((link.title !== 'sepia') && (link.title !== 'night')) {
           $('link[title="'+ link.title +'"]', document.getElementById('book-container')).removeAttr('disabled');
         }
