@@ -1,0 +1,16 @@
+{
+    "messages" : {
+      "signOutBtn": "サインアウト",
+      "myBookshelf": "私の本棚",
+      "contents": "内容",
+      "bookmarks": "ブックマーク",
+      "notes" : "ノート" ,
+      "Glossary": "用語集",
+  	  "Footnotes": "脚注",
+      "Username": "ユーザー名",
+      "Password": "パスワード",
+      "SignIn":"サインイン" ,
+      "errorMessage":"*無効なユーザー名/パスワードまたはこのサイトへの登録がない",
+      "page":"ページ"
+    }
+}

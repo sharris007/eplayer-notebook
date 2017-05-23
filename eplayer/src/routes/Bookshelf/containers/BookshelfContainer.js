@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import {fetch,storeBookDetails,storeSsoKey} from '../modules/bookshelfActions';
+import { injectIntl } from 'react-intl';
 
 
 /*  This is a container component. Notice it does not contain any JSX,
@@ -42,4 +43,4 @@ const mapStateToProps = state => ({
     Selectors are composable. They can be used as input to other selectors.
     https://github.com/reactjs/reselect    */
 
-export default connect(mapStateToProps, mapDispatchToProps)(BookshelfPage);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(BookshelfPage));

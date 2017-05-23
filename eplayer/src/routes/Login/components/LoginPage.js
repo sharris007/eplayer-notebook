@@ -5,7 +5,26 @@ import CircularProgress from 'material-ui/CircularProgress';
 import LoginHeader  from '../../../components/LoginHeader';
 import './LoginPage.css';
 import reducer from '../modules/loginReducer';
-
+import { intlShape,addLocaleData } from 'react-intl';   
+import languageName from '../../../../locale_config/configureLanguage';   
+import {languages} from '../../../../locale_config/translations/index';   
+var launguageid,locale,langQuery;   
+const url=window.location.href;   
+var n=url.search("languageid");   
+if(n>0)   
+{   
+  var urlSplit=url.split("languageid=")   
+  languageid = Number(urlSplit[1]);   
+}   
+else    
+{   
+  var languageid =1;    
+}   
+langQuery="?languageid=" + String(languageid);    
+locale=languageName(languageid);    
+let localisedData=locale.split('-')[0];   
+addLocaleData((require(`react-intl/locale-data/${localisedData}`)));    
+const {messages}=languages.translations[locale];
 
 class LoginPage extends React.Component{
     constructor(props) {
@@ -44,7 +63,7 @@ class LoginPage extends React.Component{
         sessionStorage.setItem('firstName',this.props.data.firstName);
         lastName.push(this.props.data.lastName);
         sessionStorage.setItem('lastName',this.props.data.lastName);
-        browserHistory.push(`/eplayer/bookshelf`);
+        browserHistory.push(`/eplayer/bookshelf${this.props.location.search}`);
           }
     })
     
@@ -64,15 +83,15 @@ class LoginPage extends React.Component{
         <div className="form-container">
           <form onSubmit={this.handleSubmit} className={this.state.className}>
             <div className="form-group">
-              <label>Username</label>
+              <label>{messages.Username}</label>
               <input type="text" name='loginname' value={this.state.value} onChange={this.handleChange} required />
             </div>
             <div className="form-group">
-              <label>Password</label>
+              <label>{messages.Password}</label>
               <input type="password" name='password' onChange={this.handleChange}  required />
-              {this.props.error == true ? <p className="errorClass">{this.props.errorMessage}</p> : null}
+              {this.props.error == true ? <p className="errorClass">{this.props.intl.messages.errorMessage}</p> : null}
             </div>
-            <button type="submit"  className="form_button">Sign In</button>
+            <button type="submit"  className="form_button">{messages.SignIn}</button>
           </form>          
           {this.props.fetching == true ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
           

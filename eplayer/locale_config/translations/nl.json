@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Afmelden",
+      "myBookshelf": "Mijn boekenplank",
+      "contents": "Inhoud",
+      "bookmarks": "Bladwijzers",
+      "notes" : "Notes" ,
+      "Glossary": "Woordenlijst",
+  	"Footnotes": "voetnoten",
+      "Username": "Gebruikersnaam",
+      "Password": "Wachtwoord",
+      "SignIn":"Aanmelden" ,
+      "errorMessage":"* Ongeldige Gebruikersnaam / Wachtwoord of u heeft geen abonnement op deze site",
+      "page":"Pagina"
+	}           
+}

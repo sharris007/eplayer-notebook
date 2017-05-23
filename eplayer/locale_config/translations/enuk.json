@@ -1,0 +1,17 @@
+{
+	"messages" : {
+      "signOutBtn": "Sign Out",
+      "myBookshelf": "My Bookshelf",
+      "contents": "Contents",
+      "bookmarks": "Bookmarks",
+      "notes" : "Notes",
+      "backNavigation":"Back Navigation",
+  	  "Glossary": "Glossary",
+  	  "Footnotes": "Footnotes", 
+      "Username": "Username",
+      "Password": "Password",
+      "SignIn":"Sign In",
+      "errorMessage":"*Invalid Username/Password or you do not have a subscription to this site" ,
+      "page":"Page"
+	}           
+}

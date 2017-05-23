@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "登出",
+      "myBookshelf": "我的書架",
+      "contents": "內容",
+      "bookmarks": "書籤",
+      "notes" : "筆記" ,
+      "Glossary": "詞彙表",
+  	  "Footnotes": "腳註",
+      "Username": "用戶名",
+      "Password": "密碼",
+      "SignIn":"簽到",
+      "errorMessage":"*用戶名/密碼無效，或者您沒有訂閱此網站" ,
+      "page":"頁"     
+    }
+}   

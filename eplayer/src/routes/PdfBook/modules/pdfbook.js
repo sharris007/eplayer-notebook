@@ -49,7 +49,7 @@ export function request(component) {
 }
 
 
-export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
+export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId,Page) {
   const bookState = {
     bookmarks: [],
     isFetching: {
@@ -87,7 +87,7 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
             pageId : bookmark.pageId,
             pageNo : bookmark.pageNo,
             createdTimestamp : date,
-            title: 'Page '+bookmark.pageNo,
+            title: Page + ' ' + bookmark.pageNo,
             uri: extID,
             externalId: extID
         };
@@ -101,7 +101,7 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
 }
 
 
-export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared) {
+export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared,Page) {
 
 const authorizationHeaderVal = createAuthorizationToken('/bookmark', 'POST')
 
@@ -142,7 +142,7 @@ return (dispatch) => {
             pageId : bookmarkResponse.pageId,
             pageNo : bookmarkResponse.pageNo,
             createdTimestamp : date,
-            title: 'Page '+bookmarkResponse.pageNo,
+            title: Page + ' ' + bookmarkResponse.pageNo,
             uri: extID,
             externalId: extID
         };
@@ -741,7 +741,7 @@ const ACTION_HANDLERS = {
       {
         id: action.bmObj.id,
         uri: action.bmObj.uri,
-        title:'Page '+action.bmObj.pageNo,
+        title:Page + ' ' +action.bmObj.pageNo,
         pageID: action.bmObj.pageId,
         createdTimestamp: action.bmObj.createdTimestamp,
         externalId: action.bmObj.externalId,
@@ -830,7 +830,8 @@ const ACTION_HANDLERS = {
                   numberOfPages: action.payload.data[0].userBookTOList[0].numberOfPages,
                   bookid: action.payload.data[0].userBookTOList[0].bookID,
                   bookeditionid: action.payload.data[0].userBookTOList[0].bookEditionID,
-                  hastocflatten: action.payload.data[0].userBookTOList[0].hastocflatten
+                  hastocflatten: action.payload.data[0].userBookTOList[0].hastocflatten,
+                  languageid: action.payload.data[0].userBookTOList[0].languageID
                   }
               }
   }),

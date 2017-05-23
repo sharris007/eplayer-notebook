@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Desconectar",
+      "myBookshelf": "Mi biblioteca",
+      "contents": "Contenido",
+      "bookmarks": "Marcadores",
+      "notes" : "notas" ,
+      "Glossary": "Glosario",
+      "Footnotes": "Notas a pie de página",
+      "Username": "Nombre de usuario",
+      "Password": "Contraseña",
+      "SignIn":"Registrarse" ,
+      "errorMessage":"* Nombre de usuario / contraseña no válido o no tiene una suscripción a este sitio",
+      "page":"Página" 
+	}           
+}

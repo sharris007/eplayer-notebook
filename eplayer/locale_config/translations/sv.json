@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Logga ut",
+      "myBookshelf": "Min bokhylla",
+      "contents": "Innehåll",
+      "bookmarks": "bokmärken",
+      "notes" : "anteckningar" ,
+      "Glossary": "Ordlista",
+  	"Footnotes": "fotnoter",
+      "Username": "Användarnamn",
+      "Password": "Lösenord",
+      "SignIn":"Logga in",
+      "errorMessage":"* Ogiltigt användarnamn / lösenord eller du har inte prenumeration på den här sidan",
+      "page":"Sida" 
+	}           
+}

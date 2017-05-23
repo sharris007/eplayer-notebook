@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "خروج",
+      "myBookshelf": "رف الكتب",
+      "contents": "محتويات",
+      "bookmarks": "إرسال",
+      "notes" : "ملاحظات",
+      "Glossary": "المعجم",
+  	"Footnotes": "الحواشي",
+      "Username": "اسم المستخدم",
+      "Password": "كلمه السر",
+      "SignIn":"تسجيل الدخول" ,
+      "errorMessage":"* اسم المستخدم / كلمة المرور غير صالحة أو لم يكن لديك اشتراك في هذا الموقع",
+      "page":"صفحة"
+	}           
+}

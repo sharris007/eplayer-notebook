@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
 import {PdfBookReader} from './PdfBookReader.js';
-var identityId,ubd,ubsd,ssoKey,serverDetails,uid;
+import { IntlProvider, addLocaleData } from 'react-intl';   
+import {languages} from '../../../../locale_config/translations/index';   
+import languageName from '../../../../locale_config/configureLanguage';
+var identityId,ubd,ubsd,ssoKey,serverDetails,uid,langID;
+
 export class PdfBook extends Component {
 
 async componentWillMount() {
@@ -50,8 +54,17 @@ async componentWillMount() {
   {
     if(this.props.book.bookinfo.fetched)
     {
-      return(<PdfBookReader 
-                        fetchTocAndViewer={this.props.fetchTocAndViewer}
+      langID=this.props.book.bookinfo.book.languageid;
+      let locale=languageName(langID);
+      let localisedData=locale.split('-')[0];
+      addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
+      const {messages}=languages.translations[locale];
+      const PdfbookMessages={
+      PageMsg:messages.page,
+    }
+      return(
+        <PdfBookReader locale={locale}
+                      fetchTocAndViewer={this.props.fetchTocAndViewer}
               fetchBookmarksUsingReaderApi={this.props.fetchBookmarksUsingReaderApi}
               addBookmarkUsingReaderApi={this.props.addBookmarkUsingReaderApi}
               removeBookmarkUsingReaderApi={this.props.removeBookmarkUsingReaderApi}
@@ -65,6 +78,7 @@ async componentWillMount() {
               fetchHighlightUsingReaderApi = {this.props.fetchHighlightUsingReaderApi}
               saveHighlightUsingReaderApi = {this.props.saveHighlightUsingReaderApi}
               removeHighlightUsingReaderApi= {this.props.removeHighlightUsingReaderApi}
+              PdfbookMessages={PdfbookMessages}
                         />);
     }
     else

@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Oturumu Kapat",
+      "myBookshelf": "Kitap rafım",
+      "contents": "içindekiler",
+      "bookmarks": "Yer imleri",
+      "notes" : "notlar" ,
+      "Glossary": "Sözlük",
+  	  "Footnotes": "Dipnotlar",
+      "Username": "Kullanıcı adı",
+      "Password": "Parola",
+      "SignIn":"Oturum aç",
+      "errorMessage":"* Geçersiz Kullanıcı Adı / Şifre veya bu siteye üye değilsiniz",
+      "page":"Sayfa"      
+    }
+}   

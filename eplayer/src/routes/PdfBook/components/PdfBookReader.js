@@ -72,7 +72,7 @@ export class PdfBookReader extends Component {
     }
     this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails,this.props.book.bookinfo.book.hastocflatten);
     const courseId = '0';
-    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid);
+    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid,this.props.PdfbookMessages.PageMsg);
     //this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
     const firstPage="firstPage";
     //this.goToPage(firstPage);
@@ -365,7 +365,7 @@ export class PdfBookReader extends Component {
     };
     const courseId = '0';
     
-    this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder), courseId, true);
+    this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder), courseId, true,this.props.PdfbookMessages.PageMsg);
    
   }
 
@@ -554,7 +554,7 @@ handleHighlightClick(hId)
  
     <div className={'add'} >
     <div>
-        <Header
+        <Header locale={this.props.locale}
           classname={this.state.classname}
           bookData={this.props.book}
           bookCallbacks={callbacks}
@@ -575,7 +575,7 @@ handleHighlightClick(hId)
         /> 
       
       <div className="eT1viewerContent">
-       {this.state.isFirstPageBeingLoad !== true ? <ViewerComponent data={this.state.data} pages={this.props.book.viewer.pages} goToPageCallback={this.goToPage} getPrevNextPage={this.getPrevNextPage} isET1='Y'/>:null}
+       {this.state.isFirstPageBeingLoad !== true ? <ViewerComponent locale={this.props.locale} data={this.state.data} pages={this.props.book.viewer.pages} goToPageCallback={this.goToPage} getPrevNextPage={this.getPrevNextPage} isET1='Y'/>:null}
       </div>
       </div>
         <div>

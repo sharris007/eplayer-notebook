@@ -7,7 +7,26 @@ import errorCard from '../../../components/common/errorCard';
 import BookshelfHeader from '../../../components/BookshelfHeader';
 import './Bookshelf.scss';
 import { clients } from '../../../components/common/client';
-
+import { intlShape,addLocaleData } from 'react-intl';   
+import languageName from '../../../../locale_config/configureLanguage';   
+import {languages} from '../../../../locale_config/translations/index';   
+var launguageid,locale,langQuery;   
+const url=window.location.href;   
+var n=url.search("languageid");   
+if(n>0)   
+{   
+  var urlSplit=url.split("languageid=")   
+  languageid = Number(urlSplit[1]);   
+}   
+else    
+{   
+  var languageid =1;    
+}   
+langQuery="?languageid=" + String(languageid);    
+locale=languageName(languageid);    
+let localisedData=locale.split('-')[0];   
+addLocaleData((require(`react-intl/locale-data/${localisedData}`)));    
+const {messages}=languages.translations[locale];
 
 export default class BookshelfPage extends React.Component {
 constructor(props) {
@@ -79,6 +98,7 @@ componentWillMount() {
 
   render() {
     //console.log(this.props.bookshelf);
+    sessionStorage.setItem('bookshelfLang',langQuery);
     sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
     sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
     sessionStorage.setItem('title',this.props.bookshelf.title);
@@ -133,9 +153,9 @@ componentWillMount() {
 
     return (
       <div id="bookshelf-page">
-        <BookshelfHeader firstName={firstName} lastName={lastName}/>
+        <BookshelfHeader locale={locale} messages={messages} firstName={firstName} lastName={lastName}/>
         {fetching ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
-        {fetched ? <BookshelfComponent books={booksdata} onBookClick={this.handleBookClick} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey}/> : null}
+        {fetched ? <BookshelfComponent books={booksdata} onBookClick={this.handleBookClick} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey} locale={locale}/> : null}
 
       </div>
     );
@@ -145,6 +165,7 @@ componentWillMount() {
 BookshelfPage.propTypes = {
   bookshelf: React.PropTypes.object.isRequired,
   fetch: React.PropTypes.func.isRequired,
+  intl: intlShape.isRequired,
   //storeUPdfUrl: React.PropTypes.func,
   //storeBookServerDetails: React.PropTypes.func,
   storeBookDetails: React.PropTypes.func,

@@ -10,11 +10,15 @@ import DrawerComponent from './Drawer';
 import Search from '../search/containers/searchContainer';
 import MoreMenuComponent from '../moreMenu/containers/moreMenuContainer';
 import { injectReducer } from '../../store/reducers';
-
+import { IntlProvider, addLocaleData} from 'react-intl';    
+import {languages} from '../../../locale_config/translations/index';
 
 export class Header extends React.Component {
   constructor(props) {
     super(props);
+    let locale=this.props.locale;   
+    let localisedData=locale.split('-')[0];   
+    addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
     this.state = {
       drawerOpen: false,
       prefOpen: false,
@@ -87,7 +91,15 @@ export class Header extends React.Component {
       this.props.bookData.bookmarks=[];
       this.props.bookData.bookinfo=[];
     }
-    browserHistory.push('/eplayer/bookshelf');
+    let langQuery=sessionStorage.getItem('bookshelfLang');
+    if(langQuery != "?languageid=1")    
+    {   
+      browserHistory.push(`/eplayer/bookshelf` + langQuery);      
+    }   
+    else    
+    {   
+      browserHistory.push(`/eplayer/bookshelf`);    
+    }
     this.setState({ open: false });
   }
 
@@ -202,6 +214,7 @@ export class Header extends React.Component {
     const targetPageId = this.props.bookData.viewer.currentPageId;
     const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
     const title = sessionStorage.getItem('title');
+    const {messages}=languages.translations[this.props.locale];
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
         <AppBar
@@ -268,16 +281,16 @@ export class Header extends React.Component {
                 <Icon name="search-lg-18" />
               </div>
               <div className="searchContainer">
-                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={(pageId)=>this.goToPage(pageId)} indexId = {this.props.indexId} listClick = {this.props.listClick} isET1 = 'Y'/> : <div className="empty" />}
+                {this.state.searchOpen ? <Search Locale={this.props.locale} store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={(pageId)=>this.goToPage(pageId)} indexId = {this.props.indexId} listClick = {this.props.listClick} isET1 = 'Y'/> : <div className="empty" />}
               </div>
               <div className="moreIcon">
-                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} serverDetails={this.props.serverDetails} />
+                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages}/>
               </div>
             </div>}
         />
         { 
           this.state.drawerOpen &&
-          <DrawerComponent
+          <DrawerComponent locale={this.props.locale} messages={messages}
             bookData={this.props.bookData}
             bookCallbacks={this.props.bookCallbacks}
             isOpen={this.props.drawerOpen}

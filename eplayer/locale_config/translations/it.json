@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Disconnessione",
+      "myBookshelf": "Il mio libretto",
+      "contents": "Contenuto",
+      "bookmarks": "Segnalibri",
+      "notes" : "Gli appunti",
+      "Glossary": "Glossario",
+  	  "Footnotes": "Le note",
+      "Username": "Nome utente",
+      "Password": "Parola d'ordine",
+      "SignIn":"Registrati" ,
+      "errorMessage":"*Nome utente / password non valido o non si dispone di un abbonamento a questo sito",
+      "page":"Pagina"       
+    }
+}   

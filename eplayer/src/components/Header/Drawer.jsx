@@ -229,7 +229,7 @@ class DrawerComponent extends React.Component {
           value={this.state.slideIndex}
         >
           < Tab
-            label="Contents"
+            label={this.props.messages.contents}
             id="contents"
             style={drawerTab.tabHeader}
             onActive={
@@ -239,7 +239,7 @@ class DrawerComponent extends React.Component {
             onKeyDown={this.keyBoardNavigation}
             value={0}
           /> < Tab
-            label="Bookmarks"
+            label={this.props.messages.bookmarks}
             id="bookmarks"
             style={drawerTab.tabHeader}
             onActive={
@@ -249,7 +249,7 @@ class DrawerComponent extends React.Component {
             onKeyDown={this.keyBoardNavigation}
             value={1}
           /> < Tab
-            label="Notes"
+            label={this.props.messages.notes}
             id="notes"
             style={drawerTab.tabHeader}
             onActive={
@@ -271,6 +271,7 @@ class DrawerComponent extends React.Component {
                 depth={5}
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
+                locale={this.props.locale}
               />
             }
             { this.props.bookData.bookmarks &&
@@ -279,6 +280,7 @@ class DrawerComponent extends React.Component {
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
                 removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
                 isET1={this.props.isET1}
+                locale={this.props.locale} 
               />
              }
              { this.props.bookData.annTotalData &&
@@ -286,6 +288,7 @@ class DrawerComponent extends React.Component {
                 notes={this.props.bookData.annTotalData}
                 clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
+                locale={this.props.locale}
               />
             }
           < /SwipeableViews> < /div > < /Drawer>
