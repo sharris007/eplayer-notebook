@@ -1,9 +1,9 @@
 import { getBookDetails, getPlaylistDetails,getTocDetails } from './genericApi';
 
 class PlaylistApi {
-  static doGetBookDetails = bookId => getBookDetails(bookId)
-  static doGetPlaylistDetails = (bookId,tocurl) => getPlaylistDetails(bookId,tocurl)
-  static doGetTocDetails = (bookId,tocurl) => getTocDetails(bookId,tocurl)
+  static doGetBookDetails = bookDetails => getBookDetails(bookDetails)
+  static doGetPlaylistDetails = (bookId,tocurl,piToken) => getPlaylistDetails(bookId,tocurl,piToken)
+  static doGetTocDetails = (bookId,tocurl,piToken) => getTocDetails(bookId,tocurl,piToken)
 }
 
 export default PlaylistApi;

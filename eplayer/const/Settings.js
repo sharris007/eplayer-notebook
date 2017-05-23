@@ -12,7 +12,7 @@ export const resources = {
     etextServiceUrl: {
       local: 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
       dev: 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
-      qa: 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
+      qa: 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext',
       stage: 'https://etext-stg.pearson.com/api/nextext-api/api',
       prod: 'https://etext.pearson.com/api/nextext-api/api'
     },
@@ -77,7 +77,7 @@ export const domain = {
     const locationOrigin = this.getLocationOrigin();
 
     if (locationOrigin.indexOf('localhost') !== -1)
-          { return 'local'; }
+          { return 'qa'; }
     else if (locationOrigin.indexOf('pxe-sdk.dev-openclass.com') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('pxe-sdk-qa.stg-openclass.com') !== -1)

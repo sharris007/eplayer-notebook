@@ -32,10 +32,12 @@ function getTocUrlOnResp(resp)
 export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetails(data)
    .then(response => response.json())
    .then(response => {
+    console.log("data*****", data);
       const bookId = response.bookDetail.bookId;
       const tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
       const bookDetails = response.bookDetail.metadata;
-      PlaylistApi.doGetTocDetails(bookId,tocUrl).then(response => response.json())
+      const piToken = data.piToken;
+      PlaylistApi.doGetTocDetails(bookId,tocUrl,piToken).then(response => response.json())
       .then(response =>{
         response.bookConfig =bookDetails; 
         const tocResponse = response.content;
@@ -68,7 +70,7 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
         dispatch(getTocCompleteDetails(tocFinalModifiedData));
       });
 
-      PlaylistApi.doGetPlaylistDetails(bookId,tocUrl).then(response => response.json())
+      PlaylistApi.doGetPlaylistDetails(bookId,tocUrl,piToken).then(response => response.json())
       .then(response =>dispatch(getPlaylistCompleteDetails(response)));
    }
 );

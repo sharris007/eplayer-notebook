@@ -12,6 +12,9 @@ import { clients } from '../../../components/common/client';
 export default class BookshelfPage extends React.Component {
 constructor(props) {
     super(props);
+    if (sessionStorage.getItem('piToken') === null) {
+      browserHistory.push(`/eplayer/login`);
+    }
     
   }
 componentWillMount() {
@@ -30,10 +33,14 @@ componentWillMount() {
     {
       this.props.book.bookmarks=[];
     }
+    
+    
+    
 
     //const sessionid=this.props.login.data.token;
     //const piToken = this.props.login.data.piToken;
     var sessionid, piToken;
+    console.log("this.props", this.props);
     if(this.props.login.data === undefined){
       piToken = sessionStorage.getItem('piToken');
       sessionid = sessionStorage.getItem('sessionid');

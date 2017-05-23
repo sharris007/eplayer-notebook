@@ -53,29 +53,34 @@ export const deleteAnnData = data =>
 
 // ----Play list toc----------------------------------
 
-export const getBookDetails = bookId => 
- fetch(etextService[envType]+'/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true',
+export const getBookDetails = bookDetails => 
+  //console.log("test",bookDetails);
+ fetch(etextService[envType]+'/books/'+bookDetails.context+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true',
  {
     method: 'GET',
     headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'X-Authorization': bookDetails.piToken
     }
 });
+//};
 
-export const getTocDetails = (bookId,tocurl) => fetch(etextService[envType]+'/custom/toc/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef
+export const getTocDetails = (bookId,tocurl,piToken) => fetch(etextService[envType]+'/custom/toc/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef
   method: 'GET',
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'X-Authorization': piToken
   }
 });
 
-export const getPlaylistDetails = (bookId,tocurl) => fetch(etextService[envType]+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=false', { // eslint-disable-line no-undef
+export const getPlaylistDetails = (bookId,tocurl,piToken) => fetch(etextService[envType]+'/custom/playlist/contextId/'+bookId+'?provider='+tocurl+'&removeDuplicates=false', { // eslint-disable-line no-undef
   method: 'GET',
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'X-Authorization': piToken
   }
 });
 

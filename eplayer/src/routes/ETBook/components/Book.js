@@ -22,6 +22,9 @@ import {resources , domain ,typeConstants} from '../../../../const/Settings'
 export class Book extends Component {
   constructor(props) {
       super(props);
+      if (sessionStorage.getItem('piToken') === null) {
+        browserHistory.push(`/eplayer/login`);
+      }
       this.state = {
         classname: 'headerBar',
         viewerContent: true,
@@ -50,8 +53,17 @@ export class Book extends Component {
        
   }
   componentWillMount  = () => {
+    let piToken;
+    if (sessionStorage.getItem('piToken')) {
+      piToken = sessionStorage.getItem('piToken');
+    }
+    const bookDetailsData = {
+      context : this.state.urlParams.context,
+      piToken : piToken
+    }
+    console.log('this.state.urlParams.context',this.state.urlParams.context);
     this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-    this.props.dispatch(getBookCallService(this.state.urlParams.context));
+    this.props.dispatch(getBookCallService(bookDetailsData));
     this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
   }
   componentWillUnmount() {
