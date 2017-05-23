@@ -89,7 +89,7 @@ class LoginPage extends React.Component{
             <div className="form-group">
               <label>{messages.Password}</label>
               <input type="password" name='password' onChange={this.handleChange}  required />
-              {this.props.error == true ? <p className="errorClass">{this.props.intl.messages.errorMessage}</p> : null}
+              {this.props.error == true ? <p className="errorClass">{messages.errorMessage}</p> : null}
             </div>
             <button type="submit"  className="form_button">{messages.SignIn}</button>
           </form>          
