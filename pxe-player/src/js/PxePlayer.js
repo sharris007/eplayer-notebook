@@ -24,26 +24,26 @@ class PxePlayer extends React.Component {
     };
   }
   onPageChange = (type, data) => {
-    switch(type){
-      case 'pagescroll':
-        this.props.applnCallback(type, data);
-        break;
-      default:
-        const parameters = this.state.urlParams;
-        parameters.id = data.id;
-        parameters.uri = encodeURIComponent(data.href);
-        data.uri = data.href;
-        data.label = data.title;
-        this.setState({
-          currentPageDetails: data,
-          urlParams: parameters
-        }, function () {
-          if (this.props.applnCallback) {
+    switch (type) {
+    case 'pagescroll':
+      this.props.applnCallback(type, data);
+      break;
+    default:
+      const parameters = this.state.urlParams;
+      parameters.id = data.id;
+      parameters.uri = encodeURIComponent(data.href);
+      data.uri = data.href;
+      data.label = data.title;
+      this.setState({
+        currentPageDetails: data,
+        urlParams: parameters
+      }, () => {
+        if (this.props.applnCallback) {
           // eslint-disable-next-line
           // this.props.dispatch(getAnnCallService(this.state.urlParams)); // Enable when Annotation component added
-            this.props.applnCallback(type, data);
-          }
-        });
+          this.props.applnCallback(type, data);
+        }
+      });
     }
     
   };
@@ -99,9 +99,9 @@ class PxePlayer extends React.Component {
       // this.getAnnotationData();
       this.annotationCallDispatch('GET').then((res) => {
         let annotationData = { ...res };
-        let instrAnnotations=[],studAnnotations=[],_i;
-        for(_i=0; _i < annotationData.rows.length; _i++) {
-          if(annotationData.rows[_i].shareable) {
+        let instrAnnotations=[], studAnnotations=[], _i;
+        for (_i=0; _i < annotationData.rows.length; _i++) {
+          if (annotationData.rows[_i].shareable) {
             instrAnnotations.push(annotationData.rows[_i]);
           }
           else {
