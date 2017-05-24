@@ -578,7 +578,7 @@ const authorizationHeaderVal = authorizationVal.replace("Hawk id=","ReaderPlus k
 return authorizationHeaderVal;
 }
 
-export function fetchHighlightUsingReaderApi(userId,bookId,pageId,shared,courseId){
+export function fetchHighlightUsingReaderApi(userId,bookId,shared,courseId){
 
 const bookState = {
    highlights: [],
@@ -588,12 +588,12 @@ const bookState = {
   };
 
   //var uri = 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared=true&userId='+userId+'&bookId='+bookId+'&pageId='+pageId;
-  const authorizationHeaderVal = createAuthorizationToken('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId, 'GET')
+  const authorizationHeaderVal = createAuthorizationToken('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId, 'GET')
   console.log("Authorization : "+ authorizationHeaderVal);
   return (dispatch) => {
     dispatch(request('highlights'));
     
-    return clients.readerApi.get('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId,{
+    return clients.readerApi.get('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId,{
       headers : {
         'Authorization' : authorizationHeaderVal
       }
@@ -609,25 +609,29 @@ const bookState = {
         var hlObj={
 
         }
+        var time = new Date(highlight.updatedTime*1000);
+        var pageid = Number(highlight.pageId);
         hlObj.userId = highlight.userId;
         hlObj.bookId = highlight.bookId;
-        hlObj.pageId = highlight.pageId;
+        hlObj.pageId = pageid;
         hlObj.courseId = highlight.courseId;
         hlObj.shared = highlight.shared;
         hlObj.highlightHash = highlight.highlightHash;
-        hlObj.note = highlight.note;
-        hlObj.selectedText = highlight.selectedText;
-        hlObj.colour = highlight.colour;
+        hlObj.comment = highlight.note;
+        hlObj.text = highlight.selectedText;
+        hlObj.color = highlight.colour;
         hlObj.id = highlight.id;
         hlObj.pageNo = highlight.pageNumber;
-        hlObj.meta = highlight.meta
+        hlObj.meta = highlight.meta;
+        hlObj.author = highlight.meta.author;
         hlObj.creationTime = highlight.creationTime;
-        hlObj.updatedTime = highlight.updatedTime;
+        hlObj.time = time;
         hlObj.pageIndex = 1;        //For Foxit
 
         bookState.highlights.push(hlObj);
       })
     }
+    bookState.highlights.sort(function(hl1,hl2) {return hl2.time - hl1.time});
     bookState.isFetching.highlights = false;
     return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
   })
@@ -636,7 +640,7 @@ const bookState = {
 
 }
 
-export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta){
+export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta,currentPageId){
   
   const authorizationHeaderVal = createAuthorizationToken('/highlight', 'POST')
   console.log("Authorization : "+ authorizationHeaderVal);
@@ -645,7 +649,7 @@ export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId
   var data = {
       "userId" : userId,
       "bookId" : bookId,
-      "pageId" : pageId,
+      "pageId" : currentPageId,
       "pageNo" : pageNo,
       "courseId" : courseId,
       "shared" : shared,
@@ -656,34 +660,42 @@ export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId
       "meta" : meta,
       "highlightEngine" : "eT1PDFPlayer"
   }
-  return{
-  type: 'SAVE_HIGHLIGHT',
-  payload: axiosInstance.post(`/highlight`, data)
-  /*axios({
-    method : 'post',
-    url: 'https://api-sandbox.readerplatform.pearson-intl.com/highlight',
-    headers: {
-      'Accept' : 'application/json',
-      'Authorization' : authorizationHeaderVal
-    },
-    data: {
-      "userId" : userId,
-      "bookId" : bookId,
-      "pageId" : pageId,
-      "pageNo" : pageNo,
-      "courseId" : courseId,
-      "shared" : shared,
-      "highlightHash" : highlightHash,
-      "note" : note,
-      "selectedText" : selectedText,
-      "colour" : colour,
-      "meta" : meta,
-      "highlightEngine" : "eT1PDFPlayer"
-    }
-
-
-  })*/
+  return (dispatch) => {
+    dispatch(request('highlights'));
+    return axiosInstance.post(`/highlight`, data).then((response) => {
+      if(response.status >= 400){
+        console.log(`error: ${response.statusText}`);
+      }
+      return response.data;
+    }).then((highlightResponse) => {
+      var hlObj;
+       if(highlightResponse !== undefined){
+        var time = new Date(highlightResponse.updatedTime*1000);
+        var extID = Number(highlightResponse.externalId);
+        var pageid = Number(highlightResponse.pageId);
+        hlObj = {
+        userId : highlightResponse.userId,
+        bookId : highlightResponse.bookId,
+        pageId : pageid,
+        courseId : highlightResponse.courseId,
+        shared : highlightResponse.shared,
+        highlightHash : highlightResponse.highlightHash,
+        comment : highlightResponse.note,
+        text : highlightResponse.selectedText,
+        color : highlightResponse.colour,
+        id : highlightResponse.id,
+        pageNo : highlightResponse.pageNo,
+        meta : highlightResponse.meta,
+        author : highlightResponse.meta.author,
+        creationTime : highlightResponse.creationTime,
+        time : time,
+        pageIndex : 1       //For Foxit
+        }
+       }
+       dispatch({type : 'SAVE_HIGHLIGHT', hlObj});
+    })
   }
+
 }
 export function removeHighlightUsingReaderApi(id) {
   const authorizationHeaderVal = createAuthorizationToken('/highlight/'+id , 'DELETE');
@@ -770,7 +782,7 @@ const ACTION_HANDLERS = {
   }),
   [RECIEVE_HIGHLIGHTS]: (state, action) => ({
     ...state,
-    highlights: action.bookState.highlights,
+    annTotalData: action.bookState.highlights,
     isFetching: {
       ...state.isFetching,
       highlights: action.bookState.isFetching.highlights
@@ -778,15 +790,39 @@ const ACTION_HANDLERS = {
   }),
   [REMOVE_HIGHLIGHT]: (state, action) => ({
     ...state,
-    highlights: state.highlights.filter(highlight => highlight.id !== action.highlightID),
+    annTotalData: state.highlights.filter(highlight => highlight.id !== action.id),
     isFetching: {
       ...state.isFetching,
       highlights: false
     }
   }),
-  [SAVE_HIGHLIGHT]: (state, action) => ({
+   [SAVE_HIGHLIGHT]: (state, action) => ({
     ...state,
-    highlightID: action.bookState.highlightID
+    annTotalData: [
+      ...state.annTotalData,
+      {
+        userId : action.hlObj.userId,
+        bookId : action.hlObj.bookId,
+        pageId : action.hlObj.pageId,
+        author : action.hlObj.author,
+        courseId : action.hlObj.courseId,
+        shared : action.hlObj.shared,
+        highlightHash : action.hlObj.highlightHash,
+        comment : action.hlObj.comment,
+        text : action.hlObj.text,
+        color : action.hlObj.color,
+        id : action.hlObj.id,
+        pageNo : action.hlObj.pageNo,
+        meta : action.hlObj.meta,
+        creationTime : action.hlObj.creationTime,
+        time : action.hlObj.time,
+        pageIndex : action.hlObj.pageIndex
+      }
+    ].sort(function(hl1,hl2) {return hl2.time - hl1.time}),
+    isFetching: {
+      ...state.isFetching,
+      highlights: false
+    }
   }),
   [REQUEST_TOC]: state => ({
     ...state,
@@ -880,6 +916,7 @@ const ACTION_HANDLERS = {
 const initialState = {
   annotations: [],
   bookmarks: [],
+  annTotalData : [],
   preferences: {},
   toc: {},
   viewer: {},

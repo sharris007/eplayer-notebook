@@ -747,7 +747,7 @@ function getAssetURLForPDFDownload(config,cb){
              var highlightHash = highlightHashes.split("@")[0].trim().replace(/(\r\n|\n|\r)/gm,"").replace(/['"]+/g, '');
              var outerHash = highlightHashes.split("@")[1];         
              var hId = highlights[i].id;
-             var highlightColor = highlights[i].colour;
+             var highlightColor = highlights[i].color;
              var highLightHashArray = [];
               highLightHashArray = highlightHash.split(":");
              if(page != null || page !=undefined)

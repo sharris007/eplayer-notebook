@@ -73,6 +73,7 @@ export class PdfBookReader extends Component {
     this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails,this.props.book.bookinfo.book.hastocflatten);
     const courseId = '0';
     this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid,this.props.PdfbookMessages.PageMsg);
+    this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid, this.props.params.bookId,true,courseId,authorName)
     //this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
     const firstPage="firstPage";
     //this.goToPage(firstPage);
@@ -468,12 +469,12 @@ saveHighlight(currentHighlight,highLightMetadata)
    "userbookid" : _.toString(this.props.book.bookinfo.userbook.userbookid),   
    "bookeditionid" : _.toString(this.props.book.bookinfo.book.bookeditionid),   
    "roletypeid" : "2",    
-   "colorcode" : highLightMetadata.currHighlightColorCode   
+   "colorcode" : highLightMetadata.currHighlightColorCode ,
+   "author" : authorName  
   }   
   const selectedText = currentHighlight.selection;    
   const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);    
-  this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(courseId), true, currentHighlight.highlightHash, note, selectedText, highLightMetadata.currHighlightColor, meta).then(() => {    
-    this.setState({highlightList : highlightList});   
+  this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(courseId), true, currentHighlight.highlightHash, note, selectedText, highLightMetadata.currHighlightColor, meta, _.toString(currentPageId)).then(() => {  
     this.displayHighlight();    
   })    
       
@@ -519,10 +520,18 @@ handleHighlightClick(hId)
    const currentPageId=this.state.currPageIndex;
     const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
     const courseId = '0';
-   this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid, this.props.params.bookId, currentPage.pageid,true,courseId).then(() => {
-    this.setState({highlightList : this.props.book.highlights});
+     var highlightList = [];
+   this.props.book.annTotalData.forEach((annotation)=>{
+      if(annotation.pageId == _.toString(currentPageId))
+      {
+        highlightList.push(annotation);
+
+      }
+      
+    })
+     this.setState({highlightList : highlightList})
      __pdfInstance.restoreHighlights(this.state.highlightList, this.deleteHighlight);
-   })
+
     
   }
   deleteHighlight = (id) => {
@@ -535,6 +544,8 @@ handleHighlightClick(hId)
     const callbacks = {};
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
+    callbacks.removeAnnotationHandler = this.deleteHighlight;
+    callbacks.saveHighlightHandler = this.saveHighlight;
     //callbacks.removeBookmarkHandlerForBookmarkList =this.removeBookmarkHandlerForBookmarkList;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
