@@ -64,3 +64,5 @@ MoreMenuComponent.propTypes = {
   store: React.PropTypes.object,
   logout: React.PropTypes.func.isRequired
 };
+
+export default MoreMenuComponent;
