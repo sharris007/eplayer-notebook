@@ -7,6 +7,7 @@ import './PdfBook.scss';
 import {Link, browserHistory } from 'react-router';
 import CircularProgress from 'material-ui/CircularProgress';
 import _ from 'lodash';
+import {languages} from '../../../../locale_config/translations/index';
 var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails,globalbookid;
 
 export class PdfBookReader extends Component {
@@ -533,6 +534,7 @@ handleHighlightClick(hId)
 
   render() {
     const callbacks = {};
+    const {messages}=languages.translations[this.props.locale];
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
     //callbacks.removeBookmarkHandlerForBookmarkList =this.removeBookmarkHandlerForBookmarkList;
@@ -572,6 +574,7 @@ handleHighlightClick(hId)
           drawerOpen={drawerOpen}
           indexId={ {'searchUrl' : searchUrl} }
           userid={this.props.book.userInfo.userid}
+          messages={messages}
         /> 
       
       <div className="eT1viewerContent">

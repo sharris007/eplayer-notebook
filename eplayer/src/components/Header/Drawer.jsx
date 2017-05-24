@@ -229,7 +229,7 @@ class DrawerComponent extends React.Component {
           value={this.state.slideIndex}
         >
           < Tab
-            label={this.props.messages.contents}
+            label={this.props.messages !=undefined ? this.props.messages.contents : 'Contents'}
             id="contents"
             style={drawerTab.tabHeader}
             onActive={
@@ -239,7 +239,7 @@ class DrawerComponent extends React.Component {
             onKeyDown={this.keyBoardNavigation}
             value={0}
           /> < Tab
-            label={this.props.messages.bookmarks}
+            label={this.props.messages !=undefined ? this.props.messages.bookmarks : 'Bookmarks'} 
             id="bookmarks"
             style={drawerTab.tabHeader}
             onActive={
@@ -249,7 +249,7 @@ class DrawerComponent extends React.Component {
             onKeyDown={this.keyBoardNavigation}
             value={1}
           /> < Tab
-            label={this.props.messages.notes}
+            label={this.props.messages !=undefined ? this.props.messages.notes : 'Notes'} 
             id="notes"
             style={drawerTab.tabHeader}
             onActive={
