@@ -122,7 +122,11 @@ export class Book extends Component {
           playpageDetails1.currentPageURL =  gotoPageData;
           playpageDetails1.tocUpdated  = true;
           this.onPageChange("pagescroll",nextProps.gotoPageObj.page.title); 
-          browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}`);
+          if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+            browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`);
+          }else{
+            browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}`);
+          }
           this.props.dispatch({
             type: "GOT_GOTOPAGE",
             data: [],
@@ -214,7 +218,11 @@ export class Book extends Component {
             urlParams:parameters
           },function(){
             // eslint-disable-next-line
-            browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+            if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+              browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${data.id}`);
+            }else{
+              browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+            }
             setTimeout(()=>{
               this.props.dispatch(getBookmarkCallService(this.state.urlParams));
               // this.props.dispatch(getAnnCallService(this.state.urlParams));
@@ -264,7 +272,11 @@ export class Book extends Component {
       drawerOpen: false
     });
     this.viewerContentCallBack(true);
-    browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
+    if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+      browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${pageId}`);
+    }else{
+      browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
+    }
   }; 
   printFun = () => {
     const url = this.state.pageDetails.baseUrl + this.state.pageDetails.currentPageURL.href;

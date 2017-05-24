@@ -54,7 +54,6 @@ export const deleteAnnData = data =>
 // ----Play list toc----------------------------------
 
 export const getBookDetails = bookDetails => 
-  //console.log("test",bookDetails);
  fetch(etextService[envType]+'/books/'+bookDetails.context+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true',
  {
     method: 'GET',
@@ -64,7 +63,6 @@ export const getBookDetails = bookDetails =>
         'X-Authorization': bookDetails.piToken
     }
 });
-//};
 
 export const getTocDetails = (bookId,tocurl,piToken) => fetch(etextService[envType]+'/custom/toc/contextId/'+bookId+'?provider='+tocurl, { // eslint-disable-line no-undef
   method: 'GET',
