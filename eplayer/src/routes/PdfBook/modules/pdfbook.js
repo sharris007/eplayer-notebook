@@ -790,7 +790,7 @@ const ACTION_HANDLERS = {
   }),
   [REMOVE_HIGHLIGHT]: (state, action) => ({
     ...state,
-    annTotalData: state.highlights.filter(highlight => highlight.id !== action.id),
+    annTotalData: state.annTotalData.filter(highlight => highlight.id !== action.id),
     isFetching: {
       ...state.isFetching,
       highlights: false
