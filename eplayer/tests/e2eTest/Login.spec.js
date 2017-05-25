@@ -82,7 +82,7 @@ describe('LoginPage', function() {
 
       browser.url('/eplayer/login');
 
-      browser.setValue('form input[name="loginname"]', 'amit_qa_edu1');
+      browser.setValue('form input[name="loginname"]', 'amit_qa_edu2');
       browser.setValue('form input[name="password"]', 'Pa55word');
       console.log("Username and password");
 
