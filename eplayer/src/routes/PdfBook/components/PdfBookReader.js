@@ -8,7 +8,8 @@ import {Link, browserHistory } from 'react-router';
 import CircularProgress from 'material-ui/CircularProgress';
 import _ from 'lodash';
 import {languages} from '../../../../locale_config/translations/index';
-var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails,globalbookid;
+import { eT1Contants } from '../../../components/common/constants';
+var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails,globalbookid,pages,assertUrls;;
 
 export class PdfBookReader extends Component {
   constructor(props) {
@@ -24,7 +25,9 @@ export class PdfBookReader extends Component {
         isLastPage : false
       },
       isET1: 'Y',
-      highlightList: []
+      highlightList: [],
+      assertUrlList: [],
+      totalPagesToHit: ''
      
     };
     this.nodesToUnMount = [];
@@ -53,6 +56,8 @@ export class PdfBookReader extends Component {
         ssoKey = sessionStorage.getItem('ssoKey');
         serverDetails = sessionStorage.getItem('serverDetails');
         globalbookid = sessionStorage.getItem('globalbookid');
+        pages = JSON.parse(sessionStorage.getItem('pages'));
+        assertUrls = JSON.parse(sessionStorage.getItem('assertUrls'));
     }else{
         // sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
         // sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
@@ -103,17 +108,23 @@ export class PdfBookReader extends Component {
   }
   loadPdfPage = (currentPageIndex) =>
   {
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageIndex);
+    const currentPage = find(pages, page => page.pageorder == currentPageIndex);
     const pdfPath=currentPage.pdfPath;
+     var assertUrl = '';
+    const assertUrlListObj = find(assertUrls, url => url.pageOrder == currentPageIndex);
+    if(assertUrlListObj !== undefined){
+      assertUrl = assertUrlListObj.assertUrl;
+    }
     var config = {
     //host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
-    host: "https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/",
+    host: eT1Contants.FOXIT_HOST_URL,
     //PDFassetURL: this.props.bookshelf.uPdf,
     //PDFassetURL: "http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM31206032/ipadpdfs/"+pdfPath,
     PDFassetURL: serverDetails+"/ebookassets/ebook"+this.props.book.bookinfo.book.globalbookid+"/ipadpdfs/"+pdfPath,
     encpwd: null,
     zip: false,
-    callbackOnPageChange : this.pdfBookCallback
+    callbackOnPageChange : this.pdfBookCallback,
+     assertUrl : assertUrl
     };
     __pdfInstance.registerEvent("textSelected",this.createHighlight1.bind(this));   
     __pdfInstance.registerEvent("highlightClicked",this.handleHighlightClick.bind(this));
@@ -133,35 +144,43 @@ export class PdfBookReader extends Component {
      data.currentPageNo = currentPageIndex;
      this.setState({data : data});
   }
-  pdfBookCallback = (currentPageIndex) => {
+  pdfBookCallback = (pdfEvent) => {
      //this.setState({currPageIndex : currentPageIndex});
-     const currentPageOrder=this.state.currPageIndex;
-     sessionStorage.setItem("currentPageOrder",this.state.currPageIndex);
-     //const currentPageOrder = 2;
-     //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageOrder);
-     /*var data = this.state.data;
-     if(currentPageOrder == 1){
-      data.isFirstPage =true;
-      //this.setState({data : data})
-     }else{
-       data.isFirstPage =false; 
-       //this.setState({data : data})
-     }
-     if(currentPageOrder == this.getPageCount()){
-       data.isLastPage =true;
-      //this.setState({data : data})
-     }else{
-      data.isLastPage =false;
-      //this.setState({data : data})
-     }
-     data.currentPageNo = currentPageOrder;
-     this.setState({data : data});*/
-     this.setState({pageLoaded : true});
-     if(this.state.isFirstPageBeingLoad === true)
-     {
-      this.setState({isFirstPageBeingLoad:false});
-     } 
-     this.displayHighlight();
+     if(pdfEvent === 'pageChanged'){
+          const currentPageOrder=this.state.currPageIndex;
+          sessionStorage.setItem("currentPageOrder",this.state.currPageIndex);
+          //const currentPageOrder = 2;
+          //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageOrder);
+          /*var data = this.state.data;
+          if(currentPageOrder == 1){
+           data.isFirstPage =true;
+           //this.setState({data : data})
+          }else{
+            data.isFirstPage =false; 
+            //this.setState({data : data})
+          }
+          if(currentPageOrder == this.getPageCount()){
+            data.isLastPage =true;
+           //this.setState({data : data})
+          }else{
+           data.isLastPage =false;
+           //this.setState({data : data})
+          }
+          data.currentPageNo = currentPageOrder;
+          this.setState({data : data});*/
+          this.setState({pageLoaded : true});
+          if(this.state.isFirstPageBeingLoad === true)
+          {
+           this.setState({isFirstPageBeingLoad:false});
+          } 
+          this.displayHighlight();
+        }
+      if(pdfEvent === 'pageLoaded'){
+          //this.loadAssetUrl();
+      
+      this.props.loadAssertUrl(this.state.totalPagesToHit, this.openFile, this.storeAssertUrl, pages , assertUrls)
+      
+       }
    
      // If already page details are in store then we do not hit fetchPageInfo again
      /*if(currentPage===undefined)
@@ -175,6 +194,37 @@ export class PdfBookReader extends Component {
       this.props.bookshelf.serverDetails
       );
    }*/
+  }
+   storeAssertUrl = () => {
+
+   if(assertUrls === undefined){
+        assertUrls = this.props.book.bookinfo.assertUrls;
+        sessionStorage.setItem('assertUrls',JSON.stringify(assertUrls));
+      }else if(assertUrls.length > this.props.book.bookinfo.assertUrls.length){
+          assertUrls = assertUrls.concat(this.props.book.bookinfo.assertUrls);
+        sessionStorage.setItem('assertUrls',JSON.stringify(assertUrls));
+      }else{
+        assertUrls = this.props.book.bookinfo.assertUrls;
+        sessionStorage.setItem('assertUrls',JSON.stringify(assertUrls));
+      }
+        
+  }
+
+  openFile = (currentPageIndex, pdfpath) =>{
+   var host =  eT1Contants.FOXIT_HOST_URL ;
+   var  PDFassetURL =  serverDetails+"/ebookassets/ebook"+this.props.book.bookinfo.book.globalbookid+"/ipadpdfs/"+pdfpath;
+   var index = host.lastIndexOf("foxit-webpdf-web");
+   var baseUrl = host.substr(0,index + 17);
+   var assetid="",deviceid="",appversion = "" ,authorization = "",acceptLanguage="";
+   var headerParams = {
+    assetid:"",
+    deviceid:"",
+    appversion: "" ,
+    authorization: "",
+    acceptLanguage:""
+   }
+   var assertUrl = __pdfInstance.openFileUrl(baseUrl,PDFassetURL,headerParams);
+    return assertUrl;
   }
 
   goToPage = (navType) =>{
@@ -202,6 +252,7 @@ export class PdfBookReader extends Component {
     }
     //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageIndexToLoad);
     const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
+     this.setState({totalPagesToHit : totalPagesToHit});
     if(totalPagesToHit!==undefined)
     {
     this.props.fetchPageInfo(this.props.book.userInfo.userid,
@@ -212,7 +263,20 @@ export class PdfBookReader extends Component {
       totalPagesToHit,
       ssoKey,
       serverDetails,this.loadPdfPage
-      );
+      ).then(()=> {
+        if(pages === undefined )
+       { 
+          pages = this.props.book.bookinfo.pages;
+          sessionStorage.setItem('pages',JSON.stringify(pages));
+        }else if(pages.length > this.props.book.bookinfo.pages.length){
+          pages = pages.concat(this.props.book.bookinfo.pages);
+        sessionStorage.setItem('pages',JSON.stringify(pages));
+        }else{
+          pages = this.props.book.bookinfo.pages;
+          sessionStorage.setItem('pages',JSON.stringify(pages));
+        }
+        this.loadPdfPage(pageIndexToLoad);
+      });
     }
     /*else
     {
@@ -230,6 +294,7 @@ export class PdfBookReader extends Component {
       //var currPageIndex=__pdfInstance.getCurrentPage();
       //const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageNum);
      const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageNum);
+     this.setState({totalPagesToHit : totalPagesToHit});
     if(totalPagesToHit!=="")
     {
     this.props.fetchPageInfo(this.props.book.userInfo.userid,
@@ -240,7 +305,19 @@ export class PdfBookReader extends Component {
       totalPagesToHit,
       ssoKey,
       serverDetails,this.loadPdfPage
-      );
+      ).then(()=> {
+        if(pages == undefined){
+        pages = this.props.book.bookinfo.pages;
+        sessionStorage.setItem('pages',JSON.stringify(pages));
+          
+      }else{
+         pages = pages.concat(this.props.book.bookinfo.pages);
+        sessionStorage.setItem('pages',JSON.stringify(pages));
+           
+      }
+     this.loadPdfPage(pageNum);   
+     
+      });
     }
     /*else
     {
@@ -256,7 +333,7 @@ export class PdfBookReader extends Component {
     var totalPageCount=this.getPageCount();
     while(prevPageCount<=5 && pageOrder>0)
     {
-      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageOrder);
+      const currentPage = find(pages, page => page.pageorder == pageOrder);
       if(currentPage===undefined)
       {
         totalPagesToHit=totalPagesToHit+pageOrder+",";
@@ -267,7 +344,7 @@ export class PdfBookReader extends Component {
     pageOrder=pageOrderToNav+1;
     while(nextPageCount<5 && pageOrder<=totalPageCount)
     {
-      const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageOrder);
+      const currentPage = find(pages, page => page.pageorder == pageOrder);
       if(currentPage===undefined)
       {
         totalPagesToHit=totalPagesToHit+pageOrder+",";
@@ -277,6 +354,7 @@ export class PdfBookReader extends Component {
     }
     return totalPagesToHit;
   }
+ 
   getPageCount = () => {
 
     //var pagecount = __pdfInstance.getPageCount();
@@ -540,6 +618,13 @@ handleHighlightClick(hId)
     this.props.removeHighlightUsingReaderApi(id);
 
   }
+  clearSessionStorage  = () => {
+    sessionStorage.removeItem('assertUrls');
+    sessionStorage.removeItem('pages');
+    pages = '';
+    assertUrls = '';
+
+  }
 
   render() {
     const callbacks = {};
@@ -552,6 +637,7 @@ handleHighlightClick(hId)
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPageCallback.bind(this);
+    callbacks.clearSessionStorage = this.clearSessionStorage;
     const drawerOpen=true;
     var viewerClassName;
     if(this.state.pageLoaded!==true)

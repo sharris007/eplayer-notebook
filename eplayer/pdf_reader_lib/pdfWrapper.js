@@ -382,6 +382,7 @@ function initViewer(config) {
   var zip = config.zip;
   var encpwd = config.encpwd;
   var pdfBookCallback = config.callbackOnPageChange;
+  var assertUrl = config.assertUrl;
   if(config.requestheaderParams) {
   assetid = config.requestheaderParams.assetid || "";
   deviceid = config.requestheaderParams.deviceid || "";
@@ -403,8 +404,14 @@ function initViewer(config) {
   }
   //initWebPDFMini()
   // open the sample file
-  var assertUrl = openFile(baseUrl,openFileUrl, config.headerParams);
+   if(assertUrl === '')
+  { assertUrl = openFile(baseUrl,openFileUrl, config.headerParams);}
   if (assertUrl == null) return;
+  if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
+              // open current file
+                WebPDF.ViewerInstance.openFile(assertUrl);
+               
+            }
   seajs.use(['webpdf.mini.js'], function (init) {
     var options = {
         language: language,
@@ -418,20 +425,22 @@ function initViewer(config) {
     WebPDF.createViewer("docViewer", options);
     WebPDF.ViewerInstance.on(WebPDF.EventList.DOCUMENT_LOADED, function (event, data) {
          createPDFEvent('wrdocLoaded');
+        
     });
     WebPDF.ViewerInstance.on(WebPDF.EventList.PAGE_VISIBLE, function (event, data) {
         createPDFEvent('pageVisible');
     });
     WebPDF.ViewerInstance.on(WebPDF.EventList.DOCVIEW_PAGE_CHANGED, function (event, data) {
         var currentPageIndex = WebPDF.ViewerInstance.getCurPageIndex();
-        pdfBookCallback(currentPageIndex);
         var pdfImageLoad = document.querySelector("#docViewer_ViewContainer_BG_" + currentPageIndex).className;
         if(pdfImageLoad.indexOf("fwr-hidden") > 1) {
         createPDFEvent('wrpageChanged');
+         pdfBookCallback('pageChanged');
         }
     });
     WebPDF.ViewerInstance.on(WebPDF.EventList.PAGE_SHOW_COMPLETE, function (event, data) {
        createPDFEvent('wrpageLoaded');
+       pdfBookCallback('pageLoaded');
     });
     tocObj = initBookmark(compBaseURL,compBaseOptions);
     toolBar = initToolBar();
@@ -518,13 +527,13 @@ function openFile(baseUrl,fileUrl,headerParams,callback) {
             }
 
             url = baseUrl + "asserts\/" + curID;
-            if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
+           /* if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
                 WebPDF.ViewerInstance.openFile(url);
                 if(callback != null) {
                     callback();
                 }
-            }
+            }*/
 
         },
         error: function() {
@@ -729,7 +738,7 @@ function getAssetURLForPDFDownload(config,cb){
       /*
           Restore Highlights on the Page.
         */
-      _this.restoreHighlights = function(highlights,deleteHighlight) {       
+      _this.restoreHighlights = function(highlights) {       
          var scrollPercentage = 0;
         try{
           scrollPercentage = WebPDF.ViewerInstance.getDocView().getScrollApi().getPercentScrolledY();           
@@ -782,7 +791,7 @@ function getAssetURLForPDFDownload(config,cb){
               try {
                 page = childDiv[i].getAttribute("page-index");
                 WebPDF.ViewerInstance.highlightText((page -1), pdfRectArray);                
-               _this.saveHighlight(page, highlightHashes, hId, highlightColor, deleteHighlight);
+               _this.saveHighlight(page, highlightHashes, hId, highlightColor);
               }catch(e){
                 console.log("Error Saving Highlight");
               }
@@ -867,7 +876,7 @@ function getAssetURLForPDFDownload(config,cb){
       /*
        This method is used create Highlight Element on the Page.
       */
-      _this.saveHighlight = function(pageIndex, highlightHash, id, highlightColor, deleteHighlight) { 
+      _this.saveHighlight = function(pageIndex, highlightHash, id, highlightColor) { 
         var highlightElements = document.querySelectorAll('.fwr-search-text-highlight');
         var parentElement = document.createElement('div');
         parentElement.setAttribute('id', id);
@@ -885,11 +894,6 @@ function getAssetURLForPDFDownload(config,cb){
           childElement.style.backgroundColor = highlightColor ;
           childElement.onclick = function() {
           _this.triggerEvent("highlightClicked", id);
-          }
-          childElement.ondblclick = function() {
-          console.log("on double click ********");
-          //_this.removeHighlightElement(id);
-          //deleteHighlight(id);                  
           }
           parentElement.appendChild(childElement);
         }
@@ -1014,6 +1018,10 @@ function getAssetURLForPDFDownload(config,cb){
       });
       return uuid;
      }
+      _this.openFileUrl = function(baseUrl,fileUrl,headerParams,callback){
+        var assertUrl = openFile(baseUrl,fileUrl,headerParams,callback);
+        return assertUrl;
+      }
 
       return {
 
@@ -1023,8 +1031,8 @@ function getAssetURLForPDFDownload(config,cb){
         /*
           Triggers a method to call the PDFViewer.
         */
-        restoreHighlights: function(highlights, deleteHighlight) {
-          var currPage = _this.restoreHighlights(highlights, deleteHighlight);
+        restoreHighlights: function(highlights) {
+          var currPage = _this.restoreHighlights(highlights);
         },
         removeHighlightElement: function(id)
         {
@@ -1132,6 +1140,10 @@ function getAssetURLForPDFDownload(config,cb){
         },
         setCurrentZoomLevel: function(level) {
           _this.setCurrentZoomLevel(level);
+        },
+        openFileUrl : function(baseUrl,fileUrl,headerParams,callback){
+          var assertUrl = _this.openFileUrl(baseUrl,fileUrl,headerParams,callback);
+          return assertUrl;
         }
       };
     }

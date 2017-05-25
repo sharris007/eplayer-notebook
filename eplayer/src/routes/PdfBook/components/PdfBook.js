@@ -64,7 +64,7 @@ async componentWillMount() {
     }
       return(
         <PdfBookReader locale={locale}
-                      fetchTocAndViewer={this.props.fetchTocAndViewer}
+              fetchTocAndViewer={this.props.fetchTocAndViewer}
               fetchBookmarksUsingReaderApi={this.props.fetchBookmarksUsingReaderApi}
               addBookmarkUsingReaderApi={this.props.addBookmarkUsingReaderApi}
               removeBookmarkUsingReaderApi={this.props.removeBookmarkUsingReaderApi}
@@ -79,6 +79,7 @@ async componentWillMount() {
               saveHighlightUsingReaderApi = {this.props.saveHighlightUsingReaderApi}
               removeHighlightUsingReaderApi= {this.props.removeHighlightUsingReaderApi}
               PdfbookMessages={PdfbookMessages}
+              loadAssertUrl = {this.props.loadAssertUrl}
                         />);
     }
     else

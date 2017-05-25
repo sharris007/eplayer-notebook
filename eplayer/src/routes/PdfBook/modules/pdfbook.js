@@ -3,6 +3,7 @@ import map from 'lodash/map';
 import { clients } from '../../../components/common/client';
 import axios from 'axios';
 import Hawk from 'hawk';
+import find from 'lodash/find';
 
 // ------------------------------------
 // Constants
@@ -26,6 +27,7 @@ export const SAVE_HIGHLIGHT = 'SAVE_HIGHLIGHT';
 export const REQUEST_HIGHLIGHTS = 'REQUEST_HIGHLIGHTS';
 export const RECIEVE_HIGHLIGHTS = 'RECIEVE_HIGHLIGHTS';
 export const REMOVE_HIGHLIGHT = 'REMOVE_HIGHLIGHT';
+export const LOAD_ASSERT_URL = 'LOAD_ASSERT_URL';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -94,6 +96,7 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId,Page)
         bookState.bookmarks.push(bmObj);
         })
       }
+      bookState.bookmarks.sort(function(bkm1,bkm2) {return bkm1.uri - bkm2.uri}); 
       bookState.isFetching.bookmarks = false;
       return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
     });
@@ -539,7 +542,7 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
       });
     }
     dispatch({ type: 'RECEIVE_PAGE_INFO',bookState});
-    loadPdfPageCallback(pageIndexToLoad);
+    //loadPdfPageCallback(pageIndexToLoad);
     
     });
   };
@@ -723,6 +726,36 @@ export function removeHighlightUsingReaderApi(id) {
     })
   }
 }
+export function loadAssertUrl(totalPagesToHit, openFile, storeAssertUrl, pages, assertUrls){
+  var bookState = {
+    bookInfo : {
+      assertUrls : []
+    }
+  }
+  return(dispatch) => {
+    var pagesToHit  = totalPagesToHit.split(',');
+    console.log("totalPagesToHit  "+ pagesToHit );
+    for (var i = 0; i < pagesToHit.length; i++){
+       var urlObj = {
+
+      }
+      if(pagesToHit[i] !== ''){
+        const currentPage = find(pages, page => page.pageorder == parseInt(pagesToHit[i]));
+       const assertUrlObj = find(assertUrls, obj => obj.pageOrder == currentPage.pageorder);
+        if(assertUrlObj == undefined)
+               {   
+                    urlObj.pageOrder = currentPage.pageorder;
+                    urlObj.pageNumber = currentPage.pagenumber;
+                    urlObj.assertUrl = openFile(currentPage.pageorder,currentPage.pdfPath);
+                    bookState.bookInfo.assertUrls.push(urlObj);
+  
+                }
+      }
+    }
+    dispatch({type : 'LOAD_ASSERT_URL', bookState});
+    storeAssertUrl();
+  }
+ }
 
 
  
@@ -753,7 +786,7 @@ const ACTION_HANDLERS = {
       {
         id: action.bmObj.id,
         uri: action.bmObj.uri,
-        title:Page + ' ' +action.bmObj.pageNo,
+        title: action.bmObj.title,
         pageID: action.bmObj.pageId,
         createdTimestamp: action.bmObj.createdTimestamp,
         externalId: action.bmObj.externalId,
@@ -906,6 +939,13 @@ const ACTION_HANDLERS = {
     userInfo: {
             fetching:false,
             fetched:false
+              }
+  }),
+  [LOAD_ASSERT_URL]:  (state, action) => ({
+    ...state,
+    bookinfo: {
+            ...state.bookinfo,
+            assertUrls: state.bookinfo.assertUrls===undefined ? action.bookState.bookInfo.assertUrls : state.bookinfo.assertUrls.concat(action.bookState.bookInfo.assertUrls)
               }
   }),
 };

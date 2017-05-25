@@ -106,6 +106,7 @@ export class Header extends React.Component {
     {   
       browserHistory.push(`/eplayer/bookshelf`);    
     }
+    this.props.bookCallbacks.clearSessionStorage();
     this.setState({ open: false });
   }
 
