@@ -192,7 +192,6 @@
     "sinon-chai": "^2.8.0",
     "wdio-allure-reporter": "^0.1.2",
     "wdio-mocha-framework": "^0.5.10",
-    "wdio-selenium-standalone-service": "0.0.8",
     "webdriverio": "^4.8.0",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.12.2",
