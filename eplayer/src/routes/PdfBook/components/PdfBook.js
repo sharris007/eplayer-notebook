@@ -80,6 +80,7 @@ async componentWillMount() {
               removeHighlightUsingReaderApi= {this.props.removeHighlightUsingReaderApi}
               PdfbookMessages={PdfbookMessages}
               loadAssertUrl = {this.props.loadAssertUrl}
+              editHighlightUsingReaderApi = {this.props.editHighlightUsingReaderApi}
                         />);
     }
     else

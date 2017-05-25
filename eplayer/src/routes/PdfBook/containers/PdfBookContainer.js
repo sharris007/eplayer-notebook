@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { fetchAnnotations, addAnnotation, removeAnnotation,
          fetchBookmarksUsingReaderApi, addBookmarkUsingReaderApi, removeBookmarkUsingReaderApi,
          fetchPreferences,
-         fetchTocAndViewer, goToPage,fetchBookInfo,fetchPageInfo,fetchUserInfo, fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi, loadAssertUrl  } from '../modules/pdfbook';
+         fetchTocAndViewer, goToPage,fetchBookInfo,fetchPageInfo,fetchUserInfo, fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi, loadAssertUrl , editHighlightUsingReaderApi   } from '../modules/pdfbook';
          
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -27,7 +27,8 @@ const mapDispatchToProps = {
   fetchHighlightUsingReaderApi,
   saveHighlightUsingReaderApi,
   removeHighlightUsingReaderApi,
-  loadAssertUrl
+  loadAssertUrl,
+  editHighlightUsingReaderApi
 };
 
 const mapStateToProps = state => ({

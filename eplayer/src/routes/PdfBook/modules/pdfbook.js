@@ -28,6 +28,7 @@ export const REQUEST_HIGHLIGHTS = 'REQUEST_HIGHLIGHTS';
 export const RECIEVE_HIGHLIGHTS = 'RECIEVE_HIGHLIGHTS';
 export const REMOVE_HIGHLIGHT = 'REMOVE_HIGHLIGHT';
 export const LOAD_ASSERT_URL = 'LOAD_ASSERT_URL';
+export const EDIT_HIGHLIGHT = 'EDIT_HIGHLIGHT';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -757,6 +758,63 @@ export function loadAssertUrl(totalPagesToHit, openFile, storeAssertUrl, pages, 
   }
  }
 
+export function editHighlightUsingReaderApi(id,note,colour,isShared) {
+  var editHightlightURI = '/highlight/'+id;
+  var data = {
+
+  };
+  if(note!=undefined)
+  {
+    data.note = note;
+  }
+  if(colour != undefined)
+  {
+    data.colour = colour;
+  }
+  if(isShared != undefined)
+  {
+     data.shared = isShared;
+  }
+  const authorizationHeaderVal = createAuthorizationToken(editHightlightURI , 'PUT');
+  return (dispatch) => {
+  dispatch(request('highlights'));
+  return clients.readerApi.put(editHightlightURI,data,{
+      headers : {
+        'Authorization' : authorizationHeaderVal
+      }
+    }).then((response) => {
+       if(response.status >= 400){
+            console.log(`Error in edit highlight: ${response.statusText}`)
+          }
+          return response.data;
+    }).then((highlightResponse) => {
+            var highlightObj;
+            if(highlightResponse !== undefined){
+            var time = new Date(highlightResponse.updatedTime*1000);
+            var pageid = Number(highlightResponse.pageId);
+            highlightObj = {
+              userId : highlightResponse.userId,
+              bookId : highlightResponse.bookId,
+              pageId : pageid,
+              courseId : highlightResponse.courseId,
+              shared : highlightResponse.shared,
+              highlightHash : highlightResponse.highlightHash,
+              comment : highlightResponse.note,
+              text : highlightResponse.selectedText,
+              color : highlightResponse.colour,
+              id : highlightResponse.id,
+              pageNo : highlightResponse.pageNo,
+              meta : highlightResponse.meta,
+              author : highlightResponse.meta.author,
+              creationTime : highlightResponse.creationTime,
+              time : time,
+              pageIndex : 1      
+              };
+            }
+            return dispatch({ type: EDIT_HIGHLIGHT, highlightObj });
+    });
+  }
+}
 
  
 // ------------------------------------
@@ -850,6 +908,34 @@ const ACTION_HANDLERS = {
         creationTime : action.hlObj.creationTime,
         time : action.hlObj.time,
         pageIndex : action.hlObj.pageIndex
+      }
+    ].sort(function(hl1,hl2) {return hl2.time - hl1.time}),
+    isFetching: {
+      ...state.isFetching,
+      highlights: false
+    }
+  }),
+  [EDIT_HIGHLIGHT]: (state, action) => ({
+    ...state,
+    annTotalData: [
+      ...state.annTotalData.filter(highlight => highlight.id !== action.highlightObj.id),
+      {
+        userId : action.highlightObj.userId,
+        bookId : action.highlightObj.bookId,
+        pageId : action.highlightObj.pageId,
+        author : action.highlightObj.author,
+        courseId : action.highlightObj.courseId,
+        shared : action.highlightObj.shared,
+        highlightHash : action.highlightObj.highlightHash,
+        comment : action.highlightObj.comment,
+        text : action.highlightObj.text,
+        color : action.highlightObj.color,
+        id : action.highlightObj.id,
+        pageNo : action.highlightObj.pageNo,
+        meta : action.highlightObj.meta,
+        creationTime : action.highlightObj.creationTime,
+        time : action.highlightObj.time,
+        pageIndex : action.highlightObj.pageIndex
       }
     ].sort(function(hl1,hl2) {return hl2.time - hl1.time}),
     isFetching: {
