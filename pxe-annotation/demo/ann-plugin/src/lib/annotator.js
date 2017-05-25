@@ -351,7 +351,7 @@ Annotator = (function(_super) {
                   noteOneBoundaries.bottom < noteTwoBoundaries.top || 
                   noteOneBoundaries.top > noteTwoBoundaries.bottom);
         if(overlapped){
-          noteTwo.style.right=parseInt($(noteTwo).css('right'))-26 + 'px';
+          noteTwo.style.marginTop=parseInt($(noteTwo).css('margin-top'))+26 + 'px';
         }
       }
     }
