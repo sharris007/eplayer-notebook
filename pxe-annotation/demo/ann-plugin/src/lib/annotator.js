@@ -57,6 +57,7 @@ Annotator = (function(_super) {
     this.onEditorSubmit = __bind(this.onEditorSubmit, this);
     this.onEditorHide = __bind(this.onEditorHide, this);
     this.showEditor = __bind(this.showEditor, this);
+    this.getSelectedAnnotations = __bind(this.getSelectedAnnotations, this);
     Annotator.__super__.constructor.apply(this, arguments);
     this.plugins = {};
     if (!Annotator.supported()) {
@@ -423,6 +424,7 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.onEditorHide = function() {
+    window.currAnn = [];
     this.publish('annotationEditorHidden', [this.editor]);
     return this.ignoreMouseup = false;
   };
@@ -455,6 +457,34 @@ Annotator = (function(_super) {
     return this.mouseIsDown = true;
   };
 
+  Annotator.prototype.getSelectedAnnotations = function() {
+    var getHTMLContents = window.getSelection().getRangeAt(0).cloneContents();
+    var elementSelection = $(getHTMLContents).context.children;
+    var annArray =[];
+    if(elementSelection.length>0){
+        for (var i=0;i<=elementSelection.length;i++){
+          var hlElements = $(elementSelection[i]).find('.annotator-hl');
+          if(hlElements.length>0){
+            for( var j=0;j<=hlElements.length;j++){
+              let dataAnnId = $(hlElements[j]).attr('data-ann-id');
+              let shrable = $(hlElements[j]).attr('shareable');
+              if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
+                if(!shrable || shrable==='false')
+                  annArray.push(dataAnnId);
+              }
+            }
+          if(hlElements.context && hlElements.context.hasAttribute('data-ann-id')) {
+              let dataAnnId = $(hlElements.context).attr('data-ann-id');
+              let shrable = $(hlElements.context).attr('shareable');
+              if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
+                if(!shrable || shrable==='false')
+                  annArray.push(dataAnnId);
+          }
+        }
+     }
+     return annArray;
+  };
+
   Annotator.prototype.checkForEndSelection = function(event) {
     if($(event.target).closest('.aquila-image-viewer, .ReactModalPortal').length)
      return false;
@@ -466,6 +496,12 @@ Annotator = (function(_super) {
     }
     this.selectedRanges = this.getSelectedRanges();
     _ref = this.selectedRanges;
+    if(_ref.length>0) {
+      if(this.getSelectedAnnotations().length > 1) {
+        window.getSelection().removeAllRanges();
+        return;
+      }
+    }
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       range = _ref[_i];
       container = range.commonAncestor;
@@ -528,7 +564,24 @@ Annotator = (function(_super) {
   }
 
   Annotator.prototype.onAdderClick = function(event) {
+    var annArray =[],oldAnnArr=[],annObjElement;
     var annotation, cancel, cleanup, position, save;
+    annArray = this.getSelectedAnnotations();
+     if(annArray.length>0) {
+      var hlElements = $(event.target).addBack().find('.annotator-hl');
+          if(hlElements.length>0){
+              for( var j=0;j<=hlElements.length;j++){
+                  var dataAnnId = $(hlElements[j]).attr('data-ann-id');
+                    if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)>=0)
+                      annObjElement = hlElements[j];
+              }
+          }
+          if(!annObjElement && hlElements.context && hlElements.context.outerHTML.match('.annotator-hl'))
+            annObjElement = hlElements.context;
+            oldAnnArr = $(annObjElement).parents('.annotator-hl').addBack().map(function() {
+                  return $(this).data("annotation");
+                  }).toArray();
+     }
     if (event != null) {
       event.preventDefault();
     }
@@ -557,6 +610,10 @@ Annotator = (function(_super) {
         return _this.unsubscribe('annotationEditorSubmit', save);
       };
     })(this);
+     if(oldAnnArr.length>0 && annArray.length>0 && !(oldAnnArr[0].shareable)){
+      $(annotation)[0].text = $(oldAnnArr)[0].text;
+      window.currAnn = $(oldAnnArr)[0];
+    }
     this.subscribe('annotationEditorHidden', cancel);
     this.subscribe('annotationEditorSubmit', save);
     return this.showEditor(annotation, position, true);

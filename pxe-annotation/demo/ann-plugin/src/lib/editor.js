@@ -152,6 +152,9 @@ Annotator.Editor = (function(_super) {
     window.getSelection().removeAllRanges();
     this.element.removeClass('hide-note');
     var isTopAlign=(!this.annotation.color)?true:false;
+    if(window.currAnn) {
+       $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [window.currAnn]]);
+    }
     if (this.annotation._id===undefined && this.currentAnnotation !== null) {     
       var curAnn =this.currentAnnotation;   
       Object.assign(this.annotation, curAnn);   
