@@ -23,8 +23,8 @@ class Annotation extends Component {
   componentDidMount() { 
     this.annotationEventHandler();
     $('.' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
-    const contentWid = $('.' + this.props.contentId).width()+40;
-    $('.annotator-widget').css({'left':contentWid});
+    var contentWid = $('.' + this.props.contentId).width()+40
+    $('.annotator-editor').css({'left':contentWid});
   }
 
   componentWillReceiveProps(nextProps) {

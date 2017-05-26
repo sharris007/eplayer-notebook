@@ -173,7 +173,7 @@ class PxePlayer extends React.Component {
       {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection={this.state.popUpCollection} bookId="book-container" /> : ''}
       <div id="divGlossary" ref={(dom) => { this.divGlossaryRef = dom; }} style={{ display: 'none' }} />
       <Annotation
-        annAttributes={this.state.annAttributes} shareableAnnotations={bootstrapParams.pageDetails.annotationShareable} annotationData={annotationData.rows} contentId="pxe-viewer"
+        annAttributes={this.state.annAttributes} shareableAnnotations={bootstrapParams.pageDetails.annotationShareable} annotationData={annotationData.rows} contentId={bootstrapParams.pageDetails.contentId}
         annotationEventHandler={this.annotationCallBack}
             />
     </div>);
