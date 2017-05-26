@@ -1,7 +1,7 @@
-import fetch from 'isomorphic-fetch';
-import map from 'lodash/map';
-import { clients } from '../../../components/common/client';
-import axios from 'axios';
+import fetch from 'isomorphic-fetch'; /* isomorphic-fetch is third party library used for making ajax call like axios. */
+import map from 'lodash/map'; /* lodash is a JavaScript utility library delivering modularity, performance and map is method used for iterating the array or object. */
+import { clients } from '../../../components/common/client'; /* Importing the client file for framing the complete url, since baseurls are stored in client file. */
+import axios from 'axios'; /* axios is third party library, used to make ajax request. */
 import Hawk from 'hawk';
 import find from 'lodash/find';
 
@@ -9,6 +9,7 @@ import find from 'lodash/find';
 // Constants
 // ------------------------------------
 
+// Created Action Constant for BOOKMARKS, TOC, GO_TO_PAGE and so on. 
 export const REQUEST_BOOKMARKS = 'REQUEST_BOOKMARKS';
 export const RECEIVE_BOOKMARKS = 'RECEIVE_BOOKMARKS';
 export const ADD_BOOKMARK = 'ADD_BOOKMARK';
@@ -36,7 +37,7 @@ export const DELETE = 'DELETE';
 export const GET = 'GET';
 
 // ------------------------------------
-// Actions
+// Calling Actions creators based on Types. . 
 // ------------------------------------
 export function request(component) {
   switch (component) {
@@ -51,8 +52,8 @@ export function request(component) {
   }
 }
 
-
-export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId,Page) {
+/* Method for fetching the bookmarks from Redaer Api by passing the below parameters. */
+export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
   const bookState = {
     bookmarks: [],
     isFetching: {
@@ -61,6 +62,7 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId,Page)
   };
   const authorizationHeaderVal = createAuthorizationToken('/bookmark?includeShared='+shared+'&userId='+userId+'&bookId='+bookId+'&courseId='+courseId, 'GET')
   
+  /* Dispatch is part of middleware used to dispatch the action, usually used in Asynchronous Ajax call.*/
   return (dispatch) => {
     dispatch(request('bookmarks'));
 
@@ -104,8 +106,8 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId,Page)
   };
 }
 
-
-export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared,Page) {
+/* Created action creator for addBookmarkUsingReaderApi. */
+export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared) {
 
 const authorizationHeaderVal = createAuthorizationToken('/bookmark', 'POST')
 
@@ -157,7 +159,7 @@ return (dispatch) => {
 }
 
 
-
+/* Method for deleting the selected bookmark. */
 export function removeBookmarkUsingReaderApi(bookmarkId) {
 
 const bookState = {
@@ -187,113 +189,8 @@ return (dispatch) => {
 }
 
 
-/*export function removeHighlight(highlightID, sessionKey, bookServerURL){
-  return (dispatch) => {
-    dispatch(request('highlights'));
-    axios.get(''+bookServerURL+'/ebook/ipad/deleteuserhighlight?highlightid='+highlightID+'&authkey='+sessionKey+'&outputformat=JSON',
-    {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      timeout: 20000
-    }).then((response) => {
-          if(response.status >= 400){
-            console.log(`Error in remove highlight: ${response.statusText}`)
-          }
-          return response.data
-        }).then((highlightResponse) => {
-          if(highlightResponse.length){
-            highlightResponse.forEach((highlight) =>{
-                console.log('------------------------'+highlightID);
-                return dispatch({ type: REMOVE_HIGHLIGHT, highlightID })
-              
-            })
-          }
-        })
-    }
-  }*/
-/*export function saveHighlight(userid,bookid,userbookid,bookeditionid,pageid,bookpagenumber,xcoord,ycoord,width,height,sso,bookServerURL) {
-     const bookState = {
-    highlightID : ''
-  };
-    return (dispatch) => {roletypeid
-    dispatch(request('highlights'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/saveuserhighlight?userid='+userid+'&bookid='+bookid+'&userroleid=3&userbookid='+userbookid+'&bookeditionid='+bookeditionid+'&roletypeid=3&pageid='+pageid+'&bookpagenumber='+bookpagenumber+'&shareacrosscourse=Y&xcoord='+xcoord+'&ycoord='+ycoord+'&sharewithstudent=Y&width='+width+'&height='+height+'&colorname=Yellow&authkey='+sso+'&outputformat=JSON', {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then((response) => {
-     if (response.status >= 400) {
-        console.log(`${response.statusText}`);
-      }
-      return response.data;
 
-    })
-    .then((highlightResponse) => {
-      if (highlightResponse.length) {
-        highlightResponse.forEach((highlights)=>{
-        var highLightList = highlights.highLightList;
-        highLightList.forEach((highlight) => {
-          bookState.highlightID = highlight.highlightID;
-          return dispatch({ type: SAVE_HIGHLIGHT, bookState })
-        })    
-      });
-    }
-  });
-}
-
-}*/
-/*export function fetchHighlight(userid,bookId,bookEditionID,listval,sessionKey,bookServerURL) {
-  const bookState = {
-   highlights: [],
-    isFetching: {
-      highlights: true
-    }
-  };
-  return (dispatch) => {
-    dispatch(request('highlights'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getuserhighlightbypageorder?userid='+userid+'&userroleid=3&bookid='+bookId+'&bookeditionid='+bookEditionID+'&listval='+listval+'&authkey='+sessionKey+'&outputformat=JSON', {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then((response) => {
-      if (response.status >= 400) {
-        bookState.isFetching.highlights = false;
-        return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
-      }
-      return response.data;
-
-    })
-    .then((highlightResponse) => {
-    if (highlightResponse.length) {
-        highlightResponse.forEach((highlights) => {
-          var highLightList = highlights.highLightList;
-          highLightList.forEach((highlight) => {
-           const hlObj = {
-            id: highlight.highlightID,
-            pageIndex: 1,
-            highlightHash: "[{\"left\":\""+ highlight.xcoord + "\",\"top\":\""  + highlight.ycoord + "\",\"right\":\""  + highlight.width + "\",\"bottom\":\"" + highlight.height + "\"}]"
-           }
-          
-          bookState.highlights.push(hlObj);
-          
-         })
-        });
-      }
-      bookState.isFetching.highlights = false;
-      return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
-    });
-  };
-}*/
-
+/* Method for fetching Toc list by passing following parameters. */
 export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL,hastocflatten){
   const bookState = {
     toc: {
@@ -309,6 +206,7 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
   };
   return(dispatch) => {
     dispatch(request('toc'));
+    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     return axios.get(''+bookServerURL+'/ebook/ipad/getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc', 
     {
       timeout: 20000
@@ -460,13 +358,14 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
     }
     return finalChildList;
   }
-
+/* Method for creating node in Toc. */
  function Node() {
    this.id =""
    this.title =""
    this.children =[]
    this.urn =""
  }
+/* Method for constructing tree for Toc. */ 
  function construct_tree(input){
        var output = new Node();
        output.id = input.i;
@@ -492,21 +391,25 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
      }
     return output;
 }
-
+/* Created Action creator for navigating the different pages from current page. */
 export function goToPage(pageId) {
+   // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
   return (dispatch) => {
     dispatch({ type: GO_TO_PAGE, pageId });
   };
 }
 
+/* Created Action creator for fetching all book detail. */
 export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL)
 {
+   // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
   return{
   type: 'RECEIVEBOOKINFO',
   payload: axios.get(''+bookServerURL+'/ebook/ipad/getuserbookinfo?userid='+userid+'&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON'),
   timeout: 20000
   };
 }
+/* Created Action creator for getting page details. */
 export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexToLoad,totalPagesToHit,sessionKey,bookServerURL,loadPdfPageCallback)
  {
     const bookState = {
@@ -515,6 +418,7 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
       }
   };
   return(dispatch)=>{
+     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     return axios.get(''+bookServerURL+'/ebook/ipad/getpagebypageorder?userid='+userid+'&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+totalPagesToHit+'&authkey='+sessionKey+'&outputformat=JSON',
     {
       timeout: 20000
@@ -549,9 +453,10 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
   };
 
  }
-
+ /* Created Action creator for fetching user information. */
  export function fetchUserInfo(globaluserid, bookid, uid, ubd, ubsd, sessionKey,bookServerURL)
   {
+    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     return{
     type: 'RECEIVE_USER_INFO',
     payload: axios.get(''+bookServerURL+'/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid='+globaluserid+'&bookid='+bookid+'&uid='+ubd+'&ubd='+ubd+'&ubsd='+ubsd+'&authkey='+sessionKey+''),
@@ -582,7 +487,8 @@ const authorizationHeaderVal = authorizationVal.replace("Hawk id=","ReaderPlus k
 return authorizationHeaderVal;
 }
 
-export function fetchHighlightUsingReaderApi(userId,bookId,shared,courseId){
+/* Created Action creator for feching highlight details from Reader Api. */
+export function fetchHighlightUsingReaderApi(userId,bookId,pageId,shared,courseId){
 
 const bookState = {
    highlights: [],
@@ -596,8 +502,8 @@ const bookState = {
   console.log("Authorization : "+ authorizationHeaderVal);
   return (dispatch) => {
     dispatch(request('highlights'));
-    
-    return clients.readerApi.get('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId,{
+    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
+    return clients.readerApi.get('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId,{
       headers : {
         'Authorization' : authorizationHeaderVal
       }
@@ -643,8 +549,8 @@ const bookState = {
   }
 
 }
-
-export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta,currentPageId){
+/* Method for saving the highLight selected by user. */
+export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta){
   
   const authorizationHeaderVal = createAuthorizationToken('/highlight', 'POST')
   console.log("Authorization : "+ authorizationHeaderVal);
@@ -701,11 +607,13 @@ export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId
   }
 
 }
+/* Removing highLight from the page for selected area. */
 export function removeHighlightUsingReaderApi(id) {
   const authorizationHeaderVal = createAuthorizationToken('/highlight/'+id , 'DELETE');
   console.log("Authorization : "+ authorizationHeaderVal);
   return (dispatch) => {
     dispatch(request('highlights'));
+    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
    /* return axios({
       method : 'delete',
       url : 'https://api-sandbox.readerplatform.pearson-intl.com/highlight/'+id,
@@ -818,7 +726,7 @@ export function editHighlightUsingReaderApi(id,note,colour,isShared) {
 
  
 // ------------------------------------
-// Action Handlers
+// Action Handlers for every action type which is used above. 
 // ------------------------------------
 const ACTION_HANDLERS = {
 
@@ -1066,6 +974,7 @@ const initialState = {
   }
 };
 
+/* Method for calculating the new state for dispatched actions. */
 export default function book(state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type];
   return handler ? handler(state, action) : state;

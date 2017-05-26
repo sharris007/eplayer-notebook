@@ -1,19 +1,23 @@
-import React, { Component } from 'react';
-import { ViewerComponent } from '@pearson-incubator/viewer';
-import find from 'lodash/find';
-import WidgetManager from '../../../components/widget-integration/widgetManager';
-import Header from '../../../components/Header';
-import './PdfBook.scss';
-import {Link, browserHistory } from 'react-router';
-import CircularProgress from 'material-ui/CircularProgress';
-import _ from 'lodash';
+import React, { Component } from 'react'; /*Importing the react and component from react library. */
+import { ViewerComponent } from '@pearson-incubator/viewer';/* Injecting the viewer component from @pearson-incubator. */
+import find from 'lodash/find';/* lodash is a JavaScript utility library delivering modularity, performance and find is method used for searching. */
+import WidgetManager from '../../../components/widget-integration/widgetManager';/* */
+import Header from '../../../components/Header';/* Importing header for padfPage. */
+import './PdfBook.scss';/* Importing the css for PdfBook. */
+import {Link, browserHistory } from 'react-router'; /* Import the react-router for routing the react component. */
+import CircularProgress from 'material-ui/CircularProgress'; /* Import the CircularProgress for adding the progressBar. */
+import _ from 'lodash'; /* lodash is a JavaScript utility library delivering modularity and performance. */
 import {languages} from '../../../../locale_config/translations/index';
 import { eT1Contants } from '../../../components/common/constants';
-var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails,globalbookid,pages,assertUrls;;
+/* Defining the variables for sessionStorage. */
+var pdfBookUrl,pdfBookUrl,title,authorName,thumbnail,ssoKey,serverDetails,globalbookid,pages,assertUrls;
 
+/* component method for loading the pdfbook. */
 export class PdfBookReader extends Component {
+  /* constructor and super have used in class based React component, used to pass props for communication with other components. */
   constructor(props) {
     super(props);
+   /* Here we have set intial state of following properties. */
     this.state = {
       classname: 'headerBar',
       currPageIndex:'',
@@ -31,22 +35,13 @@ export class PdfBookReader extends Component {
      
     };
     this.nodesToUnMount = [];
+    /* Adding the eventListener on the attribute and attaching the method. 
+    Binding the method like parseDom and navChanged on the attribute like contentLoaded and navChanged. */
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
 
   }
- /* componentWillMount() {
-      this.props.fetchPageInfo(this.props.book.userInfo.userid,
-      this.props.params.bookId,
-      this.props.params.bookId,
-      this.props.book.bookinfo.book.bookeditionid,
-      1,
-      this.props.bookshelf.ssoKey,
-      this.props.bookshelf.serverDetails,
-      this.loadPdfPage
-      );
-
-  }*/
+ /* componentDidMount() is invoked immediately after a component is mounted. */
   componentDidMount() {
     console.log('PdfBookReader'+this.props.bookshelf.length);
       if(this.props.bookshelf.uPdf === undefined){
@@ -59,10 +54,7 @@ export class PdfBookReader extends Component {
         pages = JSON.parse(sessionStorage.getItem('pages'));
         assertUrls = JSON.parse(sessionStorage.getItem('assertUrls'));
     }else{
-        // sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
-        // sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
-        // sessionStorage.setItem('title',this.props.bookshelf.title);
-        // sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
+       /* sessionStorage is used to set the token, get the token and remove the token for session management. */
         sessionStorage.setItem('ubd',this.props.bookshelf.ubd);
         sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
         sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
@@ -76,36 +68,19 @@ export class PdfBookReader extends Component {
         serverDetails = this.props.bookshelf.serverDetails;
         globalbookid = this.props.book.bookinfo.book.globalbookid;
     }
+    /* Method for getting the toc details for particular book. */
     this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails,this.props.book.bookinfo.book.hastocflatten);
     const courseId = '0';
-    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid,this.props.PdfbookMessages.PageMsg);
-    this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid, this.props.params.bookId,true,courseId,authorName)
-    //this.props.fetchBookmarks(this.props.params.bookId,this.props.book.bookinfo.userbook.userbookid,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails);
+    /* Method for getting the bookmarks details which is already in book. */
+    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid);
     const firstPage="firstPage";
-    //this.goToPage(firstPage);
     if(sessionStorage.getItem("currentPageOrder")){
        this.goToPageCallback(Number(sessionStorage.getItem("currentPageOrder")));
     }else{
       this.goToPage(firstPage);
    }
-
-    /*var etext_token =this.props.bookshelf.cdnToken;
-    var headerParams = {
-       'etext-cdn-token' : etext_token 
-     }
-    var config = {
-    //host: "https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/",
-    //PDFassetURL: "http://www.pdf995.com/samples/pdf.pdf",
-    host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
-    //PDFassetURL: this.props.bookshelf.uPdf,
-    PDFassetURL: "http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM31206032/ipadpdfs/4cf24c94c7bedbb93d95696554615058.pdf",
-    headerParams: headerParams,
-    encpwd: null,
-    zip: false,
-    callbackOnPageChange : this.pdfBookCallback
-  };
-    __pdfInstance.createPDFViewer(config);*/
   }
+  /*  Method for loading the pdfpage for particular book by passing the pageIndex. */
   loadPdfPage = (currentPageIndex) =>
   {
     const currentPage = find(pages, page => page.pageorder == currentPageIndex);
@@ -283,7 +258,7 @@ export class PdfBookReader extends Component {
       this.loadPdfPage(currentPage.pdfPath,currentPage.pageorder);
     }*/
   };
-
+/* Method for loading the page after passing the pagenumber. */
   goToPageCallback(pageNum)
   {  
     this.setState({pageLoaded : false}); 
@@ -325,6 +300,8 @@ export class PdfBookReader extends Component {
     }*/
     }
   }
+  /* Method for getting the pageorder for calculating the page details 
+     and we have defined multiple variables in this method. */
   getPageOrdersToGetPageDetails = (pageOrderToNav) => {
     var prevPageCount=0;
     var nextPageCount=0;
@@ -354,7 +331,8 @@ export class PdfBookReader extends Component {
     }
     return totalPagesToHit;
   }
- 
+
+  /* Method for getting the page count and defined a variable inside method that will store the value of numberOfPages. */  
   getPageCount = () => {
 
     //var pagecount = __pdfInstance.getPageCount();
@@ -362,9 +340,9 @@ export class PdfBookReader extends Component {
     return pagecount;
   }
 
+ /* Method for calculating the next and previous pages for the selected book. */
   getPrevNextPage = (pageType) =>{
-    //var currPageIndex=__pdfInstance.getCurrentPage();
-    //var currPageNumber=currPageIndex + 1;
+    
     var currPageNumber = this.state.currPageIndex;
     var pageNo;
     if(pageType=="prev"){
@@ -392,6 +370,8 @@ export class PdfBookReader extends Component {
    return currPageIndex;
   }*/
   
+  /*  created a  handleBackClick to navigate to bookshelf from any book, 
+     also we have used browserHistory (that is React-Router concept) method for page navigation, here are navigating to bookshelf.*/
   handleBackClick = (bookId) => { 
     browserHistory.push(`/bookshelf`);    
   }
@@ -406,31 +386,7 @@ export class PdfBookReader extends Component {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
   }
 
-  /*handleScroll = () => {
-            var didScroll;
-            var lastScrollTop = 0;
-            var delta = 5;
-            var navbarHeight = $('.headerBar').outerHeight();
-            var dbScrolrlNode = ($("div#docViewer_ViewContainer").selector);
-            var didScroll = true;
-            $(dbScrolrlNode).attr("onMouseEnter", function(){
-                console.log("h");
-                $('.headerBar').slideUp();
-                $('.navigation').slideUp();
-           });
-
-            // $(dbScrolrlNode).attr("onMouseLeave",function(){ 
-            //      $('.headerBar').show(); 
-            //      $('.navigation').css('display','block');
-            // });
-
-  }
-
-  leaveScroll = () => {
-          $('.headerBar').show(); 
-          $('.navigation').css('display','block');
-  }*/
-
+   /* created addBookmarkHandler method for adding bookmark for selected Page, after clicking on bookmark button. */
   addBookmarkHandler = () => {
     //const currentPageId=__pdfInstance.getCurrentPage()+1;
     const currentPageId = this.state.currPageIndex; 
@@ -448,7 +404,7 @@ export class PdfBookReader extends Component {
     this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder), courseId, true,this.props.PdfbookMessages.PageMsg);
    
   }
-
+  /* created removeBookmarkHandler method for removing bookmark for selected Page, after clicking on bookmark button. */
   removeBookmarkHandler = (bookmarkId) => {
     let currentPageId;
     if(bookmarkId!==undefined)
@@ -469,7 +425,7 @@ export class PdfBookReader extends Component {
   };
 
   
-
+/* Checking the particular page you are trying to set bookmark already a bookmark or not. */
   isCurrentPageBookmarked = () => {
     
     const currentPageId = this.state.currPageIndex;
@@ -478,47 +434,12 @@ export class PdfBookReader extends Component {
     
     return !(targetBookmark === undefined);
   };
-
+  /* Method for setting the zoom level selected by user, using passing the selected value. */
   setCurrentZoomLevel(level){
     console.log(level);
     __pdfInstance.setCurrentZoomLevel(level);
   }
- /* saveHighlightHandler = (currentHighlight) => {
-    var highlightID = '';
-    var highlights = [];
-    const currentPageId=this.state.currPageIndex;
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
-    var highlightHashes = currentHighlight.highlightHash;
-    var highlightHash = highlightHashes.split("@")[0].trim().replace(/(\r\n|\n|\r)/gm,"").replace(/['"]+/g, '');
-    console.log("highlightHash "+highlightHash);
-    var outerHash = highlightHashes.split("@")[1]; 
-    console.log("outerHash "+outerHash);        
-    var hId =currentHighlight.id;
-    var highLightHashArray = [];
-    highLightHashArray = highlightHash.split(":");
-    console.log("highLightHashArray "+highLightHashArray);
-     for(var j=0 ; j<highLightHashArray.length - 1; j=j+4) {
-      var firstValue = highLightHashArray[j+1].split(',')[0];
-      console.log("firstValue "+firstValue);
-      var secondValue = highLightHashArray[j+2].split(',')[0];
-      console.log("secondValue "+secondValue);
-      var thirdValue = highLightHashArray[j+3].split(',')[0];
-      console.log("thirdValue "+thirdValue);
-      var fourthValue = highLightHashArray[j+4].split('}')[0];
-      console.log("fourthValue "+fourthValue);
-      this.props.saveHighlight(this.props.book.userInfo.userid,this.props.params.bookId, this.props.book.bookinfo.userbook.userbookid, this.props.book.bookinfo.book.bookeditionid, currentPage.pageid, currentPage.pagenumber, firstValue, secondValue, thirdValue, fourthValue, ssoKey, serverDetails)
-      .then(() => {
-        highlightID = this.props.book.highlightID
-        currentHighlight.id = highlightID;
-        console.log("++++++++++++++++++++++"+currentHighlight.id);
-        highlights.push(currentHighlight);
-        //__pdfInstance.restoreHighlights(highlights, this.deleteHighlight);
-        this.displayHighlight();
-      })
-    }
-   
- 
-}*/
+ /* Method for creating highLight for selected area by user. */
  createHighlight1(highlightData) {   
   const listValue = highlightData.length;
   var i =listValue - 1;
@@ -538,7 +459,8 @@ export class PdfBookReader extends Component {
   console.log("======== "+currentHighlight.highlightHash);    
   currentHighlight.pageIndex = highlightData.pageInformation.pageNumber;    
   pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight,highLightcordinates,this.saveHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0');    
-}   
+} 
+/* Method created for displaying the selected highLights. */  
 saveHighlight(currentHighlight,highLightMetadata)   
 {   
   var highlightList = this.state.highlightList;   
@@ -567,13 +489,15 @@ editHighlight = (id,highLightMetadata) => {
     this.displayHighlight();        
   })        
 }    
-
+/* Method defined for when user click on Highlighted area on the page. */
 handleHighlightClick(hId)   
 {   
   const highlightClicked = find(this.state.highlightList, highlight => highlight.id == hId);    
   pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,this.editHighlight.bind(this),this.deleteHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0');   
   console.log("Hightlight ID"+hId);   
 }
+
+ /* Method for creating the Highlight for selected area by user. */
   createHighlight(e) {
   var currentHighlight={};
   var highlightList = this.state.highlightList;
@@ -605,6 +529,7 @@ handleHighlightClick(hId)
   })
    
   }
+  /* Method for displaying the Highlight already stored. */ 
   displayHighlight = () =>{
    const currentPageId=this.state.currPageIndex;
     const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
@@ -623,6 +548,7 @@ handleHighlightClick(hId)
 
     
   }
+  /* Method for delete Highlight via passing the id of selected area. */
   deleteHighlight = (id) => {
     __pdfInstance.removeHighlightElement(id);
     this.props.removeHighlightUsingReaderApi(id);
@@ -635,7 +561,7 @@ handleHighlightClick(hId)
     assertUrls = '';
 
   }
-
+/* Method for render the component and any change in store data, reload the changes. */
   render() {
     const callbacks = {};
     const {messages}=languages.translations[this.props.locale];
@@ -659,6 +585,8 @@ handleHighlightClick(hId)
       viewerClassName="";
     }
     var searchUrl = ''+serverDetails+'/ebook/ipad/searchbook?bookid='+this.props.params.bookId+'&globalbookid='+globalbookid+'&searchtext=searchText&sortby=1&version=1.0&authkey='+ssoKey+'&outputformat=JSON'
+    
+    /* Here we are passing data, pages, goToPageCallback, getPrevNextPage method and isET1 flag in ViewerComponent which is defined in @pearson-incubator/viewer . */
     return (
  
     <div className={'add'} >
@@ -709,6 +637,7 @@ handleHighlightClick(hId)
   }
 }
 
+/* propTypes used for communication to child Component that which props are present in Parent Component. */
 PdfBookReader.propTypes = {
   fetchTocAndViewer: React.PropTypes.func,
   fetchBookmarks: React.PropTypes.func,

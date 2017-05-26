@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { browserHistory } from 'react-router';
-import CircularProgress from 'material-ui/CircularProgress';
-import LoginHeader  from '../../../components/LoginHeader';
-import './LoginPage.css';
-import reducer from '../modules/loginReducer';
+import React from 'react'; /* Importing the react library, for using the react methods and keywords.*/
+import ReactDOM from 'react-dom';/* Importing the reactDom library for rendering the react element. */
+import { browserHistory } from 'react-router';/* Import the react-router for routing the react component. */
+import CircularProgress from 'material-ui/CircularProgress';/* Import the CircularProgress for adding the progressBar. */
+import LoginHeader  from '../../../components/LoginHeader'; /* Adding the LoginHeader for login page header.*/
+import './LoginPage.css'; /*Adding the login css. */
+import reducer from '../modules/loginReducer';/* Injecting the reducers for login. */
 import { intlShape,addLocaleData } from 'react-intl';   
 import languageName from '../../../../locale_config/configureLanguage';   
 import {languages} from '../../../../locale_config/translations/index';   
@@ -27,26 +27,29 @@ addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
 const {messages}=languages.translations[locale];
 
 class LoginPage extends React.Component{
+    /* constructor and super have used in class based React component, 
+   used to pass props for communication with other components. */
     constructor(props) {
     super(props);
     this.state = {loginname: '',
      password: ''};
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this); /* We have bind handleChange method with react component, without binding event handler will not be called. */
+    this.handleSubmit = this.handleSubmit.bind(this); /* We have bind handleSubmit method with react component, without binding event handler will not be called. */
   }
-
+   
+   //Craeted a handleChange method with event argument.
    handleChange(event) {
-    this.setState({[event.target.name]: event.target.value});
+    /* Any change in the store 'setState' method reload the changes by calling the render() method agian. */
+    this.setState({[event.target.name]: event.target.value}); 
 
    }
   
- 
+  /* When user click for submitting the Login form. */
   handleSubmit(event) {
      this.setState({className: 'formClass'});
-    //alert('A name was submitted: ' + this.state.value);
-    //alert('A password was submitted: ' + this.input.value);
     event.preventDefault();
     console.log(this.state.loginname +" "+this.state.password);
+    /* Method for calling the Rest Api for login with passing credientails. */
     this.props.fetch(this.state.loginname, this.state.password)
     .then(() => {
       const LoginToken = [];
@@ -55,6 +58,7 @@ class LoginPage extends React.Component{
       const lastName = [];
       if (this.props.fetched){
         LoginToken.push(this.props.data.token);
+        /* SessionStorage used for storing the data in session. */
         sessionStorage.setItem('identityId',this.props.data.identityId);
         sessionStorage.setItem('sessionid', this.props.data.token);
         loginPiToken.push(this.props.data.piToken);
@@ -63,21 +67,26 @@ class LoginPage extends React.Component{
         sessionStorage.setItem('firstName',this.props.data.firstName);
         lastName.push(this.props.data.lastName);
         sessionStorage.setItem('lastName',this.props.data.lastName);
-        browserHistory.push(`/eplayer/bookshelf${this.props.location.search}`);
+        /* BrowserHistory used for navigating the user to bookself page. */
+        browserHistory.push(`/eplayer/bookshelf`);
           }
     })
     
   }
+  /* Method used for defining any method or variable before mounting. */
   componentWillMount() { 
 
   }
+   /* Method used for defining any method or variable after mounting. */
   componentDidMount() {};
-  
+    /* render() method used for changing the view and whenever store gets update it will also update the view. */ 
      render() {
       if(this.props.error== true)
         {
             this.state.className = '';
         }
+        /* In return, we have called multiple methods with event handlers, like onChange, onSubmit. 
+        Also we have written JSX code inside return which will be responsible for view layer.*/
        return (<div className="login-wrapper">
         <LoginHeader/>
         <div className="form-container">
@@ -99,12 +108,8 @@ class LoginPage extends React.Component{
         </div>);
      }
 }
+/* propTypes used for communication to child Component that which props are present in Parent Component*/
 LoginPage.propTypes = {
- // loginState: React.PropTypes.object,
- // fetching: React.PropTypes.object, 
- // fetched: React.PropTypes.object, 
- // error: React.PropTypes.object,
- // data:React.PropTypes.object
- //storeLoginToken:React.PropTypes.func 
+ 
 }
 export default LoginPage

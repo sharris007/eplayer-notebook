@@ -1,8 +1,8 @@
-import { connect } from 'react-redux';
+import { connect } from 'react-redux';/* Importing react-redux library for connect method which is used for connecting the react with redux store. */
 import { fetchAnnotations, addAnnotation, removeAnnotation,
          fetchBookmarksUsingReaderApi, addBookmarkUsingReaderApi, removeBookmarkUsingReaderApi,
          fetchPreferences,
-         fetchTocAndViewer, goToPage,fetchBookInfo,fetchPageInfo,fetchUserInfo, fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi, loadAssertUrl , editHighlightUsingReaderApi   } from '../modules/pdfbook';
+         fetchTocAndViewer, goToPage,fetchBookInfo,fetchPageInfo,fetchUserInfo, fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi, loadAssertUrl , editHighlightUsingReaderApi   } from '../modules/pdfbook';/* Importing the action creator from reducer to container. */
          
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -14,6 +14,8 @@ import { PdfBook } from '../components/PdfBook';
 /*  Object of action creators (can also be function that returns object).
     Keys will be passed as props to presentational components. Here we are
     implementing our wrapper around increment; the component doesn't care   */
+
+/* Method used for connecting the store methods with component. when any action dispatched by component. */    
 
 const mapDispatchToProps = {
   fetchTocAndViewer,
@@ -31,6 +33,7 @@ const mapDispatchToProps = {
   editHighlightUsingReaderApi
 };
 
+/* Method used for connecting and accessing the state data in component via props. */
 const mapStateToProps = state => ({
   book: state.book,
   bookshelf:state.bookshelf ? state.bookshelf : {},
@@ -50,4 +53,5 @@ const mapStateToProps = state => ({
     Selectors are composable. They can be used as input to other selectors.
     https://github.com/reactjs/reselect    */
 
+/* Method used for connecting the component with redux store. */     
 export default connect(mapStateToProps, mapDispatchToProps)(PdfBook);
