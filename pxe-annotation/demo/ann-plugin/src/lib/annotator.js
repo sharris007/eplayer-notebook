@@ -254,6 +254,7 @@ Annotator = (function(_super) {
     $(annotation.highlights).data('annotation', annotation);
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
     $(annotation.highlights).attr('data-ann-id', annotation.id);
+    $(annotation.highlights).attr('shareable', annotation.shareable);
     return annotation;
   };
 
@@ -414,7 +415,7 @@ Annotator = (function(_super) {
 
   Annotator.prototype.showEditor = function(annotation, location, isAdderClick) {
     var position= {
-      right:190,
+      //right:190,
       top:(39+location.top+(!isAdderClick?140:0))
     }
     this.editor.element.css(position);
@@ -466,16 +467,16 @@ Annotator = (function(_super) {
           var hlElements = $(elementSelection[i]).find('.annotator-hl');
           if(hlElements.length>0){
             for( var j=0;j<=hlElements.length;j++){
-              let dataAnnId = $(hlElements[j]).attr('data-ann-id');
-              let shrable = $(hlElements[j]).attr('shareable');
+              var dataAnnId = $(hlElements[j]).attr('data-ann-id');
+              var shrable = $(hlElements[j]).attr('shareable');
               if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
                 if(!shrable || shrable==='false')
                   annArray.push(dataAnnId);
               }
             }
           if(hlElements.context && hlElements.context.hasAttribute('data-ann-id')) {
-              let dataAnnId = $(hlElements.context).attr('data-ann-id');
-              let shrable = $(hlElements.context).attr('shareable');
+              var dataAnnId = $(hlElements.context).attr('data-ann-id');
+              var shrable = $(hlElements.context).attr('shareable');
               if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
                 if(!shrable || shrable==='false')
                   annArray.push(dataAnnId);
