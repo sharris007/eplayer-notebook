@@ -1,5 +1,5 @@
-import { connect } from 'react-redux';
-import {fetch,storeBookDetails,storeSsoKey} from '../modules/bookshelfActions';
+import { connect } from 'react-redux'; /* Importing the react-redux library, connect method for connecting the react and redux-store. */
+import {fetch,storeBookDetails,storeSsoKey} from '../modules/bookshelfActions'; /* Importing the defined method from reducers. */
 import { injectIntl } from 'react-intl';
 
 
@@ -14,14 +14,18 @@ import BookshelfPage from '../components/Bookshelf';
     Keys will be passed as props to presentational components. Here we are
     implementing our wrapper around increment; the component doesn't care   */
 
+
+/* mapDispatchToProps method used for dispatcing the method from component to store. */
+
 const mapDispatchToProps = {
   fetch,
-  //storeUPdfUrl,
-  //storeBookServerDetails,
   storeBookDetails,
   storeSsoKey,
 
 };
+
+/* mapStateToProps method used for connecting the state from the store to corresponding props, 
+to access your reducer state objects from within your React components. */
 
 const mapStateToProps = state => ({
   bookshelf: state.bookshelf ? state.bookshelf : {},
@@ -43,4 +47,5 @@ const mapStateToProps = state => ({
     Selectors are composable. They can be used as input to other selectors.
     https://github.com/reactjs/reselect    */
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(BookshelfPage));
+/* Connent used to connectivity between react and redux store. */
+export default connect(mapStateToProps, mapDispatchToProps)(BookshelfPage);
