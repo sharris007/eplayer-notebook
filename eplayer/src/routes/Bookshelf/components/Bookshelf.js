@@ -99,6 +99,7 @@ componentWillMount() {
   /* Method used for loading the data. Any change in store data it will reload the view. */
   render() {
     /* Setting the item in sessionStorage */
+    sessionStorage.setItem('bookshelfLang',langQuery);
     sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
     sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
     sessionStorage.setItem('title',this.props.bookshelf.title);

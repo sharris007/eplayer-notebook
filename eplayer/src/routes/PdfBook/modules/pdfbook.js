@@ -53,7 +53,7 @@ export function request(component) {
 }
 
 /* Method for fetching the bookmarks from Redaer Api by passing the below parameters. */
-export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
+export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId,Page) {
   const bookState = {
     bookmarks: [],
     isFetching: {
@@ -107,7 +107,7 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
 }
 
 /* Created action creator for addBookmarkUsingReaderApi. */
-export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared) {
+export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared,Page) {
 
 const authorizationHeaderVal = createAuthorizationToken('/bookmark', 'POST')
 
@@ -555,7 +555,7 @@ const bookState = {
 
 }
 /* Method for saving the highLight selected by user. */
-export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta){
+export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta,currentPageId){
   
   const authorizationHeaderVal = createAuthorizationToken('/highlight', 'POST')
   console.log("Authorization : "+ authorizationHeaderVal);
@@ -655,15 +655,15 @@ export function loadAssertUrl(totalPagesToHit, openFile, storeAssertUrl, pages, 
       }
       if(pagesToHit[i] !== ''){
         const currentPage = find(pages, page => page.pageorder == parseInt(pagesToHit[i]));
-       const assertUrlObj = find(assertUrls, obj => obj.pageOrder == currentPage.pageorder);
-        if(assertUrlObj == undefined)
-               {   
+       //const assertUrlObj = find(assertUrls, obj => obj.pageOrder == currentPage.pageorder);
+        //if(assertUrlObj == undefined)
+              // {   
                     urlObj.pageOrder = currentPage.pageorder;
                     urlObj.pageNumber = currentPage.pagenumber;
                     urlObj.assertUrl = openFile(currentPage.pageorder,currentPage.pdfPath);
                     bookState.bookInfo.assertUrls.push(urlObj);
   
-                }
+               // }
       }
     }
     dispatch({type : 'LOAD_ASSERT_URL', bookState});

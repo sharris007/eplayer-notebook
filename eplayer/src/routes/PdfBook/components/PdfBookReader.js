@@ -31,8 +31,8 @@ export class PdfBookReader extends Component {
       isET1: 'Y',
       highlightList: [],
       assertUrlList: [],
-      totalPagesToHit: ''
-     
+      totalPagesToHit: '',
+      executed:false
     };
     this.nodesToUnMount = [];
     /* Adding the eventListener on the attribute and attaching the method. 
@@ -72,7 +72,7 @@ export class PdfBookReader extends Component {
     this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails,this.props.book.bookinfo.book.hastocflatten,this.props.book.bookinfo.book.roleTypeID);
     const courseId = '0';
     /* Method for getting the bookmarks details which is already in book. */
-    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid);
+    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid,this.props.PdfbookMessages.PageMsg);
     const firstPage="firstPage";
     if(sessionStorage.getItem("currentPageOrder")){
        this.goToPageCallback(Number(sessionStorage.getItem("currentPageOrder")));
@@ -144,6 +144,7 @@ export class PdfBookReader extends Component {
           data.currentPageNo = currentPageOrder;
           this.setState({data : data});*/
           this.setState({pageLoaded : true});
+          this.setState({executed : false});
           if(this.state.isFirstPageBeingLoad === true)
           {
            this.setState({isFirstPageBeingLoad:false});
@@ -153,9 +154,14 @@ export class PdfBookReader extends Component {
       if(pdfEvent === 'pageLoaded'){
           //this.loadAssetUrl();
       
-      this.props.loadAssertUrl(this.state.totalPagesToHit, this.openFile, this.storeAssertUrl, pages , assertUrls)
+      if (this.state.executed == false)
+     {
+           var totalPagesToHit = this.getPageOrdersToGetAssertUrl(this.state.currPageIndex);
+           this.props.loadAssertUrl(totalPagesToHit, this.openFile, this.storeAssertUrl, pages , assertUrls);
+           this.setState({executed : true});
+     }
       
-       }
+}
    
      // If already page details are in store then we do not hit fetchPageInfo again
      /*if(currentPage===undefined)
@@ -332,6 +338,35 @@ export class PdfBookReader extends Component {
     return totalPagesToHit;
   }
 
+getPageOrdersToGetAssertUrl = (pageOrderToNav) => {
+   var prevPageCount=0;
+   var nextPageCount=0;
+   var totalPagesToHit="";
+   var pageOrder=pageOrderToNav;
+   var totalPageCount=this.getPageCount();
+   while(prevPageCount<=1 && pageOrder>0)
+   {
+     const currentPage = find(assertUrls, url => url.pageOrder == pageOrder);
+     if(currentPage===undefined)
+     {
+       totalPagesToHit=totalPagesToHit+pageOrder+",";
+       prevPageCount++;
+     }
+     pageOrder--;
+   }
+   pageOrder=pageOrderToNav+1;
+   while(nextPageCount<1 && pageOrder<=totalPageCount)
+   {
+     const currentPage = find(assertUrls, url => url.pageOrder == pageOrder);
+     if(currentPage===undefined)
+     {
+       totalPagesToHit=totalPagesToHit+pageOrder+",";
+       nextPageCount++;
+     }
+     pageOrder++;
+   }
+   return totalPagesToHit;
+ }
   /* Method for getting the page count and defined a variable inside method that will store the value of numberOfPages. */  
   getPageCount = () => {
 
@@ -354,7 +389,7 @@ export class PdfBookReader extends Component {
     else if(pageType=="last"){
       pageNo=this.getPageCount();   
     }
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == pageNo);
+    const currentPage = find(pages, page => page.pageorder == pageNo);
     if(currentPage===undefined)
     {
       return pageNo;
@@ -390,7 +425,7 @@ export class PdfBookReader extends Component {
   addBookmarkHandler = () => {
     //const currentPageId=__pdfInstance.getCurrentPage()+1;
     const currentPageId = this.state.currPageIndex; 
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
+    const currentPage = find(pages, page => page.pageorder == currentPageId);
     var currTimeInMillsc = (new Date).getTime();
     const bookmark = {
       id: currentPageId,
@@ -477,7 +512,7 @@ saveHighlight(currentHighlight,highLightMetadata)
   }   
   const selectedText = currentHighlight.selection; 
   const isShared = highLightMetadata.isShared;   
-  const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);    
+  const currentPage = find(pages, page => page.pageorder == currentPageId);    
   this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(courseId), isShared , currentHighlight.highlightHash, note, selectedText, highLightMetadata.currHighlightColor, meta, _.toString(currentPageId)).then(() => {  
     this.displayHighlight();    
   })    
@@ -522,8 +557,8 @@ handleHighlightClick(hId)
 
   }
   const selectedText = currentHighlight.selection;
-  const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
-  this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(courseId), true, currentHighlight.highlightHash, note, selectedText, 'Blue', meta).then(() => {
+  const currentPage = find(pages, page => page.pageorder == currentPageId);
+  this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid), _.toString(this.props.params.bookId), _.toString(currentPage.pageid), _.toString(currentPage.pagenumber), _.toString(courseId), true, currentHighlight.highlightHash, note, selectedText, 'Blue', meta,_.toString(currentPageId)).then(() => {
     this.setState({highlightList : highlightList});
     this.displayHighlight();
   })
@@ -532,7 +567,7 @@ handleHighlightClick(hId)
   /* Method for displaying the Highlight already stored. */ 
   displayHighlight = () =>{
    const currentPageId=this.state.currPageIndex;
-    const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder == currentPageId);
+    const currentPage = find(pages, page => page.pageorder == currentPageId);
     const courseId = '0';
      var highlightList = [];
    this.props.book.annTotalData.forEach((annotation)=>{
