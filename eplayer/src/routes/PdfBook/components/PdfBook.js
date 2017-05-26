@@ -5,7 +5,7 @@ import { IntlProvider, addLocaleData } from 'react-intl';
 import {languages} from '../../../../locale_config/translations/index';   
 import languageName from '../../../../locale_config/configureLanguage';
 /* Defining the variables for sessionStorage. */
-var identityId,ubd,ubsd,ssoKey,serverDetails,uid,langID;
+var identityId,ubd,ubsd,ssoKey,serverDetails,uid,langID,roleTypeID;
 
 /* Creating PdfBook component. */
 export class PdfBook extends Component {
@@ -34,6 +34,7 @@ async componentWillMount() {
                   ubsd = this.props.bookshelf.ubsd;
                   ssoKey = this.props.bookshelf.ssoKey;
                   serverDetails = this.props.bookshelf.serverDetails;
+                  roleTypeID = this.props.bookshelf.roleTypeID;
              }
         }else{ 
             sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
@@ -51,12 +52,13 @@ async componentWillMount() {
             ubsd = this.props.bookshelf.ubsd;
             ssoKey = this.props.bookshelf.ssoKey;
             serverDetails = this.props.bookshelf.serverDetails;
+            roleTypeID = this.props.bookshelf.roleTypeID;
         }
 
        /* Await operator is used to wait for a Promise returned by an async function. */ 
        /* Method used for fetching the user details and book details. */
        await this.props.fetchUserInfo(identityId, this.props.params.bookId, ubd, ubd, ubsd, ssoKey, serverDetails);
-       await this.props.fetchBookInfo(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails);
+       await this.props.fetchBookInfo(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails,roleTypeID);
 }
 
  /* Multiple methods we have paased in PdfBookReader inside return, fetchTocViewer fot fetching the value of TOC,

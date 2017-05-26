@@ -33,7 +33,8 @@ export const storeBookDetails = (book) => {
     bookId:book.bookId,
     uid:book.userInfoLastModifiedDate,
     ubd:book.userBookLastModifiedDate,
-    ubsd:book.userBookScenarioLastModifiedDate
+    ubsd:book.userBookScenarioLastModifiedDate,
+    roleTypeID:book.roleTypeID
   }
 }
 

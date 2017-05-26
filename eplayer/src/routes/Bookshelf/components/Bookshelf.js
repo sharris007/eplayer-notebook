@@ -108,6 +108,7 @@ componentWillMount() {
     sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
     sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
     sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
+    sessionStorage.setItem('roleTypeID',this.props.bookshelf.roleTypeID);
     const firstName =  sessionStorage.getItem('firstName');
     const lastName = sessionStorage.getItem('lastName');
     const { books, fetching, fetched, error } = this.props.bookshelf;
@@ -139,7 +140,8 @@ componentWillMount() {
            bookServerUrl: bookRef.bookServerUrl,
            userInfoLastModifiedDate: bookRef.userInfoLastModifiedDate,
            userBookLastModifiedDate: bookRef.userBookLastModifiedDate,
-           userBookScenarioLastModifiedDate: bookRef.userBookScenarioLastModifiedDate
+           userBookScenarioLastModifiedDate: bookRef.userBookScenarioLastModifiedDate,
+           roleTypeID: bookRef.roleTypeID
         };
         booksdata.push(book);
         

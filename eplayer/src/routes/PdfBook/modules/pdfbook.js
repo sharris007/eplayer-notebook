@@ -191,7 +191,7 @@ return (dispatch) => {
 
 
 /* Method for fetching Toc list by passing following parameters. */
-export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL,hastocflatten){
+export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL,hastocflatten,roleTypeID){
   const bookState = {
     toc: {
       content: {},
@@ -207,7 +207,7 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
   return(dispatch) => {
     dispatch(request('toc'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-    return axios.get(''+bookServerURL+'/ebook/ipad/getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc', 
+    return axios.get(''+bookServerURL+'/ebook/ipad/getbaskettocinfo?userroleid='+roleTypeID+'&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc', 
     {
       timeout: 20000
     })
@@ -400,17 +400,22 @@ export function goToPage(pageId) {
 }
 
 /* Created Action creator for fetching all book detail. */
-export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL)
+export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL,roleTypeID)
 {
+  if (roleTypeID === undefined)
+  {
+      roleTypeID = 2
+  }
+  
    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
   return{
   type: 'RECEIVEBOOKINFO',
-  payload: axios.get(''+bookServerURL+'/ebook/ipad/getuserbookinfo?userid='+userid+'&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON'),
+  payload: axios.get(''+bookServerURL+'/ebook/ipad/getuserbookinfo?userid='+userid+'&bookid='+bookid+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON'),
   timeout: 20000
   };
 }
 /* Created Action creator for getting page details. */
-export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexToLoad,totalPagesToHit,sessionKey,bookServerURL,loadPdfPageCallback)
+export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexToLoad,totalPagesToHit,sessionKey,bookServerURL,loadPdfPageCallback,roleTypeID)
  {
     const bookState = {
       bookInfo:{
@@ -419,7 +424,7 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
   };
   return(dispatch)=>{
      // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-    return axios.get(''+bookServerURL+'/ebook/ipad/getpagebypageorder?userid='+userid+'&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+totalPagesToHit+'&authkey='+sessionKey+'&outputformat=JSON',
+    return axios.get(''+bookServerURL+'/ebook/ipad/getpagebypageorder?userid='+userid+'&userroleid='+roleTypeID+'&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+totalPagesToHit+'&authkey='+sessionKey+'&outputformat=JSON',
     {
       timeout: 20000
     })
@@ -894,7 +899,8 @@ const ACTION_HANDLERS = {
                   bookid: action.payload.data[0].userBookTOList[0].bookID,
                   bookeditionid: action.payload.data[0].userBookTOList[0].bookEditionID,
                   hastocflatten: action.payload.data[0].userBookTOList[0].hastocflatten,
-                  languageid: action.payload.data[0].userBookTOList[0].languageID
+                  languageid: action.payload.data[0].userBookTOList[0].languageID,
+                  roleTypeID: action.payload.data[0].userBookTOList[0].roleTypeID
                   }
               }
   }),

@@ -69,7 +69,7 @@ export class PdfBookReader extends Component {
         globalbookid = this.props.book.bookinfo.book.globalbookid;
     }
     /* Method for getting the toc details for particular book. */
-    this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails,this.props.book.bookinfo.book.hastocflatten);
+    this.props.fetchTocAndViewer(this.props.params.bookId,authorName,title,thumbnail,this.props.book.bookinfo.book.bookeditionid,ssoKey,serverDetails,this.props.book.bookinfo.book.hastocflatten,this.props.book.bookinfo.book.roleTypeID);
     const courseId = '0';
     /* Method for getting the bookmarks details which is already in book. */
     this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid);
@@ -237,7 +237,7 @@ export class PdfBookReader extends Component {
       pageIndexToLoad,
       totalPagesToHit,
       ssoKey,
-      serverDetails,this.loadPdfPage
+      serverDetails,this.loadPdfPage,this.props.book.bookinfo.book.roleTypeID
       ).then(()=> {
         if(pages === undefined )
        { 
@@ -279,7 +279,7 @@ export class PdfBookReader extends Component {
       pageNum,
       totalPagesToHit,
       ssoKey,
-      serverDetails,this.loadPdfPage
+      serverDetails,this.loadPdfPage,this.props.book.bookinfo.book.roleTypeID
       ).then(()=> {
         if(pages == undefined){
         pages = this.props.book.bookinfo.pages;
@@ -468,10 +468,10 @@ saveHighlight(currentHighlight,highLightMetadata)
   const courseId = '0';   
   const note = highLightMetadata.noteText;    
   const meta = {    
-   "userroleid" : "2",    
+   "userroleid" : _.toString(this.props.book.bookinfo.book.roleTypeID),    
    "userbookid" : _.toString(this.props.book.bookinfo.userbook.userbookid),   
    "bookeditionid" : _.toString(this.props.book.bookinfo.book.bookeditionid),   
-   "roletypeid" : "2",    
+   "roletypeid" : _.toString(this.props.book.bookinfo.book.roleTypeID),    
    "colorcode" : highLightMetadata.currHighlightColorCode ,
    "author" : authorName  
   }   
@@ -514,10 +514,10 @@ handleHighlightClick(hId)
   const note = '';
 
   const meta = {
-   "userroleid" : "2",
+   "userroleid" : _.toString(this.props.book.bookinfo.book.roleTypeID),
    "userbookid" : _.toString(this.props.book.bookinfo.userbook.userbookid),
    "bookeditionid" : _.toString(this.props.book.bookinfo.book.bookeditionid),
-   "roletypeid" : "2",
+   "roletypeid" : _.toString(this.props.book.bookinfo.book.roleTypeID),
    "colorcode" : "32CCFF"
 
   }
