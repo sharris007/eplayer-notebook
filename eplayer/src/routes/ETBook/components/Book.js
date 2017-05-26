@@ -8,7 +8,7 @@ import { pageDetails , customAttributes } from '../../../../const/Mockdata';
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
+import { getBookCallService, getPlaylistCallService, getCourseCallService} from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
@@ -60,10 +60,18 @@ export class Book extends Component {
     const bookDetailsData = {
       context : this.state.urlParams.context,
       piToken : piToken
+
     }
     console.log('this.state.urlParams.context',this.state.urlParams.context);
     this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-    this.props.dispatch(getBookCallService(bookDetailsData));
+
+     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+      this.props.dispatch(getCourseCallService(bookDetailsData));
+     }else{
+      this.props.dispatch(getBookCallService(bookDetailsData));
+     }
+
+
     this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
   }
   componentWillUnmount() {
