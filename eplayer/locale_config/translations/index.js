@@ -54,6 +54,7 @@ export const languages={
 	'ru-RU' : russian,
 	'es-ES-CS' : spanishCastilian,
 	'es-MX-LA' : spanishCastilian,
-	'pt-BR' : portuguese
+	'pt-BR' : portuguese,
+	'es-US' : spanish
   }
 };
