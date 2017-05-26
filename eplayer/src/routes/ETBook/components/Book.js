@@ -59,8 +59,8 @@ export class Book extends Component {
     }
     const bookDetailsData = {
       context : this.state.urlParams.context,
-      piToken : piToken
-
+      piToken : piToken,
+      bookId : this.props.params.bookId
     }
     console.log('this.state.urlParams.context',this.state.urlParams.context);
     this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));

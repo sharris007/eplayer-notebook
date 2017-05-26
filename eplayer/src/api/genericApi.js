@@ -82,6 +82,18 @@ export const getPlaylistDetails = (bookId,tocurl,piToken) => fetch(etextService[
   }
 });
 
+const servicePXE = 'http://10.25.228.205/etext/standalone/courses/58edecc2e4b01da81434fc2d/sectionDetails';
+const authToken = 'eyJhbGciOiJSUzUxMiIsImtpZCI6ImsxMDY5NDgxOTAifQ.eyJleHAiOjE0OTU4MDQ5MzgsInN1YiI6ImZmZmZmZmZmNThmZGQ2NTZlNGIwZjRhMzJkM2FhYmNjIiwic2Vzc2lkIjoiMGM5ZjQyMTEyYzFlNDA0MWE0YjE2MmU1MzFlZTdiN2QiLCJoY2MiOiJVUyIsInR5cGUiOiJhdCIsImlhdCI6MTQ5NTc5NDEzOH0.gqF0q17yGXRD2i3HEfowlu8er9raeLNvab802O2PUgWmggvuuTINQwTaWj_m_yIPVAJOV6Ui946_nms3E7g6Uu3uxdj-SmMesXP8T-3ETWE-EAp9sdksYnkQ9364dFDvhLK8qYZ-EccOWLUFh-6iki8fOeAZSI9JN8UCw3ED8XI';
+export const getCourseDetails = bookDetails => 
+ fetch(servicePXE,
+ {
+    method: 'GET',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': authToken
+    }
+});
 
 // Bookmark Api Total GET Call,
 export const getTotalBookmarkData = data => fetch(pxeService[envType]+'/context/'+data.context+'/identities/'+data.user+'/bookmarks',{
