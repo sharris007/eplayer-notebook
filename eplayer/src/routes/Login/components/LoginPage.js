@@ -44,7 +44,8 @@ class LoginPage extends React.Component{
         sessionStorage.setItem('firstName',this.props.data.firstName);
         lastName.push(this.props.data.lastName);
         sessionStorage.setItem('lastName',this.props.data.lastName);
-        browserHistory.push(`/eplayer/bookshelf`);
+        piSession.autologin(this.state.loginname, this.state.password,'vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb',window.location.origin+"/eplayer/bookshelf");
+        // browserHistory.push(`/eplayer/bookshelf`);
           }
     })
     

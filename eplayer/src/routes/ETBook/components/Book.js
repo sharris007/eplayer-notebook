@@ -18,6 +18,7 @@ import { Wrapper } from 'pxe-wrapper';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {resources , domain ,typeConstants} from '../../../../const/Settings'
+import Cookies from 'universal-cookie';
 
 export class Book extends Component {
   constructor(props) {
@@ -32,7 +33,6 @@ export class Book extends Component {
         currentPageDetails: '',
         pageDetails, 
         currentPageTitle:'',
-        annAttributes :'',
         popUpCollection:'',
         urlParams:{
           context :this.props.params.bookId,
@@ -53,18 +53,23 @@ export class Book extends Component {
        
   }
   componentWillMount  = () => {
-    let piToken;
-    if (sessionStorage.getItem('piToken')) {
-      piToken = sessionStorage.getItem('piToken');
-    }
+    // let piToken;
+    // if (sessionStorage.getItem('piToken')) {
+    //   piToken = sessionStorage.getItem('piToken');
+    // }
+    const cookies = new Cookies();
+    piSession.getToken(function(result, userToken){
+        if(result === piSession['Success']){
+            cookies.set('BooksecureToken', userToken, { path: '/' });
+        }
+    }); 
+    const getSecureToken = cookies.get('BooksecureToken');
     const bookDetailsData = {
       context : this.state.urlParams.context,
-      piToken : piToken,
-      bookId : this.props.params.bookId
+      piToken : getSecureToken,
+      bookId  : this.props.params.bookId
     }
-    console.log('this.state.urlParams.context',this.state.urlParams.context);
     this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-
      if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
       this.props.dispatch(getCourseCallService(bookDetailsData));
      }else{

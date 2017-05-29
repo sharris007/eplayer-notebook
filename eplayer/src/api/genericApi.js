@@ -82,8 +82,8 @@ export const getPlaylistDetails = (bookId,tocurl,piToken) => fetch(etextService[
   }
 });
 
-const servicePXE = 'http://10.25.228.205/etext/standalone/courses/58edecc2e4b01da81434fc2d/sectionDetails';
-const authToken = 'eyJhbGciOiJSUzUxMiIsImtpZCI6ImsxMDY5NDgxOTAifQ.eyJleHAiOjE0OTU4MDQ5MzgsInN1YiI6ImZmZmZmZmZmNThmZGQ2NTZlNGIwZjRhMzJkM2FhYmNjIiwic2Vzc2lkIjoiMGM5ZjQyMTEyYzFlNDA0MWE0YjE2MmU1MzFlZTdiN2QiLCJoY2MiOiJVUyIsInR5cGUiOiJhdCIsImlhdCI6MTQ5NTc5NDEzOH0.gqF0q17yGXRD2i3HEfowlu8er9raeLNvab802O2PUgWmggvuuTINQwTaWj_m_yIPVAJOV6Ui946_nms3E7g6Uu3uxdj-SmMesXP8T-3ETWE-EAp9sdksYnkQ9364dFDvhLK8qYZ-EccOWLUFh-6iki8fOeAZSI9JN8UCw3ED8XI';
+const servicePXE = 'http://10.25.228.142/etext/standalone/courses/58edecc2e4b01da81434fc2d/sectionDetails';
+const authToken = 'eyJhbGciOiJSUzUxMiIsImtpZCI6ImsxMDY5NDgxOTAifQ.eyJleHAiOjE0OTU4MTk5NDcsInN1YiI6ImZmZmZmZmZmNThmZGQ2NTZlNGIwZjRhMzJkM2FhYmNjIiwic2Vzc2lkIjoiMWVlNDFjMjc3MTgxNDYwZmJhZDMxMjkxMGMwMWYzNmUiLCJoY2MiOiJVUyIsInR5cGUiOiJhdCIsImlhdCI6MTQ5NTgwOTE0N30.DJmu5EFqu-FtBfdu4vfd9LkZMcjlEyjknN5p9AF-CN72k_9n-V01YvgWhuCh4j-okFQQlVByEm3s2AoqNP9O2gb7EGggiWiXfuwjAuRpBkGe1Y7EzYLFXgprNyX3t1FncVgs4yB5dLO18au5LtImZ582WaWJSP52HiQzfmNCQ18';
 export const getCourseDetails = bookDetails => 
  fetch(servicePXE,
  {

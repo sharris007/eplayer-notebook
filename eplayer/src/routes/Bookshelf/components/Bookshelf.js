@@ -7,15 +7,20 @@ import errorCard from '../../../components/common/errorCard';
 import BookshelfHeader from '../../../components/BookshelfHeader';
 import './Bookshelf.scss';
 import { clients } from '../../../components/common/client';
-
+import Cookies from 'universal-cookie';
 
 export default class BookshelfPage extends React.Component {
 constructor(props) {
     super(props);
-    if (sessionStorage.getItem('piToken') === null) {
-      browserHistory.push(`/eplayer/login`);
-    }
-    
+    // if (sessionStorage.getItem('piToken') === null) {
+    //   browserHistory.push(`/eplayer/login`);
+    // }
+    const cookies = new Cookies();
+    piSession.getToken(function(result, userToken){
+        if(result === piSession['Success']){
+            cookies.set('secureToken', userToken, { path: '/' });
+        }
+    }); 
   }
 componentWillMount() {
 
@@ -40,7 +45,6 @@ componentWillMount() {
     //const sessionid=this.props.login.data.token;
     //const piToken = this.props.login.data.piToken;
     var sessionid, piToken;
-    console.log("this.props", this.props);
     if(this.props.login.data === undefined){
       piToken = sessionStorage.getItem('piToken');
       sessionid = sessionStorage.getItem('sessionid');
@@ -50,9 +54,7 @@ componentWillMount() {
     }
     
     //const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
-    this.props.storeSsoKey(sessionid);
-    console.log('sessionid:: '+sessionid);
-
+    this.props.storeSsoKey(sessionid);    
     //const urn ='http://10.102.88.150:8080/JavaSampleWebApp/TestServlet';
     //var userlogin = this.props.login.data.userName;
     //var password = this.props.login.data.password;
