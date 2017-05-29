@@ -59,11 +59,15 @@ export class Book extends Component {
     // }
     const cookies = new Cookies();
     piSession.getToken(function(result, userToken){
+       console.log("result--------->",result);
+       console.log("userToken--------->",userToken);
+       console.log("piSession['Success']--------->",piSession['Success']);
         if(result === piSession['Success']){
-            cookies.set('BooksecureToken', userToken, { path: '/' });
+           cookies.set('BooksecureToken', userToken, { path: '/' });
         }
     }); 
     const getSecureToken = cookies.get('BooksecureToken');
+    console.log("getSecureToken--------->",getSecureToken);
     const bookDetailsData = {
       context : this.state.urlParams.context,
       piToken : getSecureToken,
