@@ -3602,7 +3602,7 @@ Annotator.Editor = (function(_super) {
     this.annotation.shareable=(this.annotation.shareable===undefined)?false:this.annotation.shareable;
     if (this.annotation.color||this.annotation.shareable) {
       this.element.removeClass('hide-note');
-      var textareaScroll =this.element.find('textarea').prop('scrollHeight'),calPos,actualPos,oldHeight;
+      var textareaScroll =this.element.find('textarea').prop('offsetHeight'),calPos,actualPos,oldHeight;
       oldHeight=this.element.find('textarea').height();
       this.element.find('textarea').height(textareaScroll);
       actualPos = this.element.position().top;
