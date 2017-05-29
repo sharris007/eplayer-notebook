@@ -23,9 +23,9 @@ import Cookies from 'universal-cookie';
 export class Book extends Component {
   constructor(props) {
       super(props);
-      if (sessionStorage.getItem('piToken') === null) {
-        browserHistory.push(`/eplayer/login`);
-      }
+      // if (sessionStorage.getItem('piToken') === null) {
+      //   browserHistory.push(`/eplayer/login`);
+      // }
       this.state = {
         classname: 'headerBar',
         viewerContent: true,
