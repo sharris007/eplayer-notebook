@@ -77,7 +77,7 @@ export const domain = {
     const locationOrigin = this.getLocationOrigin();
 
     if (locationOrigin.indexOf('localhost') !== -1)
-          { return 'local'; }
+          { return 'qa'; }
     else if (locationOrigin.indexOf('pxe-sdk.dev-openclass.com') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('pxe-sdk-qa.stg-openclass.com') !== -1)

@@ -29,7 +29,6 @@ export class Book extends Component {
         currentPageDetails: '',
         pageDetails, 
         currentPageTitle:'',
-        annAttributes :'',
         popUpCollection:'',
         urlParams:{
           context :this.props.params.bookId,
