@@ -269,7 +269,7 @@ Annotator = (function(_super) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
       $(annotation.highlights).find('.annotator-handle').remove();
-      $('.annotator-handle').css({'right' : '-25px'});
+      $('.annotator-handle').css({'margin-top' : '0px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
@@ -613,6 +613,7 @@ Annotator = (function(_super) {
     })(this);
      if(oldAnnArr.length>0 && annArray.length>0 && !(oldAnnArr[0].shareable)){
       $(annotation)[0].text = $(oldAnnArr)[0].text;
+      $('.annotator-edit-container').hide();
       window.currAnn = $(oldAnnArr)[0];
     }
     this.subscribe('annotationEditorHidden', cancel);
