@@ -1,5 +1,7 @@
 import { resources , domain } from '../../const/Settings';
-const etextService = resources.links.etextServiceUrl;
+
+const security  = (resources.constants.secureApi == true ? 'eTSecureServiceUrl':'etextServiceUrl');
+const etextService = resources.links[security];
 const pxeService   = resources.links.pxeServiceUrl;
 const envType      = domain.getEnvType();
 

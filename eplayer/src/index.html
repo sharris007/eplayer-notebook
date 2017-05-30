@@ -19,9 +19,7 @@
 
 </head>
 <!-- <script src="https://pi-pqa.pearsoned.com/v1/piapi-pqa/login/js/session.js"></script> -->
-    
-    <!-- <script src="https://pi.pearsoned.com/v1/piapi/login/js/session.js"></script> -->
-     
+<!-- <script src="https://pi.pearsoned.com/v1/piapi/login/js/session.js"></script> -->
 <body style="overflow:visible;">
 <script src="https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js"></script>
    <script type="text/javascript">
@@ -32,7 +30,6 @@
       var jwtSetting = {"useJwt": true,"checkSessionMilliseconds"  : "6000",
                           "sessionIdleTimeoutSeconds" : "3000"};
       piSession.initialize(clientId,jwtSetting);
-      console.log("piSession---",piSession)
       piSession.on(piSession.SessionStateKnownEvent, onSessionStateKnown);
       function onSessionStateKnown() {
           if(piSession.hasValidSession(10) === 'notoken'){
