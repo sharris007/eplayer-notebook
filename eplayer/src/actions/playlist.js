@@ -1,5 +1,5 @@
 import PlaylistApi from '../api/playlistApi';
-import { typeConstants } from '../../const/Settings';
+import { typeConstants , sectionDetails} from '../../const/Settings';
 
 // GET Book Details
 export const getPlaylistCompleteDetails = json => ({
@@ -32,20 +32,28 @@ function getTocUrlOnResp(resp)
 export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetails(data)
    .then(response => response.json())
    .then(response => {
+    console.log("data*****", data);
       const bookId = response.bookDetail.bookId;
-      const tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
+      
+      const tocUrl      = getTocUrlOnResp(response.bookDetail.metadata.toc);
       const bookDetails = response.bookDetail.metadata;
-      PlaylistApi.doGetTocDetails(bookId,tocUrl).then(response => response.json())
+      const piToken     = data.piToken;
+
+      PlaylistApi.doGetTocDetails(bookId,tocUrl,piToken).then(response => response.json())
       .then(response =>{
         response.bookConfig =bookDetails; 
         const tocResponse = response.content;
         tocResponse.mainTitle = bookDetails.title;
         tocResponse.author    = bookDetails.creator.substring(0,20)+'...';
         tocResponse.thumbnail = bookDetails.coverImageUrl;
+        
+     
         tocResponse.list      = [];
         const tocItems        = tocResponse.items;
+        let subItems        =[];
         const listData        = tocItems.map(function(itemObj) {
-                const subItems= itemObj.items.map(function(n) {
+          if(itemObj.items){
+            subItems= itemObj.items.map(function(n) {
                     return {
                       urn: n.id,
                       href:n.href,
@@ -54,6 +62,7 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
                       title:n.title
                     }
                 });
+          }
             return {
                 id: itemObj.id,
                 title: itemObj.title,
@@ -68,7 +77,68 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
         dispatch(getTocCompleteDetails(tocFinalModifiedData));
       });
 
-      PlaylistApi.doGetPlaylistDetails(bookId,tocUrl).then(response => response.json())
+      PlaylistApi.doGetPlaylistDetails(bookId,tocUrl,piToken).then(response => response.json())
+      .then(response =>dispatch(getPlaylistCompleteDetails(response)));
+   }
+);
+
+export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseDetails(data)
+   .then(response => response.json())
+   .then(response => {
+    console.log("response12*****", response);
+      const bookId = data.bookId;
+      
+      // const tocUrl      = getTocUrlOnResp(response.bookDetail.metadata.toc);
+      // const bookDetails = response.bookDetail.metadata;
+      // const piToken     = data.piToken;
+
+      const tocUrl      = getTocUrlOnResp(response.userCourseSectionDetail.toc);
+      const bookDetails = response.userCourseSectionDetail;
+      const piToken     = data.piToken;
+      PlaylistApi.doGetTocDetails(bookId,tocUrl,piToken).then(response => response.json())
+      .then(response =>{
+        // response.bookConfig =bookDetails; 
+        // const tocResponse = response.content;
+        // tocResponse.mainTitle = bookDetails.title;
+        // tocResponse.author    = bookDetails.creator.substring(0,20)+'...';
+        // tocResponse.thumbnail = bookDetails.coverImageUrl;
+        response.bookConfig =bookDetails; 
+        const tocResponse = response.content;
+        tocResponse.mainTitle = bookDetails.section.sectionTitle;
+        tocResponse.author    = bookDetails.authorName.substring(0,20)+'...';
+        tocResponse.thumbnail = bookDetails.section.avatarUrl;
+        
+
+        tocResponse.list      = [];
+        const tocItems        = tocResponse.items;
+        let subItems        =[];
+        const listData        = tocItems.map(function(itemObj) {
+          if(itemObj.items){
+            subItems= itemObj.items.map(function(n) {
+                    return {
+                      urn: n.id,
+                      href:n.href,
+                      id:n.id,
+                      playorder:n.playorder,
+                      title:n.title
+                    }
+                });
+          }
+            return {
+                id: itemObj.id,
+                title: itemObj.title,
+                coPage: itemObj.coPage,
+                playOrder: itemObj.playOrder,
+                children: subItems
+            }
+        });
+        tocResponse.list = listData;
+        delete tocResponse.items;
+        const tocFinalModifiedData = {'content':tocResponse,'bookDetails' : bookDetails }
+        dispatch(getTocCompleteDetails(tocFinalModifiedData));
+      });
+
+      PlaylistApi.doGetPlaylistDetails(bookId,tocUrl,piToken).then(response => response.json())
       .then(response =>dispatch(getPlaylistCompleteDetails(response)));
    }
 );

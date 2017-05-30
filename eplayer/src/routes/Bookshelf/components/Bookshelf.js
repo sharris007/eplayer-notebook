@@ -10,6 +10,7 @@ import { clients } from '../../../components/common/client';/* Importing the cli
 import { intlShape,addLocaleData } from 'react-intl';   
 import languageName from '../../../../locale_config/configureLanguage';   
 import {languages} from '../../../../locale_config/translations/index';   
+import Cookies from 'universal-cookie';
 var launguageid,locale,langQuery;   
 const url=window.location.href;   
 var n=url.search("languageid");   
@@ -33,7 +34,15 @@ export default class BookshelfPage extends React.Component {
    used to pass props for communication with other components. */
 constructor(props) {
     super(props);
-    
+    // if (sessionStorage.getItem('piToken') === null) {
+    //   browserHistory.push(`/eplayer/login`);
+    // }
+    const cookies = new Cookies();
+    piSession.getToken(function(result, userToken){
+        if(result === piSession['Success']){
+            cookies.set('secureToken', userToken, { path: '/' });
+        }
+    }); 
   }
 
 /* Method for mounting before the page loaded. checking the condition wether the toc data present 

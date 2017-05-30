@@ -8,7 +8,7 @@ import { pageDetails , customAttributes } from '../../../../const/Mockdata';
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
+import { getBookCallService, getPlaylistCallService, getCourseCallService} from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
@@ -18,10 +18,14 @@ import { Wrapper } from 'pxe-wrapper';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {resources , domain ,typeConstants} from '../../../../const/Settings'
+import Cookies from 'universal-cookie';
 
 export class Book extends Component {
   constructor(props) {
       super(props);
+      // if (sessionStorage.getItem('piToken') === null) {
+      //   browserHistory.push(`/eplayer/login`);
+      // }
       this.state = {
         classname: 'headerBar',
         viewerContent: true,
@@ -49,8 +53,34 @@ export class Book extends Component {
        
   }
   componentWillMount  = () => {
+    // let piToken;
+    // if (sessionStorage.getItem('piToken')) {
+    //   piToken = sessionStorage.getItem('piToken');
+    // }
+    const cookies = new Cookies();
+    piSession.getToken(function(result, userToken){
+       console.log("result--------->",result);
+       console.log("userToken--------->",userToken);
+       console.log("piSession['Success']--------->",piSession['Success']);
+        if(result === piSession['Success']){
+           cookies.set('BooksecureToken', userToken, { path: '/' });
+        }
+    }); 
+    const getSecureToken = cookies.get('BooksecureToken');
+    console.log("getSecureToken--------->",getSecureToken);
+    const bookDetailsData = {
+      context : this.state.urlParams.context,
+      piToken : getSecureToken,
+      bookId  : this.props.params.bookId
+    }
     this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-    this.props.dispatch(getBookCallService(this.state.urlParams.context));
+     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+      this.props.dispatch(getCourseCallService(bookDetailsData));
+     }else{
+      this.props.dispatch(getBookCallService(bookDetailsData));
+     }
+
+
     this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
   }
   componentWillUnmount() {
@@ -109,7 +139,11 @@ export class Book extends Component {
           playpageDetails1.currentPageURL =  gotoPageData;
           playpageDetails1.tocUpdated  = true;
           this.onPageChange("pagescroll",nextProps.gotoPageObj.page.title); 
-          browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}`);
+          if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+            browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`);
+          }else{
+            browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}`);
+          }
           this.props.dispatch({
             type: "GOT_GOTOPAGE",
             data: [],
@@ -201,7 +235,11 @@ export class Book extends Component {
             urlParams:parameters
           },function(){
             // eslint-disable-next-line
-            browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+            if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+              browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${data.id}`);
+            }else{
+              browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+            }
             setTimeout(()=>{
               this.props.dispatch(getBookmarkCallService(this.state.urlParams));
               // this.props.dispatch(getAnnCallService(this.state.urlParams));
@@ -251,7 +289,11 @@ export class Book extends Component {
       drawerOpen: false
     });
     this.viewerContentCallBack(true);
-    browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
+    if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+      browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${pageId}`);
+    }else{
+      browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
+    }
   }; 
   printFun = () => {
     const url = this.state.pageDetails.baseUrl + this.state.pageDetails.currentPageURL.href;
