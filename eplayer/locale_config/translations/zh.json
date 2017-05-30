@@ -11,6 +11,13 @@
       "Password": "密码",
       "SignIn":"签到" ,
       "errorMessage":"*用户名/密码无效，或者您没有订阅此网站",
-      "page":"页"
+      "page":"页",
+      "writeNote":"写一个笔记",
+      "share":"分享",
+      "cancel":"取消",
+      "save":"保存",
+      "confirm":"确认?",
+      "delete":"删除",
+      "chactersLeft":"剩余字符"
 	}           
 }

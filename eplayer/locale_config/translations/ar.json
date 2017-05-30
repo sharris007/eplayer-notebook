@@ -1,5 +1,5 @@
 {
-	"messages" : {
+"messages" : {
       "signOutBtn": "خروج",
       "myBookshelf": "رف الكتب",
       "contents": "محتويات",
@@ -11,6 +11,13 @@
       "Password": "كلمه السر",
       "SignIn":"تسجيل الدخول" ,
       "errorMessage":"* اسم المستخدم / كلمة المرور غير صالحة أو لم يكن لديك اشتراك في هذا الموقع",
-      "page":"صفحة"
-	}           
+      "page":"صفحة",
+      "writeNote":"اكتب ملاحظة.",
+      "share":"شارك",
+      "cancel":"إلغاء",
+      "save":"حفظ",
+      "confirm":"تؤكد؟",
+      "delete":"حذف",
+      "chactersLeft":"شخصيات تركت"
+      }           
 }

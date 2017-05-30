@@ -73,6 +73,7 @@ export class PdfBookReader extends Component {
     const courseId = '0';
     /* Method for getting the bookmarks details which is already in book. */
     this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId,true,courseId,this.props.book.userInfo.userid,this.props.PdfbookMessages.PageMsg);
+    this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid, this.props.params.bookId,true,courseId,authorName); 
     const firstPage="firstPage";
     if(sessionStorage.getItem("currentPageOrder")){
        this.goToPageCallback(Number(sessionStorage.getItem("currentPageOrder")));
@@ -492,8 +493,8 @@ getPageOrdersToGetAssertUrl = (pageOrderToNav) => {
   currentHighlight.highlightHash = highlightData.serializedHighlight;   
   currentHighlight.selection = highlightData.selection;   
   console.log("======== "+currentHighlight.highlightHash);    
-  currentHighlight.pageIndex = highlightData.pageInformation.pageNumber;    
-  pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight,highLightcordinates,this.saveHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0');    
+  currentHighlight.pageIndex = highlightData.pageInformation.pageNumber;   
+  pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight,highLightcordinates,this.saveHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0',(languages.translations[this.props.locale]));  
 } 
 /* Method created for displaying the selected highLights. */  
 saveHighlight(currentHighlight,highLightMetadata)   
@@ -528,7 +529,7 @@ editHighlight = (id,highLightMetadata) => {
 handleHighlightClick(hId)   
 {   
   const highlightClicked = find(this.state.highlightList, highlight => highlight.id == hId);    
-  pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,this.editHighlight.bind(this),this.deleteHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0');   
+  pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,this.editHighlight.bind(this),this.deleteHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0',(languages.translations[this.props.locale]));   
   console.log("Hightlight ID"+hId);   
 }
 

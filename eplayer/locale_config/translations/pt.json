@@ -11,6 +11,13 @@
       "Password": "Senha",
       "SignIn":"Assinar em" ,
       "errorMessage":"* Nome de usuário / senha inválido ou você não possui uma assinatura neste site",
-      "page":"Página"
+      "page":"Página",
+      "writeNote":"Escreva uma nota.",
+      "share":"Compartilhar",
+      "cancel":"CANCELAR",
+      "save":"SALVE",
+      "confirm":"confirme?",
+      "delete":"EXCLUIR",
+      "chactersLeft":"Caracteres restantes"
 	}           
 }

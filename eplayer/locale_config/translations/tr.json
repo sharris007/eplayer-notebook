@@ -11,6 +11,13 @@
       "Password": "Parola",
       "SignIn":"Oturum aç",
       "errorMessage":"* Geçersiz Kullanıcı Adı / Şifre veya bu siteye üye değilsiniz",
-      "page":"Sayfa"      
+      "page":"Sayfa",
+      "writeNote":"Not yaz.",
+      "share":"Pay",
+      "cancel":"İPTAL ETMEK",
+      "save":"KAYIT ETMEK",
+      "confirm":"Onaylamak?",
+      "delete":"SİL",
+      "chactersLeft":"Karakterler Sola"     
     }
 }   

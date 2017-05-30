@@ -11,6 +11,13 @@
       "Password": "Lösenord",
       "SignIn":"Logga in",
       "errorMessage":"* Ogiltigt användarnamn / lösenord eller du har inte prenumeration på den här sidan",
-      "page":"Sida" 
+      "page":"Sida",
+      "writeNote":"Skriv en anteckning.",
+      "share":"Dela med sig",
+      "cancel":"ANNULLERA",
+      "save":"SPARA",
+      "confirm":"Bekräfta?",
+      "delete":"RADERA",
+      "chactersLeft":"Tecken kvar"
 	}           
 }

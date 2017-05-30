@@ -48,4 +48,4 @@ const mapStateToProps = state => ({
     https://github.com/reactjs/reselect    */
 
 /* Connent used to connectivity between react and redux store. */
-export default connect(mapStateToProps, mapDispatchToProps)(BookshelfPage);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(BookshelfPage));

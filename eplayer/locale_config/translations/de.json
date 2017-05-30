@@ -1,5 +1,5 @@
 {
-	"messages" : {
+"messages" : {
       "signOutBtn": "Ausloggen",
       "myBookshelf": "Mein Bücherregal",
       "contents": "Inhalt",
@@ -11,6 +11,13 @@
       "Password": "Passwort",
       "SignIn":"Anmelden", 	
       "errorMessage":"* Ungültiger Benutzername / Passwort oder Sie haben kein Abonnement für diese Seite",
-      "page":"Seite"
-    }           
+      "page":"Seite",
+      "writeNote":"Schreib eine Notitz.",
+      "share":"Aktie",
+      "cancel":"STORNIEREN",
+      "save":"SPAREN",
+      "confirm":"Bestätigen?",
+      "delete":"LÖSCHEN",
+      "chactersLeft":"Zeichen übrig"
+  }           
 }

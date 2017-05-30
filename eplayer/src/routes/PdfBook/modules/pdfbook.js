@@ -493,7 +493,7 @@ return authorizationHeaderVal;
 }
 
 /* Created Action creator for feching highlight details from Reader Api. */
-export function fetchHighlightUsingReaderApi(userId,bookId,pageId,shared,courseId){
+export function fetchHighlightUsingReaderApi(userId,bookId,shared,courseId){
 
 const bookState = {
    highlights: [],
@@ -508,7 +508,7 @@ const bookState = {
   return (dispatch) => {
     dispatch(request('highlights'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-    return clients.readerApi.get('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId,{
+    return clients.readerApi.get('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId,{
       headers : {
         'Authorization' : authorizationHeaderVal
       }

@@ -1,5 +1,5 @@
 {
-	"messages" : {
+"messages" : {
       "signOutBtn": "Sign Out",
       "myBookshelf": "My Bookshelf",
       "contents": "Contents",
@@ -11,6 +11,13 @@
       "Password": "Password",
       "SignIn":"Sign In" ,
       "errorMessage":"*Invalid Username/Password or you do not have a subscription to this site",
-      "page":"Page"
-	}           
+      "page":"Page",
+      "writeNote":"Write a note.",
+      "share":"Share",
+      "cancel":"CANCEL",
+      "save":"SAVE",
+      "confirm":"Confirm?",
+      "delete":"DELETE",
+      "chactersLeft":"Characters Left"    
+      }           
 }

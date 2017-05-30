@@ -11,6 +11,13 @@
       "Password": "Passord",
       "SignIn":"Logg inn" ,
       "errorMessage":"* Ugyldig brukernavn / passord eller du har ikke abonnement på dette nettstedet",
-      "page":"Side"
+      "page":"Side",
+      "writeNote":"Skriv et notat.",
+      "share":"Dele",
+      "cancel":"kansellere",
+      "save":"LAGRE",
+      "confirm":"Bekrefte?",
+      "delete":"SLETT",
+      "chactersLeft":"Tegn igjen"
 	}           
 }

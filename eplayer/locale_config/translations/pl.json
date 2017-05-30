@@ -11,6 +11,13 @@
       "Password": "Hasło",
       "SignIn":"Zaloguj",
       "errorMessage":"* Nieprawidłowa nazwa użytkownika lub hasło lub nie masz subskrypcji tej witryny" ,
-      "page":"Strona"      
+      "page":"Strona",
+      "writeNote":"Napisz notatkę.",
+      "share":"Dzielić",
+      "cancel":"ANULUJ",
+      "save":"ZAPISAĆ",
+      "confirm":"Potwierdzać?",
+      "delete":"KASOWAĆ",
+      "chactersLeft":"Pozostałe znaki"    
     }
 }   

@@ -11,6 +11,13 @@
       "Password": "パスワード",
       "SignIn":"サインイン" ,
       "errorMessage":"*無効なユーザー名/パスワードまたはこのサイトへの登録がない",
-      "page":"ページ"
+      "page":"ページ",
+      "writeNote":"メモを書きます。",
+      "share":"シェア",
+      "cancel":"キャンセル",
+      "save":"セーブ",
+      "confirm":"確認しますか？",
+      "delete":"削除",
+      "chactersLeft":"左の文字"
     }
 }

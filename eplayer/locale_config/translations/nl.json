@@ -11,6 +11,13 @@
       "Password": "Wachtwoord",
       "SignIn":"Aanmelden" ,
       "errorMessage":"* Ongeldige Gebruikersnaam / Wachtwoord of u heeft geen abonnement op deze site",
-      "page":"Pagina"
+      "page":"Pagina",
+      "writeNote":"Schrijf een briefje.",
+      "share":"Delen",
+      "cancel":"ANNULEER",
+      "save":"besparen",
+      "confirm":"Bevestigen?",
+      "delete":"verwijderen",
+      "chactersLeft":"Tekens links"
 	}           
 }

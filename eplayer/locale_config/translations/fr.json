@@ -1,5 +1,5 @@
 {
-	"messages" : {
+"messages" : {
       "signOutBtn": "Déconnexion",
       "myBookshelf": "Ma bibliothèque",
       "contents": "Contenu",
@@ -11,7 +11,14 @@
       "Password": "Mot de passe",
       "SignIn":"Se connecter" ,
       "errorMessage":"* Nom d'utilisateur / mot de passe invalide ou vous ne vous êtes pas abonné à ce site",
-      "page": "Page"
+      "page": "Page",
+      "writeNote":"Écrire une note.",
+      "share":"Partager",
+      "cancel":"ANNULER",
+      "save":"ENREGISTRER",
+      "confirm":"Confirmer?",
+      "delete":"EFFACER",
+      "chactersLeft":"Caractères restants"
 	}           
 }
 

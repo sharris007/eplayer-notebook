@@ -11,6 +11,13 @@
       "Password": "암호",
       "SignIn":"로그인" ,
       "errorMessage":"* 사용자 이름 / 비밀번호가 잘못되었거나이 사이트에 가입하지 않았습니다.",
-      "page":"페이지"
+      "page":"페이지",
+      "writeNote":"메모를 작성하십시오.",
+      "share":"몫",
+      "cancel":"취소",
+      "save":"구하다",
+      "confirm":"확인?",
+      "delete":"지우다",
+      "chactersLeft":"등장 인물"
 	}           
 }
