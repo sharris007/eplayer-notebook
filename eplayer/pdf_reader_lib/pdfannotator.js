@@ -6,7 +6,7 @@ var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"><li cl
 
 var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label id="share-text" class="annotator-share-text">Share</label><div id="ann-share" class="annotator-share"></div></div><div class="ann-cancelsave-section"><a id="cancel-saving" class="annotator-cancel">CANCEL</a><a id="save-annotation" class="annotator-save annotator-focus">SAVE</a></div></div></div>';
 
-var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div id="label-confirm" class="ann-confirm-section"><label class="annotator-confirm">Confirm?</label></div><div class="ann-canceldelete-section"><a id="ann-confirm-cancel" class="annotator-confirm-cancel">CANCEL</a><a id="ann-confirm-del" class="annotator-confirm-delete">DELETE</a></div></div></div>';
+var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label id="label-confirm" class="annotator-confirm">Confirm?</label></div><div class="ann-canceldelete-section"><a id="ann-confirm-cancel" class="annotator-confirm-cancel">CANCEL</a><a id="ann-confirm-del" class="annotator-confirm-delete">DELETE</a></div></div></div>';
 
 var panel5 ='<li class="characters-left" style="visibility:hidden"><span id="letter-count">3000</span id="letter-text">Characters left<span><span></li>';
         
