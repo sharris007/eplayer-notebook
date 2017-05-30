@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "로그 아웃",
+      "myBookshelf": "내 책장",
+      "contents": "내용",
+      "bookmarks": "즐겨 찾기",
+      "notes" : "노트" ,
+      "Glossary": "어휘",
+  	"Footnotes": "각주",
+      "Username": "사용자 이름",
+      "Password": "암호",
+      "SignIn":"로그인" ,
+      "errorMessage":"* 사용자 이름 / 비밀번호가 잘못되었거나이 사이트에 가입하지 않았습니다.",
+      "page":"페이지"
+	}           
+}

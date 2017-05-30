@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Sair",
+      "myBookshelf": "Minha estante de livros",
+      "contents": "Conteúdo",
+      "bookmarks": "Favoritos",
+      "notes" : "Notas" ,
+      "Glossary": "Glossário",
+  	"Footnotes": "Notas de Rodapé",
+      "Username": "Nome de usuário",
+      "Password": "Senha",
+      "SignIn":"Assinar em" ,
+      "errorMessage":"* Nome de usuário / senha inválido ou você não possui uma assinatura neste site",
+      "page":"Página"
+	}           
+}

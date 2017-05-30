@@ -17,12 +17,14 @@ class Annotation extends Component {
 
   onDocumentClick(e) {
     if ((e.keyCode === 27 ||!$(e.target).closest('.annotator-editor').length) && !$('.annotator-editor').hasClass('annotator-hide')) {
-      $('#' + this.props.contentId).data('annotator').editor.hide();
+      $('.' + this.props.contentId).data('annotator').editor.hide();
     }
   }
   componentDidMount() { 
     this.annotationEventHandler();
-    $('#' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
+    $('.' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
+    var contentWid = $('.' + this.props.contentId).width()+40
+    $('.annotator-editor').css({'left':contentWid});
   }
 
   componentWillReceiveProps(nextProps) {
@@ -34,13 +36,13 @@ class Annotation extends Component {
       this.setState({'updated':false});
     }
     const annData = (flag=='updateAnnotationId')?nextProps.annotationData[0]:nextProps.annotationData;
-    $('#' + nextProps.contentId).annotator().annotator(flag, annData);
+    $('.' + nextProps.contentId).annotator().annotator(flag, annData);
    }
  } 
 
 
   annotationEventHandler() {
-    const annotation = $('#' + this.props.contentId).annotator();
+    const annotation = $('.' + this.props.contentId).annotator();
     // annotation.data('annotator').on('beforeAnnotationCreated', this.annotationEvent.bind(null, 'beforeAnnotationCreated'));
     // annotation.data('annotator').on('annotationCreated', this.annotationEvent.bind(null, 'annotationCreated'));
     // annotation.data('annotator').on('beforeAnnotationUpdated', this.annotationEvent.bind(null, 'beforeAnnotationUpdated'));

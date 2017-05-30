@@ -13,8 +13,31 @@ import spacing from 'material-ui/styles/spacing';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import createStore from './store/createStore';
 import AppContainer from './containers/AppContainer';
-
+import { IntlProvider, addLocaleData } from 'react-intl';   
+import {languages} from '../locale_config/translations/index';    
+import languageName from '../locale_config/configureLanguage';
 const RedBox = require('redbox-react').default;
+
+      
+//========================================================    
+// Locale Setup   
+//========================================================    
+var launguageid,locale;   
+const url=window.location.href;   
+var n=url.search("languageid");   
+if(n>0)   
+{   
+  var urlSplit=url.split("languageid=")   
+  languageid = Number(urlSplit[1]);   
+}   
+else    
+{   
+  var languageid =1;    
+}   
+locale=languageName(languageid);    
+const {messages}=languages.translations[locale];    
+let localisedData=locale.split('-')[0];   
+addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -56,7 +79,9 @@ let render = () => {
 
   ReactDOM.render(
     <MuiThemeProvider muiTheme={theme}>
-      <AppContainer store={store} routes={routes} />
+      <IntlProvider locale={locale} messages={messages}>
+        <AppContainer store={store} routes={routes} />
+      </IntlProvider>
     </MuiThemeProvider>,
     MOUNT_NODE
   );

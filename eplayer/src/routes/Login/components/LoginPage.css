@@ -1,16 +1,16 @@
 .form-container{
 
-	width: 25%;
-	margin-left: 35%;
-	margin-top: 10%;
+    width: 25%;
+    margin-left: 35%;
+    margin-top: 10%;
     color: black;
     font-weight: bold;
-	background: #ffffff;
-	border: 4px solid;
-	border-color: #ffffff;
+    background: #ffffff;
+    border: 4px solid;
+    border-color: #ffffff;
     border-radius: 10px;
     box-shadow: 10px 10px 5px grey;
-	
+    
 
 }
 .form_button {
@@ -64,4 +64,5 @@ form{
 
 .errorClass{
     color:red;
+    font-size: 14px;
 }

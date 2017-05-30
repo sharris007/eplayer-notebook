@@ -6,6 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const config = require('../config');
 const debug = require('debug')('app:webpack:config');
 const path = require('path');
+// const Promise = require('es6-promise').Promise;
 // const jquery = require('jquery');
 
 const paths = config.utils_paths;
@@ -63,7 +64,10 @@ webpackConfig.plugins = [
   new CopyWebpackPlugin([
       { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
-  ])
+  ]),
+  new webpack.ProvidePlugin({
+    Promise: 'es6-promise' // Promise pollyfill for IE/EDGE
+  })
 ];
 
 if (__DEV__) {

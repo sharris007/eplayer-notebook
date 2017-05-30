@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "登出",
+      "myBookshelf": "我的书架",
+      "contents": "内容",
+      "bookmarks": "书签",
+      "notes" : "笔记" ,
+      "Glossary": "词汇表",
+  	"Footnotes": "脚注",
+      "Username": "用户名",
+      "Password": "密码",
+      "SignIn":"签到" ,
+      "errorMessage":"*用户名/密码无效，或者您没有订阅此网站",
+      "page":"页"
+	}           
+}

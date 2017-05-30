@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Logg ut",
+      "myBookshelf": "Min bokhylle",
+      "contents": "innhold",
+      "bookmarks": "bokmerker",
+      "notes" : "Merknader" ,
+      "Glossary": "Ordliste",
+      "Footnotes": "Fotnoter",
+      "Username": "Brukernavn",
+      "Password": "Passord",
+      "SignIn":"Logg inn" ,
+      "errorMessage":"* Ugyldig brukernavn / passord eller du har ikke abonnement på dette nettstedet",
+      "page":"Side"
+	}           
+}

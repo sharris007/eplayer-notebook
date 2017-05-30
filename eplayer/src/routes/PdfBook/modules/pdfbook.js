@@ -1,13 +1,15 @@
-import fetch from 'isomorphic-fetch';
-import map from 'lodash/map';
-import { clients } from '../../../components/common/client';
-import axios from 'axios';
+import fetch from 'isomorphic-fetch'; /* isomorphic-fetch is third party library used for making ajax call like axios. */
+import map from 'lodash/map'; /* lodash is a JavaScript utility library delivering modularity, performance and map is method used for iterating the array or object. */
+import { clients } from '../../../components/common/client'; /* Importing the client file for framing the complete url, since baseurls are stored in client file. */
+import axios from 'axios'; /* axios is third party library, used to make ajax request. */
 import Hawk from 'hawk';
+import find from 'lodash/find';
 
 // ------------------------------------
 // Constants
 // ------------------------------------
 
+// Created Action Constant for BOOKMARKS, TOC, GO_TO_PAGE and so on. 
 export const REQUEST_BOOKMARKS = 'REQUEST_BOOKMARKS';
 export const RECEIVE_BOOKMARKS = 'RECEIVE_BOOKMARKS';
 export const ADD_BOOKMARK = 'ADD_BOOKMARK';
@@ -26,6 +28,8 @@ export const SAVE_HIGHLIGHT = 'SAVE_HIGHLIGHT';
 export const REQUEST_HIGHLIGHTS = 'REQUEST_HIGHLIGHTS';
 export const RECIEVE_HIGHLIGHTS = 'RECIEVE_HIGHLIGHTS';
 export const REMOVE_HIGHLIGHT = 'REMOVE_HIGHLIGHT';
+export const LOAD_ASSERT_URL = 'LOAD_ASSERT_URL';
+export const EDIT_HIGHLIGHT = 'EDIT_HIGHLIGHT';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -33,7 +37,7 @@ export const DELETE = 'DELETE';
 export const GET = 'GET';
 
 // ------------------------------------
-// Actions
+// Calling Actions creators based on Types. . 
 // ------------------------------------
 export function request(component) {
   switch (component) {
@@ -48,8 +52,8 @@ export function request(component) {
   }
 }
 
-
-export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
+/* Method for fetching the bookmarks from Redaer Api by passing the below parameters. */
+export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId,Page) {
   const bookState = {
     bookmarks: [],
     isFetching: {
@@ -58,6 +62,7 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
   };
   const authorizationHeaderVal = createAuthorizationToken('/bookmark?includeShared='+shared+'&userId='+userId+'&bookId='+bookId+'&courseId='+courseId, 'GET')
   
+  /* Dispatch is part of middleware used to dispatch the action, usually used in Asynchronous Ajax call.*/
   return (dispatch) => {
     dispatch(request('bookmarks'));
 
@@ -87,21 +92,22 @@ export function fetchBookmarksUsingReaderApi(bookId,shared,courseId,userId) {
             pageId : bookmark.pageId,
             pageNo : bookmark.pageNo,
             createdTimestamp : date,
-            title: 'Page '+bookmark.pageNo,
+            title: Page + ' ' + bookmark.pageNo,
             uri: extID,
             externalId: extID
         };
         bookState.bookmarks.push(bmObj);
         })
       }
+      bookState.bookmarks.sort(function(bkm1,bkm2) {return bkm1.uri - bkm2.uri}); 
       bookState.isFetching.bookmarks = false;
       return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
     });
   };
 }
 
-
-export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared) {
+/* Created action creator for addBookmarkUsingReaderApi. */
+export function addBookmarkUsingReaderApi(userId,bookId,pageId,pageNo,externalId,courseId,shared,Page) {
 
 const authorizationHeaderVal = createAuthorizationToken('/bookmark', 'POST')
 
@@ -142,7 +148,7 @@ return (dispatch) => {
             pageId : bookmarkResponse.pageId,
             pageNo : bookmarkResponse.pageNo,
             createdTimestamp : date,
-            title: 'Page '+bookmarkResponse.pageNo,
+            title: Page + ' ' + bookmarkResponse.pageNo,
             uri: extID,
             externalId: extID
         };
@@ -153,7 +159,7 @@ return (dispatch) => {
 }
 
 
-
+/* Method for deleting the selected bookmark. */
 export function removeBookmarkUsingReaderApi(bookmarkId) {
 
 const bookState = {
@@ -183,114 +189,9 @@ return (dispatch) => {
 }
 
 
-/*export function removeHighlight(highlightID, sessionKey, bookServerURL){
-  return (dispatch) => {
-    dispatch(request('highlights'));
-    axios.get(''+bookServerURL+'/ebook/ipad/deleteuserhighlight?highlightid='+highlightID+'&authkey='+sessionKey+'&outputformat=JSON',
-    {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      timeout: 20000
-    }).then((response) => {
-          if(response.status >= 400){
-            console.log(`Error in remove highlight: ${response.statusText}`)
-          }
-          return response.data
-        }).then((highlightResponse) => {
-          if(highlightResponse.length){
-            highlightResponse.forEach((highlight) =>{
-                console.log('------------------------'+highlightID);
-                return dispatch({ type: REMOVE_HIGHLIGHT, highlightID })
-              
-            })
-          }
-        })
-    }
-  }*/
-/*export function saveHighlight(userid,bookid,userbookid,bookeditionid,pageid,bookpagenumber,xcoord,ycoord,width,height,sso,bookServerURL) {
-     const bookState = {
-    highlightID : ''
-  };
-    return (dispatch) => {roletypeid
-    dispatch(request('highlights'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/saveuserhighlight?userid='+userid+'&bookid='+bookid+'&userroleid=3&userbookid='+userbookid+'&bookeditionid='+bookeditionid+'&roletypeid=3&pageid='+pageid+'&bookpagenumber='+bookpagenumber+'&shareacrosscourse=Y&xcoord='+xcoord+'&ycoord='+ycoord+'&sharewithstudent=Y&width='+width+'&height='+height+'&colorname=Yellow&authkey='+sso+'&outputformat=JSON', {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then((response) => {
-     if (response.status >= 400) {
-        console.log(`${response.statusText}`);
-      }
-      return response.data;
 
-    })
-    .then((highlightResponse) => {
-      if (highlightResponse.length) {
-        highlightResponse.forEach((highlights)=>{
-        var highLightList = highlights.highLightList;
-        highLightList.forEach((highlight) => {
-          bookState.highlightID = highlight.highlightID;
-          return dispatch({ type: SAVE_HIGHLIGHT, bookState })
-        })    
-      });
-    }
-  });
-}
-
-}*/
-/*export function fetchHighlight(userid,bookId,bookEditionID,listval,sessionKey,bookServerURL) {
-  const bookState = {
-   highlights: [],
-    isFetching: {
-      highlights: true
-    }
-  };
-  return (dispatch) => {
-    dispatch(request('highlights'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getuserhighlightbypageorder?userid='+userid+'&userroleid=3&bookid='+bookId+'&bookeditionid='+bookEditionID+'&listval='+listval+'&authkey='+sessionKey+'&outputformat=JSON', {
-      method: GET,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then((response) => {
-      if (response.status >= 400) {
-        bookState.isFetching.highlights = false;
-        return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
-      }
-      return response.data;
-
-    })
-    .then((highlightResponse) => {
-    if (highlightResponse.length) {
-        highlightResponse.forEach((highlights) => {
-          var highLightList = highlights.highLightList;
-          highLightList.forEach((highlight) => {
-           const hlObj = {
-            id: highlight.highlightID,
-            pageIndex: 1,
-            highlightHash: "[{\"left\":\""+ highlight.xcoord + "\",\"top\":\""  + highlight.ycoord + "\",\"right\":\""  + highlight.width + "\",\"bottom\":\"" + highlight.height + "\"}]"
-           }
-          
-          bookState.highlights.push(hlObj);
-          
-         })
-        });
-      }
-      bookState.isFetching.highlights = false;
-      return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
-    });
-  };
-}*/
-
-export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL,hastocflatten){
+/* Method for fetching Toc list by passing following parameters. */
+export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditionid,sessionKey,bookServerURL,hastocflatten,roleTypeID){
   const bookState = {
     toc: {
       content: {},
@@ -305,7 +206,8 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
   };
   return(dispatch) => {
     dispatch(request('toc'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getbaskettocinfo?userroleid=2&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc', 
+    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
+    return axios.get(''+bookServerURL+'/ebook/ipad/getbaskettocinfo?userroleid='+roleTypeID+'&bookid='+bookId+'&language=en_US&authkey='+sessionKey+'&bookeditionid='+bookeditionid+'&basket=toc', 
     {
       timeout: 20000
     })
@@ -456,13 +358,14 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
     }
     return finalChildList;
   }
-
+/* Method for creating node in Toc. */
  function Node() {
    this.id =""
    this.title =""
    this.children =[]
    this.urn =""
  }
+/* Method for constructing tree for Toc. */ 
  function construct_tree(input){
        var output = new Node();
        output.id = input.i;
@@ -488,22 +391,31 @@ export function fetchTocAndViewer(bookId,authorName,title,thumbnail,bookeditioni
      }
     return output;
 }
-
+/* Created Action creator for navigating the different pages from current page. */
 export function goToPage(pageId) {
+   // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
   return (dispatch) => {
     dispatch({ type: GO_TO_PAGE, pageId });
   };
 }
 
-export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL)
+/* Created Action creator for fetching all book detail. */
+export function fetchBookInfo(bookid,sessionKey,userid,bookServerURL,roleTypeID)
 {
+  if (roleTypeID === undefined)
+  {
+      roleTypeID = 2
+  }
+  
+   // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
   return{
   type: 'RECEIVEBOOKINFO',
-  payload: axios.get(''+bookServerURL+'/ebook/ipad/getuserbookinfo?userid='+userid+'&bookid='+bookid+'&userroleid=2&authkey='+sessionKey+'&outputformat=JSON'),
+  payload: axios.get(''+bookServerURL+'/ebook/ipad/getuserbookinfo?userid='+userid+'&bookid='+bookid+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON'),
   timeout: 20000
   };
 }
-export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexToLoad,totalPagesToHit,sessionKey,bookServerURL,loadPdfPageCallback)
+/* Created Action creator for getting page details. */
+export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexToLoad,totalPagesToHit,sessionKey,bookServerURL,loadPdfPageCallback,roleTypeID)
  {
     const bookState = {
       bookInfo:{
@@ -511,7 +423,8 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
       }
   };
   return(dispatch)=>{
-    return axios.get(''+bookServerURL+'/ebook/ipad/getpagebypageorder?userid='+userid+'&userroleid=3&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+totalPagesToHit+'&authkey='+sessionKey+'&outputformat=JSON',
+     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
+    return axios.get(''+bookServerURL+'/ebook/ipad/getpagebypageorder?userid='+userid+'&userroleid='+roleTypeID+'&bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+totalPagesToHit+'&authkey='+sessionKey+'&outputformat=JSON',
     {
       timeout: 20000
     })
@@ -539,15 +452,16 @@ export function fetchPageInfo(userid,userroleid,bookid,bookeditionid,pageIndexTo
       });
     }
     dispatch({ type: 'RECEIVE_PAGE_INFO',bookState});
-    loadPdfPageCallback(pageIndexToLoad);
+    //loadPdfPageCallback(pageIndexToLoad);
     
     });
   };
 
  }
-
+ /* Created Action creator for fetching user information. */
  export function fetchUserInfo(globaluserid, bookid, uid, ubd, ubsd, sessionKey,bookServerURL)
   {
+    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     return{
     type: 'RECEIVE_USER_INFO',
     payload: axios.get(''+bookServerURL+'/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid='+globaluserid+'&bookid='+bookid+'&uid='+ubd+'&ubd='+ubd+'&ubsd='+ubsd+'&authkey='+sessionKey+''),
@@ -578,6 +492,7 @@ const authorizationHeaderVal = authorizationVal.replace("Hawk id=","ReaderPlus k
 return authorizationHeaderVal;
 }
 
+/* Created Action creator for feching highlight details from Reader Api. */
 export function fetchHighlightUsingReaderApi(userId,bookId,pageId,shared,courseId){
 
 const bookState = {
@@ -588,11 +503,11 @@ const bookState = {
   };
 
   //var uri = 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared=true&userId='+userId+'&bookId='+bookId+'&pageId='+pageId;
-  const authorizationHeaderVal = createAuthorizationToken('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId, 'GET')
+  const authorizationHeaderVal = createAuthorizationToken('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId, 'GET')
   console.log("Authorization : "+ authorizationHeaderVal);
   return (dispatch) => {
     dispatch(request('highlights'));
-    
+    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     return clients.readerApi.get('/highlight?includeShared='+shared+'&limit=100&userId='+userId+'&bookId='+bookId+'&courseId='+courseId+'&pageId='+pageId,{
       headers : {
         'Authorization' : authorizationHeaderVal
@@ -609,25 +524,29 @@ const bookState = {
         var hlObj={
 
         }
+        var time = new Date(highlight.updatedTime*1000);
+        var pageid = Number(highlight.pageId);
         hlObj.userId = highlight.userId;
         hlObj.bookId = highlight.bookId;
-        hlObj.pageId = highlight.pageId;
+        hlObj.pageId = pageid;
         hlObj.courseId = highlight.courseId;
         hlObj.shared = highlight.shared;
         hlObj.highlightHash = highlight.highlightHash;
-        hlObj.note = highlight.note;
-        hlObj.selectedText = highlight.selectedText;
-        hlObj.colour = highlight.colour;
+        hlObj.comment = highlight.note;
+        hlObj.text = highlight.selectedText;
+        hlObj.color = highlight.colour;
         hlObj.id = highlight.id;
         hlObj.pageNo = highlight.pageNumber;
-        hlObj.meta = highlight.meta
+        hlObj.meta = highlight.meta;
+        hlObj.author = highlight.meta.author;
         hlObj.creationTime = highlight.creationTime;
-        hlObj.updatedTime = highlight.updatedTime;
+        hlObj.time = time;
         hlObj.pageIndex = 1;        //For Foxit
 
         bookState.highlights.push(hlObj);
       })
     }
+    bookState.highlights.sort(function(hl1,hl2) {return hl2.time - hl1.time});
     bookState.isFetching.highlights = false;
     return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
   })
@@ -635,8 +554,8 @@ const bookState = {
   }
 
 }
-
-export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta){
+/* Method for saving the highLight selected by user. */
+export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId,shared,highlightHash,note,selectedText,colour,meta,currentPageId){
   
   const authorizationHeaderVal = createAuthorizationToken('/highlight', 'POST')
   console.log("Authorization : "+ authorizationHeaderVal);
@@ -645,7 +564,7 @@ export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId
   var data = {
       "userId" : userId,
       "bookId" : bookId,
-      "pageId" : pageId,
+      "pageId" : currentPageId,
       "pageNo" : pageNo,
       "courseId" : courseId,
       "shared" : shared,
@@ -656,40 +575,50 @@ export function saveHighlightUsingReaderApi(userId,bookId,pageId,pageNo,courseId
       "meta" : meta,
       "highlightEngine" : "eT1PDFPlayer"
   }
-  return{
-  type: 'SAVE_HIGHLIGHT',
-  payload: axiosInstance.post(`/highlight`, data)
-  /*axios({
-    method : 'post',
-    url: 'https://api-sandbox.readerplatform.pearson-intl.com/highlight',
-    headers: {
-      'Accept' : 'application/json',
-      'Authorization' : authorizationHeaderVal
-    },
-    data: {
-      "userId" : userId,
-      "bookId" : bookId,
-      "pageId" : pageId,
-      "pageNo" : pageNo,
-      "courseId" : courseId,
-      "shared" : shared,
-      "highlightHash" : highlightHash,
-      "note" : note,
-      "selectedText" : selectedText,
-      "colour" : colour,
-      "meta" : meta,
-      "highlightEngine" : "eT1PDFPlayer"
-    }
-
-
-  })*/
+  return (dispatch) => {
+    dispatch(request('highlights'));
+    return axiosInstance.post(`/highlight`, data).then((response) => {
+      if(response.status >= 400){
+        console.log(`error: ${response.statusText}`);
+      }
+      return response.data;
+    }).then((highlightResponse) => {
+      var hlObj;
+       if(highlightResponse !== undefined){
+        var time = new Date(highlightResponse.updatedTime*1000);
+        var extID = Number(highlightResponse.externalId);
+        var pageid = Number(highlightResponse.pageId);
+        hlObj = {
+        userId : highlightResponse.userId,
+        bookId : highlightResponse.bookId,
+        pageId : pageid,
+        courseId : highlightResponse.courseId,
+        shared : highlightResponse.shared,
+        highlightHash : highlightResponse.highlightHash,
+        comment : highlightResponse.note,
+        text : highlightResponse.selectedText,
+        color : highlightResponse.colour,
+        id : highlightResponse.id,
+        pageNo : highlightResponse.pageNo,
+        meta : highlightResponse.meta,
+        author : highlightResponse.meta.author,
+        creationTime : highlightResponse.creationTime,
+        time : time,
+        pageIndex : 1       //For Foxit
+        }
+       }
+       dispatch({type : 'SAVE_HIGHLIGHT', hlObj});
+    })
   }
+
 }
+/* Removing highLight from the page for selected area. */
 export function removeHighlightUsingReaderApi(id) {
   const authorizationHeaderVal = createAuthorizationToken('/highlight/'+id , 'DELETE');
   console.log("Authorization : "+ authorizationHeaderVal);
   return (dispatch) => {
     dispatch(request('highlights'));
+    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
    /* return axios({
       method : 'delete',
       url : 'https://api-sandbox.readerplatform.pearson-intl.com/highlight/'+id,
@@ -711,11 +640,98 @@ export function removeHighlightUsingReaderApi(id) {
     })
   }
 }
+export function loadAssertUrl(totalPagesToHit, openFile, storeAssertUrl, pages, assertUrls){
+  var bookState = {
+    bookInfo : {
+      assertUrls : []
+    }
+  }
+  return(dispatch) => {
+    var pagesToHit  = totalPagesToHit.split(',');
+    console.log("totalPagesToHit  "+ pagesToHit );
+    for (var i = 0; i < pagesToHit.length; i++){
+       var urlObj = {
 
+      }
+      if(pagesToHit[i] !== ''){
+        const currentPage = find(pages, page => page.pageorder == parseInt(pagesToHit[i]));
+       //const assertUrlObj = find(assertUrls, obj => obj.pageOrder == currentPage.pageorder);
+        //if(assertUrlObj == undefined)
+              // {   
+                    urlObj.pageOrder = currentPage.pageorder;
+                    urlObj.pageNumber = currentPage.pagenumber;
+                    urlObj.assertUrl = openFile(currentPage.pageorder,currentPage.pdfPath);
+                    bookState.bookInfo.assertUrls.push(urlObj);
+  
+               // }
+      }
+    }
+    dispatch({type : 'LOAD_ASSERT_URL', bookState});
+    storeAssertUrl();
+  }
+ }
+
+export function editHighlightUsingReaderApi(id,note,colour,isShared) {
+  var editHightlightURI = '/highlight/'+id;
+  var data = {
+
+  };
+  if(note!=undefined)
+  {
+    data.note = note;
+  }
+  if(colour != undefined)
+  {
+    data.colour = colour;
+  }
+  if(isShared != undefined)
+  {
+     data.shared = isShared;
+  }
+  const authorizationHeaderVal = createAuthorizationToken(editHightlightURI , 'PUT');
+  return (dispatch) => {
+  dispatch(request('highlights'));
+  return clients.readerApi.put(editHightlightURI,data,{
+      headers : {
+        'Authorization' : authorizationHeaderVal
+      }
+    }).then((response) => {
+       if(response.status >= 400){
+            console.log(`Error in edit highlight: ${response.statusText}`)
+          }
+          return response.data;
+    }).then((highlightResponse) => {
+            var highlightObj;
+            if(highlightResponse !== undefined){
+            var time = new Date(highlightResponse.updatedTime*1000);
+            var pageid = Number(highlightResponse.pageId);
+            highlightObj = {
+              userId : highlightResponse.userId,
+              bookId : highlightResponse.bookId,
+              pageId : pageid,
+              courseId : highlightResponse.courseId,
+              shared : highlightResponse.shared,
+              highlightHash : highlightResponse.highlightHash,
+              comment : highlightResponse.note,
+              text : highlightResponse.selectedText,
+              color : highlightResponse.colour,
+              id : highlightResponse.id,
+              pageNo : highlightResponse.pageNo,
+              meta : highlightResponse.meta,
+              author : highlightResponse.meta.author,
+              creationTime : highlightResponse.creationTime,
+              time : time,
+              pageIndex : 1      
+              };
+            }
+            return dispatch({ type: EDIT_HIGHLIGHT, highlightObj });
+    });
+  }
+}
 
  
 // ------------------------------------
-// Action Handlers
+// Action Handlers for every action type which is used above. 
 // ------------------------------------
 const ACTION_HANDLERS = {
 
@@ -741,7 +757,7 @@ const ACTION_HANDLERS = {
       {
         id: action.bmObj.id,
         uri: action.bmObj.uri,
-        title:'Page '+action.bmObj.pageNo,
+        title: action.bmObj.title,
         pageID: action.bmObj.pageId,
         createdTimestamp: action.bmObj.createdTimestamp,
         externalId: action.bmObj.externalId,
@@ -770,7 +786,7 @@ const ACTION_HANDLERS = {
   }),
   [RECIEVE_HIGHLIGHTS]: (state, action) => ({
     ...state,
-    highlights: action.bookState.highlights,
+    annTotalData: action.bookState.highlights,
     isFetching: {
       ...state.isFetching,
       highlights: action.bookState.isFetching.highlights
@@ -778,15 +794,67 @@ const ACTION_HANDLERS = {
   }),
   [REMOVE_HIGHLIGHT]: (state, action) => ({
     ...state,
-    highlights: state.highlights.filter(highlight => highlight.id !== action.highlightID),
+    annTotalData: state.annTotalData.filter(highlight => highlight.id !== action.id),
     isFetching: {
       ...state.isFetching,
       highlights: false
     }
   }),
-  [SAVE_HIGHLIGHT]: (state, action) => ({
+   [SAVE_HIGHLIGHT]: (state, action) => ({
     ...state,
-    highlightID: action.bookState.highlightID
+    annTotalData: [
+      ...state.annTotalData,
+      {
+        userId : action.hlObj.userId,
+        bookId : action.hlObj.bookId,
+        pageId : action.hlObj.pageId,
+        author : action.hlObj.author,
+        courseId : action.hlObj.courseId,
+        shared : action.hlObj.shared,
+        highlightHash : action.hlObj.highlightHash,
+        comment : action.hlObj.comment,
+        text : action.hlObj.text,
+        color : action.hlObj.color,
+        id : action.hlObj.id,
+        pageNo : action.hlObj.pageNo,
+        meta : action.hlObj.meta,
+        creationTime : action.hlObj.creationTime,
+        time : action.hlObj.time,
+        pageIndex : action.hlObj.pageIndex
+      }
+    ].sort(function(hl1,hl2) {return hl2.time - hl1.time}),
+    isFetching: {
+      ...state.isFetching,
+      highlights: false
+    }
+  }),
+  [EDIT_HIGHLIGHT]: (state, action) => ({
+    ...state,
+    annTotalData: [
+      ...state.annTotalData.filter(highlight => highlight.id !== action.highlightObj.id),
+      {
+        userId : action.highlightObj.userId,
+        bookId : action.highlightObj.bookId,
+        pageId : action.highlightObj.pageId,
+        author : action.highlightObj.author,
+        courseId : action.highlightObj.courseId,
+        shared : action.highlightObj.shared,
+        highlightHash : action.highlightObj.highlightHash,
+        comment : action.highlightObj.comment,
+        text : action.highlightObj.text,
+        color : action.highlightObj.color,
+        id : action.highlightObj.id,
+        pageNo : action.highlightObj.pageNo,
+        meta : action.highlightObj.meta,
+        creationTime : action.highlightObj.creationTime,
+        time : action.highlightObj.time,
+        pageIndex : action.highlightObj.pageIndex
+      }
+    ].sort(function(hl1,hl2) {return hl2.time - hl1.time}),
+    isFetching: {
+      ...state.isFetching,
+      highlights: false
+    }
   }),
   [REQUEST_TOC]: state => ({
     ...state,
@@ -830,7 +898,9 @@ const ACTION_HANDLERS = {
                   numberOfPages: action.payload.data[0].userBookTOList[0].numberOfPages,
                   bookid: action.payload.data[0].userBookTOList[0].bookID,
                   bookeditionid: action.payload.data[0].userBookTOList[0].bookEditionID,
-                  hastocflatten: action.payload.data[0].userBookTOList[0].hastocflatten
+                  hastocflatten: action.payload.data[0].userBookTOList[0].hastocflatten,
+                  languageid: action.payload.data[0].userBookTOList[0].languageID,
+                  roleTypeID: action.payload.data[0].userBookTOList[0].roleTypeID
                   }
               }
   }),
@@ -871,6 +941,13 @@ const ACTION_HANDLERS = {
             fetched:false
               }
   }),
+  [LOAD_ASSERT_URL]:  (state, action) => ({
+    ...state,
+    bookinfo: {
+            ...state.bookinfo,
+            assertUrls: state.bookinfo.assertUrls===undefined ? action.bookState.bookInfo.assertUrls : state.bookinfo.assertUrls.concat(action.bookState.bookInfo.assertUrls)
+              }
+  }),
 };
 
 // ------------------------------------
@@ -879,6 +956,7 @@ const ACTION_HANDLERS = {
 const initialState = {
   annotations: [],
   bookmarks: [],
+  annTotalData : [],
   preferences: {},
   toc: {},
   viewer: {},
@@ -902,6 +980,7 @@ const initialState = {
   }
 };
 
+/* Method for calculating the new state for dispatched actions. */
 export default function book(state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type];
   return handler ? handler(state, action) : state;

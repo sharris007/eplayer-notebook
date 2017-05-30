@@ -9,6 +9,7 @@ import { BookmarkListComponent } from '@pearson-incubator/bookmarks';
 import { NoteListComponent } from '@pearson-incubator/notes';
 import './Drawer.scss';
 
+var locale;
 let counter = -1;
 let rowCount = 0;
 const grey = '#f5f5f5';
@@ -23,11 +24,34 @@ const center = 'center';
 class DrawerComponent extends React.Component {
   constructor(props) {
     super(props);
+    if(this.props.locale=="en-US-HE")
+    {
+      locale="en-US";
+    }
+    else if(this.props.locale=="es-US-CG" || this.props.locale=="es-ES-CS" || this.props.locale=="es-MX-LA")
+    {
+      locale="es-US";
+    }
+    else if(this.props.locale=="fr-FR-CG")
+    {
+      locale="fr";
+    }
+    else if(this.props.locale=="en-CA-PS" || this.props.locale=="en-CA-ER" )
+    {
+      locale="en-CA";
+    }
+    else
+    {
+      locale=this.props.locale;
+    }
     this.state = {
       slideIndex: 0,
       drawerOpen: false,
       tocData:''
     };
+
+
+
   }
 
   componentDidMount() {
@@ -229,7 +253,7 @@ class DrawerComponent extends React.Component {
           value={this.state.slideIndex}
         >
           < Tab
-            label="Contents"
+            label={this.props.messages !=undefined ? this.props.messages.contents : 'Contents'}
             id="contents"
             style={drawerTab.tabHeader}
             onActive={
@@ -239,7 +263,7 @@ class DrawerComponent extends React.Component {
             onKeyDown={this.keyBoardNavigation}
             value={0}
           /> < Tab
-            label="Bookmarks"
+            label={this.props.messages !=undefined ? this.props.messages.bookmarks : 'Bookmarks'} 
             id="bookmarks"
             style={drawerTab.tabHeader}
             onActive={
@@ -249,7 +273,7 @@ class DrawerComponent extends React.Component {
             onKeyDown={this.keyBoardNavigation}
             value={1}
           /> < Tab
-            label="Notes"
+            label={this.props.messages !=undefined ? this.props.messages.notes : 'Notes'} 
             id="notes"
             style={drawerTab.tabHeader}
             onActive={
@@ -271,6 +295,7 @@ class DrawerComponent extends React.Component {
                 depth={5}
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
+                locale={locale}
               />
             }
             { this.props.bookData.bookmarks &&
@@ -279,6 +304,7 @@ class DrawerComponent extends React.Component {
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
                 removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
                 isET1={this.props.isET1}
+                locale={locale} 
               />
              }
              { this.props.bookData.annTotalData &&
@@ -286,6 +312,7 @@ class DrawerComponent extends React.Component {
                 notes={this.props.bookData.annTotalData}
                 clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
                 removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
+                locale={locale}
               />
             }
           < /SwipeableViews> < /div > < /Drawer>

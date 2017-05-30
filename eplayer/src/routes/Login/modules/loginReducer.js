@@ -1,7 +1,7 @@
 
 
 // ------------------------------------
-// Constants
+// Constants for action type. 
 // ------------------------------------
 export const LOGIN_PENDING = 'LOGIN_PENDING';
 export const LOGIN_FULFILLED = 'LOGIN_FULFILLED';
@@ -14,8 +14,9 @@ export const LOGIN_DETAILS ='LOGIN_DETAILS';
  * @type {{type}} returns the handler for action type
  */
 const ACTION_HANDLERS = {
+  /* Action type for pending status for login. */
   [LOGIN_PENDING]: state => ({ ...state, fetching: true, error: null }),
-
+  /* Action type when the login details fetched from Rest Api. */
   [LOGIN_FULFILLED]: (state, action) => ({
     ...state,
     fetching: false,
@@ -29,7 +30,7 @@ const ACTION_HANDLERS = {
             identityId : action.payload.data.data.identityId
       },
     error: null }),
-
+  /* Action type when wrong login username and password passed to Rest Api. */
   [LOGIN_REJECTED]: (state, action) => ({ 
     ...state,
     fetching: false,
@@ -40,7 +41,7 @@ const ACTION_HANDLERS = {
 
   [LOGIN_DETAILS]:(state, action) => ({...state,data:action.data}),
 };
-
+/* Defining the initial state for action handler. */
 const initialState = {
   data: {},
   fetched: false,
@@ -49,6 +50,7 @@ const initialState = {
   errorMessage:''
 };
 
+/* Method for checking and passing the action for computing the next state. */
 export default function (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type];  
   return handler ? handler(state, action) : state;

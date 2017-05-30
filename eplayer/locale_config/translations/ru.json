@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Sair",
+      "myBookshelf": "Minha estante de livros",
+      "contents": "содержание",
+      "bookmarks": "закладки",
+      "notes" : "Заметки" ,
+      "Glossary": "глоссарий",
+  	"Footnotes": "Сноски",
+      "Username": "имя пользователя",
+      "Password": "пароль",
+      "SignIn":"Войти в систему" ,
+      "errorMessage":"* Неверное имя пользователя / пароль или у вас нет подписки на этот сайт",
+      "page":"страница"
+	}           
+}

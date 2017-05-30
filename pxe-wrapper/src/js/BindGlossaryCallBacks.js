@@ -49,7 +49,13 @@ export class BindGlossaryCallBacks {
               }
 
               popOverCollection.popOverTitle = glossaryNode ? (glossaryNode.getElementsByTagName('dfn').length > 0 ? glossaryNode.getElementsByTagName('dfn')[0].textContent : ''): '';
-              popOverCollection.popOverDescription = glossaryNode ? (glossaryNode.nextElementSibling ? glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML : '') : '';
+              let glossaryDesc = '';
+              if(glossaryNode && glossaryNode.nextElementSibling && glossaryNode.nextElementSibling.getElementsByTagName('p')[0]) {
+                glossaryDesc = glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML;
+              } else if(glossaryNode && glossaryNode.nextElementSibling) {
+                glossaryDesc = glossaryNode.nextElementSibling.innerHTML
+              }
+              popOverCollection.popOverDescription = glossaryDesc;
               if (popOverCollection.popOverTitle && popOverCollection.popOverDescription) {
                 this.glossaryCollection.push({'popOverCollection' : popOverCollection, 'item' : item});
               }

@@ -37,6 +37,7 @@ export class BookshelfHeader extends React.Component {
     });
   };
   onClick = () => {
+    var langQuery=sessionStorage.getItem('bookshelfLang');
     var i = sessionStorage.length;
     while(i--) {
       var key = sessionStorage.key(i);
@@ -54,7 +55,14 @@ export class BookshelfHeader extends React.Component {
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
-    browserHistory.push(`/eplayer/login`);
+    if(langQuery != "?languageid=1")
+    {
+      browserHistory.push(`/eplayer/login` + langQuery);  
+    }
+    else
+    {
+      browserHistory.push(`/eplayer/login`);
+    }
     //this.props.logout();
   }
 
@@ -70,13 +78,13 @@ export class BookshelfHeader extends React.Component {
         </div>
         <div className="signoutBtn">
           <RaisedButton
-            label="Sign out"
+            label={this.props.messages.signOutBtn}
             buttonStyle={style.raisedButton}
             labelStyle={style.raisedButton.label}
             onClick={this.onClick}
           />
         </div>
-        <div className="title">My Bookshelf</div>
+        <div className="title">{this.props.messages.myBookshelf}</div>
       </div>
     );
   }

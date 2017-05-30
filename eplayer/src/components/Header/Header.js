@@ -10,11 +10,21 @@ import DrawerComponent from './Drawer';
 import Search from '../search/containers/searchContainer';
 import MoreMenuComponent from '../moreMenu/containers/moreMenuContainer';
 import { injectReducer } from '../../store/reducers';
+import { IntlProvider, addLocaleData} from 'react-intl';    
+import {languages} from '../../../locale_config/translations/index';
 
+let locale,localisedData,messages;
 
 export class Header extends React.Component {
   constructor(props) {
     super(props);
+    if(this.props.locale != undefined)
+    {
+      locale=this.props.locale;   
+      localisedData=locale.split('-')[0];   
+      addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
+      messages=this.props.messages;
+    }
     this.state = {
       drawerOpen: false,
       prefOpen: false,
@@ -87,7 +97,16 @@ export class Header extends React.Component {
       this.props.bookData.bookmarks=[];
       this.props.bookData.bookinfo=[];
     }
-    browserHistory.push('/eplayer/bookshelf');
+    let langQuery=sessionStorage.getItem('bookshelfLang');
+    if(langQuery != "?languageid=1")    
+    {   
+      browserHistory.push(`/eplayer/bookshelf` + langQuery);      
+    }   
+    else    
+    {   
+      browserHistory.push(`/eplayer/bookshelf`);    
+    }
+    this.props.bookCallbacks.clearSessionStorage();
     this.setState({ open: false });
   }
 
@@ -239,12 +258,6 @@ export class Header extends React.Component {
           }
           iconElementRight={
             <div>
-              <div className="gotopage-wrapper">
-                <input type="text" id="pageNum" placeholder="Go to" title="Go to page - Enter a page number, like 34, xii, or A-15. Press enter to submit" onChange={ this.goToTextChange } onKeyDown = {(e) => this.goToPageOnKeyUp(e)}/>
-                 <button className="btn btn-link gotopage-button" onClick={this.goToPageClick}>
-                 <i className="fa fa-arrow-circle-right" aria-hidden="true"></i>
-                </button>
-              </div>
               <div className="bookmarkIcon" role="button" tabIndex="0">
                 <BookmarkIcon data={bookmarkIconData} />
               </div>
@@ -268,16 +281,16 @@ export class Header extends React.Component {
                 <Icon name="search-lg-18" />
               </div>
               <div className="searchContainer">
-                {this.state.searchOpen ? <Search store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={(pageId)=>this.goToPage(pageId)} indexId = {this.props.indexId} listClick = {this.props.listClick} isET1 = 'Y'/> : <div className="empty" />}
+               {this.state.searchOpen ? <Search locale={locale} store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={(pageId)=>this.goToPage(pageId)} indexId = {this.props.indexId} listClick = {this.props.listClick} isET1 = 'Y'/> : <div className="empty" />}
               </div>
               <div className="moreIcon">
-                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} serverDetails={this.props.serverDetails} />
+                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages}/>
               </div>
             </div>}
         />
         { 
           this.state.drawerOpen &&
-          <DrawerComponent
+          <DrawerComponent locale={locale} messages={messages}
             bookData={this.props.bookData}
             bookCallbacks={this.props.bookCallbacks}
             isOpen={this.props.drawerOpen}

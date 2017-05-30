@@ -12,6 +12,7 @@ class MoreMenuComponent extends React.Component {
     injectReducer(this.props.store, { key: 'moreMenu', reducer });
   }
   handleClick = () => {
+    var langQuery=sessionStorage.getItem('bookshelfLang');
     var i = sessionStorage.length;
     while(i--) {
       var key = sessionStorage.key(i);
@@ -29,7 +30,14 @@ class MoreMenuComponent extends React.Component {
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
-    browserHistory.push(`/eplayer`);
+    if(langQuery != "?languageid=1")
+    {
+      browserHistory.push(`/eplayer/login` + langQuery);  
+    }
+    else
+    {
+      browserHistory.push(`/eplayer/login`);
+    }
     this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails);
     //this.props.logout();
   }
@@ -47,7 +55,7 @@ class MoreMenuComponent extends React.Component {
       anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
       targetOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
-      <MenuItem primaryText="Sign out" />
+      <MenuItem primaryText={this.props.messages != undefined ? this.props.messages.signOutBtn : 'Sign Out'} />
     </IconMenu>
     );
   }
@@ -58,4 +66,3 @@ MoreMenuComponent.propTypes = {
 };
 
 export default MoreMenuComponent;
-

@@ -319,7 +319,7 @@ class PageViewer extends React.Component {
     const fontSize = this.props.src.pageFontSize ? (this.props.src.pageFontSize/3.5) + 'px' : '0.6px';
     return ( 
       <div id = "book-render-component" ref = {(el) => { this.bookComBlock = el; }} tabIndex = "0" onKeyUp = {this.arrowNavigation} >
-        <div id={this.props.src.contentId}>
+        <div id={this.props.src.contentId} className={this.props.src.contentId}>
           <div id = "book-container" className = "book-container" ref = {(el) => { this.bookContainerRef = el; }} style={{zoom : zommLevel, fontSize : fontSize}}>
             {!this.state.completeBookLoad ? <RefreshIndicator size={50} left={-20} top={10} status={'loading'} 
             style={{marginLeft: '50%', marginTop: '25%'}} /> :''}

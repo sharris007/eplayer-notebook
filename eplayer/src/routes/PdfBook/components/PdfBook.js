@@ -1,12 +1,23 @@
-import React, { Component } from 'react';
-import CircularProgress from 'material-ui/CircularProgress';
+import React, { Component } from 'react';/*Importing the react and component from react library. */
+import CircularProgress from 'material-ui/CircularProgress';/* Import the CircularProgress for adding the progressBar. */
 import {PdfBookReader} from './PdfBookReader.js';
-var identityId,ubd,ubsd,ssoKey,serverDetails,uid;
+import { IntlProvider, addLocaleData } from 'react-intl';   
+import {languages} from '../../../../locale_config/translations/index';   
+import languageName from '../../../../locale_config/configureLanguage';
+/* Defining the variables for sessionStorage. */
+var identityId,ubd,ubsd,ssoKey,serverDetails,uid,langID,roleTypeID;
+
+/* Creating PdfBook component. */
 export class PdfBook extends Component {
 
+/* Async keyword used for independent calling the method, componentWillMount is lifecycle method, 
+used for before mounting occurs. */
 async componentWillMount() {
     if(this.props.login.data === undefined || this.props.bookshelf.ssoKey === undefined){
-             //alert("if"+sessionStorage.getItem('ubd'));
+             /* sessionStorage is used to store the token, that will be remain in session untill we close the browser or any event action occured. 
+             React store will keep the token untill we refresh the pages. 
+             Multiple methods has been used, getItem to retrive the token, 
+             setItem to set the  token, removeItme to delete the token. */
              identityId = sessionStorage.getItem('identityId');
              //uid = sessionStorage.getItem('uid');
              ubd = sessionStorage.getItem('ubd');
@@ -14,7 +25,6 @@ async componentWillMount() {
              ssoKey = sessionStorage.getItem('ssoKey');
              serverDetails = sessionStorage.getItem('serverDetails');
              if(this.props.bookshelf.uPdf){
-              //alert("uPdf");
                   sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
                   sessionStorage.setItem('title',this.props.bookshelf.title);
                   sessionStorage.setItem('thumbnail',this.props.bookshelf.thumbnail);
@@ -24,9 +34,9 @@ async componentWillMount() {
                   ubsd = this.props.bookshelf.ubsd;
                   ssoKey = this.props.bookshelf.ssoKey;
                   serverDetails = this.props.bookshelf.serverDetails;
+                  roleTypeID = this.props.bookshelf.roleTypeID;
              }
         }else{ 
-            //alert("else");
             sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
             sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
             sessionStorage.setItem('title',this.props.bookshelf.title);
@@ -42,16 +52,33 @@ async componentWillMount() {
             ubsd = this.props.bookshelf.ubsd;
             ssoKey = this.props.bookshelf.ssoKey;
             serverDetails = this.props.bookshelf.serverDetails;
+            roleTypeID = this.props.bookshelf.roleTypeID;
         }
+
+       /* Await operator is used to wait for a Promise returned by an async function. */ 
+       /* Method used for fetching the user details and book details. */
        await this.props.fetchUserInfo(identityId, this.props.params.bookId, ubd, ubd, ubsd, ssoKey, serverDetails);
-       await this.props.fetchBookInfo(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails);
+       await this.props.fetchBookInfo(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails,roleTypeID);
 }
+
+ /* Multiple methods we have paased in PdfBookReader inside return, fetchTocViewer fot fetching the value of TOC,
+   fetchBookmarksUsingReaderApi for fetching the bookmark details, addBookmarkUsingReaderApi is used for adding the bookmark details,
+   and so on as methods names are very specific. */
   render()
   {
     if(this.props.book.bookinfo.fetched)
     {
-      return(<PdfBookReader 
-                        fetchTocAndViewer={this.props.fetchTocAndViewer}
+      langID=this.props.book.bookinfo.book.languageid;
+      let locale=languageName(langID);
+      let localisedData=locale.split('-')[0];
+      addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
+      const {messages}=languages.translations[locale];
+      const PdfbookMessages={
+      PageMsg:messages.page,
+    }
+      return(
+        <PdfBookReader locale={locale}
+              fetchTocAndViewer={this.props.fetchTocAndViewer}
               fetchBookmarksUsingReaderApi={this.props.fetchBookmarksUsingReaderApi}
               addBookmarkUsingReaderApi={this.props.addBookmarkUsingReaderApi}
               removeBookmarkUsingReaderApi={this.props.removeBookmarkUsingReaderApi}
@@ -65,6 +92,9 @@ async componentWillMount() {
               fetchHighlightUsingReaderApi = {this.props.fetchHighlightUsingReaderApi}
               saveHighlightUsingReaderApi = {this.props.saveHighlightUsingReaderApi}
               removeHighlightUsingReaderApi= {this.props.removeHighlightUsingReaderApi}
+              PdfbookMessages={PdfbookMessages}
+              loadAssertUrl = {this.props.loadAssertUrl}
+              editHighlightUsingReaderApi = {this.props.editHighlightUsingReaderApi}
                         />);
     }
     else

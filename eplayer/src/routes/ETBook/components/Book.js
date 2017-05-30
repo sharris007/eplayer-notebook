@@ -375,7 +375,7 @@ export class Book extends Component {
     //End of Wrapper PxePlayer
     return (
       <div>
-        <Header
+        <Header  locale='en-US'
           classname={this.state.classname}
           pageTitle = {this.state.currentPageTitle}
           bookData={this.props.book}
@@ -394,7 +394,6 @@ export class Book extends Component {
            
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
             {!playlistReceived ? <RefreshIndicator size={50} left={650} top={200} status="loading" /> :''}
-            {playlistReceived ? <div className="printBlock"><img className="printer-epl" src={"https://cdn1.iconfinder.com/data/icons/nuvola2/128x128/devices/print_printer.png"} onClick={this.printFun} /> </div>: '' }
             {playlistReceived ? <PxePlayer bootstrapParams={bootstrapParams}  applnCallback={this.onPageChange}/> : ''}
           </div>
            {this.state.isPanelOpen?<div>		

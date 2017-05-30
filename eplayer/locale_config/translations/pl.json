@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Wyloguj się",
+      "myBookshelf": "Moja półka na książki",
+      "contents": "Zawartość",
+      "bookmarks": "Zakładki",
+      "notes" : "Uwagi",
+      "Glossary": "Słownik",
+  	  "Footnotes": "Przypisy",
+      "Username": "Nazwa Użytkownika",
+      "Password": "Hasło",
+      "SignIn":"Zaloguj",
+      "errorMessage":"* Nieprawidłowa nazwa użytkownika lub hasło lub nie masz subskrypcji tej witryny" ,
+      "page":"Strona"      
+    }
+}   

@@ -27,7 +27,6 @@ function init() {
     allowLightboxFullscreen:false,
     contentId: 'pxe-viewer',
     onBookLoaded:()=>{},
-    applnCallback:()=>{console.log('applnCallback');},
     highlightText:'',
     bgColor:'', 
     tocUpdated:false,
@@ -91,7 +90,8 @@ function init() {
   urlParams:{
     'context' :'1Q98UHDD1E1',
     'user':'epluser'
-  }});
+  },
+  applnCallback:()=>{console.log('applnCallback');}});
 }
 function onPageChange(type, data) {
   console.log(type, data);

@@ -1,15 +1,37 @@
-import React from 'react';
-import { browserHistory } from 'react-router';
-import { BookshelfComponent } from '@pearson-incubator/bookshelf';
-import CircularProgress from 'material-ui/CircularProgress';
-import isEmpty from 'lodash/isEmpty';
+import React from 'react';/* Importing the react library, for using the react methods and keywords. */
+import { browserHistory } from 'react-router'; /* Importing the react-router for routing the react component. */
+import { BookshelfComponent } from '@pearson-incubator/bookshelf';/* Injecting the bookself component from @pearson-incubator. */
+import CircularProgress from 'material-ui/CircularProgress';/* Import the CircularProgress for adding the progressBar. */
+import isEmpty from 'lodash/isEmpty'; /* loadsh is a JavaScript utility library. And isEmpty method is used for Iterating arrays, objects and testing. */
 import errorCard from '../../../components/common/errorCard';
-import BookshelfHeader from '../../../components/BookshelfHeader';
-import './Bookshelf.scss';
-import { clients } from '../../../components/common/client';
+import BookshelfHeader from '../../../components/BookshelfHeader';/* Import the bookshelfHeader for bookshelf. */
+import './Bookshelf.scss'; /* Importing the css file. */
+import { clients } from '../../../components/common/client';/* Importing the client file for framing the complete url, since baseurls are stored in client file. */
+import { intlShape,addLocaleData } from 'react-intl';   
+import languageName from '../../../../locale_config/configureLanguage';   
+import {languages} from '../../../../locale_config/translations/index';   
 import Cookies from 'universal-cookie';
-
+var launguageid,locale,langQuery;   
+const url=window.location.href;   
+var n=url.search("languageid");   
+if(n>0)   
+{   
+  var urlSplit=url.split("languageid=")   
+  languageid = Number(urlSplit[1]);   
+}   
+else    
+{   
+  var languageid =1;    
+}   
+langQuery="?languageid=" + String(languageid);    
+locale=languageName(languageid);    
+let localisedData=locale.split('-')[0];   
+addLocaleData((require(`react-intl/locale-data/${localisedData}`)));    
+const {messages}=languages.translations[locale];
+/* Method for loading the bookshelf component. */
 export default class BookshelfPage extends React.Component {
+  /* constructor and super have used in class based React component, 
+   used to pass props for communication with other components. */
 constructor(props) {
     super(props);
     // if (sessionStorage.getItem('piToken') === null) {
@@ -22,6 +44,10 @@ constructor(props) {
         }
     }); 
   }
+
+/* Method for mounting before the page loaded. checking the condition wether the toc data present 
+then set content, bookinfo, bookmarks. */
+
 componentWillMount() {
 
   if(this.props.book.toc!==undefined )
@@ -38,12 +64,11 @@ componentWillMount() {
     {
       this.props.book.bookmarks=[];
     }
-    
-    
+
     
 
-    //const sessionid=this.props.login.data.token;
-    //const piToken = this.props.login.data.piToken;
+    /* Implementing sessionStorage for accessing data once the page get refresh. */
+
     var sessionid, piToken;
     if(this.props.login.data === undefined){
       piToken = sessionStorage.getItem('piToken');
@@ -52,31 +77,26 @@ componentWillMount() {
       piToken = this.props.login.data.piToken;
       sessionid=this.props.login.data.token;
     }
+
+    /* Passing the sessionid. Stroing the SsoKey */
+    this.props.storeSsoKey(sessionid);
+    console.log('sessionid:: '+sessionid);
+
     
-    //const urn = 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
-    this.props.storeSsoKey(sessionid);    
-    //const urn ='http://10.102.88.150:8080/JavaSampleWebApp/TestServlet';
-    //var userlogin = this.props.login.data.userName;
-    //var password = this.props.login.data.password;
-    
-    //var urn = 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext/bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
+
+    /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
     var urn = 'bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
-    
-    /*var postData = {
-      chk_old: 'true',
-      password: 'a17a41337551d6542fd005e18b43afd4',
-      languageId: '1',
-      piToken: piToken
-    }*/
     this.props.fetch(urn, piToken);
     console.log(urn);
     
   }
 
-
+/* Created function for handle single book click.*/
   handleBookClick = (bookId,iseT1) => {
-    /*browserHistory.push(`/book/${bookId}?bookid=${bookId}&updfUrl=${updfUrl}`);*/
+    
     if(iseT1)
+
+    /* BrowserHistory used for navigating the next page from current page. */
     {
      browserHistory.push(`/eplayer/pdfbook/${bookId}`);
     }
@@ -85,9 +105,10 @@ componentWillMount() {
       browserHistory.push(`/eplayer/ETbook/${bookId}`);
     }
   }
-
+  /* Method used for loading the data. Any change in store data it will reload the view. */
   render() {
-    //console.log(this.props.bookshelf);
+    /* Setting the item in sessionStorage */
+    sessionStorage.setItem('bookshelfLang',langQuery);
     sessionStorage.setItem('uPdf',this.props.bookshelf.uPdf);
     sessionStorage.setItem('authorName',this.props.bookshelf.authorName);
     sessionStorage.setItem('title',this.props.bookshelf.title);
@@ -97,25 +118,25 @@ componentWillMount() {
     sessionStorage.setItem('ubsd',this.props.bookshelf.ubsd);
     sessionStorage.setItem('ssoKey',this.props.bookshelf.ssoKey);
     sessionStorage.setItem('serverDetails',this.props.bookshelf.serverDetails);
+    sessionStorage.setItem('roleTypeID',this.props.bookshelf.roleTypeID);
     const firstName =  sessionStorage.getItem('firstName');
     const lastName = sessionStorage.getItem('lastName');
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {
-     //books.data.forEach((allBooks) => {
-      books.data.entries.forEach((bookData) => {
+     
+      /* Iterate the data coming from RestApi */
+
+        books.data.entries.forEach((bookData) => {
         const bookRef = bookData;
         if(bookRef.bookId==='3BKZBJB2QB' || bookRef.bookId==='8DJBSW6MHR')
         {
           bookRef.thumbnailImageUrl='http://images.contentful.com/tbx6i45kvpo5/28WYeWCc3aauKkWkiYaua2/489832c2bdb06b7245479e887ccfea06/cite_elements_cover';
         }
+
+        /* Created an object which contains all book properties. which we are passing in bookself component. */
+
         const book = {
-          //id: 'urn:pearson:context:f3c7a5d0-7f38-4166-ac42-1a516b907760'/* bookRef.manifestId || ''*/,
-          //author: bookRef.author || '',
-          //image: bookRef.thumbnail ? bookRef.thumbnail.src : '',
-          //title: bookRef.title || '',
-          //description: bookRef.description || '',
-          //tocId: ''
            id: bookRef.bookId,
            author: bookRef.creator || '',
            image: bookRef.thumbnailImageUrl ? bookRef.thumbnailImageUrl : '',
@@ -129,33 +150,37 @@ componentWillMount() {
            bookServerUrl: bookRef.bookServerUrl,
            userInfoLastModifiedDate: bookRef.userInfoLastModifiedDate,
            userBookLastModifiedDate: bookRef.userBookLastModifiedDate,
-           userBookScenarioLastModifiedDate: bookRef.userBookScenarioLastModifiedDate
+           userBookScenarioLastModifiedDate: bookRef.userBookScenarioLastModifiedDate,
+           roleTypeID: bookRef.roleTypeID
         };
         booksdata.push(book);
-        //console.log("globalBookId :: "+book.globalBookId);
+        
       });
     }
 
     if (error) {
       return errorCard('Error', error.message);
     }
-
+    /* Here in return, we are passing firstName and lastName in BookshelfHeader Component and 
+    we are passing book Object, methods onBookClick, storeBookDetails, storeSsoKey, 
+    in BookshelfComponent inside @Pearson-incubator  */
     return (
       <div id="bookshelf-page">
-        <BookshelfHeader firstName={firstName} lastName={lastName}/>
+        <BookshelfHeader locale={locale} messages={messages} firstName={firstName} lastName={lastName}/>
         {fetching ? <CircularProgress style={{ margin: '40px auto', display: 'block' }} /> : null}
-        {fetched ? <BookshelfComponent books={booksdata} onBookClick={this.handleBookClick} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey}/> : null}
+        {fetched ? <BookshelfComponent books={booksdata} onBookClick={this.handleBookClick} storeBookDetails={this.props.storeBookDetails} storeSsoKey={this.props.storeSsoKey} locale={locale}/> : null}
 
       </div>
     );
   }
 }
 
+/* propTypes used for communication to child Component that which props are present in Parent Component. */
+
 BookshelfPage.propTypes = {
   bookshelf: React.PropTypes.object.isRequired,
   fetch: React.PropTypes.func.isRequired,
-  //storeUPdfUrl: React.PropTypes.func,
-  //storeBookServerDetails: React.PropTypes.func,
+  intl: intlShape.isRequired,
   storeBookDetails: React.PropTypes.func,
   storeSsoKey: React.PropTypes.func,
 };

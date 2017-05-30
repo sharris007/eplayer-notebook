@@ -1,0 +1,16 @@
+{
+	"messages" : {
+      "signOutBtn": "Ausloggen",
+      "myBookshelf": "Mein Bücherregal",
+      "contents": "Inhalt",
+      "bookmarks": "Lesezeichen",
+      "notes" : "Notizen" ,
+	    "Glossary": "Glossar",
+  	  "Footnotes": "Fußnoten",
+      "Username": "Benutzername",
+      "Password": "Passwort",
+      "SignIn":"Anmelden", 	
+      "errorMessage":"* Ungültiger Benutzername / Passwort oder Sie haben kein Abonnement für diese Seite",
+      "page":"Seite"
+    }           
+}
