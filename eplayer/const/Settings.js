@@ -3,7 +3,7 @@ export const resources = {
     versions       : 'EPLAYER',
     builds         : '2.0',
     TextSearchLimit: 100,
-    secureApi      : true
+    secureApi      : false
   },
   links: {
     legalNotice    : 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
