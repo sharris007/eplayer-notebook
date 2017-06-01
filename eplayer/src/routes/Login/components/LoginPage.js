@@ -69,7 +69,7 @@ class LoginPage extends React.Component{
         sessionStorage.setItem('lastName',this.props.data.lastName);
         /* BrowserHistory used for navigating the user to bookself page. */
         piSession.autologin(this.state.loginname, this.state.password,'vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb',window.location.origin+"/eplayer/bookshelf");
-        browserHistory.push(`/eplayer/bookshelf${this.props.location.search}`);
+        //browserHistory.push(`/eplayer/bookshelf${this.props.location.search}`);
       }
     })
     

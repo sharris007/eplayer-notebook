@@ -59,15 +59,11 @@ export class Book extends Component {
     // }
     const cookies = new Cookies();
     piSession.getToken(function(result, userToken){
-       console.log("result--------->",result);
-       console.log("userToken--------->",userToken);
-       console.log("piSession['Success']--------->",piSession['Success']);
         if(result === piSession['Success']){
            cookies.set('BooksecureToken', userToken, { path: '/' });
         }
     }); 
     const getSecureToken = cookies.get('BooksecureToken');
-    console.log("getSecureToken--------->",getSecureToken);
     const bookDetailsData = {
       context : this.state.urlParams.context,
       piToken : getSecureToken,
@@ -75,6 +71,7 @@ export class Book extends Component {
     }
     this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
      if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+        bookDetailsData.courseId = this.props.params.courseId;
       this.props.dispatch(getCourseCallService(bookDetailsData));
      }else{
       this.props.dispatch(getBookCallService(bookDetailsData));

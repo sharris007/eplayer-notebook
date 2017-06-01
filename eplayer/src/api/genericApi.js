@@ -4,6 +4,7 @@ const security  = (resources.constants.secureApi == true ? 'eTSecureServiceUrl':
 const etextService = resources.links[security];
 const pxeService   = resources.links.pxeServiceUrl;
 const envType      = domain.getEnvType();
+const courseServiceUrl = resources.links['courseServiceUrl'];
 
 export const getTotalAnndata = data => fetch(pxeService[envType]+'/context/'+data.context+'/annotations',{
   method: 'GET',
@@ -84,16 +85,14 @@ export const getPlaylistDetails = (bookId,tocurl,piToken) => fetch(etextService[
   }
 });
 
-const servicePXE = 'http://10.25.228.142/etext/standalone/courses/58edecc2e4b01da81434fc2d/sectionDetails';
-const authToken = 'eyJhbGciOiJSUzUxMiIsImtpZCI6ImsxMDY5NDgxOTAifQ.eyJleHAiOjE0OTU4MTk5NDcsInN1YiI6ImZmZmZmZmZmNThmZGQ2NTZlNGIwZjRhMzJkM2FhYmNjIiwic2Vzc2lkIjoiMWVlNDFjMjc3MTgxNDYwZmJhZDMxMjkxMGMwMWYzNmUiLCJoY2MiOiJVUyIsInR5cGUiOiJhdCIsImlhdCI6MTQ5NTgwOTE0N30.DJmu5EFqu-FtBfdu4vfd9LkZMcjlEyjknN5p9AF-CN72k_9n-V01YvgWhuCh4j-okFQQlVByEm3s2AoqNP9O2gb7EGggiWiXfuwjAuRpBkGe1Y7EzYLFXgprNyX3t1FncVgs4yB5dLO18au5LtImZ582WaWJSP52HiQzfmNCQ18';
 export const getCourseDetails = bookDetails => 
- fetch(servicePXE,
+ fetch(courseServiceUrl[envType]+bookDetails.courseId+'/sectionDetails',
  {
     method: 'GET',
     headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'X-Authorization': authToken
+        'X-Authorization': bookDetails.piToken
     }
 });
 
