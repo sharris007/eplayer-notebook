@@ -57,28 +57,32 @@ export class Book extends Component {
     // if (sessionStorage.getItem('piToken')) {
     //   piToken = sessionStorage.getItem('piToken');
     // }
-    const cookies = new Cookies();
-    piSession.getToken(function(result, userToken){
-        if(result === piSession['Success']){
-           cookies.set('BooksecureToken', userToken, { path: '/' });
-        }
-    }); 
-    const getSecureToken = cookies.get('BooksecureToken');
-    const bookDetailsData = {
-      context : this.state.urlParams.context,
-      piToken : getSecureToken,
-      bookId  : this.props.params.bookId
-    }
-    this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-        bookDetailsData.courseId = this.props.params.courseId;
-      this.props.dispatch(getCourseCallService(bookDetailsData));
-     }else{
-      this.props.dispatch(getBookCallService(bookDetailsData));
-     }
+    setTimeout( () => {
+    // deeper code
+      const cookies = new Cookies();
+      piSession.getToken(function(result, userToken){
+          if(result === piSession['Success']){
+             cookies.set('BooksecureToken', userToken, { path: '/' });
+          }
+      }); 
+      const getSecureToken = cookies.get('BooksecureToken');
+      const bookDetailsData = {
+        context : this.state.urlParams.context,
+        piToken : getSecureToken,
+        bookId  : this.props.params.bookId
+      }
+      this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
+       if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+          bookDetailsData.courseId = this.props.params.courseId;
+        this.props.dispatch(getCourseCallService(bookDetailsData));
+       }else{
+        this.props.dispatch(getBookCallService(bookDetailsData));
+       }
+      this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
 
-
-    this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+  }, 2000);
+     
+    
   }
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
@@ -137,7 +141,7 @@ export class Book extends Component {
           playpageDetails1.tocUpdated  = true;
           this.onPageChange("pagescroll",nextProps.gotoPageObj.page.title); 
           if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-            browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`);
+            browserHistory.replace(`/eplayer/Course/${this.props.params.courseId}/page/${gotoPageData.id}`);
           }else{
             browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}`);
           }
@@ -233,7 +237,7 @@ export class Book extends Component {
           },function(){
             // eslint-disable-next-line
             if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-              browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${data.id}`);
+              browserHistory.replace(`/eplayer/Course/${this.props.params.courseId}/page/${data.id}`);
             }else{
               browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
             }
@@ -287,7 +291,7 @@ export class Book extends Component {
     });
     this.viewerContentCallBack(true);
     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-      browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${pageId}`);
+      browserHistory.replace(`/eplayer/Course/${this.props.params.courseId}/page/${pageId}`);
     }else{
       browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
     }

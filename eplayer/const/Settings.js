@@ -25,11 +25,11 @@ export const resources = {
       prod         : 'https://etext.pearson.com/api/nextext-api/v1/api'
     },
     courseServiceUrl: {
-      local        : 'http://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses/',
-      dev          : 'http://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses/',
-      qa           : 'http://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses/',
-      stage        : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses/',
-      prod         : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses/'
+      local        : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot/courses',
+      dev          : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses',
+      qa           : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot/courses',
+      stage        : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses',
+      prod         : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses'
     },
     etextSearchUrl: {
       local        : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',

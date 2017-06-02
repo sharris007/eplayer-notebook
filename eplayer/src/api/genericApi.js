@@ -86,7 +86,7 @@ export const getPlaylistDetails = (bookId,tocurl,piToken) => fetch(etextService[
 });
 
 export const getCourseDetails = bookDetails => 
- fetch(courseServiceUrl[envType]+bookDetails.courseId+'/sectionDetails',
+ fetch(courseServiceUrl[envType]+'/'+bookDetails.courseId+'/sectionDetails',
  {
     method: 'GET',
     headers: {

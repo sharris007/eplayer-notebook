@@ -32,7 +32,6 @@ function getTocUrlOnResp(resp)
 export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetails(data)
    .then(response => response.json())
    .then(response => {
-    console.log("data*****", data);
       const bookId = response.bookDetail.bookId;
       
       const tocUrl      = getTocUrlOnResp(response.bookDetail.metadata.toc);
@@ -85,8 +84,8 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
 export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseDetails(data)
    .then(response => response.json())
    .then(response => {
-    console.log("response12*****", response);
-      const bookId = data.bookId;
+
+      
       
       // const tocUrl      = getTocUrlOnResp(response.bookDetail.metadata.toc);
       // const bookDetails = response.bookDetail.metadata;
@@ -95,6 +94,7 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       const tocUrl      = getTocUrlOnResp(response.userCourseSectionDetail.toc);
       const bookDetails = response.userCourseSectionDetail;
       const piToken     = data.piToken;
+      const bookId      = bookDetails.section.courseId;
       PlaylistApi.doGetTocDetails(bookId,tocUrl,piToken).then(response => response.json())
       .then(response =>{
         // response.bookConfig =bookDetails; 
@@ -102,8 +102,8 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
         // tocResponse.mainTitle = bookDetails.title;
         // tocResponse.author    = bookDetails.creator.substring(0,20)+'...';
         // tocResponse.thumbnail = bookDetails.coverImageUrl;
-        response.bookConfig =bookDetails; 
-        const tocResponse = response.content;
+        response.bookConfig   = bookDetails; 
+        const tocResponse     = response.content;
         tocResponse.mainTitle = bookDetails.section.sectionTitle;
         tocResponse.author    = bookDetails.authorName.substring(0,20)+'...';
         tocResponse.thumbnail = bookDetails.section.avatarUrl;
