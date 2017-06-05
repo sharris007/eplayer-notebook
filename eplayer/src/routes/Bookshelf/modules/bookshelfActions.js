@@ -8,12 +8,22 @@ import axios from 'axios';/* axios is third party library, used to make ajax req
    piToken that is coming from Login response in order to make Ajax request.*/
 
 export const fetch = (urn, piToken) => {
+  if(piToken!='dummypiToken')
+  {
     return {
       type: 'BOOKS',
       payload: clients.getBookShelf.get(`${urn}`, {
       headers: { 'Content-Type': 'application/json',
       'X-Authorization': piToken}})
     };
+  }
+  else
+  {
+     return {
+      type: 'BOOKS',
+      payload: clients.getBookShelf.get(`${urn}`)
+    };
+  }
 };
 
 

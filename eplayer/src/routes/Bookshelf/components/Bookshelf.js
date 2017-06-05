@@ -77,7 +77,13 @@ componentWillMount() {
       piToken = this.props.login.data.piToken;
       sessionid=this.props.login.data.token;
     }
-
+    // Added eT1StandaloneBkshf flag based flow to use eT1 getuserbookshelf 
+    // service if paperApi login or bookshelf service is down or some other related issues.
+    if(this.props.location.query.eT1StandaloneBkshf=='Y' || this.props.location.query.eT1StandaloneBkshf=='y') { 
+      sessionid = this.props.location.query.sessionid;
+      piToken = this.props.location.query.piToken;
+      sessionStorage.setItem('identityId',this.props.location.query.identityId);
+    }
     /* Passing the sessionid. Stroing the SsoKey */
     this.props.storeSsoKey(sessionid);
     console.log('sessionid:: '+sessionid);
@@ -86,6 +92,9 @@ componentWillMount() {
 
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
     var urn = 'bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
+    if(this.props.location.query.eT1StandaloneBkshf=='Y' || this.props.location.query.eT1StandaloneBkshf=='y') {
+      urn = 'http://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
+    }
     this.props.fetch(urn, piToken);
     console.log(urn);
     
@@ -126,8 +135,18 @@ componentWillMount() {
     if (fetched && !isEmpty(books)) {
      
       /* Iterate the data coming from RestApi */
-
-        books.data.entries.forEach((bookData) => {
+      var booksArray = [];
+      /*Assigning list of books into booksArray from eT1 bookshelf response 
+      if eT1StandaloneBkshf query param value is 'Y' or 'y'*/
+      if(this.props.location.query.eT1StandaloneBkshf=='Y' || this.props.location.query.eT1StandaloneBkshf=='y')
+      {
+          booksArray = books.data[0].entries;
+      }
+      else
+      {
+          booksArray = books.data.entries;
+      }
+        booksArray.forEach((bookData) => {
         const bookRef = bookData;
         if(bookRef.bookId==='3BKZBJB2QB' || bookRef.bookId==='8DJBSW6MHR')
         {
