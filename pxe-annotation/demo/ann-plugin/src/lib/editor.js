@@ -135,7 +135,7 @@ Annotator.Editor = (function(_super) {
     }
     var inputCharLength = event.currentTarget.value.length, actualChar = this.const.characters;
     var remainingCount = actualChar-inputCharLength;
-    this.element.find('#letter-count').text(remainingCount);
+    this.element.find('#letter-count').text((remainingCount>0 && remainingCount<51) ? '-'+remainingCount : remainingCount);
     $('.characters-left').css('font-size', (remainingCount < 51)?'':'0px');
     var selectors = this.element.find('.annotator-item textarea'); 
     var temp = this.textareaHeight;
