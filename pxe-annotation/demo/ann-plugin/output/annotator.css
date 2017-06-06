@@ -1097,3 +1097,6 @@
     color: blue;
     text-decoration: none;
 }
+#letter-count, .characters-left {
+	color: red;
+}

@@ -2874,7 +2874,7 @@ Annotator = (function(_super) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
       $(annotation.highlights).find('.annotator-handle').remove();
-      $('.annotator-handle').css({'right' : '-25px'});
+      $('.annotator-handle').css({'margin-top' : '0px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
@@ -3218,6 +3218,7 @@ Annotator = (function(_super) {
     })(this);
      if(oldAnnArr.length>0 && annArray.length>0 && !(oldAnnArr[0].shareable)){
       $(annotation)[0].text = $(oldAnnArr)[0].text;
+      $('.annotator-edit-container').hide();
       window.currAnn = $(oldAnnArr)[0];
     }
     this.subscribe('annotationEditorHidden', cancel);
@@ -3556,7 +3557,7 @@ Annotator.Editor = (function(_super) {
     }
     var inputCharLength = event.currentTarget.value.length, actualChar = this.const.characters;
     var remainingCount = actualChar-inputCharLength;
-    this.element.find('#letter-count').text(remainingCount);
+    this.element.find('#letter-count').text((remainingCount>0 && remainingCount<51) ? '-'+remainingCount : remainingCount);
     $('.characters-left').css('font-size', (remainingCount < 51)?'':'0px');
     var selectors = this.element.find('.annotator-item textarea'); 
     var temp = this.textareaHeight;
@@ -3574,6 +3575,7 @@ Annotator.Editor = (function(_super) {
     this.element.removeClass('hide-note');
     var isTopAlign=(!this.annotation.color)?true:false;
     if(window.currAnn) {
+       $('.annotator-edit-container').show();
        $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [window.currAnn]]);
     }
     if (this.annotation._id===undefined && this.currentAnnotation !== null) {     
