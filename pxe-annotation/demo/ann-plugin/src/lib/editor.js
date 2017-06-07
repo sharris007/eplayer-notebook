@@ -283,10 +283,11 @@ Annotator.Editor = (function(_super) {
     Annotator.Util.preventEventDefault(event);
     if (this.fromOnShare) {
       this.fromOnShare=false
-    }else if (this.annotation.shareable) {
+    }
+    /*else if (this.annotation.shareable) {
       $('.annotator-share').removeClass('on');
       this.unShareAnnotation();
-    }
+    }*/
     this.annotation.quote=$('.annotator-item input').val();
     _ref = this.fields;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
