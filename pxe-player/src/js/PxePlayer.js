@@ -98,18 +98,21 @@ class PxePlayer extends React.Component {
       this.wrapper.bindPopUpCallBacks();
       // this.getAnnotationData();
       this.annotationCallDispatch('GET').then((res) => {
-        let annotationData = { ...res };
-        let instrAnnotations=[], studAnnotations=[], _i;
-        for (_i=0; _i < annotationData.rows.length; _i++) {
-          if (annotationData.rows[_i].shareable) {
-            instrAnnotations.push(annotationData.rows[_i]);
-          }
+        if (res) {
+          const annotationData = { ...res };
+          const instrAnnotations=[];
+          const studAnnotations=[];
+          for (let _i=0; _i < annotationData.rows.length; _i++) {
+            if (annotationData.rows[_i].shareable) {
+              instrAnnotations.push(annotationData.rows[_i]);
+            }
           else {
-            studAnnotations.push(annotationData.rows[_i]);
+              studAnnotations.push(annotationData.rows[_i]);
+            }
           }
+          annotationData.rows=studAnnotations.concat(instrAnnotations);
+          this.setState({ annotationData }); 
         }
-        annotationData.rows=studAnnotations.concat(instrAnnotations);
-        this.setState({ annotationData });
       });
     }
   };

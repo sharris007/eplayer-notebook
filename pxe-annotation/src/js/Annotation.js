@@ -1,6 +1,6 @@
 /* global $ */
 import React, { PropTypes, Component } from 'react';
-import { map, zipObject} from 'lodash';
+import { mapKeys } from 'lodash';
 
 
 class Annotation extends Component {
@@ -23,22 +23,22 @@ class Annotation extends Component {
   componentDidMount() { 
     this.annotationEventHandler();
     $('.' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
-    var contentWid = $('.' + this.props.contentId).width()+40
+    const contentWid = $('.' + this.props.contentId).width()+40
     $('.annotator-editor').css({'left':contentWid});
   }
 
   componentWillReceiveProps(nextProps) {
-   if(nextProps.annotationData && nextProps.annotationData.length){
-     console.log("componentWillReceiveProps",nextProps);
-    let flag = 'loadAnnotations';
-    if(this.state.updated){
-      flag = 'updateAnnotationId';
-      this.setState({'updated':false});
+    if (nextProps.annotationData && nextProps.annotationData.length) {
+      console.log('componentWillReceiveProps', nextProps);
+      let flag = 'loadAnnotations';
+      if (this.state.updated) {
+        flag = 'updateAnnotationId';
+        this.setState({'updated':false});
+      }
+      const annData = (flag==='updateAnnotationId')?nextProps.annotationData[0]:nextProps.annotationData;
+      $('.' + nextProps.contentId).annotator().annotator(flag, annData);
     }
-    const annData = (flag=='updateAnnotationId')?nextProps.annotationData[0]:nextProps.annotationData;
-    $('.' + nextProps.contentId).annotator().annotator(flag, annData);
-   }
- } 
+  } 
 
 
   annotationEventHandler() {
@@ -62,7 +62,7 @@ class Annotation extends Component {
       annData.text              =   annData.text||'';
       annData.createdTimestamp  =   new Date().toISOString();
       annData.updatedTimestamp  =   null;
-      const customUnsourceObj   = _.mapKeys(annData, function(value, key) {
+      const customUnsourceObj   = mapKeys(annData, function(value, key) {
         if (customAttributes[key] ===undefined) {
           return key;
         }

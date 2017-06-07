@@ -1,11 +1,8 @@
+/* global $ */
 import '../scss/pageviewer.scss';
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
-// import CircularProgress from 'material-ui/CircularProgress';
-// import renderHTML from 'react-render-html';
 
 import FooterNav from './FooterNav';
 import {crossRef} from './CrossRef';
@@ -95,7 +92,7 @@ class PageViewer extends React.Component {
       if (this.props.src.highlightText) {
         text=HighlightText.highlightText(this, text);
       }
-      if(this.props.src.searchText) {
+      if (this.props.src.searchText) {
         text=HighlightText.highlightSearchText(this, text);
       }
       //text  = text.replace(/ epub:type\S*\B/g, '').replace('<body', '<body>');
@@ -112,13 +109,13 @@ class PageViewer extends React.Component {
           nextPageTitle: (currentPage === playListURL.length - 1) ? '' : playListURL[currentPage+1].title,
           currentStatePlayListUrl: playListURL[currentPage]
         }, ()=>{
-            if(this.props.src.searchText) {
-              setTimeout(() => {
-                $('html, body').animate({
-                  scrollTop: $('.pxereaderSearchHighlight')[0].offsetTop
-                  }, 2000);
-              }, 1000) 
-            }
+          if (this.props.src.searchText) {
+            setTimeout(() => {
+              $('html, body').animate({
+                scrollTop: $('.pxereaderSearchHighlight')[0].offsetTop
+              }, 2000);
+            }, 1000); 
+          }
         });
       }
       // this.setState({pageLoading:false});
@@ -257,44 +254,44 @@ class PageViewer extends React.Component {
     const fixed = $('.headerBar');
     const currentFixedDivPosition = fixed.height() + $(window).scrollTop() +250;
     let elementPos;
-    const pageBreakClass = $("#book-render-component").find(".pagebreak");
+    const pageBreakClass = $('#book-render-component').find('.pagebreak');
     elementPos = pageBreakClass[0];
     pageBreakClass.each(function (i, s) {
-        if (currentFixedDivPosition > Math.abs($(s).offset().top)) {
-          elementPos = s;
-         }
+      if (currentFixedDivPosition > Math.abs($(s).offset().top)) {
+        elementPos = s;
+      }
     });
-    const pageVal = ($(elementPos).attr('title')?$(elementPos).attr('title'):$("#pageNum").val());
-    this.props.sendPageDetails("pagescroll",pageVal); 
+    const pageVal = ($(elementPos).attr('title')?$(elementPos).attr('title'):$('#pageNum').val());
+    this.props.sendPageDetails('pagescroll', pageVal); 
   }
 
-  componentWillUpdate = (nextProps, nextState) => {
+  componentWillUpdate = (nextProps) => {
     
-    if(nextProps.src.currentPageURL.pageFragmentId){
-      const scrollTopVal = $('#'+nextProps.src.currentPageURL.pageFragmentId)
-      if(scrollTopVal.length > 0){
-        const topValue = scrollTopVal.offset().top;
-        const pageBreakClass = $("#book-render-component").find(".pagebreak");
-        let pagenumberArr = {};
+    if (nextProps.src.currentPageURL.pageFragmentId) {
+      const scrollTopVal = $('#'+nextProps.src.currentPageURL.pageFragmentId);
+      if (scrollTopVal.length > 0) {
+        // const topValue = scrollTopVal.offset().top;
+        const pageBreakClass = $('#book-render-component').find('.pagebreak');
+        const pagenumberArr = {};
         pageBreakClass.each(function (i, s) {
-            pagenumberArr[$(s).attr("title")] = $(s).offset().top-100;             
+          pagenumberArr[$(s).attr('title')] = $(s).offset().top-100;             
         });
         // this.props.sendPageDetails("pagescroll",scrollTopVal.attr("title")); 
         setTimeout(()=>{
           $('html, body').animate({
-              scrollTop: pagenumberArr[scrollTopVal.attr("title")] 
+            scrollTop: pagenumberArr[scrollTopVal.attr('title')] 
           }, 1500);
-        },2000)
+        }, 2000);
 
         setTimeout(()=>{
-           nextProps.src.currentPageURL.pageFragmentId = '';
-        },6500)
+          nextProps.src.currentPageURL.pageFragmentId = '';
+        }, 6500);
         
       }
     }
   }
    
-  componentDidUpdate = (prevProps, prevState) => {
+  componentDidUpdate = () => {
     copyCharLimit(this);
     //prints page no in the page rendered
     this.enablePageNo();
@@ -307,10 +304,10 @@ class PageViewer extends React.Component {
     } 
     this.setPageTheme();
     audioWbWHighlight(this);
-    const pageBreakClass = $("#book-render-component").find(".pagebreak");
-    if(pageBreakClass.length>0){
+    const pageBreakClass = $('#book-render-component').find('.pagebreak');
+    if (pageBreakClass.length>0) {
       const initPageNo = $(pageBreakClass[0]).attr('title');
-      this.props.sendPageDetails("pagescroll", initPageNo);
+      this.props.sendPageDetails('pagescroll', initPageNo);
     }
   };
 
