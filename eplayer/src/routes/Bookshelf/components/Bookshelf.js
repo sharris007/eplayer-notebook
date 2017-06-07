@@ -93,7 +93,7 @@ componentWillMount() {
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
     var urn = 'bookShelf?key='+sessionid+'&bookShelfMode=BOTH'
     if(this.props.location.query.eT1StandaloneBkshf=='Y' || this.props.location.query.eT1StandaloneBkshf=='y') {
-      urn = 'http://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
+      urn = 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key='+sessionid;
     }
     this.props.fetch(urn, piToken);
     console.log(urn);
