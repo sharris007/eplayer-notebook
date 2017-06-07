@@ -9,3 +9,4 @@ build/dev*
 npm_scripts/*.js
 /.project
 -p
+build

@@ -1,3 +1,4 @@
+/* global $ */
 let isGetAudioJson= false;
 let audio = '';
 let audioJsonData = '';
