@@ -82,7 +82,13 @@ const initAudio = (thisObj, jsonAttr, currentEle, audio) => {
       $(audio).bind('ended', function() {
         astPlayBtn.removeClass('ast-icon-pause-button').addClass('ast-icon-play-button');
       });
-
+      $(document).on('keydown', function(e) {
+          if(e.which == 32) {
+            e.preventDefault();
+            audioPause(audio);
+            astPlayBtn.removeClass('ast-icon-pause-button').addClass('ast-icon-play-button');
+          }    
+      });
     });
 };
 export default audioWbWHighlight;
