@@ -38,7 +38,7 @@ class PxePlayer extends React.Component {
         currentPageDetails: data,
         urlParams: parameters
       }, () => {
-        if (this.props.applnCallback) {
+        if (this.props.applnCallback && type.toUpperCase() !== 'PROPCHANGED') {
           // eslint-disable-next-line
           // this.props.dispatch(getAnnCallService(this.state.urlParams)); // Enable when Annotation component added
           this.props.applnCallback(type, data);
