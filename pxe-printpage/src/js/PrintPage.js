@@ -1,3 +1,4 @@
+/* global $ */
 import React        from 'react';
 import ReactDOM     from 'react-dom';
 import '../scss/printpage.scss';
@@ -15,9 +16,9 @@ class PrintPage extends React.Component {
     const onloadHandler = () => {
       const url = window.location.href;
       const getUrl = url.substring(url.indexOf('?')+1);
-      String.prototype.replaceAll = function(target, replacement) {
-        return this.split(target).join(replacement);
-      };
+      // String.prototype.replaceAll = function(target, replacement) { // eslint-disable-line
+      //   return this.split(target).join(replacement);
+      // };
    
       const getPrintBtn = function() {
         const getPrintBtnEle = window.document.getElementById('printBtn');
@@ -67,7 +68,8 @@ class PrintPage extends React.Component {
         const iframeObj=document.getElementById(iframe.id);
         const iframeDoc=iframeObj.contentDocument;
         const basePath = window.location.search.substring(1).split('/OPS');
-        data = data.replaceAll('../../', basePath[0]+'/OPS/');
+        // data = data.replaceAll('../../', basePath[0]+'/OPS/');
+        data = data.split('../../').join(basePath[0]+'/OPS/');
         data = data.replace('</head>', '<style>.contentPlaceholder{background-color:#efefef;padding:30px;border-width: 1px;border-color: #999999;font-size: 15pt;color:#b3b3b3;text-align: center;display: table-cell;vertical-align: middle;}@media print{#pagelogo{display:block;}.iframe-table{border:none !important;}#watermark {display:block;color: red;font-size: 75pt;-webkit-transform: rotate(-45deg);-moz-transform: rotate(-45deg);transform: rotate(-45deg);position: fixed;width: 100%;height: 100%;xmargin: 0;z-index: 100;opacity: 0.6;left: 46%;top:25%;text-align: center;}thead{display:table-header-group;text-align:left;}tfoot{display:table-footer-group;text-align:left;}tbody{display:table-row-group;}}@media screen{#pagelogo{display:none;}.iframe-table{border:none !important;}thead{}tfoot{display:none;}#watermark {display:none;color: #d0d0d0;font-size: 75pt;-webkit-transform: rotate(-45deg);-moz-transform: rotate(-45deg);transform: rotate(-45deg);position: fixed;width: 100%;height: 100%;margin: 0;z-index: 100;opacity: 0.6;left: 6%;top:25%;text-align: center;}} </style>');
       
         iframeDoc.open();
