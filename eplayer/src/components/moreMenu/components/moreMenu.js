@@ -1,3 +1,4 @@
+/* global  sessionStorage ,localStorage*/
 import React from 'react';
 import { browserHistory } from 'react-router';
 import IconMenu from 'material-ui/IconMenu';
@@ -12,34 +13,30 @@ class MoreMenuComponent extends React.Component {
     injectReducer(this.props.store, { key: 'moreMenu', reducer });
   }
   handleClick = () => {
-    var langQuery=sessionStorage.getItem('bookshelfLang');
-    var i = sessionStorage.length;
-    while(i--) {
-      var key = sessionStorage.key(i);
-      if((key)) {
+    const langQuery = sessionStorage.getItem('bookshelfLang');
+    let i = sessionStorage.length;
+    while (i--) {
+      const key = sessionStorage.key(i);
+      if ((key)) {
         sessionStorage.removeItem(key);
-      }  
+      }
     }
     const storagAarr = [];
-    const localStorageLength = localStorage.length;
-    for (let i = 0; i < localStorage.length; i++){
-        if (localStorage.key(i).indexOf('bookId') == 0 ) {
-            storagAarr.push(localStorage.key(i));
-        }
+    for (let i = 0; i < localStorage.length; i++) {
+      if (localStorage.key(i).indexOf('bookId') === 0) {
+        storagAarr.push(localStorage.key(i));
+      }
     }
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
-    if(langQuery != "?languageid=1")
-    {
-      browserHistory.push(`/eplayer/login` + langQuery);  
+    if (langQuery !== '?languageid=1') {
+      browserHistory.push(`/eplayer/login${langQuery}`);
+    } else {
+      browserHistory.push('/eplayer/login');
     }
-    else
-    {
-      browserHistory.push(`/eplayer/login`);
-    }
-    this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails);
-    //this.props.logout();
+    this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails); // eslint-disable-line
+    // this.props.logout();
   }
   render() {
     const style = {
@@ -55,14 +52,15 @@ class MoreMenuComponent extends React.Component {
       anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
       targetOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
-      <MenuItem primaryText={this.props.messages != undefined ? this.props.messages.signOutBtn : 'Sign Out'} />
+      <MenuItem primaryText={this.props.messages !== undefined ? this.props.messages.signOutBtn : 'Sign Out'} />
     </IconMenu>
     );
   }
 }
 MoreMenuComponent.propTypes = {
   store: React.PropTypes.object,
-  logout: React.PropTypes.func.isRequired
+  logoutUserSession: React.PropTypes.func,
+  messages: React.PropTypes.object
 };
 
 export default MoreMenuComponent;

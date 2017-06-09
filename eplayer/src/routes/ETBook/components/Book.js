@@ -241,10 +241,10 @@ export class Book extends Component {
             }else{
               browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
             }
-            setTimeout(()=>{
+    
               this.props.dispatch(getBookmarkCallService(this.state.urlParams));
               // this.props.dispatch(getAnnCallService(this.state.urlParams));
-            },2000)
+
           });
         }
         break;
@@ -280,21 +280,31 @@ export class Book extends Component {
   }
   goToPageCallback = (pageId, searchText) => {
     const currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
+    currentData.uri  = currentData.href;
+    currentData.label = currentData.title;
     const playpageDetails  = this.state.pageDetails ; 
     playpageDetails.currentPageURL =  currentData;
     if(searchText) {
       playpageDetails.searchText = searchText;
     }
-    this.setState({
+   const parameters = this.state.urlParams;
+    parameters.id    = currentData.id,
+    parameters.uri   = encodeURIComponent(currentData.href),
+    this.setState({ 
+      currentPageDetails :currentData,
+      currentPageTitle   :currentData.title, 
+      urlParams:parameters,
       pageDetails: playpageDetails,
       drawerOpen: false
-    });
+    },()=>{
+      if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+        browserHistory.replace(`/eplayer/Course/${this.props.params.courseId}/page/${pageId}`);
+      }else{
+        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
+      }
+      this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+    }),
     this.viewerContentCallBack(true);
-    if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-      browserHistory.replace(`/eplayer/Course/${this.props.params.courseId}/page/${pageId}`);
-    }else{
-      browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
-    }
   }; 
   printFun = () => {
     const url = this.state.pageDetails.baseUrl + this.state.pageDetails.currentPageURL.href;

@@ -24,6 +24,22 @@ export const postBookmarkData = json => ({
   loading: true
 });
 
+// Bookmark Total Get call
+export const getTotalBookmarkData = json => ({
+  type: typeConstants.GET_TOTALBOOKMARK,
+  data: json
+});
+
+const bookmarkStructureChange = (blist) => {
+  const bookmarksDataMap = blist.bookmarks;
+  if (bookmarksDataMap && bookmarksDataMap.length > 0) {
+    for (let i = 0; i < bookmarksDataMap.length; i++) {
+      bookmarksDataMap[i].id = bookmarksDataMap[i].uri;
+    }
+  }
+  return bookmarksDataMap;
+};
+
 export const postBookmarkCallService = filterData => dispatch => BookmarkApi.doPostBookmark(filterData)
     .then(response => response.json())
     .then((json) => {
@@ -52,12 +68,6 @@ export const deleteBookmarkCallService = filterData => dispatch => BookmarkApi.d
         json => dispatch(deleteBookmarkData(json))
     );
 
-// Bookmark Total Get call
-export const getTotalBookmarkData = json => ({
-  type: typeConstants.GET_TOTALBOOKMARK,
-  data: json
-});
-
 export const getTotalBookmarkCallService = filterData => dispatch =>
     BookmarkApi.doTotalBookmark(filterData)
     .then(response => response.json())
@@ -68,13 +78,3 @@ export const getTotalBookmarkCallService = filterData => dispatch =>
       }
     }
     );
-
-function bookmarkStructureChange(blist) {
-  const bookmarksDataMap = blist.bookmarks;
-  if (bookmarksDataMap && bookmarksDataMap.length > 0) {
-    for (let i = 0; i < bookmarksDataMap.length; i++) {
-      bookmarksDataMap[i].id = bookmarksDataMap[i].uri;
-    }
-  }
-  return bookmarksDataMap;
-}

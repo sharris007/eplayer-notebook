@@ -1,8 +1,8 @@
-const initalData = { 
-  data: [], 
-  tocdata: [], 
+const initalData = {
+  data: [],
+  tocdata: [],
   playlistReceived: false,
-  tocReceived: false 
+  tocReceived: false
 };
 export default (state = initalData, action) => {
   switch (action.type) {

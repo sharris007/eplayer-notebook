@@ -12,7 +12,7 @@ export default store => ({
       const LoginPage = require('./containers/LoginContainer').default;
       const reducer = require('./modules/loginReducer').default;
 
-          injectReducer(store, { key: 'login', reducer });
+      injectReducer(store, { key: 'login', reducer });
 
 
       /*  Return getComponent   */

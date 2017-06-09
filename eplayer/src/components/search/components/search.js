@@ -12,12 +12,13 @@ export class Search extends React.Component {
   }
 
   render() {
-    
+    /* eslint-disable */
     return (
       <div>
-         <SearchComponent fetch={this.props.fetch} searchData={ this.props.search }  indexId = { this.props.indexId } searchListClick = {this.props.goToPage} listClick = {this.props.listClick} isET1={this.props.isET1} locale={this.props.locale}/> 
+        <SearchComponent fetch={this.props.fetch} searchData={this.props.search} indexId={this.props.indexId} searchListClick={this.props.goToPage} listClick={this.props.listClick} isET1={this.props.isET1} locale={this.props.locale} />
       </div>
     );
+    /* eslint-enable */
   }
 }
 

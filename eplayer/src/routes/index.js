@@ -3,12 +3,12 @@ import { CoreLayout } from '../layouts/CoreLayout/CoreLayout';
 import loginRoute from './Login';
 import bookshelfRoute from './Bookshelf';
 import bookRoute from './Book';
-import ETbookshelfRoute from './ETBookshelf';
-import ETbookRoute from './ETBook';
+import eTbookshelfRoute from './ETBookshelf';
+import eTbookRoute from './ETBook';
 import pdfbookRoute from './PdfBook';
-import Print from './Print';
+import print from './Print';
 import multiTaskPanel from './MultiTaskPanel';
-import Course from './Course';
+import course from './Course';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -22,11 +22,11 @@ export const createRoutes = store => ({
     bookshelfRoute(store),
     bookRoute(store),
     pdfbookRoute(store),
-    ETbookshelfRoute(store),
-    ETbookRoute(store),
-    Print(store),
-    multiTaskPanel(store), 
-    Course(store)
+    eTbookshelfRoute(store),
+    eTbookRoute(store),
+    print(store),
+    multiTaskPanel(store),
+    course(store)
   ]
 });
 

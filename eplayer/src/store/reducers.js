@@ -20,7 +20,6 @@ export const makeRootReducer = asyncReducers =>
 
 
 export const injectReducer = (store, { key, reducer }) => {
-
   const myStore = store;
   myStore.asyncReducers[key] = reducer;
   myStore.replaceReducer(makeRootReducer(store.asyncReducers));

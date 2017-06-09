@@ -126,6 +126,7 @@
     "node-sass": "^3.7.0",
     "normalize.css": "^4.1.1",
     "postcss-loader": "^0.13.0",
+    "prop-types": "^15.5.10",
     "pxe-annotation": "^1.2.0",
     "pxe-pageviewer": "^1.0.14",
     "pxe-player": "0.0.6",

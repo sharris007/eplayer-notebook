@@ -11,33 +11,32 @@ import {
 import { fade } from 'material-ui/utils/colorManipulator';
 import spacing from 'material-ui/styles/spacing';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { IntlProvider, addLocaleData } from 'react-intl';
+
 import createStore from './store/createStore';
 import AppContainer from './containers/AppContainer';
-import { IntlProvider, addLocaleData } from 'react-intl';   
-import {languages} from '../locale_config/translations/index';    
+import { languages } from '../locale_config/translations/index';
 import languageName from '../locale_config/configureLanguage';
+
 const RedBox = require('redbox-react').default;
 
-      
-//========================================================    
-// Locale Setup   
-//========================================================    
-var launguageid,locale;   
-const url=window.location.href;   
-var n=url.search("languageid");   
-if(n>0)   
-{   
-  var urlSplit=url.split("languageid=")   
-  languageid = Number(urlSplit[1]);   
-}   
-else    
-{   
-  var languageid =1;    
-}   
-locale=languageName(languageid);    
-const {messages}=languages.translations[locale];    
-let localisedData=locale.split('-')[0];   
-addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
+
+//= =======================================================
+// Locale Setup
+//= =======================================================
+let languageid;
+const url = window.location.href;
+const n = url.search('languageid');
+if (n > 0) {
+  const urlSplit = url.split('languageid=');
+  languageid = Number(urlSplit[1]);
+} else {
+  languageid = 1;
+}
+const locale = languageName(languageid);
+const { messages } = languages.translations[locale];
+const localisedData = locale.split('-')[0];
+addLocaleData((require(`react-intl/locale-data/${localisedData}`))); // eslint-disable-line import/no-dynamic-require
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941

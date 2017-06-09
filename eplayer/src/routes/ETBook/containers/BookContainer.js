@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { fetchAnnotations, addAnnotation, removeAnnotation,
          fetchBookmarks, addBookmark, removeBookmark,
          fetchPreferences,
-         fetchTocAndViewer, goToPage,fetchBookDetails } from '../modules/book';
+         fetchTocAndViewer, goToPage, fetchBookDetails } from '../modules/book';
 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for

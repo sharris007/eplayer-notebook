@@ -53,7 +53,7 @@ export const clients = {
     }
   }),
 
-  /*getBookShelf: axios.create({
+  /* getBookShelf: axios.create({
     baseURL: 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key=1975822139101138730252017',
     timeout: 20000,
     headers: {
@@ -61,14 +61,14 @@ export const clients = {
     }
   }),*/
 
- getBookShelf: axios.create({
+  getBookShelf: axios.create({
     baseURL: 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext',
     timeout: 20000,
     headers: {
       'Content-Type': 'application/json'
     }
   }),
- readerApi: axios.create({
+  readerApi: axios.create({
     baseURL: 'https://api-sandbox.readerplatform.pearson-intl.com',
     timeout: 20000,
     headers: {
@@ -76,7 +76,7 @@ export const clients = {
     }
   }),
 
-  /*getLogin: axios.create({
+  /* getLogin: axios.create({
     baseURL: 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api',
     timeout: 20000
   }),

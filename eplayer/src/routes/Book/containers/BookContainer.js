@@ -24,8 +24,8 @@ const mapDispatchToProps = {
   removeBookmark,
   fetchPreferences,
   fetchTocAndViewer,
-  goToPage,
-  
+  goToPage
+
 
 };
 

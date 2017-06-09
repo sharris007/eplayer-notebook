@@ -1,5 +1,4 @@
 import fetch from 'isomorphic-fetch';
-import map from 'lodash/map';
 import { clients } from '../../../components/common/client';
 
 // ------------------------------------
@@ -258,32 +257,32 @@ export function fetchPreferences() {
   };
 }
 
-function orderPages(unorderedPages, bookState, pageId) {
-  const orderedPages = [];
-  const bookSt = bookState;
-  const tocList = map(bookState.toc.content.list[0].children, 'id');
-  tocList.forEach((id) => {
-    unorderedPages.forEach((unorderedPage) => {
-      if (unorderedPage.id === id) {
-        orderedPages.push(unorderedPage);
-      }
-    });
-  });
+// function orderPages(unorderedPages, bookState, pageId) {
+//   const orderedPages = [];
+//   const bookSt = bookState;
+//   const tocList = map(bookState.toc.content.list[0].children, 'id');
+//   tocList.forEach((id) => {
+//     unorderedPages.forEach((unorderedPage) => {
+//       if (unorderedPage.id === id) {
+//         orderedPages.push(unorderedPage);
+//       }
+//     });
+//   });
 
-  if (pageId) {
-    orderedPages.forEach((obj) => {
-      if (obj.id === pageId) {
-        bookSt.viewer.currentPageId = obj.id;
-      }
-    });
-  } else {
-    bookSt.viewer.currentPageId = orderedPages[0].id;
-  }
-  bookSt.viewer.pages = orderedPages;
-  bookSt.isFetching.viewer = false;
-}
+//   if (pageId) {
+//     orderedPages.forEach((obj) => {
+//       if (obj.id === pageId) {
+//         bookSt.viewer.currentPageId = obj.id;
+//       }
+//     });
+//   } else {
+//     bookSt.viewer.currentPageId = orderedPages[0].id;
+//   }
+//   bookSt.viewer.pages = orderedPages;
+//   bookSt.isFetching.viewer = false;
+// }
 
-export function fetchTocAndViewer(bookId, tocImageAndTitle, pageId,tocUrl) {
+export function fetchTocAndViewer(bookId, tocImageAndTitle, pageId, tocUrl) {
   const bookState = {
     toc: {
       content: {}
@@ -297,45 +296,40 @@ export function fetchTocAndViewer(bookId, tocImageAndTitle, pageId,tocUrl) {
   return (dispatch) => {
     dispatch(request('toc'));
     dispatch(request('viewer'));
-    return clients.etext.get('/custom/toc/contextId/'+bookId+'?provider='+tocUrl)
+    return clients.etext.get(`/custom/toc/contextId/${bookId}?provider=${tocUrl}`)
     .then((response) => {
       const tocData = response.data;
       bookState.toc.content.id = 'testid';
-      bookState.toc.content.mainTitle = "Science";
+      bookState.toc.content.mainTitle = 'Science';
       bookState.toc.content.author = 'Charles Dickens';
-      bookState.toc.content.thumbnail ='http://content.stg-openclass.com/eps/pearson-reader/api/item/4eaf188e-1798-446b-b382-90a0c6da6629/1/file/cover_thumbnail.jpg';
+      bookState.toc.content.thumbnail = 'http://content.stg-openclass.com/eps/pearson-reader/api/item/4eaf188e-1798-446b-b382-90a0c6da6629/1/file/cover_thumbnail.jpg'; // eslint-disable-line max-len
       bookState.toc.content.list = [];
       const chapterPageObj = tocData.content.items;
-      var repl = chapterPageObj.map(function(obj) {
-                return {
-                    id: obj.id,
-                    title: obj.title,
-                coPage: obj.coPage,
-                playOrder: obj.playOrder,
-                children: obj.items
-                
-                }
-            });
-     
-      bookState.toc.content.list= repl;
+      const repl = chapterPageObj.map(obj => ({
+        id: obj.id,
+        title: obj.title,
+        coPage: obj.coPage,
+        playOrder: obj.playOrder,
+        children: obj.items
+
+      }));
+
+      bookState.toc.content.list = repl;
       bookState.isFetching.toc = false;
       dispatch({ type: RECEIVE_TOC, bookState });
     });
   };
 }
 export function fetchBookDetails(bookId) {
-
-   return (dispatch) => {
-    return clients.etext.get('/books/'+bookId+'/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true')
+  return dispatch => clients.etext.get(`/books/${bookId}/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true`) // eslint-disable-line max-len
     .then((response) => {
       const tocData = response.data;
-      return clients.etext.get('/custom/playlist/contextId/'+bookId+'?provider='+tocData.bookDetail.metadata.toc[0])
+      return clients.etext.get(`/custom/playlist/contextId/${bookId}?provider=${tocData.bookDetail.metadata.toc[0]}`)
         .then((pageData) => {
           const playlistData = pageData.data;
-          dispatch({ type: RECEIVE_PLAYLIST, playlistData});
+          dispatch({ type: RECEIVE_PLAYLIST, playlistData });
         });
     });
-  };
 }
 
 export function goToPage(pageId) {
@@ -493,7 +487,7 @@ const ACTION_HANDLERS = {
 // Reducer
 // ------------------------------------
 const initialState = {
-  playlist :[],
+  playlist: [],
   annotations: [],
   bookmarks: [],
   preferences: {},

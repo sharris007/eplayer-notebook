@@ -1,36 +1,39 @@
+/* global sessionStorage*/
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
-import find from 'lodash/find';
+// import find from 'lodash/find';
 import { browserHistory } from 'react-router';
 import { PreferencesComponent } from '@pearson-incubator/preferences';
 import { BookmarkIcon } from '@pearson-incubator/bookmark-icon';
+import { addLocaleData } from 'react-intl';
+
 import Icon from '../Icon';
 import './Header.scss';
 import DrawerComponent from './Drawer';
 import Search from '../search/containers/searchContainer';
 import MoreMenuComponent from '../moreMenu/containers/moreMenuContainer';
-import { injectReducer } from '../../store/reducers';
-import { IntlProvider, addLocaleData} from 'react-intl';    
-import {languages} from '../../../locale_config/translations/index';
+// import { injectReducer } from '../../store/reducers';
+// import { languages } from '../../../locale_config/translations/index';
 
-let locale,localisedData,messages;
+let locale;
+let localisedData;
+let messages;
 
 export class Header extends React.Component {
   constructor(props) {
     super(props);
-    if(this.props.locale != undefined)
-    {
-      locale=this.props.locale;   
-      localisedData=locale.split('-')[0];   
-      addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
-      messages=this.props.messages;
+    if (this.props.locale !== undefined) {
+      locale = this.props.locale;
+      localisedData = locale.split('-')[0];
+      addLocaleData((require(`react-intl/locale-data/${localisedData}`))); // eslint-disable-line global-require,import/no-dynamic-require
+      messages = this.props.messages;
     }
     this.state = {
       drawerOpen: false,
       prefOpen: false,
       headerExists: false,
       searchOpen: false,
-      goToTextVal:''
+      goToTextVal: ''
     };
   }
 
@@ -91,20 +94,16 @@ export class Header extends React.Component {
   }
 
   handleBookshelfClick = () => {
-    if(this.props.bookData.toc.content!==undefined)
-    {
-      this.props.bookData.toc.content={};
-      this.props.bookData.bookmarks=[];
-      this.props.bookData.bookinfo=[];
+    if (this.props.bookData.toc.content !== undefined) {
+      this.props.bookData.toc.content = {};
+      this.props.bookData.bookmarks = [];
+      this.props.bookData.bookinfo = [];
     }
-    let langQuery=sessionStorage.getItem('bookshelfLang');
-    if(langQuery != "?languageid=1")    
-    {   
-      browserHistory.push(`/eplayer/bookshelf` + langQuery);      
-    }   
-    else    
-    {   
-      browserHistory.push(`/eplayer/bookshelf`);    
+    const langQuery = sessionStorage.getItem('bookshelfLang');
+    if (langQuery !== '?languageid=1') {
+      browserHistory.push(`/eplayer/bookshelf${langQuery}`);
+    } else {
+      browserHistory.push('/eplayer/bookshelf');
     }
     this.props.bookCallbacks.clearSessionStorage();
     this.setState({ open: false });
@@ -139,16 +138,15 @@ export class Header extends React.Component {
       this.setState({ prefOpen: false });
     }
   }
- goToTextChange = (e) => {
-  this.setState({ goToTextVal: e.target.value });
- } 
+  goToTextChange = (e) => {
+    this.setState({ goToTextVal: e.target.value });
+  }
 
- goToPageClick = () => {
+  goToPageClick = () => {
     this.props.goToPageClick(this.state.goToTextVal);
   }
-  
+
   goToPageOnKeyUp = (e) => {
-   
     if (e.keyCode === 13) {
       this.setState({ goToTextVal: e.target.value });
       this.goToPageClick();
@@ -170,7 +168,6 @@ export class Header extends React.Component {
   }
 
   render() {
-
     const style = {
       rightIcons: {
         margin: '15px 15px 0 0'
@@ -209,22 +206,23 @@ export class Header extends React.Component {
         }
       }
     };
-    
+
     const bookmarkIconData = {
       addBookmarkHandler: this.props.bookCallbacks.addBookmarkHandler,
       removeBookmarkHandler: this.props.bookCallbacks.removeBookmarkHandler,
       isCurrentPageBookmarked: this.props.bookCallbacks.isCurrentPageBookmarked,
-      goToPageClick : this.props.bookCallbacks.goToPageClick,
-      goToTextChange : this.props.bookCallbacks.goToTextChange
+      goToPageClick: this.props.bookCallbacks.goToPageClick,
+      goToTextChange: this.props.bookCallbacks.goToTextChange
     };
 
-    const targetPageId = this.props.bookData.viewer.currentPageId;
-    const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
+    // const targetPageId = this.props.bookData.viewer.currentPageId;
+    // const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
     const title = sessionStorage.getItem('title');
+    /* eslint-disable */
     return (
       <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
         <AppBar
-          title = {this.props.isET1 == 'Y' ?  this.props.title || title :  this.props.pageTitle  }
+          title={this.props.isET1 === 'Y' ? this.props.title || title : this.props.pageTitle}
           titleStyle={style.appBar.title}
           style={style.appBar}
           iconStyleLeft={style.leftIcons}
@@ -281,16 +279,17 @@ export class Header extends React.Component {
                 <Icon name="search-lg-18" />
               </div>
               <div className="searchContainer">
-               {this.state.searchOpen ? <Search locale={locale} store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={(pageId)=>this.goToPage(pageId)} indexId = {this.props.indexId} listClick = {this.props.listClick} isET1 = 'Y'/> : <div className="empty" />}
+                {this.state.searchOpen ? <Search locale={locale} store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={pageId => this.goToPage(pageId)} indexId={this.props.indexId} listClick={this.props.listClick} isET1="Y" /> : <div className="empty" />}
               </div>
               <div className="moreIcon">
-                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages}/>
+                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages} />
               </div>
             </div>}
         />
-        { 
+        {
           this.state.drawerOpen &&
-          <DrawerComponent locale={locale} messages={messages}
+          <DrawerComponent
+            locale={locale} messages={messages}
             bookData={this.props.bookData}
             bookCallbacks={this.props.bookCallbacks}
             isOpen={this.props.drawerOpen}
@@ -298,11 +297,12 @@ export class Header extends React.Component {
             isET1={this.props.isET1}
           />
         }
-       {this.props.isET1 ? <div className="preferences-container-eT1">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} disableBackgroundColor={this.props.disableBackgroundColor}/></div> : <div className="empty" />} </div>  
-       : <div className="preferences-container">  {this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} preferenceUpdate = {this.props.preferenceUpdate} preferenceBackgroundColor  = { this.props.preferenceBackgroundColor }/></div> : <div className="empty" />} </div>} 
-     
+        {this.props.isET1 ? <div className="preferences-container-eT1">{this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} disableBackgroundColor={this.props.disableBackgroundColor} /></div> : <div className="empty" />} </div>
+       : <div className="preferences-container">{this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} preferenceUpdate={this.props.preferenceUpdate} preferenceBackgroundColor={this.props.preferenceBackgroundColor} /></div> : <div className="empty" />} </div>}
+
       </div>
     );
+    /* eslint-enable */
   }
 }
 
@@ -312,8 +312,15 @@ Header.propTypes = {
   bookCallbacks: React.PropTypes.object,
   store: React.PropTypes.object,
   viewerContentCallBack: React.PropTypes.func,
-  goToTextChange : React.PropTypes.func,
-  goToPageClick : React.PropTypes.func
+  goToTextChange: React.PropTypes.func,
+  goToPageClick: React.PropTypes.func,
+  locale: React.PropTypes.string,
+  messages: React.PropTypes.object,
+  goToPage: React.PropTypes.func,
+  isET1: React.PropTypes.string,
+  title: React.PropTypes.string,
+  pageTitle: React.PropTypes.string,
+  drawerOpen: React.PropTypes.bool
 };
 
 export default Header;

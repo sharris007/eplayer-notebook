@@ -8,6 +8,30 @@ export const getTotalAnnotationData = json => ({
   annTotalDataloaded: true
 });
 
+export const annStructureChange = (annTotalList) => {
+  const colorArr = {
+    '#55DF49': 'Green',
+    '#FC92CF': 'Pink',
+    '#FFD232': 'Yellow'
+  };
+  const annListArray = [];
+  if (annTotalList && annTotalList.length > 0) {
+    for (let i = 0; i < annTotalList.length; i++) {
+      const setArray = {
+        pageId: annTotalList[i].source.id,
+        id: annTotalList[i].id,
+        author: annTotalList[i].user,
+        time: annTotalList[i].createdTimestamp,
+        text: annTotalList[i].quote,
+        comment: annTotalList[i].text || '',
+        color: colorArr[annTotalList[i].color] || 'Green'
+      };
+      annListArray.push(setArray);
+    }
+  }
+  return annListArray;
+};
+
 export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.dogetTotalAnnotation(filterData)
     .then(response => response.json())
     .then((json) => {
@@ -17,8 +41,6 @@ export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.do
         dispatch(getTotalAnnotationData(annListArray));
       }
     });
-
-
 
 
 // GET call for annotations
@@ -52,7 +74,6 @@ export const postAnnCallService = data => dispatch => AnnotationApi.doPostAnnota
      const annListArray = annStructureChange(postModifiedData.rows);
      dispatch(getTotalAnnotationData(annListArray));
      dispatch(postAnnotationData(postModifiedData));
-
    });
 
 
@@ -61,6 +82,12 @@ export const putAnnotationData = json => ({
   type: typeConstants.PUT_ANNOTATION,
   pageFilterAnnPutData: json,
   annPutDataloaded: true
+});
+
+ // DELETE call annotations
+export const deleteAnnotationData = json => ({
+  type: typeConstants.DELETE_LISTANNOTATION,
+  deleteAnnData: json
 });
 
 export const putAnnCallService = data => dispatch => AnnotationApi.doPutAnnotation(data)
@@ -75,39 +102,8 @@ export const putAnnCallService = data => dispatch => AnnotationApi.doPutAnnotati
    });
 
 
- // DELETE call annotations
-export const deleteAnnotationData = json => ({
-  type: typeConstants.DELETE_LISTANNOTATION,
-  deleteAnnData: json
-});
-
 export const deleteAnnCallService = data => dispatch => AnnotationApi.doDeleteAnnotation(data)
    .then(response => response.json())
    .then((json) => {
      dispatch(deleteAnnotationData(json));
    });
-
-
-export const annStructureChange = (annTotalList) => {
-  const colorArr = {
-    '#55DF49': 'Green',
-    '#FC92CF': 'Pink',
-    '#FFD232': 'Yellow'
-  };
-  const annListArray = [];
-  if (annTotalList && annTotalList.length > 0) {
-    for (let i = 0; i < annTotalList.length; i++) {
-      const setArray = {
-        pageId: annTotalList[i].source.id,
-        id: annTotalList[i].id,
-        author: annTotalList[i].user,
-        time: annTotalList[i].createdTimestamp,
-        text: annTotalList[i].quote,
-        comment: annTotalList[i].text || '',
-        color: colorArr[annTotalList[i].color] || 'Green'
-      };
-      annListArray.push(setArray);
-    }
-  }
-  return annListArray;
-};

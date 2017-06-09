@@ -1,6 +1,6 @@
-import { injectReducer } from '../../store/reducers';
+// import { injectReducer } from '../../store/reducers';
 
-export default store => ({
+export default () => ({
   path: '/eplayer/Print',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
@@ -10,11 +10,6 @@ export default store => ({
       /*  Webpack - use require callback to define
           dependencies for bundling   */
       const Print = require('./components/Print').default;
-      // const reducer = require('./modules/book').default;
-
-      /*  Add the reducer to the store on key 'counter'  */
-      //injectReducer(store, { key: 'book', reducer });
-
       /*  Return getComponent   */
       cb(null, Print);
 

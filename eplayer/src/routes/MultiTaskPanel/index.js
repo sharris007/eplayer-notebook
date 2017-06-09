@@ -1,6 +1,6 @@
-import { injectReducer } from '../../store/reducers';
+import { injectReducer } from '../../store/reducers';  // eslint-disable-line no-unused-vars
 
-export default store => ({
+export default store => ({  // eslint-disable-line no-unused-vars
   path: '/eplayer/MultiTaskPanel',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {

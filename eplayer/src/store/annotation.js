@@ -6,7 +6,6 @@ const initialAnnotationData = {
 };
 
 export default (state = initialAnnotationData, action) => {
-
   switch (action.type) {
 
     case 'GET_TOTALANNOTATION': {

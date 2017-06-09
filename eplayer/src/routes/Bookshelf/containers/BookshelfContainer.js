@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'; /* Importing the react-redux library, connect method for connecting the react and redux-store. */
-import {fetch,storeBookDetails,storeSsoKey} from '../modules/bookshelfActions'; /* Importing the defined method from reducers. */
 import { injectIntl } from 'react-intl';
+
+import { fetch, storeBookDetails, storeSsoKey } from '../modules/bookshelfActions'; /* Importing the defined method from reducers. */
 
 
 /*  This is a container component. Notice it does not contain any JSX,
@@ -20,11 +21,11 @@ import BookshelfPage from '../components/Bookshelf';
 const mapDispatchToProps = {
   fetch,
   storeBookDetails,
-  storeSsoKey,
+  storeSsoKey
 
 };
 
-/* mapStateToProps method used for connecting the state from the store to corresponding props, 
+/* mapStateToProps method used for connecting the state from the store to corresponding props,
 to access your reducer state objects from within your React components. */
 
 const mapStateToProps = state => ({

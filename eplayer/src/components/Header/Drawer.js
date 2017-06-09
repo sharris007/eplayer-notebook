@@ -1,7 +1,7 @@
 import React from 'react';
-import {ReactDOM} from 'react-dom';
+// import {ReactDOM} from 'react-dom';
 import SwipeableViews from 'react-swipeable-views';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+// import injectTapEventPlugin from 'react-tap-event-plugin';
 import Drawer from 'material-ui/Drawer';
 import { Tabs, Tab } from 'material-ui/Tabs';
 import { TableOfContentsComponent } from '@pearson-incubator/toc';
@@ -9,7 +9,7 @@ import { BookmarkListComponent } from '@pearson-incubator/bookmarks';
 import { NoteListComponent } from '@pearson-incubator/notes';
 import './Drawer.scss';
 
-var locale;
+let locale;
 let counter = -1;
 let rowCount = 0;
 const grey = '#f5f5f5';
@@ -24,34 +24,22 @@ const center = 'center';
 class DrawerComponent extends React.Component {
   constructor(props) {
     super(props);
-    if(this.props.locale=="en-US-HE")
-    {
-      locale="en-US";
-    }
-    else if(this.props.locale=="es-US-CG" || this.props.locale=="es-ES-CS" || this.props.locale=="es-MX-LA")
-    {
-      locale="es-US";
-    }
-    else if(this.props.locale=="fr-FR-CG")
-    {
-      locale="fr";
-    }
-    else if(this.props.locale=="en-CA-PS" || this.props.locale=="en-CA-ER" )
-    {
-      locale="en-CA";
-    }
-    else
-    {
-      locale=this.props.locale;
+    if (this.props.locale === 'en-US-HE') {
+      locale = 'en-US';
+    } else if (this.props.locale === 'es-US-CG' || this.props.locale === 'es-ES-CS' || this.props.locale === 'es-MX-LA') {  // eslint-disable-line
+      locale = 'es-US';
+    } else if (this.props.locale === 'fr-FR-CG') {
+      locale = 'fr';
+    } else if (this.props.locale === 'en-CA-PS' || this.props.locale === 'en-CA-ER') {
+      locale = 'en-CA';
+    } else {
+      locale = this.props.locale;
     }
     this.state = {
       slideIndex: 0,
       drawerOpen: false,
-      tocData:''
+      tocData: ''
     };
-
-
-
   }
 
   componentDidMount() {
@@ -207,7 +195,6 @@ class DrawerComponent extends React.Component {
   }
 
   render() {
-    
     const drawerTab = {
       tabHeader: {
         backgroundColor: bkgColor,
@@ -230,7 +217,7 @@ class DrawerComponent extends React.Component {
       overflow: 'hidden',
       backgroundColor: grey
     };
-    return (< Drawer
+    return (<Drawer
       docked={false}
       width={400}
       open={this.props.isOpen}
@@ -240,20 +227,20 @@ class DrawerComponent extends React.Component {
       role="dialog"
       containerStyle={mystyle}
     >
-      < div
+      <div
         className="tabCompwrapper"
         tabIndex="0"
         role="dialog"
         onKeyUp={this.onArrowKeyPress}
       >
-        < Tabs
+        <Tabs
           inkBarStyle={drawerTab.inlineinkBarStyle}
           className="tabComp"
           onChange={this.handleChange}
           value={this.state.slideIndex}
         >
-          < Tab
-            label={this.props.messages !=undefined ? this.props.messages.contents : 'Contents'}
+          <Tab
+            label={this.props.messages !== undefined ? this.props.messages.contents : 'Contents'}
             id="contents"
             style={drawerTab.tabHeader}
             onActive={
@@ -262,8 +249,8 @@ class DrawerComponent extends React.Component {
             className="tablabel active"
             onKeyDown={this.keyBoardNavigation}
             value={0}
-          /> < Tab
-            label={this.props.messages !=undefined ? this.props.messages.bookmarks : 'Bookmarks'} 
+          /> <Tab
+            label={this.props.messages !== undefined ? this.props.messages.bookmarks : 'Bookmarks'}
             id="bookmarks"
             style={drawerTab.tabHeader}
             onActive={
@@ -272,8 +259,8 @@ class DrawerComponent extends React.Component {
             className="tablabel "
             onKeyDown={this.keyBoardNavigation}
             value={1}
-          /> < Tab
-            label={this.props.messages !=undefined ? this.props.messages.notes : 'Notes'} 
+          /> <Tab
+            label={this.props.messages !== undefined ? this.props.messages.notes : 'Notes'}
             id="notes"
             style={drawerTab.tabHeader}
             onActive={
@@ -282,7 +269,7 @@ class DrawerComponent extends React.Component {
             className="tablabel "
             onKeyDown={this.keyBoardNavigation}
             value={2}
-          /> < /Tabs > < SwipeableViews
+          /> </Tabs > <SwipeableViews
             index={this.state.slideIndex}
             onChangeIndex={this.handleChange}
             className="swipeviewStyle"
@@ -290,7 +277,7 @@ class DrawerComponent extends React.Component {
             { this.props.bookData.toc.content &&
               < TableOfContentsComponent
                 separateToggleIcon
-                data={ this.props.bookData.toc}
+                data={this.props.bookData.toc}
                 showDuplicateTitle
                 depth={5}
                 childField={'children'}
@@ -304,18 +291,18 @@ class DrawerComponent extends React.Component {
                 clickBookmarkHandler={this.props.bookCallbacks.goToPageCallback}
                 removeBookmarkHandler={this.props.bookCallbacks.removeBookmarkHandler}
                 isET1={this.props.isET1}
-                locale={locale} 
-              />
-             }
-             { this.props.bookData.annTotalData &&
-              < NoteListComponent
-                notes={this.props.bookData.annTotalData}
-                clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
-                removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
                 locale={locale}
               />
+             }
+            { this.props.bookData.annTotalData &&
+            < NoteListComponent
+              notes={this.props.bookData.annTotalData}
+              clickNoteHandler={this.props.bookCallbacks.goToPageCallback}
+              removeNoteHandler={this.props.bookCallbacks.removeAnnotationHandler}
+              locale={locale}
+            />
             }
-          < /SwipeableViews> < /div > < /Drawer>
+          </SwipeableViews> </div > </Drawer>
     );
   }
 }
@@ -324,7 +311,10 @@ DrawerComponent.propTypes = {
   bookData: React.PropTypes.object.isRequired,
   bookCallbacks: React.PropTypes.object,
   isOpen: React.PropTypes.bool.isRequired,
-  hideDrawer: React.PropTypes.func.isRequired
+  hideDrawer: React.PropTypes.func.isRequired,
+  locale: React.PropTypes.string,
+  messages: React.PropTypes.object,
+  isET1: React.PropTypes.bool
 };
 
 export default DrawerComponent;

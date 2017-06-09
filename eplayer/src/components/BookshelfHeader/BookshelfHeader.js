@@ -1,8 +1,11 @@
+/* global sessionStorage localStorage */
 import React from 'react';
+import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
+import { browserHistory } from 'react-router';
+
 import Icon from '../Icon';
 import './BookshelfHeader.scss';
-import { browserHistory } from 'react-router';
 
 const style = {
   raisedButton: {
@@ -37,42 +40,41 @@ export class BookshelfHeader extends React.Component {
     });
   };
   onClick = () => {
-    var langQuery=sessionStorage.getItem('bookshelfLang');
-    var i = sessionStorage.length;
-    while(i--) {
-      var key = sessionStorage.key(i);
-      if((key)) {
+    const langQuery = sessionStorage.getItem('bookshelfLang');
+    let i = sessionStorage.length;
+    while (i--) {
+      const key = sessionStorage.key(i);
+      if ((key)) {
         sessionStorage.removeItem(key);
-      }  
+      }
     }
     const storagAarr = [];
-    const localStorageLength = localStorage.length;
-    for (let i = 0; i < localStorage.length; i++){
-        if (localStorage.key(i).indexOf('bookId') == 0 ) {
-            storagAarr.push(localStorage.key(i));
-        }
+    for (let i = 0; i < localStorage.length; i++) {
+      if (localStorage.key(i).indexOf('bookId') === 0) {
+        storagAarr.push(localStorage.key(i));
+      }
     }
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
-    if(langQuery != "?languageid=1")
-    {
-      browserHistory.push(`/eplayer/login` + langQuery);  
+    if (langQuery !== '?languageid=1') {
+      browserHistory.push(`/eplayer/login${langQuery}`);
+    } else {
+      browserHistory.push('/eplayer/login');
     }
-    else
-    {
-      browserHistory.push(`/eplayer/login`);
-    }
-    //this.props.logout();
+    // this.props.logout();
   }
 
   render() {
     return (
+       /* eslint-disable */
       <div className="bookshelfHeader">
         <div>
           <div className="logo" />
           <span className="rightComp">
-            <span className="label">{this.props.firstName&&this.props.lastName ? this.props.firstName+' '+this.props.lastName : 'Addie Learnerbee'}</span>
+            <span className="label">
+              {this.props.firstName && this.props.lastName ? `${this.props.firstName} ${this.props.lastName}` : 'Addie Learnerbee'}
+            </span>
             <span className="dropdown"><Icon name="dropdown-open-18" /></span>
           </span>
         </div>
@@ -86,8 +88,13 @@ export class BookshelfHeader extends React.Component {
         </div>
         <div className="title">{this.props.messages.myBookshelf}</div>
       </div>
+      /* eslint-enable */
     );
   }
 }
-
+BookshelfHeader.propTypes = {
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+  messages: PropTypes.object
+};
 export default BookshelfHeader;

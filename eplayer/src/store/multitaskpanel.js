@@ -1,4 +1,3 @@
-import { pageDetails } from '../../const/Mocdata';
 
 const bootstrapParams = {
   pageDetails: {},
@@ -6,7 +5,6 @@ const bootstrapParams = {
 };
 
 export default (state = bootstrapParams, action) => {
-
   switch (action.type) {
     case 'CREATE_MULTIPANEL_BOOTSTRAP_PARAMS': {
       // return Object.assign({}, state, { pageDetails: action.data.pageDetails, urlParams: action.data.urlParams });
@@ -19,5 +17,4 @@ export default (state = bootstrapParams, action) => {
     default :
       return state;
   }
-
 };

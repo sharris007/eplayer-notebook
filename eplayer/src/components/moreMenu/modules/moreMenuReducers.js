@@ -24,7 +24,7 @@ const ACTION_HANDLERS = {
 
   [LOGOUT_USER_SESSION_PENDING]: state => ({ ...state, loggingout_userSession: true, error_userSession: null }),
 
-  [LOGOUT_USER_SESSION_FULFILLED]: (state, action) => ({ 
+  [LOGOUT_USER_SESSION_FULFILLED]: (state, action) => ({
     ...state,
     data_userSession: action.payload,
     loggingout_userSession: false,
