@@ -72,7 +72,7 @@ export const getTotalBookmarkCallService = filterData => dispatch =>
     BookmarkApi.doTotalBookmark(filterData)
     .then(response => response.json())
     .then((json) => {
-      if (json.status !== '404') {
+      if (json.bookmarks && json.bookmarks.length) {
         const bookmarksDataMap = bookmarkStructureChange(json);
         dispatch(getTotalBookmarkData(bookmarksDataMap));
       }

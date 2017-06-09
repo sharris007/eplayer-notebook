@@ -151,3 +151,6 @@ $padding-right: 30px;
     padding-top:2px;
     outline: none !important;
 }
+#toc .toc-header .header-text{
+  word-break: break-all;
+}
