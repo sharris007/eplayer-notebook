@@ -19,6 +19,9 @@ class Annotation extends Component {
     if ((e.keyCode === 27 ||!$(e.target).closest('.annotator-editor').length) && !$('.annotator-editor').hasClass('annotator-hide')) {
       $('.' + this.props.contentId).data('annotator').editor.hide();
     }
+    if ($(e.target).closest('.annotator-panel-1').length) {
+      return false;
+    }
   }
   componentDidMount() { 
     this.annotationEventHandler();

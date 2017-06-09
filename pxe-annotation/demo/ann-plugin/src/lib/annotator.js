@@ -38,6 +38,8 @@ Annotator = (function(_super) {
 
   Annotator.prototype.mouseIsDown = false;
 
+  Annotator.prototype.selectedAnnArr = [];
+
   Annotator.prototype.ignoreMouseup = false;
 
   Annotator.prototype.viewerHideTimer = null;
@@ -491,6 +493,7 @@ Annotator = (function(_super) {
      return false;
     var container, range, _i, _len, _ref;
     this.mouseIsDown = false;
+    this.selectedAnnArr=[];
     this.ignoreMouseup=$(event.target).hasClass('annotator-confirm-delete')?false:this.ignoreMouseup;
     if (this.ignoreMouseup) {
       return;
@@ -498,7 +501,8 @@ Annotator = (function(_super) {
     this.selectedRanges = this.getSelectedRanges();
     _ref = this.selectedRanges;
     if(_ref.length>0) {
-      if(this.getSelectedAnnotations().length > 1) {
+      this.selectedAnnArr = this.getSelectedAnnotations();
+      if(this.selectedAnnArr.length > 1) {
         window.getSelection().removeAllRanges();
         return;
       }
@@ -539,6 +543,8 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.onHighlightClick = function(event) {
+    if(this.selectedAnnArr.length > 0)
+      return false;
     var annotations = $(event.target).parents('.annotator-hl').addBack().map(function() {
       return $(this).data("annotation");
     }).toArray();
