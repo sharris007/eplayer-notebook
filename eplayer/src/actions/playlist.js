@@ -42,7 +42,7 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
         const tocResponse = response.content;
         tocResponse.mainTitle = bookDetails.title;
         tocResponse.author = `${bookDetails.creator.substring(0, 20)}...`;
-        tocResponse.thumbnail = bookDetails.coverImageUrl;
+        tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
 
 
         tocResponse.list = [];

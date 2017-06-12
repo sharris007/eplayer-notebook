@@ -279,7 +279,12 @@ export class Book extends Component {
     this.setState({ drawerOpen: true });
   }
   goToPageCallback = (pageId, searchText) => {
-    const currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
+    let id = pageId;
+    let currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
+    if( currentData === undefined && pageId.indexOf('-') > -1 ) {
+      id = pageId.substring(0,pageId.indexOf('-'))
+      currentData = find(this.state.pageDetails.playListURL, list => list.id === id);
+    }
     currentData.uri  = currentData.href;
     currentData.label = currentData.title;
     const playpageDetails  = this.state.pageDetails ; 
@@ -298,9 +303,9 @@ export class Book extends Component {
       drawerOpen: false
     },()=>{
       if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-        browserHistory.replace(`/eplayer/Course/${this.props.params.courseId}/page/${pageId}`);
+        browserHistory.replace(`/eplayer/Course/${this.props.params.courseId}/page/${id}`);
       }else{
-        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${pageId}`);
+        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}`);
       }
       this.props.dispatch(getBookmarkCallService(this.state.urlParams));
     }),

@@ -77,7 +77,7 @@ export const getTocDetails = (bookId, tocurl, piToken) => fetch(`${etextService[
   }
 });
 
-export const getPlaylistDetails = (bookId, tocurl, piToken) => fetch(`${etextService[envType]}/custom/playlist/contextId/${bookId}?provider=${tocurl}&removeDuplicates=false`, {  // eslint-disable-line max-len
+export const getPlaylistDetails = (bookId, tocurl, piToken) => fetch(`${etextService[envType]}/custom/playlist/contextId/${bookId}?provider=${tocurl}&removeDuplicates=true`, {  // eslint-disable-line max-len
   method: 'GET',
   headers: {
     Accept: 'application/json',
