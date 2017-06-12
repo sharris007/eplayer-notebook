@@ -361,7 +361,7 @@ export class Book extends Component {
         bookObj = data;
       } 
     });
-    this.goToPageCallback(bookObj.id, pageId.split("OPS")[1].split('*')[1])
+    this.goToPageCallback(bookObj.id, pageId.split("OPS")[1].split('*')[1].split(','))
   }
 
   listClick = () => {

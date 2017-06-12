@@ -44,13 +44,18 @@ const searchActions = {
     return dispatch => fetch(paramList.searchUrl.replace('searchText', searchText))
       .then(response => response.json())
       .then((response) => {
-        if (response && response.hits && searchText.length >= 4) {
+        if (response && response.hits && response.wordHits.length > 0 && searchText.length >= 4) {
+          let possibleSearchTxt = '';
+          response.wordHits.forEach((data) => {
+            possibleSearchTxt += `${data},`; 
+          });
+          console.log(possibleSearchTxt, paramList.searchUrl)
           response.hits.forEach((data, i) => {
             const obj = {
               contentPreview: data.contentPreview,
               id: i,
               title: data.title,
-              urn: `${data.url}*${searchText}`
+              urn: `${data.url}*${possibleSearchTxt}`
             };
             searchState.searchResult.results.push(obj);
           });
