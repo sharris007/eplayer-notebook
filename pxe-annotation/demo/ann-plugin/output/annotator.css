@@ -1075,7 +1075,12 @@
 	/*position: absolute;
 	bottom: 0;*/
 }
-
+.MathJax span{
+  display:inline-block !important;
+}
+.annotator-handle{
+  position: absolute !important;
+}
 .noteContainer {
     top: 20px;
     position: relative;

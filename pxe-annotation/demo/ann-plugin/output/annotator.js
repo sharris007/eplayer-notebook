@@ -2887,6 +2887,7 @@ Annotator = (function(_super) {
         $(h).replaceWith(h.childNodes);
       }
     }
+    this.alignMathMlNote();
     this.alignNotes();
     this.publish('annotationDeleted', [annotation]);
     return annotation;
@@ -2947,6 +2948,21 @@ Annotator = (function(_super) {
       return false;
     }
   };
+  Annotator.prototype.alignMathMlNote =function(){
+    // $('.MathJax ').each(function(){
+   //    $(this).find( ".annotator-handle" ).css("background-color", $(this).find( ".annotator-handle" ).css('backgroundColor'))
+   //    $(this).find( ".annotator-handle" ).detach().prependTo($(this))
+   //  });
+    $('.MathJax .annotator-handle').each(function(){
+    var get_note_pos = $(this).offset();
+    var bookcontaniner_pos = $("#book-container").offset();
+    var bookcontainer_width = $("#book-container").width();
+    var not_left_pos = (bookcontainer_width - (get_note_pos.left - bookcontaniner_pos.left) + 35);
+    if($(this).offset().left<=bookcontaniner_pos.left+bookcontainer_width){
+      $(this).css("right", -not_left_pos+"px");
+    }
+  });
+  };
   Annotator.prototype.alignNotes = function() {
     var notes=document.getElementsByClassName('annotator-handle');
     for (var i = 0; i<notes.length - 1; i++) {
@@ -2984,6 +3000,7 @@ Annotator = (function(_super) {
     }
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(normedRange.toRange());
+    this.alignMathMlNote();
     this.alignNotes();
     return _results;
   };
