@@ -64,11 +64,17 @@ const initAudio = (thisObj, jsonAttr, currentEle, audio) => {
         $(currentEle).removeClass('ast-icon-play-button').addClass('ast-icon-pause-button');     
         if (isGetAudioJson) {
           audioPlay(audio);
+          let NoteIconColor = '';
           audio.addEventListener('timeupdate', function() {
             audioJsonData.forEach(function(element) {
               $('#'+element.id).removeClass('audioHighlight');
               if ( audio.currentTime >= element.start && audio.currentTime <= element.end ) {
+                $('.annotator-hl .annotator-handle').css('background-color', 'inherit');
+                NoteIconColor = $('#'+element.id).find('.annotator-hl').css('background-color');
                 $('#'+element.id).addClass('audioHighlight');
+                if($('#'+element.id).find('.annotator-hl').length >0) {
+                    $('#'+element.id).find('.annotator-hl .annotator-handle').css('background-color', NoteIconColor);
+                }
               }
             });
           });
