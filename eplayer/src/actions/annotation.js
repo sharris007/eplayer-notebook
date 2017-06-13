@@ -12,7 +12,8 @@ export const annStructureChange = (annTotalList) => {
   const colorArr = {
     '#55DF49': 'Green',
     '#FC92CF': 'Pink',
-    '#FFD232': 'Yellow'
+    '#FFD232': 'Yellow',
+    '#ccf5fd': 'Instructor'
   };
   const annListArray = [];
   if (annTotalList && annTotalList.length > 0) {
