@@ -53,7 +53,7 @@ class FooterNav extends React.Component {
 
   render() {
     const prevText = 'Previous';
-    const nextText = 'Next';
+    const nextText = 'Next:';
     const style = {
       nextBtn: {
         height: '9px',

@@ -1103,5 +1103,5 @@
     text-decoration: none;
 }
 #letter-count, .characters-left {
-	color: red;
+	color: #db0020;
 }
