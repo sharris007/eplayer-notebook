@@ -168,6 +168,10 @@ Annotator.Editor = (function(_super) {
       var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height();
       this.element.css({top:topPosition});
     }
+    if (this.annotation.shareable) {
+      $('.annotator-share').removeClass('on');
+      this.unShareAnnotation();
+    }
     // this.publish('save', [this.annotation]);
     // if(isTopAlign)
     //    $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);

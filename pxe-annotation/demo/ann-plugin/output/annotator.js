@@ -3086,6 +3086,10 @@ Annotator = (function(_super) {
     var getHTMLContents = window.getSelection().getRangeAt(0).cloneContents();
     var elementSelection = $(getHTMLContents).context.children;
     var annArray =[];
+     if($(elementSelection).hasClass('annotator-editor')) {
+      annArray.push(1,2);
+      return annArray;
+    }
     if(elementSelection.length>0){
         for (var i=0;i<=elementSelection.length;i++){
           var hlElements = $(elementSelection[i]).find('.annotator-hl');
@@ -3612,6 +3616,10 @@ Annotator.Editor = (function(_super) {
     if (isTopAlign) {
       var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height();
       this.element.css({top:topPosition});
+    }
+    if (this.annotation.shareable) {
+      $('.annotator-share').removeClass('on');
+      this.unShareAnnotation();
     }
     // this.publish('save', [this.annotation]);
     // if(isTopAlign)

@@ -481,6 +481,10 @@ Annotator = (function(_super) {
     var getHTMLContents = window.getSelection().getRangeAt(0).cloneContents();
     var elementSelection = $(getHTMLContents).context.children;
     var annArray =[];
+     if($(elementSelection).hasClass('annotator-editor')) {
+      annArray.push(1,2);
+      return annArray;
+    }
     if(elementSelection.length>0){
         for (var i=0;i<=elementSelection.length;i++){
           var hlElements = $(elementSelection[i]).find('.annotator-hl');
