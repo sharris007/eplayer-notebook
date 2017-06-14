@@ -37,10 +37,10 @@ export default class BookshelfPage extends React.Component {
     // if (sessionStorage.getItem('piToken') === null) {
     //   browserHistory.push(`/eplayer/login`);
     // }
-    const cookies = new Cookies();
+    this.cookies = new Cookies();
     piSession.getToken((result, userToken) => {
       if (result === piSession.Success) {
-        cookies.set('secureToken', userToken, { path: '/' });
+        this.cookies.set('secureToken', userToken, { path: '/' });
       }
     });
   }
@@ -90,8 +90,8 @@ then set content, bookinfo, bookmarks. */
     if(this.props.location.query.eT1StandaloneBkshf=='Y' || this.props.location.query.eT1StandaloneBkshf=='y') {
       urn = 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid='+this.props.location.query.identityId;
     }
-
-    this.props.fetch(urn, piToken);
+    const secureToken = this.cookies.get('secureToken');
+    this.props.fetch(urn, secureToken);
     // console.log(urn);
   }
 

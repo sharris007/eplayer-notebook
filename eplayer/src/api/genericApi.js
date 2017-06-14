@@ -58,7 +58,7 @@ export const deleteAnnData = data =>
 // ----Play list toc----------------------------------
 
 export const getBookDetails = bookDetails =>
- fetch(`${etextService[envType]}/books/${bookDetails.context}/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
+ fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=nextext_smsedupi&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
    {
      method: 'GET',
      headers: {
@@ -68,7 +68,7 @@ export const getBookDetails = bookDetails =>
      }
    });
 
-export const getTocDetails = (bookId, tocurl, piToken) => fetch(`${etextService[envType]}/custom/toc/contextId/${bookId}?provider=${tocurl}`, {  // eslint-disable-line max-len
+export const getTocDetails = (bookId, tocurl, piToken) => fetch(`${etextService[envType]}/nextext/custom/toc/contextId/${bookId}?provider=${tocurl}`, {  // eslint-disable-line max-len
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -77,7 +77,7 @@ export const getTocDetails = (bookId, tocurl, piToken) => fetch(`${etextService[
   }
 });
 
-export const getPlaylistDetails = (bookId, tocurl, piToken) => fetch(`${etextService[envType]}/custom/playlist/contextId/${bookId}?provider=${tocurl}&removeDuplicates=true`, {  // eslint-disable-line max-len
+export const getPlaylistDetails = (bookId, tocurl, piToken) => fetch(`${etextService[envType]}/nextext/custom/playlist/contextId/${bookId}?provider=${tocurl}&removeDuplicates=true`, {  // eslint-disable-line max-len
   method: 'GET',
   headers: {
     Accept: 'application/json',

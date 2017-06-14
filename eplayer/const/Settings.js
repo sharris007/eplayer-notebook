@@ -4,7 +4,7 @@ export const resources = {
     builds         : '2.0',
     TextSearchLimit: 100,
     PiTokenRefreshTimeout:1800,
-    secureApi      : false
+    secureApi      : true
   },
   links: {
     legalNotice    : 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
@@ -12,16 +12,16 @@ export const resources = {
     support        : 'https://media.pearsoncmg.com/cmg/NexText/about/support/index.html',
     permissions    : 'https://media.pearsoncmg.com/cmg/NexText/about/permissions/index.html',
     etextServiceUrl: {
-      local        : 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
-      dev          : 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
-      qa           : 'https://etext-qa-stg.pearson.com/api/nextext-api/api/nextext',
+      local        : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
+      dev          : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
+      qa           : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
       stage        : 'https://etext-stg.pearson.com/api/nextext-api/api',
       prod         : 'https://etext.pearson.com/api/nextext-api/api'
     },
     eTSecureServiceUrl: {
-      local        : 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
-      dev          : 'https://paperapi-qa.stg-openclass.com/nextext-api/api/nextext',
-      qa           : 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext',
+      local        : 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api',
+      dev          : 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api',
+      qa           : 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api',
       stage        : 'https://etext-stg.pearson.com/api/nextext-api/v1/api',
       prod         : 'https://etext.pearson.com/api/nextext-api/v1/api'
     },
