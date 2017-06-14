@@ -60,8 +60,8 @@ class LoginPage extends React.Component {
         /* SessionStorage used for storing the data in session. */
         sessionStorage.setItem('identityId', this.props.data.identityId);
         sessionStorage.setItem('sessionid', this.props.data.token);
-        loginPiToken.push(this.props.data.piToken);
-        sessionStorage.setItem('piToken', this.props.data.piToken);
+        /*loginPiToken.push(this.props.data.piToken);
+        sessionStorage.setItem('piToken', this.props.data.piToken);*/
         firstName.push(this.props.data.firstName);
         sessionStorage.setItem('firstName', this.props.data.firstName);
         lastName.push(this.props.data.lastName);

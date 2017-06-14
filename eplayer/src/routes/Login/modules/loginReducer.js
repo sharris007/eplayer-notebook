@@ -26,7 +26,6 @@ const ACTION_HANDLERS = {
       firstName: action.payload.data.data.firstName,
       lastName: action.payload.data.data.lastName,
       token: action.payload.data.data.token,
-      piToken: action.payload.data.data.piToken,
       identityId: action.payload.data.data.identityId
     },
     error: null }),
