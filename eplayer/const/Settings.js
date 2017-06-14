@@ -101,14 +101,14 @@ export const domain = {
 
     if (locationOrigin.indexOf('localhost') !== -1)
           { return 'qa'; }
-    else if (locationOrigin.indexOf('pxe-sdk.dev-openclass.com') !== -1)
+    else if (locationOrigin.indexOf('etext-dev.pearson.com') !== -1)
           { return 'qa'; }
-    else if (locationOrigin.indexOf('pxe-sdk-qa.stg-openclass.com') !== -1)
+    else if (locationOrigin.indexOf('etext-qa-stg.pearson.com') !== -1)
           { return 'qa'; }
-    else if (locationOrigin.indexOf('pxe-sdk.stg-openclass.com') !== -1)
+    else if (locationOrigin.indexOf('etext-stg.pearson.com') !== -1)
           { return 'stage'; }
-    else if (locationOrigin.indexOf('pxe-sdk.pearson.com') !== -1)
+    else if (locationOrigin.indexOf('etext.pearson.com') !== -1)
           { return 'prod'; }
-    return 'local';
+    return 'qa';
   }
 };
