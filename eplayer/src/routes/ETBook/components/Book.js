@@ -114,6 +114,8 @@ export class Book extends Component {
     this.props.dispatch({type: "CLEAR_ANNOTATIONS"});
     this.props.dispatch({type: "CLEAR_BOOKMARKS"});
     this.props.dispatch({type: "CLEAR_SEARCH"});
+    delete this.state.pageDetails.searchText;
+    this.setState({pageDetails : this.state.pageDetails});
   }
   componentDidMount() {    
    let pageDetails = this.state.pageDetails;
