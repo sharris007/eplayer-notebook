@@ -52,7 +52,27 @@ export class Book extends Component {
       this.state.pageDetails.currentPageURL = '';
        
   }
+  // refreshPiToken = () =>{
+  //   setInterval( () =>{
+  //     function onRefresh(event) {
+  //       var userToken = event.data;
+  //     }
+  //     piSession.on(piSession.RefreshEvent, onRefresh);
+  //   },3000)
+  // }
+
+  // SessionTimeOutPI = () =>{
+  //   function onLogout() {
+  //       window.location.href = "#/logOff";
+  //   }
+  //   piSession.on(piSession.LogoutEvent, onLogout);
+  //   const activeTime = '';
+  //   const IdleTime = '';
+  //   const currentTime = '';
+  // }
+
   componentWillMount  = () => {
+    
     // let piToken;
     // if (sessionStorage.getItem('piToken')) {
     //   piToken = sessionStorage.getItem('piToken');
@@ -60,9 +80,13 @@ export class Book extends Component {
     setTimeout( () => {
     // deeper code
       const cookies = new Cookies();
+      let redirectCourseUrl   = window.location.href;
+      redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       piSession.getToken(function(result, userToken){
           if(result === piSession['Success']){
              cookies.set('BooksecureToken', userToken, { path: '/' });
+          }else if(result === 'unknown' || result === 'notoken' ){
+             piSession.login(redirectCourseUrl, 10);
           }
       }); 
       const getSecureToken = cookies.get('BooksecureToken');

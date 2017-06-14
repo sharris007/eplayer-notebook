@@ -3,6 +3,7 @@ export const resources = {
     versions       : 'EPLAYER',
     builds         : '2.0',
     TextSearchLimit: 100,
+    PiTokenRefreshTimeout:1800,
     secureApi      : false
   },
   links: {
@@ -52,11 +53,18 @@ export const resources = {
       prod         : 'https://dragonfly.openclass.com/pxereader-cm/latest/api/cm'
     },
     piEnvScripts: {
-      local        : 'https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js',
-      dev          : 'https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js',
-      qa           : 'https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js',
+      local        : 'https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js',
+      dev          : 'https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js',
+      qa           : 'https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js',
       stg          : 'https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js',
       prd          : 'https://pi.pearsoned.com/v1/piapi/login/js/session.js'
+    },
+    clientId :{
+      local        :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
+      dev          :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
+      qa           :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
+      stg          :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
+      prd          :"AT8R4irZrJRPstMMUdb8XaqOvbRJpqs4",
     }
 
   }
@@ -104,5 +112,3 @@ export const domain = {
     return 'local';
   }
 };
-
-export const sectionDetails ={"userCourseSectionDetail":{"id":"ffffffff58fdd656e4b0f4a32d3aabcc","status":"active","authgroupid":"a783c9d2-131e-488a-847b-ecf4e9d0031a","authgrouptype":"student","createdDate":1493034171404,"updatedDate":1493034171404,"section":{"sectionId":"58edecc2e4b01da81434fc2d","sectionTitle":"Temple History","sectionCode":null,"sectionStatus":"active","courseId":"58edecc2e4b01da81434fc2c","courseType":"REVEL","startDate":1492079400000,"endDate":1493548200000,"avatarUrl":"https://revel-stg.pearson.com/eps/sanvan/api/item/44a81d40-ea11-11e5-9928-8f65706ce9df/1/file/judge-c-3e_v2_combined_111615/OPS/public/images/catalog.jpg","extras":{"organizationId":"54dbc82a3004d01c8d3b7e8c","metadata":{"externalPairing":false,"productModel":"REVEL","launchUrl":"www.google.com","copyable":true,"brand":{"name":"REVEL","url":"http://www.pearsonhighered.com/revel/students/registration/index.html"}}},"productCodes":["7bfafbbe-9c57-4247-aa1b-779886ee939e"]},"baseUrl":"https://content.stg-openclass.com/eps/pearson-reader/api/item/5a248db3-4564-484b-82b4-40520f2d623b/100/file/ggate30_to_ingest_Mv2/","toc":["https://content.stg-openclass.com/eps/pearson-reader/api/item/5a248db3-4564-484b-82b4-40520f2d623b/100/file/ggate30_to_ingest_Mv2/OPS/toc.ncx","https://content.stg-openclass.com/eps/pearson-reader/api/item/5a248db3-4564-484b-82b4-40520f2d623b/100/file/ggate30_to_ingest_Mv2/OPS/package.opf","https://content.stg-openclass.com/eps/pearson-reader/api/item/5a248db3-4564-484b-82b4-40520f2d623b/100/file/ggate30_to_ingest_Mv2/OPS/xhtml/toc.xhtml"],"authorName":"New book author1484082308685","indexId":"60bd990667de5400753eba86f739f0c8","bookCoverImageUrl":"https://content.stg-openclass.com/eps/pearson-reader/api/item/5a248db3-4564-484b-82b4-40520f2d623b/100/file/ggate30_to_ingest_Mv2/OPS/images/cover.jpg"},"passportPermissionDetail":{"userId":"x-urn:pi:ffffffff58fdd656e4b0f4a32d3aabcc","productId":"x-urn:revel:7bfafbbe-9c57-4247-aa1b-779886ee939e","access":true}}
