@@ -3557,6 +3557,7 @@ Annotator.Editor = (function(_super) {
         panel4Sec.addClass('annotator-panel-triangle');
         panel2Sec.addClass('overlay');
         panel3Sec.addClass('overlay');
+        $(panel2Sec).find('textarea').attr('readonly','readonly');
     }
     else {
         this.onDeleteClick(event);
@@ -3568,6 +3569,7 @@ Annotator.Editor = (function(_super) {
     panel2Sec.removeClass('overlay');
     panel3Sec.removeClass('overlay');
     panel4Sec.remove();
+    $(panel2Sec).find('textarea').removeAttr('readonly');
   }
   Editor.prototype.onEditClick=function(event) {  
     this.element.addClass('show-edit-options');
