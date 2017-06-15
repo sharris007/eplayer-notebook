@@ -1,2 +1,1 @@
-call generate.bat
-call open.bat
+./node_modules/.bin/allure generate allure-results
