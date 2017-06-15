@@ -34,21 +34,25 @@
       piSession.on(piSession.SessionStateKnownEvent, onSessionStateKnown);
       function onSessionStateKnown() {
           if(piSession.hasValidSession(10) === 'notoken'){
-
-             //piSession.login(redirectPiurl+'/#/login', 10);
              piSession.login(redirectPiurl, 10);
           }
           piSession.recordUserActivity();
           piSession.extendUserSession();
           piSession.monitorUserActivity(false);
       }
-      function onRefresh(event) {
-          var userToken = event.data;
-          console.log("userToken----",userToken)
-          //pxe.setSecureToken(userToken);
+      setInterval(function(){ 
+        piSession.getToken(function(result, userToken){
+            if(result === piSession['Success']){
+              setCookie("secureToken",userToken);
+            }else if(result === 'unknown' || result === 'notoken' ){
+               piSession.login(redirectPiurl, 10);
+            }
+        }); 
+      }, 1500000);
+      function setCookie(secureToken, svalue) {
+          document.cookie = secureToken + "=" + svalue + ";";
       }
-      piSession.on(piSession.RefreshEvent, onRefresh);
-      // piSession.on(piSession.LogoutEvent, onLogout);   
+         
     </script>
   <script>
     var __pdfInstance = pdfWrapper();
