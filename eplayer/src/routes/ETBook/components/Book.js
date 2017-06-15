@@ -23,9 +23,18 @@ import Cookies from 'universal-cookie';
 export class Book extends Component {
   constructor(props) {
       super(props);
-      // if (sessionStorage.getItem('piToken') === null) {
+      // const cookies     = new Cookies();
+      // const checkToken  = cookies.get('secureToken');
+      // if (!checkToken) {
       //   browserHistory.push(`/eplayer/login`);
       // }
+      piSession.getToken(function(result, userToken){
+        if(result === 'unknown' || result === 'notoken' ){
+            if(window.location.pathname.indexOf('/eplayer/ETbook/')>-1){
+              browserHistory.push(`/eplayer/login`);
+            }
+          }
+      }); 
       this.state = {
         classname: 'headerBar',
         viewerContent: true,
@@ -84,12 +93,14 @@ export class Book extends Component {
       redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       piSession.getToken(function(result, userToken){
           if(result === piSession['Success']){
-             cookies.set('BooksecureToken', userToken, { path: '/' });
+             cookies.set('secureToken', userToken, { path: '/' });
           }else if(result === 'unknown' || result === 'notoken' ){
-             piSession.login(redirectCourseUrl, 10);
+            if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+              piSession.login(redirectCourseUrl, 10);
+            }
           }
       }); 
-      const getSecureToken = cookies.get('BooksecureToken');
+      const getSecureToken = cookies.get('secureToken');
       const bookDetailsData = {
         context : this.state.urlParams.context,
         piToken : getSecureToken,
@@ -105,7 +116,6 @@ export class Book extends Component {
       this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
 
   }, 2000);
-     
     
   }
   componentWillUnmount() {

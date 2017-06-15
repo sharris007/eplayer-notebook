@@ -7,12 +7,17 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import reducer from '../modules/moreMenuReducers';
 import { injectReducer } from '../../../store/reducers';
+import Cookies from 'universal-cookie';
 
 class MoreMenuComponent extends React.Component {
   componentWillMount() {
     injectReducer(this.props.store, { key: 'moreMenu', reducer });
   }
+  delete_cookie = (name) => {
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  }
   handleClick = () => {
+
     const langQuery = sessionStorage.getItem('bookshelfLang');
     let i = sessionStorage.length;
     while (i--) {
@@ -30,13 +35,23 @@ class MoreMenuComponent extends React.Component {
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
-    if (langQuery !== '?languageid=1') {
-      browserHistory.push(`/eplayer/login${langQuery}`);
-    } else {
-      browserHistory.push('/eplayer/login');
+    const cookies     = new Cookies();
+    if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+        piSession.logout();
+        this.delete_cookie('secureToken');
+        window.location.reload(); 
+    }else{
+        if (langQuery && langQuery !== '?languageid=1') {
+          piSession.logout();
+          this.delete_cookie('secureToken');
+          browserHistory.push(`/eplayer/login${langQuery}`);
+        } else {
+          piSession.logout();
+          this.delete_cookie('secureToken');
+          browserHistory.push('/eplayer/login');
+        }
     }
     this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails); // eslint-disable-line
-    // this.props.logout();
   }
   render() {
     const style = {
