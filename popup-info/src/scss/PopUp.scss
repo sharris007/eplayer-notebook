@@ -195,6 +195,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 }
 .mm-popup__box__body {
 	padding: 20px;
+	word-break: break-word;
 	line-height: 1.6;
 	font-size: 12px;
 	color: $color_mako_approx;
