@@ -8,7 +8,7 @@ const audioWbWHighlight = (getRef) => {
   const getAudioHighlightClass = getRef.bookContainerRef.getElementsByClassName('ast-icon-play-button');
   const getAudioHighlightClass_length = getAudioHighlightClass.length;
   const allAudioObj = [];
-  for (let i = 0; i < getAudioHighlightClass_length ; i++) {
+  for (let i = 0; i < getAudioHighlightClass_length; i++) {
     isGetAudioJson = false;
     allAudioObj.push( document.getElementById($(getAudioHighlightClass[i]).attr('data-astaudioid')) );
     getAudioHighlightClass[i].onclick = audioCallBack(getAudioHighlightClass[i], getRef, allAudioObj);
@@ -72,8 +72,11 @@ const initAudio = (thisObj, jsonAttr, currentEle, audio) => {
                 $('.annotator-hl .annotator-handle').css('background-color', 'inherit');
                 NoteIconColor = $('#'+element.id).find('.annotator-hl').css('background-color');
                 $('#'+element.id).addClass('audioHighlight');
-                if($('#'+element.id).find('.annotator-hl').length >0) {
-                    $('#'+element.id).find('.annotator-hl .annotator-handle').css('background-color', NoteIconColor);
+                if ($('#'+element.id).find('.annotator-hl').length >0) {
+                  $('#'+element.id).find('.annotator-hl .annotator-handle').css('background-color', NoteIconColor);
+                }
+                if ( ($('#'+element.id).offset().top-$(window).scrollTop() ) >= ($(window).height() - 65) ) {
+                  window.scrollBy(0, 180);
                 }
               }
             });
@@ -90,11 +93,11 @@ const initAudio = (thisObj, jsonAttr, currentEle, audio) => {
         astPlayBtn.removeClass('ast-icon-pause-button').addClass('ast-icon-play-button');
       });
       $(document).on('keydown', function(e) {
-          if(e.which == 32) {
-            e.preventDefault();
-            audioPause(audio);
-            astPlayBtn.removeClass('ast-icon-pause-button').addClass('ast-icon-play-button');
-          }    
+        if (e.which === 32) {
+          e.preventDefault();
+          audioPause(audio);
+          astPlayBtn.removeClass('ast-icon-pause-button').addClass('ast-icon-play-button');
+        }    
       });
     });
 };
