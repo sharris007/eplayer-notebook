@@ -23,10 +23,14 @@ import Cookies from 'universal-cookie';
 export class Book extends Component {
   constructor(props) {
       super(props);
+      let redirectCourseUrl   = window.location.href;
+      redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       piSession.getToken(function(result, userToken){
         if(result === 'unknown' || result === 'notoken' ){
             if(window.location.pathname.indexOf('/eplayer/ETbook/')>-1){
               browserHistory.push(`/eplayer/login`);
+            }else if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+              piSession.login(redirectCourseUrl, 10);
             }
           }
       }); 
@@ -57,7 +61,6 @@ export class Book extends Component {
        
   }
   componentWillMount  = () => {
-     
     setTimeout( () => {
     // deeper code
       const cookies = new Cookies();
@@ -65,10 +68,9 @@ export class Book extends Component {
       redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       piSession.getToken(function(result, userToken){
           if(result === piSession['Success']){
-             cookies.set('secureToken', userToken, { path: '/' });
-          }else if(result === 'unknown' || result === 'notoken' ){
-            if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-              piSession.login(redirectCourseUrl, 10);
+            const tokenCheck = cookies.get('secureToken');
+            if(!tokenCheck){
+              cookies.set('secureToken', userToken, { path: '/' });
             }
           }
       }); 
@@ -81,12 +83,12 @@ export class Book extends Component {
       this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
        if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
           bookDetailsData.courseId = this.props.params.courseId;
-        this.props.dispatch(getCourseCallService(bookDetailsData));
+          this.props.dispatch(getCourseCallService(bookDetailsData));
+          $('.back_rec').css('pointer-events','none');
        }else{
-        this.props.dispatch(getBookCallService(bookDetailsData));
+          this.props.dispatch(getBookCallService(bookDetailsData));
        }
       this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
-
   }, 2000);
     
   }

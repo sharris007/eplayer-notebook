@@ -34,9 +34,6 @@ export default class BookshelfPage extends React.Component {
    used to pass props for communication with other components. */
   constructor(props) {
     super(props);
-    // if (sessionStorage.getItem('piToken') === null) {
-    //   browserHistory.push(`/eplayer/login`);
-    // }
     this.cookies = new Cookies();
     piSession.getToken((result, userToken) => {
       if (result === piSession.Success) {
@@ -45,8 +42,8 @@ export default class BookshelfPage extends React.Component {
     });
   }
 
-/* Method for mounting before the page loaded. checking the condition wether the toc data present
-then set content, bookinfo, bookmarks. */
+  /* Method for mounting before the page loaded. checking the condition wether the toc data present
+  then set content, bookinfo, bookmarks. */
 
   componentWillMount() {
     if (this.props.book.toc !== undefined) {
@@ -60,7 +57,6 @@ then set content, bookinfo, bookmarks. */
     if (this.props.book.bookmarks !== undefined) {
       this.props.book.bookmarks = [];
     }
-
 
     /* Implementing sessionStorage for accessing data once the page get refresh. */
 
