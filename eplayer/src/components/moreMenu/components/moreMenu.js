@@ -39,7 +39,7 @@ class MoreMenuComponent extends React.Component {
     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
         piSession.logout();
         this.delete_cookie('secureToken');
-        window.location.reload(); 
+        piSession.login({});
     }else{
         if (langQuery && langQuery !== '?languageid=1') {
           piSession.logout();
