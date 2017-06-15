@@ -128,6 +128,7 @@ Annotator.Editor = (function(_super) {
     $(this.element).find('#noteContainer').hide();
     this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     this.element.find('input').css({'pointer-events':'all', 'opacity':'1'});
+    $(this.element).find('.annotator-color-container').removeClass('disabled-save');
   }
   
   Editor.prototype.onNoteChange=function(event) {
