@@ -146,7 +146,7 @@ export const crossRef = (pageViewerRef) => {
             src : imageElement.getAttribute('src'),
             title : imageElement.getAttribute('title')||'',
             alt : imageElement.getAttribute('alt')||'',
-            caption : figure.getElementsByTagName('figcaption')[0]?(figure.getElementsByTagName('figcaption')[0].textContent|| ''):'',
+            caption : figure.getElementsByTagName('figcaption')[0]?(figure.getElementsByTagName('figcaption')[0].innerText.trim()|| ''):'',
             width : '100%'
           };
           ReactDOM.render(

@@ -3531,10 +3531,10 @@ Annotator.Editor = (function(_super) {
     }
     else {
       $(event.target).addClass('on');
-      this.annotation.color='#ccf5fd';
+      this.annotation.color='#00a4e0';
       this.annotation.shareable=true;
       $('.annotator-color').removeClass('active');
-      $(this.annotation.highlights).css('background', '#ccf5fd');
+      $(this.annotation.highlights).css('background', '#00a4e0');
       $('.annotator-color-container').addClass('disabled-save');
     }
     setTimeout(function(){ that.submit(); }, 800);    

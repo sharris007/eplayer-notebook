@@ -8,15 +8,15 @@ class HighlightText {
     }
   }
   static highlightSearchText = (getProps, htmlText) => {
-    const searchArray = getProps.props.src.searchText
+    const searchArray = getProps.props.src.searchText;
     if (searchArray) {
       getProps.props.src.searchText.forEach((searchItem) => { 
-        if(searchItem) {
+        if (searchItem) {
           htmlText = htmlText.replace(new RegExp(searchItem + '(?![^<>]*>)', 'gi'), function(e) {
             return '<span class=\'pxereaderSearchHighlight\'>' + e + '</span>';
           });
         }
-      })
+      });
       return htmlText;
     }
   }
