@@ -271,7 +271,7 @@ Annotator = (function(_super) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
       $(annotation.highlights).find('.annotator-handle').remove();
-      $('.annotator-handle').css({'margin-top' : '0px'});
+      $('.annotator-handle').css({'margin-top' : '5px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
@@ -362,6 +362,7 @@ Annotator = (function(_super) {
     var notes=document.getElementsByClassName('annotator-handle');
     for (var i = 0; i<notes.length - 1; i++) {
       for(var j=i+1;j<notes.length;j++){
+        var noteOne=notes[i];
         var noteTwo=notes[j];
         var noteOneBoundaries=notes[i].getBoundingClientRect();
         var noteTwoBoundaries=noteTwo.getBoundingClientRect();
@@ -369,7 +370,7 @@ Annotator = (function(_super) {
                   noteOneBoundaries.left > noteTwoBoundaries.right || 
                   noteOneBoundaries.bottom < noteTwoBoundaries.top || 
                   noteOneBoundaries.top > noteTwoBoundaries.bottom);
-        if(overlapped){
+        if(overlapped && $(noteOne).css('visibility')==='visible' && $(noteTwo).css('visibility')==='visible'){
           noteTwo.style.marginTop=parseInt($(noteTwo).css('margin-top'))+26 + 'px';
         }
       }
@@ -391,6 +392,7 @@ Annotator = (function(_super) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
         _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
+        handle='';
       }
     }
     window.getSelection().removeAllRanges();
@@ -433,9 +435,18 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.showEditor = function(annotation, location, isAdderClick) {
+    var height=0,annId = annotation.id;
+    var annElement = $('span[data-ann-id='+annId+']')[0];
+    if(annElement) {
+      var noteIconHght=0;
+      if($(annElement).find('.annotator-handle').length>0)
+        noteIconHght = isNaN(parseInt($(annElement.innerHTML).css('margin-top')))?0:parseInt($(annElement.innerHTML).css('margin-top'));
+      height = $(annElement).position().top+112+noteIconHght;
+    }
+    else
+      height = location.top+39;
     var position= {
-      //right:190,
-      top:(39+location.top+(!isAdderClick?140:0))
+      top:(height+(!isAdderClick?140:0))
     }
     this.editor.element.css(position);
     this.editor.load(annotation,this.isShareable);
@@ -450,6 +461,8 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.onEditorSubmit = function(annotation) {
+    this.alignMathMlNote();
+    this.alignNotes();
     return this.publish('annotationEditorSubmit', [this.editor, annotation]);
   };
 
