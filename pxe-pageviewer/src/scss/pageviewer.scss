@@ -177,3 +177,14 @@ figure.video .modal{
 .audioHighlight > span {
   background : #FFA441 !important;
 }
+
+.noteref {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+a.noteref .annotator-hl {
+  pointer-events: none;
+  background-color: initial !important;
+}
