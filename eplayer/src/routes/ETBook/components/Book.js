@@ -23,11 +23,6 @@ import Cookies from 'universal-cookie';
 export class Book extends Component {
   constructor(props) {
       super(props);
-      // const cookies     = new Cookies();
-      // const checkToken  = cookies.get('secureToken');
-      // if (!checkToken) {
-      //   browserHistory.push(`/eplayer/login`);
-      // }
       piSession.getToken(function(result, userToken){
         if(result === 'unknown' || result === 'notoken' ){
             if(window.location.pathname.indexOf('/eplayer/ETbook/')>-1){
@@ -61,31 +56,8 @@ export class Book extends Component {
       this.state.pageDetails.currentPageURL = '';
        
   }
-  // refreshPiToken = () =>{
-  //   setInterval( () =>{
-  //     function onRefresh(event) {
-  //       var userToken = event.data;
-  //     }
-  //     piSession.on(piSession.RefreshEvent, onRefresh);
-  //   },3000)
-  // }
-
-  // SessionTimeOutPI = () =>{
-  //   function onLogout() {
-  //       window.location.href = "#/logOff";
-  //   }
-  //   piSession.on(piSession.LogoutEvent, onLogout);
-  //   const activeTime = '';
-  //   const IdleTime = '';
-  //   const currentTime = '';
-  // }
-
   componentWillMount  = () => {
-    
-    // let piToken;
-    // if (sessionStorage.getItem('piToken')) {
-    //   piToken = sessionStorage.getItem('piToken');
-    // }
+     
     setTimeout( () => {
     // deeper code
       const cookies = new Cookies();
@@ -198,6 +170,15 @@ export class Book extends Component {
   removeAnnotationHandler = (annotationId) => {
     const deleteAnnData = $.extend(this.state.urlParams,{annId:annotationId});
     this.props.dispatch(deleteAnnCallService(deleteAnnData));
+
+    const currentPageAnnLength =  $('*[data-ann-id='+annotationId+']').length;
+    if(currentPageAnnLength>0){
+      $('*[data-ann-id='+annotationId+']').removeAttr('style');
+      const handleAnn = $('*[data-ann-id='+annotationId+']').find('.annotator-handle');
+      if(handleAnn.length>0){
+        handleAnn.remove();
+      }
+    }
   };
 
   addBookmarkHandler = () => {
@@ -328,7 +309,7 @@ export class Book extends Component {
     if(searchText) {
       playpageDetails.searchText = searchText;
     }
-   const parameters = this.state.urlParams;
+    const parameters = this.state.urlParams;
     parameters.id    = currentData.id,
     parameters.uri   = encodeURIComponent(currentData.href),
     this.setState({ 
