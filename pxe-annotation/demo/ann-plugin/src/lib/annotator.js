@@ -271,7 +271,7 @@ Annotator = (function(_super) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
       $(annotation.highlights).find('.annotator-handle').remove();
-      $('.annotator-handle').css({'margin-top' : '5px'});
+      $('.annotator-handle').css({'margin-top' : '6px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
@@ -392,7 +392,7 @@ Annotator = (function(_super) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
         _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
-        handle='';
+        //handle='';
       }
     }
     window.getSelection().removeAllRanges();
@@ -495,14 +495,21 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.getSelectedAnnotations = function() {
-    var getHTMLContents = window.getSelection().getRangeAt(0).cloneContents();
-    var elementSelection = $(getHTMLContents).context.children;
+    var getHTMLContents = window.getSelection().getRangeAt(0);
+    var elementSelection = $(getHTMLContents.cloneContents()).context.children;
     var annArray =[];
-     if($(elementSelection).hasClass('annotator-editor')) {
+    if($(elementSelection).hasClass('annotator-editor')) {
       annArray.push(1,2);
       return annArray;
     }
-    if(elementSelection.length>0){
+    if(elementSelection.length == 0) {  //Checks overlapping on the same content
+      var selectedText = getHTMLContents.cloneContents().textContent;
+      elementSelection = [];
+      if(selectedText==getHTMLContents.startContainer.innerText 
+        && $(getHTMLContents.startContainer).hasClass('annotator-hl'))
+        elementSelection.push(getHTMLContents.startContainer)
+    }
+    if(elementSelection.length>0){  //finds overlapping annotations
         for (var i=0;i<=elementSelection.length;i++){
           var hlElements = $(elementSelection[i]).find('.annotator-hl');
           if(hlElements.length>0){
@@ -581,12 +588,18 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.onHighlightClick = function(event) {
+    event.stopPropagation();
+    var currAnnPosition=0,_i;
     if(this.selectedAnnArr.length > 0)
       return false;
     var annotations = $(event.target).parents('.annotator-hl').addBack().map(function() {
       return $(this).data("annotation");
     }).toArray();
-    this.showEditor(annotations[0], Util.mousePosition(event, this.wrapper[0]), false);
+    for (_i = 0; _i <annotations.length ; _i++) {
+      if($(annotations)[_i].shareable)
+        currAnnPosition = _i;
+    };
+    this.showEditor(annotations[currAnnPosition], Util.mousePosition(event, this.wrapper[0]), false);
   }
 
   Annotator.prototype.onAdderMousedown = function(event) {

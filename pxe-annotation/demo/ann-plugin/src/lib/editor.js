@@ -47,6 +47,8 @@ Annotator.Editor = (function(_super) {
   
   Editor.prototype.options = {};
 
+  Editor.prototype.randomId = 0;
+
   function Editor(options) {
     this.onCancelButtonMouseover = __bind(this.onCancelButtonMouseover, this);
     this.processKeypress = __bind(this.processKeypress, this);
@@ -142,10 +144,10 @@ Annotator.Editor = (function(_super) {
     $('.characters-left').css('font-size', (remainingCount < 51)?'':'0px');
     var selectors = this.element.find('.annotator-item textarea'); 
     var temp = this.textareaHeight;
-    this.textareaHeight = $('#annotator-field-0')[0].scrollHeight;
+    this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight;
     if(temp!==this.textareaHeight) {
       selectors.height(this.textareaHeight);
-      this.textareaHeight = $('#annotator-field-0')[0].scrollHeight; 
+      this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight; 
       var topPosition=(this.element.position().top) + (this.textareaHeight-temp);
       this.element.css({top:topPosition});
     }    
@@ -189,7 +191,7 @@ Annotator.Editor = (function(_super) {
     this.annotation.shareable=(this.annotation.shareable===undefined)?false:this.annotation.shareable;
     if (this.annotation.color||this.annotation.shareable) {
       this.element.removeClass('hide-note');
-      var textareaScroll =this.element.find('textarea').prop('offsetHeight'),calPos,actualPos,oldHeight;
+      var textareaScroll =this.element.find('textarea').prop('offsetHeight') || 40,calPos,actualPos,oldHeight;
       oldHeight=this.element.find('textarea').height();
       this.element.find('textarea').height(textareaScroll);
       actualPos = this.element.position().top;
@@ -213,7 +215,7 @@ Annotator.Editor = (function(_super) {
     this.element.find('.annotator-listing').append(panel5);
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
-    this.textareaHeight = $('#annotator-field-0')[0].scrollHeight || 40; 
+    this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight || 40; 
     if(!this.annotation.text || !this.annotation.text.length){
       this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
       this.element.find('input').css({'pointer-events':'all','opacity':'1'});
@@ -286,7 +288,7 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.submit = function(event) {
-    var field, _i, _len, _ref;
+    var field, _i, _len, _ref,currentSelection,count=0;
     Annotator.Util.preventEventDefault(event);
     if (this.fromOnShare) {
       this.fromOnShare=false
@@ -301,6 +303,13 @@ Annotator.Editor = (function(_super) {
       field = _ref[_i];
       field.submit(field.element, this.annotation);
     }
+    currentSelection = $(this.annotation.highlights); 
+    for(_i=0; _i<currentSelection.length; _i++) {
+      if($(currentSelection[_i]).find('.annotator-handle').length>0)
+        break;
+    }
+    if(_i == currentSelection.length)
+          $(currentSelection[0]).prepend("<span class='annotator-handle'></span>");
     $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
     // this.publish('save', [this.annotation]);
     return this.hide();
@@ -308,8 +317,9 @@ Annotator.Editor = (function(_super) {
 
   Editor.prototype.addField = function(options) {
     var element, field, input;
+    this.randomId = Annotator.Util.uuid();
     field = $.extend({
-      id: 'annotator-field-' + Annotator.Util.uuid(),
+      id: 'annotator-field-' + this.randomId,
       type: 'input',
       label: '',
       load: function() {},

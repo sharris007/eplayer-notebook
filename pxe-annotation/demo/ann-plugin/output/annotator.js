@@ -2876,7 +2876,7 @@ Annotator = (function(_super) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
       $(annotation.highlights).find('.annotator-handle').remove();
-      $('.annotator-handle').css({'margin-top' : '5px'});
+      $('.annotator-handle').css({'margin-top' : '6px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
@@ -2997,7 +2997,7 @@ Annotator = (function(_super) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
         _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
-        handle='';
+        //handle='';
       }
     }
     window.getSelection().removeAllRanges();
@@ -3100,14 +3100,21 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.getSelectedAnnotations = function() {
-    var getHTMLContents = window.getSelection().getRangeAt(0).cloneContents();
-    var elementSelection = $(getHTMLContents).context.children;
+    var getHTMLContents = window.getSelection().getRangeAt(0);
+    var elementSelection = $(getHTMLContents.cloneContents()).context.children;
     var annArray =[];
-     if($(elementSelection).hasClass('annotator-editor')) {
+    if($(elementSelection).hasClass('annotator-editor')) {
       annArray.push(1,2);
       return annArray;
     }
-    if(elementSelection.length>0){
+    if(elementSelection.length == 0) {  //Checks overlapping on the same content
+      var selectedText = getHTMLContents.cloneContents().textContent;
+      elementSelection = [];
+      if(selectedText==getHTMLContents.startContainer.innerText 
+        && $(getHTMLContents.startContainer).hasClass('annotator-hl'))
+        elementSelection.push(getHTMLContents.startContainer)
+    }
+    if(elementSelection.length>0){  //finds overlapping annotations
         for (var i=0;i<=elementSelection.length;i++){
           var hlElements = $(elementSelection[i]).find('.annotator-hl');
           if(hlElements.length>0){
@@ -3186,12 +3193,18 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.onHighlightClick = function(event) {
+    event.stopPropagation();
+    var currAnnPosition=0,_i;
     if(this.selectedAnnArr.length > 0)
       return false;
     var annotations = $(event.target).parents('.annotator-hl').addBack().map(function() {
       return $(this).data("annotation");
     }).toArray();
-    this.showEditor(annotations[0], Util.mousePosition(event, this.wrapper[0]), false);
+    for (_i = 0; _i <annotations.length ; _i++) {
+      if($(annotations)[_i].shareable)
+        currAnnPosition = _i;
+    };
+    this.showEditor(annotations[currAnnPosition], Util.mousePosition(event, this.wrapper[0]), false);
   }
 
   Annotator.prototype.onAdderMousedown = function(event) {
@@ -3513,6 +3526,8 @@ Annotator.Editor = (function(_super) {
   
   Editor.prototype.options = {};
 
+  Editor.prototype.randomId = 0;
+
   function Editor(options) {
     this.onCancelButtonMouseover = __bind(this.onCancelButtonMouseover, this);
     this.processKeypress = __bind(this.processKeypress, this);
@@ -3608,10 +3623,10 @@ Annotator.Editor = (function(_super) {
     $('.characters-left').css('font-size', (remainingCount < 51)?'':'0px');
     var selectors = this.element.find('.annotator-item textarea'); 
     var temp = this.textareaHeight;
-    this.textareaHeight = $('#annotator-field-0')[0].scrollHeight;
+    this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight;
     if(temp!==this.textareaHeight) {
       selectors.height(this.textareaHeight);
-      this.textareaHeight = $('#annotator-field-0')[0].scrollHeight; 
+      this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight; 
       var topPosition=(this.element.position().top) + (this.textareaHeight-temp);
       this.element.css({top:topPosition});
     }    
@@ -3655,7 +3670,7 @@ Annotator.Editor = (function(_super) {
     this.annotation.shareable=(this.annotation.shareable===undefined)?false:this.annotation.shareable;
     if (this.annotation.color||this.annotation.shareable) {
       this.element.removeClass('hide-note');
-      var textareaScroll =this.element.find('textarea').prop('offsetHeight'),calPos,actualPos,oldHeight;
+      var textareaScroll =this.element.find('textarea').prop('offsetHeight') || 40,calPos,actualPos,oldHeight;
       oldHeight=this.element.find('textarea').height();
       this.element.find('textarea').height(textareaScroll);
       actualPos = this.element.position().top;
@@ -3679,7 +3694,7 @@ Annotator.Editor = (function(_super) {
     this.element.find('.annotator-listing').append(panel5);
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
-    this.textareaHeight = $('#annotator-field-0')[0].scrollHeight || 40; 
+    this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight || 40; 
     if(!this.annotation.text || !this.annotation.text.length){
       this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
       this.element.find('input').css({'pointer-events':'all','opacity':'1'});
@@ -3752,7 +3767,7 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.submit = function(event) {
-    var field, _i, _len, _ref;
+    var field, _i, _len, _ref,currentSelection,count=0;
     Annotator.Util.preventEventDefault(event);
     if (this.fromOnShare) {
       this.fromOnShare=false
@@ -3767,6 +3782,13 @@ Annotator.Editor = (function(_super) {
       field = _ref[_i];
       field.submit(field.element, this.annotation);
     }
+    currentSelection = $(this.annotation.highlights); 
+    for(_i=0; _i<currentSelection.length; _i++) {
+      if($(currentSelection[_i]).find('.annotator-handle').length>0)
+        break;
+    }
+    if(_i == currentSelection.length)
+          $(currentSelection[0]).prepend("<span class='annotator-handle'></span>");
     $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
     // this.publish('save', [this.annotation]);
     return this.hide();
@@ -3774,8 +3796,9 @@ Annotator.Editor = (function(_super) {
 
   Editor.prototype.addField = function(options) {
     var element, field, input;
+    this.randomId = Annotator.Util.uuid();
     field = $.extend({
-      id: 'annotator-field-' + Annotator.Util.uuid(),
+      id: 'annotator-field-' + this.randomId,
       type: 'input',
       label: '',
       load: function() {},
