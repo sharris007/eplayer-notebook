@@ -13,13 +13,15 @@ export class BindMoreInfoCallBacks {
     bindMoreInfoCallBacks(props) {
       const bookDiv = document.getElementById(props.bookDiv);
       MoreInfoPopUpClasses.forEach((classes) => {
-        bookDiv.querySelectorAll(classes).forEach((item) => {
+        //bookDiv.querySelectorAll(classes).forEach((item) => {
+        const bookDivQuerySelectorClasses = bookDiv.querySelectorAll(classes);
+        for (let i=0;i<bookDivQuerySelectorClasses.length;i++) {
           const popOverCollection = {};
-          const moreInfoIconDOM = item.parentElement;
+          const moreInfoIconDOM = bookDivQuerySelectorClasses[i].parentElement;
           let hrefId = '';
           switch (classes) {
           case '.lc_ec_aside' : {
-            hrefId =  moreInfoIconDOM.href ? moreInfoIconDOM.href.split('#')[1] : item.href.split('#')[1];
+            hrefId =  moreInfoIconDOM.href ? moreInfoIconDOM.href.split('#')[1] : bookDivQuerySelectorClasses[i].href.split('#')[1];
             popOverCollection.popOverTitle = document.getElementById(hrefId).getElementsByTagName('h2')[0].innerHTML;
             break;
           }
@@ -45,8 +47,9 @@ export class BindMoreInfoCallBacks {
           } else {
             popOverCollection.popOverDescription = moreInfoIconDOM.children[0].innerHTML;
           }
-          this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : item});
-        });
+          this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
+        }
+        //});
       });
       console.log(this.popUpCollection)
       window.renderPopUp(this.popUpCollection);
