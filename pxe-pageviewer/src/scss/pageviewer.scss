@@ -188,3 +188,9 @@ a.noteref .annotator-hl {
   pointer-events: none;
   background-color: initial !important;
 }
+
+//Aquila audio player css override starts
+div.aquila-audio-player {
+  line-height: initial;
+}
+//Aquila audio player css override ends
