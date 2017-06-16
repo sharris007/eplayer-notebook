@@ -52,7 +52,7 @@ class PopUpInfo extends Component {
             if (window.innerHeight - element.getBoundingClientRect().top < 135) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpTopAlign');
               box.style.top = (element.getBoundingClientRect().top + window.scrollY - element.clientHeight - 15 - document.getElementsByClassName('mm-popup__box')[0].clientHeight) + 'px';
-              box.style.left = (element.getBoundingClientRect().left-185+(element.offsetWidth/2)) + 'px';
+              box.style.left = (element.getBoundingClientRect().left-185+(elementOffsetWidth)) + 'px';
             } else if (elementIdRect.left - bookIdRect.left > 350) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
               box.style.left = (element.getBoundingClientRect().left - 350 +  elementOffsetWidth) + 'px';
