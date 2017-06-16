@@ -9,7 +9,7 @@ export const pageDetails = {
   showPageNo: true,
   orientation: 'horizontal',
   theme: 'black',
-  pageFontSize: '12px',
+  pageFontSize: '50%',
   pageZoom: '',
   enableGoToPage: false,
   includeMathMLLib: true,
@@ -24,7 +24,7 @@ export const pageDetails = {
   baseUrl: 'https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/',
   playListURL: '',
   currentPageURL: '',
-  bgColor: '',
+  bgColor: 'White',
   endPoints: {
     services: 'https://pxe-sdk-qa.stg-openclass.com/services-api/api/3.1',
     search: 'https://content-service.dev-prsn.com/csg',

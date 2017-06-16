@@ -109,8 +109,8 @@ export class Book extends Component {
      pageDetails.bgColor = getStorageObj.split("/")[1];     
    }
    else{
-     pageDetails.pageFontSize =  '12px';
-     pageDetails.bgColor = '';
+     pageDetails.pageFontSize =  '50%';
+     pageDetails.bgColor = 'White';
    }
    this.setState({pageDetails : pageDetails});
  }
@@ -349,16 +349,28 @@ export class Book extends Component {
   preferenceUpdate = (pref) => {
    if (typeof(Storage) !== "undefined") {
      if(localStorage.getItem('bookId'+this.props.params.bookId)) {
-       this.setPagePreferenceObj(pref);
+       this.updatePreference(pref);
      }
      else{
        localStorage.setItem('bookId'+this.props.params.bookId, (pref.fontSize+"/"+pref.theme));
-       this.setPagePreferenceObj(pref);
+       this.updatePreference(pref);
      }
    }
  }
 
- setPagePreferenceObj = (pref) => {
+  getPreference = () => {
+    let getpageDetails = this.state.pageDetails;
+    const prefData = {'value' : {
+        theme: getpageDetails.bgColor,
+        fontSize: pageDetails.pageFontSize,
+        orientation: 'horizontal',
+        zoom: '0'
+      }};
+    const promiseVal = Promise.resolve(prefData);
+    return promiseVal;
+  }
+
+  updatePreference = (pref) => {
    let pageDetails = this.state.pageDetails;
    let getStorageObj = localStorage.getItem('bookId'+this.props.params.bookId);
    
@@ -367,10 +379,6 @@ export class Book extends Component {
    pageDetails.bgColor = pref.theme;
    localStorage.setItem('bookId'+this.props.params.bookId, getStorageObj);
    this.setState({pageDetails : pageDetails});
- }
-
-  preferenceBackgroundColor = (theme) => {
-    // console.log('theme---',theme);
   }
 
   goToPage = (pageId) => {
@@ -419,8 +427,8 @@ export class Book extends Component {
           hideDrawer={this.hideDrawer}
           drawerOpen={this.state.drawerOpen}
           viewerContentCallBack={this.viewerContentCallBack}
-          preferenceUpdate = {this.preferenceUpdate}
-          preferenceBackgroundColor = {this.preferenceBackgroundColor}
+          getPreference = {this.getPreference}
+          updatePreference = {this.updatePreference}
           indexId = { {'indexId' : this.bookIndexId, 'searchUrl' : this.searchUrl} }
           goToPage = {(pageId) => this.goToPage(pageId)}
           listClick = {() => this.listClick()}
