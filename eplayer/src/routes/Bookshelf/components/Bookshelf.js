@@ -63,10 +63,10 @@ export default class BookshelfPage extends React.Component {
     let sessionid;
     let piToken;
     if (this.props.login.data === undefined) {
-      //piToken = sessionStorage.getItem('piToken');
+      // piToken = sessionStorage.getItem('piToken');
       sessionid = sessionStorage.getItem('sessionid');
     } else {
-      //piToken = this.props.login.data.piToken;
+      // piToken = this.props.login.data.piToken;
       sessionid = this.props.login.data.token;
     }
     // Added eT1StandaloneBkshf flag based flow to use eT1 getuserbookshelf
@@ -83,11 +83,18 @@ export default class BookshelfPage extends React.Component {
 
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
     let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
-    if(this.props.location.query.eT1StandaloneBkshf=='Y' || this.props.location.query.eT1StandaloneBkshf=='y') {
-      urn = 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid='+this.props.location.query.identityId;
+    if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
+      urn = 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
+            + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
     }
     const secureToken = this.cookies.get('secureToken');
-    this.props.fetch(urn, secureToken);
+    if (secureToken === undefined &&
+        (this.props.location.query.eT1StandaloneBkshf === 'Y'
+          || this.props.location.query.eT1StandaloneBkshf === 'y')) {
+      this.props.fetch(urn, piToken);
+    } else {
+      this.props.fetch(urn, secureToken);
+    }
     // console.log(urn);
   }
 

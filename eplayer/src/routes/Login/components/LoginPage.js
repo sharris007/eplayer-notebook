@@ -52,7 +52,7 @@ class LoginPage extends React.Component {
     this.props.fetch(this.state.loginname, this.state.password)
     .then(() => {
       const LoginToken = [];
-      const loginPiToken = [];
+      // const loginPiToken = [];
       const firstName = [];
       const lastName = [];
       if (this.props.fetched) {
@@ -60,7 +60,7 @@ class LoginPage extends React.Component {
         /* SessionStorage used for storing the data in session. */
         sessionStorage.setItem('identityId', this.props.data.identityId);
         sessionStorage.setItem('sessionid', this.props.data.token);
-        /*loginPiToken.push(this.props.data.piToken);
+        /* loginPiToken.push(this.props.data.piToken);
         sessionStorage.setItem('piToken', this.props.data.piToken);*/
         firstName.push(this.props.data.firstName);
         sessionStorage.setItem('firstName', this.props.data.firstName);

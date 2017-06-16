@@ -47,9 +47,9 @@ const searchActions = {
         if (response && response.hits && response.wordHits.length > 0 && searchText.length >= 4) {
           let possibleSearchTxt = '';
           response.wordHits.forEach((data) => {
-            possibleSearchTxt += `${data},`; 
+            possibleSearchTxt += `${data},`;
           });
-          console.log(possibleSearchTxt, paramList.searchUrl)
+          // console.log(possibleSearchTxt, paramList.searchUrl);
           response.hits.forEach((data, i) => {
             const obj = {
               contentPreview: data.contentPreview,

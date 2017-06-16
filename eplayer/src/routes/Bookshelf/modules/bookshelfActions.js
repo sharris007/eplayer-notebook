@@ -1,6 +1,6 @@
-import { clients } from '../../../components/common/client'; /* Importing the client file for framing the complete url, since baseurls are stored in client file. */
 import axios from 'axios';
 import { resources, domain } from '../../../../const/Settings';
+
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
 const envType = domain.getEnvType();
@@ -11,17 +11,17 @@ const envType = domain.getEnvType();
    piToken that is coming from Login response in order to make Ajax request.*/
 
 export const fetch = (urn, piToken) => {
-   console.log('bookshelf Url '+ etextService[envType] + '/nextext/' + urn);
+  // console.log('bookshelf Url '+ etextService[envType] + '/nextext/' + urn);
   if (piToken !== 'dummypiToken') {
-   const url = etextService[envType] + '/nextext/' + urn;
+    const url = `${etextService[envType]}/nextext/${urn}`;
     return {
       type: 'BOOKS',
-      payload: axios.get(url , {
+      payload: axios.get(url, {
         headers: { 'Content-Type': 'application/json',
           'X-Authorization': piToken } })
-         
-  };
-}
+
+    };
+  }
 
   return {
     type: 'BOOKS',
