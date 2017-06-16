@@ -12,6 +12,7 @@ import { customAttributes, playerConstants } from './constants';
 class PxePlayer extends React.Component {
   constructor(props) {
     super(props);
+    this.popupRef = '';
     this.state = {
       urlParams: this.props.bootstrapParams.urlParams,
       currentPageDetails: {},
@@ -168,12 +169,20 @@ class PxePlayer extends React.Component {
     }
     }
   }
+
+  removePopUp = () => {
+    if (this.popupRef) {
+      this.popupRef.closePopUp();
+    }
+  }
+
   render() {
     const { bootstrapParams } = this.props;
     const { annotationData } = this.state;
     return (<div>
-      <PageViewer src={bootstrapParams.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded={bload => this.onBookLoaded(bload)} applnCallback={this.props.applnCallback} />
-      {this.state.popUpCollection.length > 0 ? <PopUpInfo popUpCollection={this.state.popUpCollection} bookId="book-container" /> : ''}
+      <PageViewer src={bootstrapParams.pageDetails} sendPageDetails={this.onPageChange} onBookLoaded={bload => this.onBookLoaded(bload)} applnCallback={this.props.applnCallback} 
+      removePopUp = {() => this.removePopUp()}/>
+      {this.state.popUpCollection.length > 0 ? <PopUpInfo ref = {(dom) => {this.popupRef = dom;}} popUpCollection={this.state.popUpCollection} bookId="book-container" /> : ''}
       <div id="divGlossary" ref={(dom) => { this.divGlossaryRef = dom; }} style={{ display: 'none' }} />
       <Annotation
         annAttributes={this.state.annAttributes} shareableAnnotations={bootstrapParams.pageDetails.annotationShareable} annotationData={annotationData.rows} contentId={bootstrapParams.pageDetails.contentId}

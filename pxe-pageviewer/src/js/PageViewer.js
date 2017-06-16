@@ -72,6 +72,7 @@ class PageViewer extends React.Component {
     // if (goToPage !== 'Next' && goToPage !== 'Prev')
     //   { this.props.onBookLoaded(false); }
     // this.setState({pageLoading:true});
+    this.props.removePopUp();
     let replacedText = '';
     this.setState({completeBookLoad:false});
     const thisRef = this;

@@ -71,6 +71,10 @@ class PopUpInfo extends Component {
     }
   }
 
+  closePopUp = () => {
+    Popup.close()
+  }
+
   render() {
     return ( < div >
       < Popup / >
