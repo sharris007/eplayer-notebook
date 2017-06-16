@@ -171,7 +171,7 @@ export const crossRef = (pageViewerRef) => {
         for (let i = figures.length - 1; i >= 0; i--) {
           const figure = figures[i];
           const iFrame = figure.getElementsByTagName('iframe');
-          if (!figure.classList.contains('video') || !iFrame) {
+          if (!figure.classList.contains('video') || !(iFrame && iFrame[0])) {
             continue;
           }
           const componentElement = iFrame[0].parentElement;
