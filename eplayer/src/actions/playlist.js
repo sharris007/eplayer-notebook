@@ -131,7 +131,8 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
 
      PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then(response => {
-        response.baseUrl = baseUrl;
+        const securl      = baseUrl.replace(/^http:\/\//i, 'https://');
+        response.baseUrl  = securl ;
         dispatch(getPlaylistCompleteDetails(response))
       });
    }
