@@ -83,11 +83,11 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       // const tocUrl      = getTocUrlOnResp(response.bookDetail.metadata.toc);
       // const bookDetails = response.bookDetail.metadata;
       // const piToken     = data.piToken;
-
-     const tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
-     const bookDetails = response.userCourseSectionDetail;
-     const piToken = data.piToken;
-     const bookId = bookDetails.section.courseId;
+     const baseUrl      = response.userCourseSectionDetail.baseUrl;
+     const tocUrl       = getTocUrlOnResp(response.userCourseSectionDetail.toc);
+     const bookDetails  = response.userCourseSectionDetail;
+     const piToken      = data.piToken;
+     const bookId       = bookDetails.section.courseId;
      PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then((response) => {
         // response.bookConfig =bookDetails;
@@ -130,6 +130,9 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       });
 
      PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
-      .then(response => dispatch(getPlaylistCompleteDetails(response)));
+      .then(response => {
+        response.baseUrl = baseUrl;
+        dispatch(getPlaylistCompleteDetails(response))
+      });
    }
 );
