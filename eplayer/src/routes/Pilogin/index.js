@@ -1,7 +1,7 @@
 import { injectReducer } from '../../store/reducers';
 
 export default store => ({
-  path: '/eplayer/Course/:bookId(/page/:pageId)',
+  path: '/eplayer/pilogin',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
@@ -9,16 +9,16 @@ export default store => ({
     require.ensure([], (require) => {
       /*  Webpack - use require callback to define
           dependencies for bundling   */
-      const Book = require('../ETBook/containers/BookContainer').default;
-      const reducer = require('../ETBook/modules/book').default;
+      const LoginPage = require('./containers/PiLoginContainer').default;
+      const reducer = require('./modules/PiloginReducer').default;
 
-      /*  Add the reducer to the store on key 'counter'  */
-      injectReducer(store, { key: 'book', reducer });
+      injectReducer(store, { key: 'login', reducer });
+
 
       /*  Return getComponent   */
-      cb(null, Book);
+      cb(null, LoginPage);
 
     /* Webpack named bundle   */
-    }, 'course');
+    }, 'login');
   }
 });

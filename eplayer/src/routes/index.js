@@ -1,6 +1,7 @@
 // We only need to import the modules necessary for initial render
 import { CoreLayout } from '../layouts/CoreLayout/CoreLayout';
 import loginRoute from './Login';
+import piLoginRoute from './Pilogin';
 import bookshelfRoute from './Bookshelf';
 import bookRoute from './Book';
 import eTbookshelfRoute from './ETBookshelf';
@@ -16,7 +17,7 @@ import course from './Course';
 export const createRoutes = store => ({
   path: '/eplayer',
   component: CoreLayout,
-  indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/login') },
+  indexRoute: { onEnter: (nextState, replace) => replace('/eplayer/pilogin') },
   childRoutes: [
     loginRoute(store),
     bookshelfRoute(store),
@@ -26,7 +27,8 @@ export const createRoutes = store => ({
     eTbookRoute(store),
     print(store),
     multiTaskPanel(store),
-    course(store)
+    course(store),
+    piLoginRoute(store)
   ]
 });
 

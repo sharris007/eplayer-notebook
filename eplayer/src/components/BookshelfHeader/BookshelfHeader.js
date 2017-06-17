@@ -57,10 +57,16 @@ export class BookshelfHeader extends React.Component {
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
-    if (langQuery !== '?languageid=1') {
+    if (langQuery && langQuery !== '?languageid=1') {
       browserHistory.push(`/eplayer/login${langQuery}`);
     } else {
-      browserHistory.push('/eplayer/login');
+      piSession.logout();
+      let appPath             = window.location.origin;
+      let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
+      redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
+      localStorage.removeItem('secureToken');
+      piSession.login(redirectCourseUrl);
+      //browserHistory.push('/eplayer/login');
     }
     // this.props.logout();
   }

@@ -34,11 +34,16 @@ export default class BookshelfPage extends React.Component {
    used to pass props for communication with other components. */
   constructor(props) {
     super(props);
-    this.cookies = new Cookies();
+    let appPath             = window.location.origin;
+    let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
+    redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
     piSession.getToken((result, userToken) => {
       if (result === piSession.Success) {
-        this.cookies.set('secureToken', userToken, { path: '/' });
+        localStorage.setItem('secureToken',userToken);
       }
+      else if(result === 'unknown' || result === 'notoken' ){
+           piSession.login(redirectCourseUrl, 10);
+        }
     });
   }
 
@@ -87,7 +92,8 @@ export default class BookshelfPage extends React.Component {
       urn = 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
             + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
     }
-    const secureToken = this.cookies.get('secureToken');
+    const secureToken  = localStorage.getItem('secureToken');
+    // const secureToken = this.cookies.get('secureToken');
     if (secureToken === undefined &&
         (this.props.location.query.eT1StandaloneBkshf === 'Y'
           || this.props.location.query.eT1StandaloneBkshf === 'y')) {

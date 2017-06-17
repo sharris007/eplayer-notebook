@@ -17,7 +17,6 @@ class MoreMenuComponent extends React.Component {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
   handleClick = () => {
-
     const langQuery = sessionStorage.getItem('bookshelfLang');
     let i = sessionStorage.length;
     while (i--) {
@@ -35,20 +34,21 @@ class MoreMenuComponent extends React.Component {
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
-    const cookies     = new Cookies();
-    if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
         piSession.logout();
-        this.delete_cookie('secureToken');
+        localStorage.removeItem('secureToken');
         piSession.login({});
     }else{
         if (langQuery && langQuery !== '?languageid=1') {
           piSession.logout();
-          this.delete_cookie('secureToken');
+          localStorage.removeItem('secureToken');
           browserHistory.push(`/eplayer/login${langQuery}`);
         } else {
           piSession.logout();
-          this.delete_cookie('secureToken');
-          browserHistory.push('/eplayer/login');
+          localStorage.removeItem('secureToken');
+          let redirectCourseUrl   = 'http://etext-dev.pearson.com:3000/eplayer/bookshelf';
+          piSession.login(redirectCourseUrl);
+          //browserHistory.push('/eplayer/login');
         }
     }
     this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails); // eslint-disable-line
