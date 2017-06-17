@@ -113,6 +113,7 @@ export const crossRef = (pageViewerRef) => {
     const temp = document.createElement('span');
     // temp.setAttribute('class', classList.join(' '));
     ReactDOM.render(component, temp);
+    pageViewerRef.nodesTobeUnmounted.push(temp);
     temp.getElementsByTagName('a')[0].setAttribute('from-external-preview', true);
     temp.getElementsByTagName('a')[0].setAttribute('class-list', [...classList].join(' '));
     temp.getElementsByTagName('a')[0].style.cursor = 'pointer';
@@ -157,6 +158,7 @@ export const crossRef = (pageViewerRef) => {
                 </IntlProvider>
               </MuiThemeProvider>, wrapper);
             componentElement.replaceChild(wrapper, imageElement);
+            pageViewerRef.nodesTobeUnmounted.push(wrapper);
           }
         }
       }
@@ -195,6 +197,7 @@ export const crossRef = (pageViewerRef) => {
               </IntlProvider>
             </MuiThemeProvider>, wrapper);
           componentElement.replaceChild(wrapper, iFrame[0]);
+          pageViewerRef.nodesTobeUnmounted.push(wrapper);
           componentElement.removeAttribute('class');
          // replace button with span so that background changes on hover shouldn't happen
           const buttons = pageViewerRef.bookContainerRef.querySelectorAll('figure.video .video-card-holder .video-page-label button.poster-play-icon');
@@ -242,6 +245,7 @@ export const crossRef = (pageViewerRef) => {
                 <AudioPlayer url={audioPlayerData.source} title={audioPlayerData.title} />
               </IntlProvider>
             </MuiThemeProvider>, wrapper);
+          pageViewerRef.nodesTobeUnmounted.push(wrapper);
           parentNodeToReplace.parentNode.replaceChild(wrapper, parentNodeToReplace);
         }
       }
