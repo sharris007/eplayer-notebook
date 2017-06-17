@@ -153,9 +153,10 @@ export const crossRef = (pageViewerRef) => {
             ReactDOM.render(
               <MuiThemeProvider muiTheme={pageViewerRef.muiTheme}>
                 <IntlProvider locale="en">
-                  <ImageViewerPreview data={imageViewerPreviewData} node={componentElement} />
+                  <ImageViewerPreview data={imageViewerPreviewData}/>
                 </IntlProvider>
               </MuiThemeProvider>, wrapper);
+            componentElement.replaceChild(wrapper, imageElement);
           }
         }
       }

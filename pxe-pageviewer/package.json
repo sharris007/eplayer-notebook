@@ -1,6 +1,6 @@
 {
   "name": "@pearson-incubator/pxe-pageviewer",
-  "version": "1.0.32",
+  "version": "1.0.34",
   "description": "",
   "main": "./main.js",
   "scripts": {
@@ -19,8 +19,8 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
-    "@pearson-incubator/aquila-js-basics": "^0.0.16",
-    "@pearson-incubator/aquila-js-media": "^0.0.35",
+    "@pearson-incubator/aquila-js-basics": "*",
+    "@pearson-incubator/aquila-js-media": "*",
     "intl": "^1.2.5",
     "jquery": "^3.2.1",
     "material-ui": "^0.16.3",

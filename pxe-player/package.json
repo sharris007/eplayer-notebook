@@ -1,6 +1,6 @@
 {
   "name": "pxe-player",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "",
   "main": "./main.js",
   "scripts": {
@@ -19,10 +19,10 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
-    "@pearson-incubator/aquila-js-basics": "^0.0.16",
-    "@pearson-incubator/aquila-js-media": "^0.0.35",
-    "@pearson-incubator/popup-info": "^1.1.5",
-    "@pearson-incubator/pxe-pageviewer": "^1.0.3",
+    "@pearson-incubator/aquila-js-basics": "*",
+    "@pearson-incubator/aquila-js-media": "*",
+    "@pearson-incubator/popup-info": "*",
+    "@pearson-incubator/pxe-pageviewer": "*",
     "intl": "^1.2.5",
     "jquery": "^3.2.1",
     "material-ui": "^0.16.3",

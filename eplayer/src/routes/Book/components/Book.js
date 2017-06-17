@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { PageViewer } from 'pxe-pageviewer';
+//import { PageViewer } from 'pxe-pageviewer';
 import { Annotation } from 'pxe-annotation';
 
 
@@ -197,7 +197,7 @@ export class Book extends Component {
           this.props.book.viewer.pages &&
           this.props.book.viewer.pages.length > 0 &&
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
-            {playlistData.length != 0 ? <PageViewer src={this.state.pageDetails} sendPageDetails={this.onPageChange} /> : ''}
+            {playlistData.length != 0 ? 'pageviewer':''}
             {loading ? <Annotation annotationData={annotionData} contentId="pxe-viewer" annotationEventHandler={this.annotationCallBack.bind(this)} currentPageDetails={this.state.currentPageDetails} /> : ''}
           </div>
         }
