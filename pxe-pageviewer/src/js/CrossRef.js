@@ -113,6 +113,7 @@ export const crossRef = (pageViewerRef) => {
     const temp = document.createElement('span');
     // temp.setAttribute('class', classList.join(' '));
     ReactDOM.render(component, temp);
+    pageViewerRef.nodesTobeUnmounted.push(temp);
     temp.getElementsByTagName('a')[0].setAttribute('from-external-preview', true);
     temp.getElementsByTagName('a')[0].setAttribute('class-list', [...classList].join(' '));
     temp.getElementsByTagName('a')[0].style.cursor = 'pointer';
@@ -137,6 +138,7 @@ export const crossRef = (pageViewerRef) => {
           image.parentNode.replaceChild(replaceImageDOM, image);
           const componentElement = figure.getElementsByTagName('img')[0].parentNode;
           const container = document.createElement('div');
+          container.classList.add('aquila-image-viewer', 'pearson-component');
           let wrapper;
           if (componentElement) {
             container.setAttribute('tabindex', 0);
@@ -156,6 +158,8 @@ export const crossRef = (pageViewerRef) => {
                   <ImageViewerPreview data={imageViewerPreviewData} node={componentElement} />
                 </IntlProvider>
               </MuiThemeProvider>, wrapper);
+            // componentElement.replaceChild(wrapper, imageElement);
+            pageViewerRef.nodesTobeUnmounted.push(wrapper);
           }
         }
       }
@@ -171,7 +175,7 @@ export const crossRef = (pageViewerRef) => {
         for (let i = figures.length - 1; i >= 0; i--) {
           const figure = figures[i];
           const iFrame = figure.getElementsByTagName('iframe');
-          if (!figure.classList.contains('video') || !iFrame) {
+          if (!figure.classList.contains('video') || !(iFrame && iFrame[0])) {
             continue;
           }
           const componentElement = iFrame[0].parentElement;
@@ -194,6 +198,7 @@ export const crossRef = (pageViewerRef) => {
               </IntlProvider>
             </MuiThemeProvider>, wrapper);
           componentElement.replaceChild(wrapper, iFrame[0]);
+          pageViewerRef.nodesTobeUnmounted.push(wrapper);
           componentElement.removeAttribute('class');
          // replace button with span so that background changes on hover shouldn't happen
           const buttons = pageViewerRef.bookContainerRef.querySelectorAll('figure.video .video-card-holder .video-page-label button.poster-play-icon');
@@ -241,6 +246,7 @@ export const crossRef = (pageViewerRef) => {
                 <AudioPlayer url={audioPlayerData.source} title={audioPlayerData.title} />
               </IntlProvider>
             </MuiThemeProvider>, wrapper);
+          pageViewerRef.nodesTobeUnmounted.push(wrapper);
           parentNodeToReplace.parentNode.replaceChild(wrapper, parentNodeToReplace);
         }
       }
@@ -315,9 +321,11 @@ export const crossRef = (pageViewerRef) => {
       allHyperlinks[i].setAttribute('target', '_blank');
     }
     const xrefs = pageViewerRef.bookContainerRef.getElementsByClassName('xref');
+    const pagerefs = pageViewerRef.bookContainerRef.getElementsByClassName('pageref');
+    const crossrefs = [...xrefs, ...pagerefs];
     // Kindly, don't change the for loop here to high order functions
-    for (let i = xrefs.length - 1; i >= 0; i--) {
-      const element = xrefs[i];
+    for (let i = crossrefs.length - 1; i >= 0; i--) {
+      const element = crossrefs[i];
       const classList = element.classList;
       if (props.src.crossRefSettings !== settings.lightBox && !element.getAttribute('custom-click-event-added')) {
         element.setAttribute('custom-click-event-added', true);

@@ -72,6 +72,12 @@ class PageViewer extends React.Component {
     // if (goToPage !== 'Next' && goToPage !== 'Prev')
     //   { this.props.onBookLoaded(false); }
     // this.setState({pageLoading:true});
+    if (this.nodesTobeUnmounted) {
+      for (let nI = 0; nI < this.nodesTobeUnmounted.length; nI++) {
+        ReactDOM.unmountComponentAtNode(this.nodesTobeUnmounted[nI]);
+      }
+    }
+    this.nodesTobeUnmounted = [];
     this.props.removePopUp();
     let replacedText = '';
     this.setState({completeBookLoad:false});
@@ -221,18 +227,20 @@ class PageViewer extends React.Component {
     }
 
     if ( this.bookContainerRef.querySelectorAll('link[title="'+ bgTheme +'"]').length ) {
-      getAllLinkTags.forEach (function(link) {
+      for (let i=0;i<getAllLinkTags.length;i++) {
+        const link=getAllLinkTags[i];
         link.disabled = true;
-      });
+      };
       $('link[title="'+ bgTheme +'"]', document.getElementById('book-container')).removeAttr('disabled');
     }
     else {
-      getAllLinkTags.forEach (function(link) {
+      for (let i=0;i<getAllLinkTags.length;i++) {
+        const link=getAllLinkTags[i];
         link.disabled = true;
         if ((link.title !== 'sepia') && (link.title !== 'night')) {
           $('link[title="'+ link.title +'"]', document.getElementById('book-container')).removeAttr('disabled');
         }
-      });
+      };
     }
   };
   componentWillMount = () => {

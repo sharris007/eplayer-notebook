@@ -309,7 +309,7 @@ Annotator.Editor = (function(_super) {
         break;
     }
     if(_i == currentSelection.length)
-          $(currentSelection[0]).prepend("<span class='annotator-handle'></span>");
+          $(currentSelection[_i-1]).prepend("<span class='annotator-handle'></span>")
     $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
     // this.publish('save', [this.annotation]);
     return this.hide();

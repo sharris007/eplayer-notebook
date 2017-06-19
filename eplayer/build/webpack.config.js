@@ -62,7 +62,8 @@ webpackConfig.plugins = [
     }
   }),
   new CopyWebpackPlugin([
-      { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' }/* ,
+      { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' },
+      { from: path.join(__dirname, '../annotation-lib'), to: 'annotation-lib' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ]),
   new webpack.ProvidePlugin({
