@@ -138,6 +138,7 @@ export const crossRef = (pageViewerRef) => {
           image.parentNode.replaceChild(replaceImageDOM, image);
           const componentElement = figure.getElementsByTagName('img')[0].parentNode;
           const container = document.createElement('div');
+          container.classList.add('aquila-image-viewer', 'pearson-component');
           let wrapper;
           if (componentElement) {
             container.setAttribute('tabindex', 0);
@@ -154,10 +155,10 @@ export const crossRef = (pageViewerRef) => {
             ReactDOM.render(
               <MuiThemeProvider muiTheme={pageViewerRef.muiTheme}>
                 <IntlProvider locale="en">
-                  <ImageViewerPreview data={imageViewerPreviewData}/>
+                  <ImageViewerPreview data={imageViewerPreviewData} node={componentElement} />
                 </IntlProvider>
               </MuiThemeProvider>, wrapper);
-            componentElement.replaceChild(wrapper, imageElement);
+            // componentElement.replaceChild(wrapper, imageElement);
             pageViewerRef.nodesTobeUnmounted.push(wrapper);
           }
         }
