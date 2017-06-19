@@ -14,7 +14,11 @@ import Search from '../search/containers/searchContainer';
 import MoreMenuComponent from '../moreMenu/containers/moreMenuContainer';
 // import { injectReducer } from '../../store/reducers';
 // import { languages } from '../../../locale_config/translations/index';
+import { resources, domain } from '../../../const/Settings';
 
+const envType = domain.getEnvType();
+const consoleUrl = resources.links.consoleUrl;
+ 
 let locale;
 let localisedData;
 let messages;
@@ -99,12 +103,20 @@ export class Header extends React.Component {
       this.props.bookData.bookmarks = [];
       this.props.bookData.bookinfo = [];
     }
-    const langQuery = sessionStorage.getItem('bookshelfLang');
-    if (langQuery !== '?languageid=1') {
-      browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-    } else {
-      browserHistory.push('/eplayer/bookshelf');
+    if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+      let redirectConsoleUrl   = consoleUrl[envType];
+      window.location.href = redirectConsoleUrl;
+    }else {
+      const langQuery = sessionStorage.getItem('bookshelfLang');
+      if (langQuery && langQuery !== '?languageid=1') {
+        browserHistory.push(`/eplayer/bookshelf${langQuery}`);
+      } else {
+        browserHistory.push('/eplayer/bookshelf');
+      }
     }
+   
+
+    
     this.props.bookCallbacks.clearSessionStorage();
     this.setState({ open: false });
   }

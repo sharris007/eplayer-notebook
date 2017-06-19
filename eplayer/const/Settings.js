@@ -65,6 +65,13 @@ export const resources = {
       qa           :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
       stg          :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
       prd          :"AT8R4irZrJRPstMMUdb8XaqOvbRJpqs4",
+    },
+    consoleUrl :{
+      local        :"https://console-qa.pearsoned.com",
+      dev          :"https://console-qa.pearsoned.com",
+      qa           :"https://console-qa.pearsoned.com",
+      stg          :"https://console-stg.pearson.com",
+      prd          :"https://console.pearson.com",
     }
 
   }

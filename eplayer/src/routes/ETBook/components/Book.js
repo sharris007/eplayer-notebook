@@ -88,7 +88,7 @@ export class Book extends Component {
        if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
           bookDetailsData.courseId = this.props.params.bookId;
           this.props.dispatch(getCourseCallService(bookDetailsData));
-          $('.back_rec').css('pointer-events','none');
+           
        }else{
           this.props.dispatch(getBookCallService(bookDetailsData));
        }

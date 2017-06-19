@@ -8,7 +8,11 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import reducer from '../modules/moreMenuReducers';
 import { injectReducer } from '../../../store/reducers';
 import Cookies from 'universal-cookie';
+import { resources, domain } from '../../../../const/Settings';
 
+const envType = domain.getEnvType();
+const consoleUrl = resources.links.consoleUrl;
+ 
 class MoreMenuComponent extends React.Component {
   componentWillMount() {
     injectReducer(this.props.store, { key: 'moreMenu', reducer });
@@ -37,7 +41,8 @@ class MoreMenuComponent extends React.Component {
      if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
         piSession.logout();
         localStorage.removeItem('secureToken');
-        piSession.login({});
+        let redirectCourseUrl   = consoleUrl[envType];
+        piSession.login(redirectCourseUrl);
     }else{
         if (langQuery && langQuery !== '?languageid=1') {
           piSession.logout();
@@ -46,7 +51,8 @@ class MoreMenuComponent extends React.Component {
         } else {
           piSession.logout();
           localStorage.removeItem('secureToken');
-          let redirectCourseUrl   = 'http://etext-dev.pearson.com:3000/eplayer/bookshelf';
+          let appPath             = window.location.origin;
+          let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
           piSession.login(redirectCourseUrl);
           //browserHistory.push('/eplayer/login');
         }
