@@ -907,9 +907,9 @@
 	visibility: visible;
 }
 /* Custom style */
-
-
-
+.highlight-note .annotator-hl-temporary .annotator-handle {
+	visibility: hidden;
+} 
 .ann-share-section{
 	width: 50%;
     height: 39px;
@@ -1106,6 +1106,3 @@
 #letter-count, .characters-left {
 	color: #db0020;
 }
-.highlight-note .annotator-hl-temporary .annotator-handle {
-	visibility: hidden;
-} 
