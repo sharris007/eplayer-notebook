@@ -321,9 +321,11 @@ export const crossRef = (pageViewerRef) => {
       allHyperlinks[i].setAttribute('target', '_blank');
     }
     const xrefs = pageViewerRef.bookContainerRef.getElementsByClassName('xref');
+    const pagerefs = pageViewerRef.bookContainerRef.getElementsByClassName('pageref');
+    const crossrefs = [...xrefs, ...pagerefs];
     // Kindly, don't change the for loop here to high order functions
-    for (let i = xrefs.length - 1; i >= 0; i--) {
-      const element = xrefs[i];
+    for (let i = crossrefs.length - 1; i >= 0; i--) {
+      const element = crossrefs[i];
       const classList = element.classList;
       if (props.src.crossRefSettings !== settings.lightBox && !element.getAttribute('custom-click-event-added')) {
         element.setAttribute('custom-click-event-added', true);
