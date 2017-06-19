@@ -2873,15 +2873,10 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.deleteAnnotation = function(annotation) {
-    var child, h, _i, _len, _ref,currentSelection;
+    var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
       $(annotation.highlights).find('.annotator-handle').remove();
-      /*currentSelection = $(annotation.highlights).find('.annotator-hl-temporary')
-      if($(annotation.highlights).find('.annotator-hl-temporary').length>0) {
-      	if(!($(currentSelection[0]).hasClass('annotator-handle')))
-      		$(currentSelection[0]).prepend("<span class='annotator-handle'></span>");		
-      }*/
-      $('.annotator-handle').css({'margin-top' : '5px'});
+      $('.annotator-handle').css({'margin-top' : '6px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         h = _ref[_i];
@@ -3055,6 +3050,10 @@ Annotator = (function(_super) {
     }
     else
       height = location.top+39;
+    var selctionOverlap = window.getSelection().getRangeAt(0);
+    var iscolorPanel = $(selctionOverlap.startContainer).hasClass('annotator-color-container');
+    if (iscolorPanel && isAdderClick == false && $('.annotator-editor .annotator-panel-2 .annotator-listing').css('display') == 'none')
+      isAdderClick = true;
     var position= {
       top:(height+(!isAdderClick?140:0))
     }
@@ -3109,11 +3108,11 @@ Annotator = (function(_super) {
       return annArray;
     }
     if(elementSelection.length == 0) {  //Checks overlapping on the same content
-    	var selectedText = getHTMLContents.cloneContents().textContent;
-    	elementSelection = [];
-    	if(selectedText==getHTMLContents.startContainer.innerText 
-    		&& $(getHTMLContents.startContainer).hasClass('annotator-hl'))
-    		elementSelection.push(getHTMLContents.startContainer)
+      var selectedText = getHTMLContents.cloneContents().textContent;
+      elementSelection = [];
+      if(selectedText==getHTMLContents.startContainer.innerText 
+        && $(getHTMLContents.startContainer).hasClass('annotator-hl'))
+        elementSelection.push(getHTMLContents.startContainer)
     }
     if(elementSelection.length>0){  //finds overlapping annotations
         for (var i=0;i<=elementSelection.length;i++){
@@ -3194,16 +3193,16 @@ Annotator = (function(_super) {
   };
 
   Annotator.prototype.onHighlightClick = function(event) {
-  	event.stopPropagation();
-  	var currAnnPosition=0,_i;
+    event.stopPropagation();
+    var currAnnPosition=0,_i;
     if(this.selectedAnnArr.length > 0)
       return false;
     var annotations = $(event.target).parents('.annotator-hl').addBack().map(function() {
       return $(this).data("annotation");
     }).toArray();
     for (_i = 0; _i <annotations.length ; _i++) {
-    	if($(annotations)[_i].shareable)
-    		currAnnPosition = _i;
+      if($(annotations)[_i].shareable)
+        currAnnPosition = _i;
     };
     this.showEditor(annotations[currAnnPosition], Util.mousePosition(event, this.wrapper[0]), false);
   }
@@ -3526,7 +3525,9 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.html = '<div class="annotator-outer annotator-editor hide-note"><form class="annotator-widget">'+panel1+ panel2+panel3+'</form></div>';
   
   Editor.prototype.options = {};
+
   Editor.prototype.randomId = 0;
+
   function Editor(options) {
     this.onCancelButtonMouseover = __bind(this.onCancelButtonMouseover, this);
     this.processKeypress = __bind(this.processKeypress, this);
@@ -3608,6 +3609,7 @@ Annotator.Editor = (function(_super) {
     $(this.element).find('#noteContainer').hide();
     this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     this.element.find('input').css({'pointer-events':'all', 'opacity':'1'});
+    $(this.element).find('.annotator-color-container').removeClass('disabled-save');
   }
   
   Editor.prototype.onNoteChange=function(event) {
@@ -3668,7 +3670,7 @@ Annotator.Editor = (function(_super) {
     this.annotation.shareable=(this.annotation.shareable===undefined)?false:this.annotation.shareable;
     if (this.annotation.color||this.annotation.shareable) {
       this.element.removeClass('hide-note');
-      var textareaScroll =this.element.find('textarea').prop('offsetHeight')|| 40,calPos,actualPos,oldHeight;
+      var textareaScroll =this.element.find('textarea').prop('offsetHeight') || 40,calPos,actualPos,oldHeight;
       oldHeight=this.element.find('textarea').height();
       this.element.find('textarea').height(textareaScroll);
       actualPos = this.element.position().top;
@@ -3782,11 +3784,11 @@ Annotator.Editor = (function(_super) {
     }
     currentSelection = $(this.annotation.highlights); 
     for(_i=0; _i<currentSelection.length; _i++) {
-    	if($(currentSelection[_i]).find('.annotator-handle').length>0)
-    		break;
+      if($(currentSelection[_i]).find('.annotator-handle').length>0)
+        break;
     }
     if(_i == currentSelection.length)
-      		$(currentSelection[0]).prepend("<span class='annotator-handle'></span>");
+          $(currentSelection[0]).prepend("<span class='annotator-handle'></span>");
     $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
     // this.publish('save', [this.annotation]);
     return this.hide();
