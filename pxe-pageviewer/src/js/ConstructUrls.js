@@ -2,7 +2,7 @@ const rel_to_abs = (url, baseUrl) => {
     /* Only accept commonly trusted protocols:
      * Only data-image URLs are accepted, Exotic flavours (escaped slash,
      * html-entitied characters) are not supported to keep the function fast */
-  if (/^(https?|#|file|ftps?|mailto|javascript|data:image\/[^;]{2,9};)/i.test(url)) {
+  if (/^(https?|#|ftps?|mailto|javascript|data:image\/[^;]{2,9};)/i.test(url)) {
     return url; //Url is already absolute
   }
   //let base_url = location.href.match(/^(.+)\/?(?:#.+)?$/)[0]+"/";	

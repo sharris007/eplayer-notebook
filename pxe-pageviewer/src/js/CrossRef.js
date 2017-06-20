@@ -43,9 +43,10 @@ export const crossRef = (pageViewerRef) => {
       let targetUrl = e.currentTarget.getAttribute('href');
       if (targetUrl.indexOf('#') === 0) {
         e.currentTarget.setAttribute('href', props.src.baseUrl + state.currentStatePlayListUrl.href.split('#')[0] + targetUrl);
-      } else if (targetUrl.indexOf('file') === 0) {
+      } else if (targetUrl.indexOf('filep') > -1) {
         // for toc links
         // e.preventDefault();
+        targetUrl=targetUrl.substring(targetUrl.indexOf('filep'));
         const href = targetUrl.split('#')[0];
         const currentTargetPlayListIndex = props.src.playListURL.findIndex((el) => {
           if (el.href) {
@@ -60,10 +61,11 @@ export const crossRef = (pageViewerRef) => {
     case settings.continue:
       targetUrl = e.currentTarget.getAttribute('href');
       // For other than current page links and TOC links
-      if (!(targetUrl.indexOf('#') === 0) && (targetUrl.includes(props.src.baseUrl) || targetUrl.indexOf('file') === 0)) {
+      if (!(targetUrl.indexOf('#') === 0) && (targetUrl.includes(props.src.baseUrl) || targetUrl.indexOf('filep') > -1)) {
         // in toc play list
         e.preventDefault();
         targetUrl = targetUrl.replace(props.src.baseUrl, '');
+        targetUrl = targetUrl.substring(targetUrl.indexOf('filep'));
         const href = targetUrl.split('#')[0];
         const currentTargetPlayListIndex = props.src.playListURL.findIndex((el) => {
           if (el.href) {
@@ -85,8 +87,9 @@ export const crossRef = (pageViewerRef) => {
 
     if (targetUrl.indexOf('#') === 0) {
       targetUrl = props.src.baseUrl + state.currentStatePlayListUrl.href.split('#')[0] + targetUrl;
-    } else if (targetUrl.indexOf('file') === 0) {
+    } else if (targetUrl.indexOf('filep') > -1) {
         // for toc links
+      targetUrl=targetUrl.substring(targetUrl.indexOf('filep'));
       const href = targetUrl.split('#')[0];
       const currentTargetPlayListIndex = props.src.playListURL.findIndex((el) => {
         if (el.href) {
