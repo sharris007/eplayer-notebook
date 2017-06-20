@@ -9,11 +9,15 @@ const path = require('path');
 // const Promise = require('es6-promise').Promise;
 // const jquery = require('jquery');
 
+const annotationLibPath = path.join(__dirname, '../node_modules/pxe-annotation/demo/ann-plugin/output');
+
 const paths = config.utils_paths;
 const __DEV__ = config.globals.__DEV__;
 const __PROD__ = config.globals.__PROD__;
 const __TEST__ = config.globals.__TEST__;
 
+console.log('path: ',path);
+console.log('paths: ',paths);
 debug('Creating configuration.');
 const webpackConfig = {
   name: 'client',
@@ -63,7 +67,7 @@ webpackConfig.plugins = [
   }),
   new CopyWebpackPlugin([
       { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' },
-      { from: path.join(__dirname, '../annotation-lib'), to: 'annotation-lib' }/* ,
+      { from: annotationLibPath, to: 'annotation-lib' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ]),
   new webpack.ProvidePlugin({
