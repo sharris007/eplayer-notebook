@@ -41,14 +41,17 @@ export default class BookshelfPage extends React.Component {
     let appPath             = window.location.origin;
     let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
     redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
-    piSession.getToken((result, userToken) => {
+    setTimeout(()=>{
+      piSession.getToken((result, userToken) => {
       if (result === piSession.Success) {
         localStorage.setItem('secureToken',userToken);
       }
       else if(result === 'unknown' || result === 'notoken' ){
            piSession.login(redirectCourseUrl, 10);
         }
-    });
+      });
+    },4000)
+    
   }
 
   /* Method for mounting before the page loaded. checking the condition wether the toc data present
@@ -92,7 +95,7 @@ export default class BookshelfPage extends React.Component {
 
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
    setTimeout(()=>{
-     let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
+    let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
     if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
       urn = 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
             + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
@@ -106,7 +109,7 @@ export default class BookshelfPage extends React.Component {
     } else {
       this.props.fetch(urn, secureToken);
     }
-  },3000);
+  },5000);
     // console.log(urn);
   }
 
