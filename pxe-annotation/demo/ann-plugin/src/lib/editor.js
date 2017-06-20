@@ -156,6 +156,7 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.onColorChange=function(event) {
     window.getSelection().removeAllRanges();
     this.element.removeClass('hide-note');
+    var checkoverlap = $('.annotator-editor').hasClass('overlapingpopup');
     var isTopAlign=(!this.annotation.color)?true:false;
     if(window.currAnn) {
        ($('#noteContainer').css('display') == 'block') ? $('.annotator-edit-container').show() : $('.annotator-edit-container').hide();
@@ -176,6 +177,11 @@ Annotator.Editor = (function(_super) {
     if (this.annotation.shareable) {
       $('.annotator-share').removeClass('on');
       this.unShareAnnotation();
+    }
+    if(checkoverlap) {
+      $('#noteContainer').css('display', 'none');
+      $('#annotator-field-0').css({'display':'inline-block', 'pointer-events': 'all','opacity': '1'});
+      $('.annotator-edit-container').hide();
     }
     // this.publish('save', [this.annotation]);
     // if(isTopAlign)

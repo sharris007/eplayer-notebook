@@ -474,6 +474,11 @@ Annotator = (function(_super) {
     this.editor.element.css(position);
     this.editor.load(annotation,this.isShareable);
     this.publish('annotationEditorShown', [this.editor, annotation]);
+    if(selctionOverlap.toString()!= '' && ($(selctionOverlap.startContainer).hasClass('annotator-hl') || $(selctionOverlap.endContainer).hasClass('annotator-hl'))) {
+      $('.annotator-editor').addClass('overlapingpopup');
+    } else {
+      $('.annotator-editor').removeClass('overlapingpopup');
+    }
     return this;
   };
 
