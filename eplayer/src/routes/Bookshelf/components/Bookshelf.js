@@ -14,6 +14,10 @@ import './Bookshelf.scss'; /* Importing the css file. */
 import languageName from '../../../../locale_config/configureLanguage';
 import { languages } from '../../../../locale_config/translations/index';
 
+import { resources, domain } from '../../../../const/Settings';
+
+const envType = domain.getEnvType();
+ 
 let languageid;
 const url = window.location.href;
 const n = url.search('languageid');
@@ -148,11 +152,20 @@ export default class BookshelfPage extends React.Component {
         }
 
         /* Created an object which contains all book properties. which we are passing in bookself component. */
-
+        /* Book thumbnail Image change*/
+        let bookThumbnail = bookRef.thumbnailImageUrl;
+        bookThumbnail = bookThumbnail.replace('http:', 'https:');
+        if(envType=='qa'){
+          if(bookThumbnail.match("etext-dev.pearson.com") ) {
+            bookThumbnail = bookThumbnail.replace("etext-dev.pearson.com", "etext-qa-stg.pearson.com");
+          }else if(bookThumbnail.match("etext-stg.pearson.com") ){
+            bookThumbnail = bookThumbnail.replace("etext-stg.pearson.com", "etext-qa-stg.pearson.com");
+          }
+        }
         const book = {
           id: bookRef.bookId,
           author: bookRef.creator || '',
-          image: bookRef.thumbnailImageUrl ? bookRef.thumbnailImageUrl : '',
+          image: bookThumbnail ? bookThumbnail : '',
           title: bookRef.title || '',
           description: bookRef.description || '',
           tocId: '',
