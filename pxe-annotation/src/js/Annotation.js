@@ -39,7 +39,14 @@ class Annotation extends Component {
         this.setState({'updated':false});
       }
       const annData = (flag==='updateAnnotationId')?nextProps.annotationData[0]:nextProps.annotationData;
-      $('.' + nextProps.contentId).annotator().annotator(flag, annData);
+      if (flag === 'updateAnnotationId') {
+        $('.' + nextProps.contentId).annotator().annotator(flag, annData);
+      }
+      else {
+        setTimeout(function() {
+          $('.' + nextProps.contentId).annotator().annotator(flag, annData);
+        }, 300);
+      }
     }
   } 
 

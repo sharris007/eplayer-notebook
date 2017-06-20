@@ -1106,3 +1106,6 @@
 #letter-count, .characters-left {
 	color: #db0020;
 }
+.sharedNote .annotator-handle {
+	background-color:#00a4e0;
+}

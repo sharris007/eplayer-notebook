@@ -349,19 +349,15 @@ Annotator = (function(_super) {
     }
   };
   Annotator.prototype.alignMathMlNote =function(){
-    // $('.MathJax ').each(function(){
-   //    $(this).find( ".annotator-handle" ).css("background-color", $(this).find( ".annotator-handle" ).css('backgroundColor'))
-   //    $(this).find( ".annotator-handle" ).detach().prependTo($(this))
-   //  });
     $('.MathJax .annotator-handle').each(function(){
-    var get_note_pos = $(this).offset();
-    var bookcontaniner_pos = $("#book-container").offset();
-    var bookcontainer_width = $("#book-container").width();
-    var not_left_pos = (bookcontainer_width - (get_note_pos.left - bookcontaniner_pos.left) + 35);
-    if($(this).offset().left<=bookcontaniner_pos.left+bookcontainer_width){
-      $(this).css("right", -not_left_pos+"px");
-    }
-  });
+        var bookContainerWidth=$('#book-container').width();
+      var annLeft=$(this).offset().left;
+      var bookContainerLeft=$('#book-container').offset().left;
+      if(annLeft<(bookContainerLeft+bookContainerWidth+9)){
+        var rightAlign=(bookContainerWidth-(annLeft-(bookContainerWidth-bookContainerLeft)))+15;
+        $(this).css('right',-rightAlign +'px');
+      }
+    });
   };
   Annotator.prototype.alignNotes = function() {
     var notes=document.getElementsByClassName('annotator-handle');
@@ -460,7 +456,7 @@ Annotator = (function(_super) {
       var noteIconHght=0;
       if($(annElement).find('.annotator-handle').length>0)
         noteIconHght = isNaN(parseInt($(annElement.innerHTML).css('margin-top')))?0:parseInt($(annElement.innerHTML).css('margin-top'));
-      height = $(annElement).position().top+112+noteIconHght;
+      height = $(annElement).offset().top+27+noteIconHght;
     }
     else
       height = location.top+39;

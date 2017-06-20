@@ -74,6 +74,7 @@ Annotator.Editor = (function(_super) {
     $('.annotator-color').removeClass('active');
     $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
     $('.annotator-color-container').removeClass('disabled-save');
+    $(this.annotation.highlights).removeClass('sharedNote');
   }
   Editor.prototype.onShareClick=function(event) {
     var that=this;
@@ -84,10 +85,11 @@ Annotator.Editor = (function(_super) {
     }
     else {
       $(event.target).addClass('on');
-      this.annotation.color='#00a4e0';
+      this.annotation.color='#ccf5fd';
       this.annotation.shareable=true;
       $('.annotator-color').removeClass('active');
-      $(this.annotation.highlights).css('background', '#00a4e0');
+      $(this.annotation.highlights).css('background', '#ccf5fd');
+      $(this.annotation.highlights).addClass('sharedNote');
       $('.annotator-color-container').addClass('disabled-save');
     }
     setTimeout(function(){ that.submit(); }, 800);    
@@ -273,7 +275,7 @@ Annotator.Editor = (function(_super) {
      $('.annotator-item').prepend('<input placeholder="Add title."/><div class="noteContainer" id = "noteContainer"></div>');
     }
     $('.annotator-item input').val(annotation.quote);
-    if(this.hasClass(annotation.highlights[0], 'MathJax_Display')){
+    if(this.hasClass(annotation.highlights[0], 'MathJax')){
       $('.annotator-item input').show();
       if(!annotation.id){
           annotation.quote='';
