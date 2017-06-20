@@ -91,7 +91,8 @@ export default class BookshelfPage extends React.Component {
 
 
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
-    let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
+   setTimeout(()=>{
+     let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
     if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
       urn = 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
             + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
@@ -105,6 +106,7 @@ export default class BookshelfPage extends React.Component {
     } else {
       this.props.fetch(urn, secureToken);
     }
+  },3000);
     // console.log(urn);
   }
 
