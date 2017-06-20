@@ -302,6 +302,7 @@ export class Book extends Component {
     this.setState({ drawerOpen: true });
   }
   goToPageCallback = (pageId, searchText) => {
+    debugger;
     let id = pageId;
     let currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
     if( currentData === undefined && pageId.indexOf('-') > -1 ) {
@@ -326,9 +327,9 @@ export class Book extends Component {
       drawerOpen: false
     },()=>{
       if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-        browserHistory.replace('/eplayer/Course/${this.props.params.bookId}/page/${id}');
+        browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${id}`);
       }else{
-        browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${id}');
+        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}`);
       }
       this.props.dispatch(getBookmarkCallService(this.state.urlParams));
     }),
