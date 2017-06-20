@@ -302,7 +302,6 @@ export class Book extends Component {
     this.setState({ drawerOpen: true });
   }
   goToPageCallback = (pageId, searchText) => {
-    debugger;
     let id = pageId;
     let currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
     if( currentData === undefined && pageId.indexOf('-') > -1 ) {
