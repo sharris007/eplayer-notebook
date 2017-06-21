@@ -29,8 +29,8 @@ export const resources = {
       local        : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot/courses',
       dev          : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses',
       qa           : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot/courses',
-      stage        : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses',
-      prod         : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses'
+      stage        : 'https://stpaperapi.stg-prsn.com/etext/v2/courseboot/courses',
+      prod         : 'https://stpaperapi.prsn.com/etext/v2/courseboot/courses'
     },
     etextSearchUrl: {
       local        : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
@@ -70,7 +70,7 @@ export const resources = {
       local        :"https://console-qa.pearsoned.com",
       dev          :"https://console-qa.pearsoned.com",
       qa           :"https://console-qa.pearsoned.com",
-      stg          :"https://console-stg.pearson.com",
+      stage        :"https://console-stg.pearson.com",
       prd          :"https://console.pearson.com",
     }
 
