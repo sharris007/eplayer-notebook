@@ -18,8 +18,6 @@ import { Wrapper } from 'pxe-wrapper';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import {resources , domain ,typeConstants} from '../../../../const/Settings'
-import Cookies from 'universal-cookie';
-
 export class Book extends Component {
   constructor(props) {
       super(props);
@@ -67,7 +65,6 @@ export class Book extends Component {
   componentWillMount  = () => {
     setTimeout( () => {
     // deeper code
-      const cookies = new Cookies();
       let redirectCourseUrl   = window.location.href;
       redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       piSession.getToken(function(result, userToken){
@@ -84,14 +81,16 @@ export class Book extends Component {
         piToken : getSecureToken,
         bookId  : this.props.params.bookId
       }
+      const piUserId = piSession.userId();
+      this.state.urlParams.user = piUserId;
       this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-       if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+      if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
           bookDetailsData.courseId = this.props.params.bookId;
           this.props.dispatch(getCourseCallService(bookDetailsData));
            
-       }else{
+      }else{
           this.props.dispatch(getBookCallService(bookDetailsData));
-       }
+      }
       this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
   }, 4000);
     

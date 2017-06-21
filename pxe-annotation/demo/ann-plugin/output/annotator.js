@@ -2954,19 +2954,15 @@ Annotator = (function(_super) {
     }
   };
   Annotator.prototype.alignMathMlNote =function(){
-    // $('.MathJax ').each(function(){
-   //    $(this).find( ".annotator-handle" ).css("background-color", $(this).find( ".annotator-handle" ).css('backgroundColor'))
-   //    $(this).find( ".annotator-handle" ).detach().prependTo($(this))
-   //  });
     $('.MathJax .annotator-handle').each(function(){
-    var get_note_pos = $(this).offset();
-    var bookcontaniner_pos = $("#book-container").offset();
-    var bookcontainer_width = $("#book-container").width();
-    var not_left_pos = (bookcontainer_width - (get_note_pos.left - bookcontaniner_pos.left) + 35);
-    if($(this).offset().left<=bookcontaniner_pos.left+bookcontainer_width){
-      $(this).css("right", -not_left_pos+"px");
-    }
-  });
+        var bookContainerWidth=$('#book-container').width();
+      var annLeft=$(this).offset().left;
+      var bookContainerLeft=$('#book-container').offset().left;
+      if(annLeft<(bookContainerLeft+bookContainerWidth+9)){
+        var rightAlign=(bookContainerWidth-(annLeft-(bookContainerWidth-bookContainerLeft)))+15;
+        $(this).css('right',-rightAlign +'px');
+      }
+    });
   };
   Annotator.prototype.alignNotes = function() {
     var notes=document.getElementsByClassName('annotator-handle');
@@ -3065,7 +3061,7 @@ Annotator = (function(_super) {
       var noteIconHght=0;
       if($(annElement).find('.annotator-handle').length>0)
         noteIconHght = isNaN(parseInt($(annElement.innerHTML).css('margin-top')))?0:parseInt($(annElement.innerHTML).css('margin-top'));
-      height = $(annElement).position().top+112+noteIconHght;
+      height = $(annElement).offset().top+27+noteIconHght;
     }
     else
       height = location.top+39;
@@ -3146,7 +3142,7 @@ Annotator = (function(_super) {
               var dataAnnId = $(hlElements[j]).attr('data-ann-id');
               var shrable = $(hlElements[j]).attr('shareable');
               if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
-                if(!shrable || shrable==='false')
+                if(this.isShareable || (!shrable || shrable==='false'))
                   annArray.push(dataAnnId);
               }
             }
@@ -3154,7 +3150,7 @@ Annotator = (function(_super) {
               var dataAnnId = $(hlElements.context).attr('data-ann-id');
               var shrable = $(hlElements.context).attr('shareable');
               if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
-                if(!shrable || shrable==='false')
+                if(this.isShareable || (!shrable || shrable==='false'))
                   annArray.push(dataAnnId);
           }
         }
@@ -3308,7 +3304,7 @@ Annotator = (function(_super) {
         return _this.unsubscribe('annotationEditorSubmit', save);
       };
     })(this);
-     if(oldAnnArr.length>0 && annArray.length>0 && !(oldAnnArr[0].shareable)){
+     if(oldAnnArr.length>0 && annArray.length>0) { //&& !(oldAnnArr[0].shareable)
       $(annotation)[0].text = $(oldAnnArr)[0].text;
       $('.annotator-edit-container').hide();
       window.currAnn = $(oldAnnArr)[0];
@@ -3588,6 +3584,7 @@ Annotator.Editor = (function(_super) {
     $('.annotator-color').removeClass('active');
     $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
     $('.annotator-color-container').removeClass('disabled-save');
+    $(this.annotation.highlights).removeClass('sharedNote');
   }
   Editor.prototype.onShareClick=function(event) {
     var that=this;
@@ -3598,10 +3595,11 @@ Annotator.Editor = (function(_super) {
     }
     else {
       $(event.target).addClass('on');
-      this.annotation.color='#00a4e0';
+      this.annotation.color='#ccf5fd';
       this.annotation.shareable=true;
       $('.annotator-color').removeClass('active');
-      $(this.annotation.highlights).css('background', '#00a4e0');
+      $(this.annotation.highlights).css('background', '#ccf5fd');
+      $(this.annotation.highlights).addClass('sharedNote');
       $('.annotator-color-container').addClass('disabled-save');
     }
     setTimeout(function(){ that.submit(); }, 800);    
@@ -3787,7 +3785,7 @@ Annotator.Editor = (function(_super) {
      $('.annotator-item').prepend('<input placeholder="Add title."/><div class="noteContainer" id = "noteContainer"></div>');
     }
     $('.annotator-item input').val(annotation.quote);
-    if(this.hasClass(annotation.highlights[0], 'MathJax_Display')){
+    if(this.hasClass(annotation.highlights[0], 'MathJax')){
       $('.annotator-item input').show();
       if(!annotation.id){
           annotation.quote='';
