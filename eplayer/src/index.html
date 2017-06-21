@@ -23,7 +23,7 @@
 <!-- <script src="https://pi-pqa.pearsoned.com/v1/piapi-pqa/login/js/session.js"></script> -->
 <!-- <script src="https://pi.pearsoned.com/v1/piapi/login/js/session.js"></script> -->
 <body style="overflow:visible;">
-  <script src="https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js"></script>
+  <script src="https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js"></script>
    <script type="text/javascript">
       //var redirectPiurl   = window.location.origin;
       var redirectPiurl   = window.location.href;
@@ -44,14 +44,14 @@
       setInterval(function(){ 
         piSession.getToken(function(result, userToken){
             if(result === piSession['Success']){
-              setCookie("secureToken",userToken);
+              setStorage("secureToken",userToken);
             }else if(result === 'unknown' || result === 'notoken' ){
                piSession.login(redirectPiurl, 10);
             }
         }); 
       }, 1500000);
-      function setCookie(secureToken, svalue) {
-          document.cookie = secureToken + "=" + svalue + ";";
+      function setStorage(secureToken, svalue) {
+          localStorage.setItem(secureToken , svalue);
       }
          
     </script>
