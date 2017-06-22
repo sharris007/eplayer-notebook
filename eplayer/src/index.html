@@ -43,14 +43,14 @@
       setInterval(function(){ 
         piSession.getToken(function(result, userToken){
             if(result === piSession['Success']){
-              setCookie("secureToken",userToken);
+              setStorage("secureToken",userToken);
             }else if(result === 'unknown' || result === 'notoken' ){
                piSession.login(redirectPiurl, 10);
             }
         }); 
       }, 1500000);
-      function setCookie(secureToken, svalue) {
-          document.cookie = secureToken + "=" + svalue + ";";
+      function setStorage(secureToken, svalue) {
+          localStorage.setItem("secureToken", svalue);
       }
          
     </script>
