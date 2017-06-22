@@ -72,6 +72,13 @@ export const resources = {
       qa           :"https://console-qa.pearsoned.com",
       stage        :"https://console-stg.pearson.com",
       prd          :"https://console.pearson.com",
+    },
+    piUserProfileApi:{
+      local        :"https://pi-tst.pearsoned.com/v1/piapi-test",
+      dev          :"https://pi-tst.pearsoned.com/v1/piapi-test",
+      qa           :"https://pi-tst.pearsoned.com/v1/piapi-test",
+      stage        :"https://int-piapi-internal.stg-openclass.com",
+      prd          :"https://piapi-internal.openclass.com",
     }
 
   }
@@ -107,11 +114,11 @@ export const domain = {
     const locationOrigin = this.getLocationOrigin();
 
     if (locationOrigin.indexOf('localhost') !== -1)
-          { return 'qa'; }
+          { return 'stage'; }
     else if (locationOrigin.indexOf('etext-dev.pearson.com') !== -1)
-          { return 'qa'; }
+          { return 'stage'; }
     else if (locationOrigin.indexOf('etext-qa-stg.pearson.com') !== -1)
-          { return 'qa'; }
+          { return 'stage'; }
     else if (locationOrigin.indexOf('etext-stg.pearson.com') !== -1)
           { return 'stage'; }
     else if (locationOrigin.indexOf('etext.pearson.com') !== -1)

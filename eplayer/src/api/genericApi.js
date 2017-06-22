@@ -4,6 +4,7 @@ import { resources, domain } from '../../const/Settings';
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
 const pxeService = resources.links.pxeServiceUrl;
+const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
 
@@ -146,3 +147,16 @@ export const getGotoPage = data => fetch(`${pxeService[envType]}/context/${data.
     'Content-Type': 'application/json'
   }
 });
+
+
+// Pi User Profile
+export const getPiUserProfile = data => {
+fetch(`https://user-profile.stg-openclass.com/userprofiles/${data.identityId}`, {  // eslint-disable-line max-len
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'X-Authorization': data.piToken
+  }
+})
+
+} ;

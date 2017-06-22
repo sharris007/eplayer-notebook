@@ -7,59 +7,26 @@
   <link rel="stylesheet" href="//d12m40tknrppbi.cloudfront.net/cite/css/style.css"> 
   <script src="https://cdn.polyfill.io/v2/polyfill.js?features=CustomEvent,Intl.~locale.en,Intl.~locale.fr"></script>
   <!-- <script src="https://etext-qa-stg.pearson.com/eplayer-ann/jquery.min.js"></script> -->
-  <link rel="stylesheet" href="/eplayer/annotation-lib/annotator.min.css"/>
-  <script src="/eplayer/annotation-lib/jquery.min.js"></script>
-  <script src="/eplayer/annotation-lib/annotator.js"></script>
+  <link rel="stylesheet" href="/annotation-lib/annotator.min.css"/>
+  <script src="/annotation-lib/jquery.min.js"></script>
+  <script src="/annotation-lib/annotator.js"></script>
   
   <!-- <script src="https://pxe-sdk-qa.stg-openclass.com/eplayer-ann/pdfannotator.js"></script> -->
-  <script src="/eplayer/pdf/pdfannotator.js"></script>
-  <script src="/eplayer/pdf/webpdf.tools.mini.js"></script>
-  <script src="/eplayer/pdf/pdfWrapper.js"></script>
-  <script src="/eplayer/pdf/webpdf.mini.js"></script>
-  <script src="/eplayer/pdf/seajs.js"></script>
+  <script src="/pdf/pdfannotator.js"></script>
+  <script src="/pdf/webpdf.tools.mini.js"></script>
+  <script src="/pdf/pdfWrapper.js"></script>
+  <script src="/pdf/webpdf.mini.js"></script>
+  <script src="/pdf/seajs.js"></script>
   <link rel="stylesheet" type="text/css" href="https://brix-content.pearsoned.com/brix/assets/brix/api/item/ba0f0972-271d-43d3-ab28-9a95e24bceeb/110/file/brixauthoring/client/css/brix.css">
   <link rel="stylesheet" type="text/css" href="https://revel-content.openclass.com/content/amc/6.1.0.prod/css/amcui.min.css">
 </head>
 <body style="overflow:visible;">
-  <script type="text/javascript"> 
-    var scriptEnv = {
-      "localhost":"local",
-      "etext-dev.pearson.com":"dev",
-      "etext-qa-stg.pearson.com":"qa",
-      "etext-stg.pearson.com":"stg",
-      "etext.pearson.com":"prd"
-    }
-    var clientId={
-      "local":"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      "dev":"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      "qa":"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      "stg":"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      "prd":"AT8R4irZrJRPstMMUdb8XaqOvbRJpqs4"
-    }
-    var envScripts=
-    {
-      "local":"https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js",
-      "dev" :"https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js",
-      "qa":"https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js",
-      "stg":"https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js",
-      "prd":"https://pi.pearsoned.com/v1/piapi/login/js/session.js"
-    }
-    var env = scriptEnv[window.location.hostname];
-    var piScript = envScripts[env];
-    var piClientid= clientId[env];
-    console.log("piScript--",piScript);
-    console.log("piClientid--",piClientid);
-    
-    var JSLink = piScript;
-    var JSElement = document.createElement('script');
-    JSElement.src = JSLink;
-    JSElement.onload = OnceLoaded;
-    document.getElementsByTagName('body')[0].appendChild(JSElement);
-     
-    function OnceLoaded() {
+  <script src="https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js"></script>
+   <script type="text/javascript">
+      //var redirectPiurl   = window.location.origin;
       var redirectPiurl   = window.location.href;
       redirectPiurl       = decodeURIComponent(redirectPiurl).replace(/\s/g, "+").replace(/%20/g, "+");
-      var clientId        = piClientid;
+      var clientId        = 'vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb';
       var jwtSetting = {"useJwt": true,"checkSessionMilliseconds"  : "6000",
                           "sessionIdleTimeoutSeconds" : "1800"};
       piSession.initialize(clientId,jwtSetting);
@@ -75,17 +42,17 @@
       setInterval(function(){ 
         piSession.getToken(function(result, userToken){
             if(result === piSession['Success']){
-              setStorage("secureToken",userToken);
+              setCookie("secureToken",userToken);
             }else if(result === 'unknown' || result === 'notoken' ){
                piSession.login(redirectPiurl, 10);
             }
         }); 
       }, 1500000);
-      function setStorage(secureToken, svalue) {
-          localStorage.setItem("secureToken", svalue);
+      function setCookie(secureToken, svalue) {
+          document.cookie = secureToken + "=" + svalue + ";";
       }
-    }
-  </script>
+         
+    </script>
   <script>
     var __pdfInstance = pdfWrapper();
   </script>

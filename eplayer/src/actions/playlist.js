@@ -27,6 +27,12 @@ function getTocUrlOnResp(resp) {
   }
   return tocUrl ? tocUrl.replace('http:', 'https:') : null;
 }
+export const getPiUserProfileService = data => dispatch =>{
+  PlaylistApi.doGetPiUserDetails(data);
+}
+      
+
+
 export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetails(data)
    .then(response => response.json())
    .then((response) => {
