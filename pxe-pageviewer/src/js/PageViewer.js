@@ -303,7 +303,7 @@ class PageViewer extends React.Component {
   componentDidUpdate = () => {
     copyCharLimit(this);
     //prints page no in the page rendered
-    this.enablePageNo();
+    //this.enablePageNo();
     this.loadMultimediaNscrollToFragment();
     crossRef(this);
     document.addEventListener('click', this.clearSearchHighlights);
