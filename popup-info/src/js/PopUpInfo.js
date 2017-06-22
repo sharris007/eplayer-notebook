@@ -68,6 +68,19 @@ class PopUpInfo extends Component {
         });
       });
       Popup.plugins.popover(event.target);
+      if (props.popOverCollection.popOverDescription) {
+        this.checkValidURL(props.popOverCollection.popOverDescription);
+      }
+    }
+  }
+
+  checkValidURL = (str) => {
+    console.log(str)
+    const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+    if (!regex .test(str)) {      
+      document.getElementsByClassName('mm-popup__box')[0].style.width = '400px';
+    } else {
+      document.getElementsByClassName('mm-popup__box')[0].style.width = '370px';
     }
   }
 
