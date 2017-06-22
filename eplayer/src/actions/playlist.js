@@ -60,6 +60,7 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
           }
           return {
             id: itemObj.id,
+            urn: itemObj.id,
             title: itemObj.title,
             coPage: itemObj.coPage,
             playOrder: itemObj.playOrder,
