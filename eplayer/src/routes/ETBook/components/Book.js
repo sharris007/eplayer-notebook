@@ -92,7 +92,7 @@ export class Book extends Component {
           this.props.dispatch(getBookCallService(bookDetailsData));
       }
       this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
-  }, 4000);
+  }, 2000);
     
   }
   componentWillUnmount() {
