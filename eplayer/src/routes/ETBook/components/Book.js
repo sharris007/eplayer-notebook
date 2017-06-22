@@ -418,6 +418,7 @@ export class Book extends Component {
       pageDetails:{...this.state.pageDetails},		
       urlParams:{...this.state.urlParams}		
     }		
+    const currentBookId = this.props.params.pageId;
     //End of Wrapper PxePlayer
     return (
       <div>
@@ -436,6 +437,7 @@ export class Book extends Component {
           goToPage = {(pageId) => this.goToPage(pageId)}
           listClick = {() => this.listClick()}
           goToPageClick = {this.goToPageClick}
+          currentPageID = {currentBookId}
         />
            
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>

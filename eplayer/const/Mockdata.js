@@ -4,7 +4,7 @@ export const pageDetails = {
   locale: 'en-us',
   copyImages: false,
   copyCharLimit: 10,
-  crossRefSettings: 'lightbox',
+  crossRefSettings: 'continue',
   enablePrintOption: false,
   showPageNo: true,
   orientation: 'horizontal',

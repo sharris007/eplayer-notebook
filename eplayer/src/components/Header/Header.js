@@ -307,6 +307,7 @@ export class Header extends React.Component {
             isOpen={this.props.drawerOpen}
             hideDrawer={this.hideDrawer}
             isET1={this.props.isET1}
+            pageId={this.props.currentPageID}
           />
         }
         {this.props.isET1 ? <div className="preferences-container-eT1">{this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} disableBackgroundColor={this.props.disableBackgroundColor} /></div> : <div className="empty" />} </div>
