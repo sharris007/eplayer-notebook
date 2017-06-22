@@ -50,7 +50,7 @@ export default class BookshelfPage extends React.Component {
            piSession.login(redirectCourseUrl, 10);
         }
       });
-    },4000)
+    },2000)
     
   }
 
@@ -109,7 +109,7 @@ export default class BookshelfPage extends React.Component {
     } else {
       this.props.fetch(urn, secureToken);
     }
-  },5000);
+  },3000);
     // console.log(urn);
   }
 
