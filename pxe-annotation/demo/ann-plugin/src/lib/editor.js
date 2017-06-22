@@ -171,6 +171,11 @@ Annotator.Editor = (function(_super) {
     this.annotation.color=this.annotation.lastColor=event.target.value;
     $('.annotator-color').removeClass('active');
     $(event.target).addClass('active');
+    if($(this.annotation.highlights).closest('.pxereaderSearchHighlight').length>0) {
+       $(this.annotation.highlights).unwrap('.pxereaderSearchHighlight');
+       $(this.annotation.highlights).parents().removeClass('pxereaderSearchHighlight');
+       $(this.annotation.highlights).find('.annotator-handle').css('background-color', 'inherit');
+    }
     $(this.annotation.highlights).css('background', event.target.value);
     if (isTopAlign) {
       var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height();

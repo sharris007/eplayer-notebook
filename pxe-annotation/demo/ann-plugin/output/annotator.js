@@ -3011,6 +3011,9 @@ Annotator = (function(_super) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
         _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
+        if($(node).closest('.pxereaderSearchHighlight').length > 0) {
+          $(node).parent().find('.annotator-handle').css('background-color', normedRange.color);
+        }
         //handle='';
       }
     }
@@ -3680,6 +3683,11 @@ Annotator.Editor = (function(_super) {
     this.annotation.color=this.annotation.lastColor=event.target.value;
     $('.annotator-color').removeClass('active');
     $(event.target).addClass('active');
+    if($(this.annotation.highlights).closest('.pxereaderSearchHighlight').length>0) {
+       $(this.annotation.highlights).unwrap('.pxereaderSearchHighlight');
+       $(this.annotation.highlights).parents().removeClass('pxereaderSearchHighlight');
+       $(this.annotation.highlights).find('.annotator-handle').css('background-color', 'inherit');
+    }
     $(this.annotation.highlights).css('background', event.target.value);
     if (isTopAlign) {
       var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height();
