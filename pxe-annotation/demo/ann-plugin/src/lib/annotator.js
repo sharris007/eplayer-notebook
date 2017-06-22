@@ -406,6 +406,9 @@ Annotator = (function(_super) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
         _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
+        if($(node).closest('.pxereaderSearchHighlight').length > 0) {
+          $(node).parent().find('.annotator-handle').css('background-color', normedRange.color);
+        }
         //handle='';
       }
     }
