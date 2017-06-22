@@ -406,9 +406,6 @@ Annotator = (function(_super) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
         _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
-        if($(node).closest('.pxereaderSearchHighlight').length > 0) {
-            $(node).parent().find('.annotator-handle').css('background-color', normedRange.color);
-        }
         //handle='';
       }
     }
@@ -540,7 +537,7 @@ Annotator = (function(_super) {
               var dataAnnId = $(hlElements[j]).attr('data-ann-id');
               var shrable = $(hlElements[j]).attr('shareable');
               if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
-                if(!shrable || shrable==='false')
+                if(this.isShareable || (!shrable || shrable==='false'))
                   annArray.push(dataAnnId);
               }
             }
@@ -548,7 +545,7 @@ Annotator = (function(_super) {
               var dataAnnId = $(hlElements.context).attr('data-ann-id');
               var shrable = $(hlElements.context).attr('shareable');
               if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
-                if(!shrable || shrable==='false')
+                if(this.isShareable || (!shrable || shrable==='false'))
                   annArray.push(dataAnnId);
           }
         }
@@ -702,7 +699,7 @@ Annotator = (function(_super) {
         return _this.unsubscribe('annotationEditorSubmit', save);
       };
     })(this);
-     if(oldAnnArr.length>0 && annArray.length>0 && !(oldAnnArr[0].shareable)){
+     if(oldAnnArr.length>0 && annArray.length>0) { //&& !(oldAnnArr[0].shareable)
       $(annotation)[0].text = $(oldAnnArr)[0].text;
       $('.annotator-edit-container').hide();
       window.currAnn = $(oldAnnArr)[0];
