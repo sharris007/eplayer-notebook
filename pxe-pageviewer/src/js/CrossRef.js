@@ -325,7 +325,14 @@ export const crossRef = (pageViewerRef) => {
     }
     const xrefs = pageViewerRef.bookContainerRef.getElementsByClassName('xref');
     const pagerefs = pageViewerRef.bookContainerRef.getElementsByClassName('pageref');
-    const crossrefs = [...xrefs, ...pagerefs];
+    const links = pageViewerRef.bookContainerRef.getElementsByTagName('a');
+    const linksHasNoClass = [];
+    for (let li = 0; li < links.length; li++) {
+      if (!links[li].classList.length) {
+        linksHasNoClass.push(links[li]);
+      }
+    }
+const crossrefs = [...xrefs, ...pagerefs, ...linksHasNoClass];
     // Kindly, don't change the for loop here to high order functions
     for (let i = crossrefs.length - 1; i >= 0; i--) {
       const element = crossrefs[i];
