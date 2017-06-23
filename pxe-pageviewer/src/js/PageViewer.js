@@ -127,6 +127,27 @@ class PageViewer extends React.Component {
       }
       // this.setState({pageLoading:false});
       //callback
+      setTimeout(function() {
+         let ele = document.getElementById('book-container');  
+         var scripts = ele.getElementsByTagName("script")
+         var scriptsArr = [];
+         for (let i = 0; i < scripts.length; i++) {
+           if(scripts[i].src.indexOf('jquery') === -1){
+             scriptsArr.push(scripts[i]);
+           }
+         }
+         for (let i = 0; i < scriptsArr.length; i++) {
+           let currentScript = scriptsArr[i];
+           let scriptTag = document.createElement("script");
+           for (let j = 0; j < currentScript.attributes.length; j++) {
+             var attr = currentScript.attributes[j];
+             scriptTag.setAttribute(attr.name, attr.value);
+           }
+           scriptTag.appendChild(document.createTextNode(currentScript.innerHTML));
+           currentScript.parentNode.replaceChild(scriptTag, currentScript);
+         }
+     }, 1000);
+      
       if (pageFragmentID && document.getElementById(pageFragmentID)) {
         this.scrollToFragment(pageFragmentID);
       }else  {

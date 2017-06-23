@@ -355,7 +355,7 @@ const crossrefs = [...xrefs, ...pagerefs, ...linksHasNoClass];
     // video light box settings
     // videoLightBoxSettings();
     // audio light box settings
-    audioLightBoxSettings();
+    // audioLightBoxSettings();
     // for gadgets lightbox
     lightBoxGadgetBindEvents();
     // PlaceHolder
