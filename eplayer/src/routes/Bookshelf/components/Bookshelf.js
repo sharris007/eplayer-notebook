@@ -102,9 +102,8 @@ export default class BookshelfPage extends React.Component {
     }
     const secureToken  = localStorage.getItem('secureToken');
     // const secureToken = this.cookies.get('secureToken');
-    if ((secureToken === undefined || secureToken === null) &&
-        (this.props.location.query.eT1StandaloneBkshf === 'Y'
-          || this.props.location.query.eT1StandaloneBkshf === 'y')) {
+    if (this.props.location.query.eT1StandaloneBkshf === 'Y'
+          || this.props.location.query.eT1StandaloneBkshf === 'y') {
       this.props.fetch(urn, piToken);
     } else {
       this.props.fetch(urn, secureToken);
