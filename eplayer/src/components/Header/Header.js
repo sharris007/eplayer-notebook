@@ -4,7 +4,7 @@ import AppBar from 'material-ui/AppBar';
 // import find from 'lodash/find';
 import { browserHistory } from 'react-router';
 import { PreferencesComponent } from '@pearson-incubator/preferences';
-import { BookmarkIcon } from '@pearson-incubator/bookmark-icon';
+import { BookmarkIconComponent } from '@pearson-incubator/bookmark-icon';
 import { addLocaleData } from 'react-intl';
 
 import Icon from '../Icon';
@@ -182,36 +182,44 @@ export class Header extends React.Component {
   render() {
     const style = {
       rightIcons: {
-        margin: '15px 15px 0 0'
+        margin: '0px'
       },
       moreIcons: {
-        color: '#FFFFFF'
+        color: '#ccc'
       },
       leftIcons: {
         margin: '0px'
       },
       bookshelfIcon: {
-        margin: '21px 0 0 20px'
+        margin: '0'
       },
       drawerIcon: {
-        margin: '21px 0 0 30px',
+        margin: '0 0 0 30px',
         height: '16.5px',
         width: '18px'
       },
       prefIcon: {
-        margin: '15px 0 0 0'
+        margin: '0 0 0 30px'
+      },
+      searchIcon: {
+        margin: '0 30px'
       },
       appBar: {
         paddingLeft: '0px',
-        minWidth: '480px',
+        paddingRight: '0px',
+        height: 'auto',
+        backgroundColor: 'transparent',
         title: {
           fontFamily: 'Open Sans',
-          fontSize: '18px',
+          fontSize: '16px',
           fontWeight: 'normal',
           fontStyle: 'normal',
           fontStretch: 'normal',
           color: '#ffffff',
-          textAlign: 'center'
+          textAlign: 'center',
+          height: 'auto',
+          lineHeight: 'inherit',
+          margin: '0 0 0 117px'
         },
         navUp: {
           top: '-84px'
@@ -238,6 +246,7 @@ export class Header extends React.Component {
           titleStyle={style.appBar.title}
           style={style.appBar}
           iconStyleLeft={style.leftIcons}
+          iconStyleRight={style.rightIcons}
           zDepth={0}
           iconElementLeft={
             <div>
@@ -254,14 +263,14 @@ export class Header extends React.Component {
                 </span>
               </div>
               <span
-                className="icon-white"
+                className="drawerIcon icon-white"
                 style={style.drawerIcon}
                 onTouchTap={this.handleDrawer}
                 onKeyDown={this.handleDrawerkeyselect}
                 role="button"
                 tabIndex="0"
               >
-                <Icon name="view-list-18" />
+                <Icon name="hamburger-light-18" />
               </span>
 
             </div>
@@ -269,9 +278,9 @@ export class Header extends React.Component {
           iconElementRight={
             <div>
               <div className="bookmarkIcon" role="button" tabIndex="0">
-                <BookmarkIcon data={bookmarkIconData} />
+                <BookmarkIconComponent data={bookmarkIconData} locale="en"/>
               </div>
-              <span
+              <div
                 className="icon-white prefIcon"
                 style={style.prefIcon}
                 onClick={this.handlePreferenceClick}
@@ -280,9 +289,14 @@ export class Header extends React.Component {
                 tabIndex="0"
               >
                 <Icon name="font-setting-24" />
-              </span>
+              </div>
+              {this.props.isET1 ? <div className="preferences-container-eT1">{this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} disableBackgroundColor={this.props.disableBackgroundColor} /></div> : <div className="empty" />} </div>
+       : <div className="preferences-container">{this.state.prefOpen ? <div className="content"><PreferencesComponent fetch={this.props.getPreference} preferenceUpdate={this.props.updatePreference}
+         disableBackgroundColor={false} locale="en" /></div> : <div className="empty" />} </div>}
+
               <div
-                className="icon-white"
+                className="icon-white searchIcon"
+                style={style.searchIcon}
                 role="button"
                 tabIndex="0"
                 onClick={this.searchClick}
@@ -310,9 +324,7 @@ export class Header extends React.Component {
             pageId={this.props.currentPageID}
           />
         }
-        {this.props.isET1 ? <div className="preferences-container-eT1">{this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} disableBackgroundColor={this.props.disableBackgroundColor} /></div> : <div className="empty" />} </div>
-       : <div className="preferences-container">{this.state.prefOpen ? <div className="content"><PreferencesComponent fetch={this.props.getPreference} preferenceUpdate={this.props.updatePreference}
-         disableBackgroundColor={false} locale="en" /></div> : <div className="empty" />} </div>}
+        
 
       </div>
     );
