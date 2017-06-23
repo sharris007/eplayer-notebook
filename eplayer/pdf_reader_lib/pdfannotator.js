@@ -8,7 +8,7 @@ var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div
 
 var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label id="label-confirm" class="annotator-confirm">Confirm?</label></div><div class="ann-canceldelete-section"><a id="ann-confirm-cancel" class="annotator-confirm-cancel">CANCEL</a><a id="ann-confirm-del" class="annotator-confirm-delete">DELETE</a></div></div></div>';
 
-var panel5 ='<li class="characters-left" style="visibility:hidden"><span id="letter-count">3000</span id="letter-text">Characters left<span><span></li>';
+var panel5 ='<li class="characters-left"><span id="letter-count">3000</span id="letter-text"> Characters left<span><span></li>';
         
 var htmlElements = '<div id="annotator-outer-id" class="annotator-outer annotator-editor hide-note"><form id="highlight-note-form" class="annotator-widget">'+panel1+ panel2+panel3+'</form></div>';
 
@@ -28,8 +28,34 @@ var isEditMode;
 var popupElementId = '#openPopupHighlight';
 var isAlignReq;
 var notesMessages;
+var isPopupOpen = false;
+var userRoleTypeID = 0;
 
-function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,targetElement,NotesMessages)
+function init()
+{
+  $("body").click(function(e) {
+    if(!isPopupOpen)
+    {
+        if ($(e.target).parents("#docViewer_ViewContainer").length && 
+                $(e.target).parents("#openPopupHighlight").length == 0 )
+                
+        { 
+            hide();
+        }
+    }
+    else
+    {
+      isPopupOpen = false;
+    }
+  });
+  $(document).on('keyup',function(evt) {
+    if (evt.keyCode === 27 && $('#openPopupHighlight').is(':visible')) {
+        hide();
+    }
+  });
+}
+
+function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,targetElement,NotesMessages,roleTypeID)
 {
    try{
         document.getElementById('openPopupHighlight').remove();
@@ -41,7 +67,7 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    var pageLeft = $("#docViewer_ViewContainer").offset().left;
    var pageWidth = $("#docViewer_ViewContainer").width();
    notesMessages=NotesMessages;
-   coord.left = (pageLeft + pageWidth) - (600);
+   coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 285);
    //coord.left = coord.left + (coord.width * 1.5);
    coord.top = coord.top + (coord.height * 1.5);
    var id = 'openPopupHighlight';
@@ -60,6 +86,8 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    isShared = false;
    isEditMode = false;
    isAlignReq = true;
+   isPopupOpen = true;
+   userRoleTypeID = roleTypeID;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          onColorChange(e);
    });
@@ -87,11 +115,8 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    $("#ann-share").on('click',function(e){
          onShareClick(e)
    });
-   /*$(document).click(function(e) {
-    if ((e.keyCode === 27 ||!$(e.target).closest('.annotator-editor').length) && !$('.annotator-editor').hasClass('annotator-hide')) {
-      hide();
-    }
-   });*/
+   $('.annotator-edit-container').hide();
+   $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
    document.getElementById("note-text-area").placeholder=notesMessages.messages.writeNote;
    document.getElementById("cancel-saving").innerHTML=notesMessages.messages.cancel;
    document.getElementById("save-annotation").innerHTML=notesMessages.messages.save;
@@ -178,7 +203,8 @@ function onDeleteClick()
     panel2Sec.removeClass('overlay');
     panel3Sec.removeClass('overlay');
     panel4Sec.remove();
-    $(popupElementId).addClass('hide-note')
+    $(popupElementId).addClass('hide-note');
+    isPopupOpen = false;
 }
 
 function onDeleteIconClick()
@@ -217,6 +243,12 @@ function onEditClick()
     $(popupElementId).find('#noteContainer').hide();
     $(popupElementId).find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     $(popupElementId).find('input').css({'pointer-events':'all', 'opacity':'1'});
+    if($(popupElementId).find('textarea').val().length && userRoleTypeID == 3){
+      $(popupElementId).find('.annotator-share-text, .annotator-share').show();
+    }
+    else {
+     $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
+    }
     isEditMode = true;
 }
 
@@ -227,6 +259,7 @@ function onCancelClick()
     panel2Sec.removeClass('overlay');
     panel3Sec.removeClass('overlay');
     panel4Sec.remove();
+    isPopupOpen = false;
 }
 
 function onSaveClick()
@@ -260,8 +293,16 @@ function onSaveClick()
 
 function onNoteChange(event) {
     var characters = 3000;
-    $(popupElementId).addClass('show-edit-options');
-    if(!event.target.value.length){
+    if(event.target.value.length){
+      $(popupElementId).addClass('show-edit-options');
+    }
+    else{
+      $(popupElementId).removeClass('show-edit-options');
+    }
+    if(userRoleTypeID==3 && $(popupElementId).find('textarea').val().length){
+      $(popupElementId).find('.annotator-share-text, .annotator-share').show();
+    }
+    else {
       $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
     }
     var charLeft=notesMessages.messages.charactersLeft;
@@ -290,7 +331,7 @@ function onNoteChange(event) {
       isShared=true;
     } 
  }
- function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages)
+ function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID)
  {
   var parentHighlightElement = $('#'+highLightData.id);
   var lastChildElementindex = parentHighlightElement[0].children.length - 1
@@ -311,7 +352,7 @@ function onNoteChange(event) {
    //coord.left = coord.left + (coord.width * 1.5);
    var pageLeft = $("#docViewer_ViewContainer").offset().left;
    var pageWidth = $("#docViewer_ViewContainer").width();
-   coord.left = (pageLeft + pageWidth) - (600);
+   coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 285);
    coord.top = coord.top + (coord.height * 1.5);
    var id = 'openPopupHighlight';
    var parentElement = document.createElement('div');
@@ -327,6 +368,7 @@ function onNoteChange(event) {
    annotatorCallbacks.editHighlightCallback = editHighlightCallback;
    annotatorCallbacks.deleteHighlightCallback = deleteHighlightCallback;
    currentHighlight = highLightData;
+   userRoleTypeID = roleTypeID;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          onColorChange(e);
    });
@@ -407,13 +449,32 @@ function onNoteChange(event) {
   var topPosition=$('#annotator-outer-id').position().top + $('#annotator-outer-id').find('form').height()-$('#annotator-outer-id').find('.annotator-panel-1').height();
   $('#annotator-outer-id').css({top:topPosition});
   isAlignReq = false;
+  isPopupOpen = true;
   document.getElementById("share-text").innerHTML=notesMessages.messages.share;
   document.getElementById("save-annotation").innerHTML=slectedHighlightsNotes.messages.save;
   alignPopup();
+  $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
+  if(userRoleTypeID == 2 && highLightData.shared)
+  {
+     //$(popupElementId).find('.annotator-panel-1, .annotator-panel-triangle').hide();
+     $(popupElementId).removeClass('show-edit-options');
+     //$(popupElementId).find('.annotator-share-text, .annotator-share').hide();
+     $(popupElementId).find('.characters-left').css({'visibility':'hidden'});
+     $("#color-button-yellow").prop("disabled", true);
+     $("#color-button-green").prop("disabled", true);
+     $("#color-button-pink").prop("disabled", true);
+     $("#color-button-yellow").css({'background':'#fff1c1'});
+     $("#color-button-green").css({'background':'#CCF5C8'});
+     $("#color-button-pink").css({'background':'#FEDEF0'});
+     //$("#deleteIcon").prop("disabled", true);
+     //$("#editIcon").prop("disabled", true);
+     $('.annotator-edit-container').hide();
+     $('.annotator-delete-container').hide();
+  }
  }
  return {
     showCreateHighlightPopup:showCreateHighlightPopup,
-    hide:hide,
+    init:init,
     showSelectedHighlight:showSelectedHighlight
  }
 }();

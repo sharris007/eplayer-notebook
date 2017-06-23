@@ -219,7 +219,7 @@ export const crossRef = (pageViewerRef) => {
   const audioLightBoxSettings = () => {
     try {
       const audioEle = pageViewerRef.bookContainerRef.querySelectorAll('[data-type=audio]');
-      const figures = pageViewerRef.bookContainerRef.getElementsByTagName('figure');
+      const figures = [];//pageViewerRef.bookContainerRef.getElementsByTagName('figure');
       const audioElements = [...audioEle];
       if (figures.length) {
       // Kindly, don't change the for loop here to high order functions
@@ -325,7 +325,14 @@ export const crossRef = (pageViewerRef) => {
     }
     const xrefs = pageViewerRef.bookContainerRef.getElementsByClassName('xref');
     const pagerefs = pageViewerRef.bookContainerRef.getElementsByClassName('pageref');
-    const crossrefs = [...xrefs, ...pagerefs];
+    const links = pageViewerRef.bookContainerRef.getElementsByTagName('a');
+    const linksHasNoClass = [];
+    for (let li = 0; li < links.length; li++) {
+      if (!links[li].classList.length) {
+        linksHasNoClass.push(links[li]);
+      }
+    }
+const crossrefs = [...xrefs, ...pagerefs, ...linksHasNoClass];
     // Kindly, don't change the for loop here to high order functions
     for (let i = crossrefs.length - 1; i >= 0; i--) {
       const element = crossrefs[i];
@@ -346,13 +353,12 @@ export const crossRef = (pageViewerRef) => {
     // Adding light box for all images
     imageLightBoxSettings();
     // video light box settings
-    videoLightBoxSettings();
+    // videoLightBoxSettings();
     // audio light box settings
-    audioLightBoxSettings();
+    // audioLightBoxSettings();
     // for gadgets lightbox
     lightBoxGadgetBindEvents();
     // PlaceHolder
-
     //
     // adding classes to the added ExternalLinkPreview component
     const externalPreview = pageViewerRef.bookContainerRef.querySelectorAll('[from-external-preview]');

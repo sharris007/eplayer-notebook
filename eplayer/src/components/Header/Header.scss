@@ -1,17 +1,35 @@
 //header
 $prefIcon-height:18px;
 $prefIcon-width:28px;
-$prefCont-right: 50px;
-$prefCont-top: 46px;
-$bookmark-margin: 15px 15px;
-$back_rec-width: 66px;
-$back_rec-height: 64px;
+$prefCont-right: -4px;
+$prefCont-top: 18px;
+$headerHeight: 50px;
 $header-min-height: 64px;
 $navUp-top: -66px;
 $swipe-height: 85vh;
 $header-top: 0px;
-$header-min-width: 768px;
 $padding-right: 30px;
+$white: #FFF;
+$gray: #6a7070;
+$blackGray: #1c1c1c;
+$lightGray: #f2f2f2;
+$borderBottom: 20px solid;
+$triangleLeft: 166px;
+$searchTriangleLeft: 285px;
+$headerPadding: 15px 55px;
+
+@mixin box-shadow($top, $left, $blur, $color) {
+  -webkit-box-shadow:$top $left $blur $color;
+  -moz-box-shadow:$top $left $blur $color;
+  box-shadow:$top $left $blur $color;
+}
+@mixin transition($property, $duration) {
+    -webkit-transition: $property $duration;
+    -moz-transition: $property $duration;
+    -ms-transition: $property $duration;
+    -o-transition: $property $duration;
+    transition: $property $duration;
+}
 
 .route--active {
   font-weight: bold;
@@ -26,19 +44,7 @@ $padding-right: 30px;
   height:$prefIcon-height;
   width:$prefIcon-width;
 }
-.preferences-container-eT1 {
-  position: absolute;
-  right: 20px;
-  top: $prefCont-top;
-  z-index: 10001;
-}
-.preferences-container {
-  position: absolute;
-  right: 10px;
-  top: $prefCont-top;
-  z-index: 10001;
-}
-.searchContainer {
+.preferences-container, .searchContainer {
   position: absolute;
   right: $prefCont-right;
   top: $prefCont-top;
@@ -46,21 +52,29 @@ $padding-right: 30px;
 }
 
 .bookmarkIcon {
-  float :left;
-  margin: $bookmark-margin;
-    
+  margin: 0 0 0 15px;
+  float: left;
 }
-.moreIcon {
-  float:right;
+.volumeIcon.icon-white {
+  margin-right: 0;
 }
+.icon-white.volumeIcon svg {
+  width: 24px;
+}
+
 .back_rec {
-  width: $back_rec-width;
-  height: $back_rec-height;
-  background-color: #004758;
+  background-color: transparent;
   float: left;
 }
 .icon-white{
-  padding-right: $padding-right;
+  margin-right: $padding-right;
+  :hover{
+    cursor:pointer;
+  }
+}
+.moreIcon{
+  float:right;
+  margin-top: -14px;
 }
 ////
 /// Custom SCSS for component-specific styling goes here
@@ -69,18 +83,7 @@ $padding-right: 30px;
 #cite-book #viewer-container #viewer {
   line-height:normal;
 }
-.headerBar {
-  min-height: $back_rec-height;
-  min-width: $header-min-width; 
-  -webkit-transition: all .25s;
-  transition: all .25s;
-  position: fixed;
-  width:100%;
-  z-index: 200;
-  top: $header-top;
-  line-height :normal;
 
-}
 .nav-up{
   top: $navUp-top;
 }
@@ -153,4 +156,107 @@ $padding-right: 30px;
 }
 #toc .toc-header .header-text{
   word-break: break-all;
+}
+
+// Hearder style
+.headerBar {
+    min-height: 50px;
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    z-index: 200;
+    top: 0;
+    padding: 15px 55px;
+    background: #fff;
+    box-shadow: 0 3px 3px #e9e9e9;
+    transition: all .25s;
+    line-height :normal;
+}
+
+.headerBar.visible {
+    display: block
+}
+
+.swipeviewStyle>div>div {
+    height: 85vh
+}
+
+.headerBar.chapterOpenerPg {
+    background: transparent;
+    position: absolute;
+    box-shadow: none
+}
+
+.headerBar.chapterOpenerPg .icon-white,.headerBar.chapterOpenerPg h1 {
+    color: #fff!important
+}
+
+.headerBar.chapterOpenerPg.fixHeader h1,.headerBar h1 {
+    color: #1c1c1c!important
+}
+
+.headerBar.chapterOpenerPg.fixHeader .icon-white,.headerBar .icon-white {
+    color: #6a7070!important
+}
+
+.headerBar .bookmarkIcon svg path,.headerBar.chapterOpenerPg.fixHeader .bookmarkIcon svg path {
+    fill: $gray !important;
+}
+
+.headerBar.chapterOpenerPg .bookmarkIcon svg path {
+    fill: #fff!important
+}
+
+.headerBar.chapterOpenerPg.fixHeader {
+    background: #fff;
+    position: fixed;
+    box-shadow: 0 3px 3px #e9e9e9;
+    transition: all .25s
+}
+
+.headerBar.chapterOpenerPg.fixHeader .PrefernceTriangleUp,.headerBar .PrefernceTriangleUp {
+    border-bottom: 20px solid #f2f2f2;
+    margin-left: 178px!important
+}
+
+.headerBar.chapterOpenerPg.fixHeader .triangle-up,.headerBar .triangle-up {
+    border-bottom: 20px solid #f2f2f2;
+    margin-left: 298px
+}
+
+.headerBar.chapterOpenerPg .PrefernceTriangleUp,.headerBar.chapterOpenerPg .triangle-up {
+    border-bottom: 20px solid #fff
+}
+@media (max-width: 736px) {
+  .headerBar {
+    padding: 15px;
+  }
+  .headerBar h1 {
+    margin-left: 15px !important;
+  }
+}
+@media (max-width: 480px) {
+  .headerBar h1 {
+    margin-left: 15px !important;
+  }
+}
+
+@media only screen and (min-width : 1600px){
+  
+  .drawerIcon {
+    margin-left: 50px !important;
+  }
+  .prefIcon {
+        margin-left: 50px !important;
+  }
+  .searchIcon {
+    margin: 0 50px !important;
+  }
+  .headerBar.chapterOpenerPg.fixHeader .triangle-up, .headerBar .triangle-up {
+    margin-left: 266px !important;
+  }
+  .headerBar.chapterOpenerPg.fixHeader .PrefernceTriangleUp, .headerBar .PrefernceTriangleUp {
+    margin-left: 127px !important;
+  }
+
 }

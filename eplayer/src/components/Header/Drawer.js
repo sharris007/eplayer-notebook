@@ -193,6 +193,7 @@ class DrawerComponent extends React.Component {
     document.getElementById(tabid).className += ' active';
     document.getElementById(tabid).focus();
   }
+  
 
   render() {
     const drawerTab = {
@@ -283,6 +284,7 @@ class DrawerComponent extends React.Component {
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
                 locale={locale}
+                currentPageId={this.props.pageId}
               />
             }
             { this.props.bookData.bookmarks &&

@@ -62,7 +62,7 @@ class MoreMenuComponent extends React.Component {
   render() {
     const style = {
       moreIcons: {
-        color: '#FFFFFF'
+        color: '#6a7070'
       }
     };
 

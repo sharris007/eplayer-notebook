@@ -47,6 +47,7 @@ export class PdfBookReader extends Component {
     Binding the method like parseDom and navChanged on the attribute like contentLoaded and navChanged. */
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
+    pdfAnnotatorInstance.init();
   }
  /* componentDidMount() is invoked immediately after a component is mounted. */
   componentDidMount() {
@@ -78,7 +79,10 @@ export class PdfBookReader extends Component {
     this.props.fetchTocAndViewer(this.props.params.bookId, authorName, title, thumbnail,
       this.props.book.bookinfo.book.bookeditionid, ssoKey, serverDetails,
       this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
-    const courseId = '0';
+    let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
+    if (courseId === undefined || courseId === '' || courseId === null) {
+      courseId = 0;
+    }
     /* Method for getting the bookmarks details which is already in book. */
     this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId, true, courseId,
       this.props.book.userInfo.userid, this.props.PdfbookMessages.PageMsg);
@@ -409,7 +413,10 @@ export class PdfBookReader extends Component {
     const currentPageId = this.state.currPageIndex;
     const currentPage = find(pages, page => page.pageorder === currentPageId);
     // const currTimeInMillsc = (new Date()).getTime();
-    const courseId = '0';
+    let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
+    if (courseId === undefined || courseId === '' || courseId === null) {
+      courseId = 0;
+    }
 
     this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid),
       _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
@@ -444,6 +451,7 @@ export class PdfBookReader extends Component {
   /* Method for setting the zoom level selected by user, using passing the selected value. */
   setCurrentZoomLevel = (level) => {
     __pdfInstance.setCurrentZoomLevel(level);
+    this.displayHighlight();
   }
  /* Method for creating highLight for selected area by user. */
   createHighlight1(highlightData) {
@@ -458,19 +466,56 @@ export class PdfBookReader extends Component {
     const currentHighlight = {};
     const highlightList = this.state.highlightList;
     const highlightData1 = __pdfInstance.createHighlight();
-    const highlightsLength = highlightList.length;
-    currentHighlight.id = highlightsLength + 1;
-    currentHighlight.highlightHash = highlightData1.serializedHighlight;
-    currentHighlight.selection = highlightData1.selection;
-    currentHighlight.pageIndex = highlightData1.pageInformation.pageNumber;
-    pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
-      this.saveHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
-      (languages.translations[this.props.locale]));
+    const curHighlightCords = highlightData1.serializedHighlight;
+    const curHighlightCordsStr = curHighlightCords.replace('@0.000000', '');
+    const curHighlightCordsList = JSON.parse(curHighlightCordsStr);
+    let highLightID;
+    let isExistinghighlightFound = false;
+    for (let i = 0; i < highlightList.length; i++) {
+      const actSt = highlightList[i].highlightHash;
+      const objSt = actSt.replace('@0.000000', '');
+      const cordList = JSON.parse(objSt);
+      for (let j = 0; j < cordList.length; j++) {
+        for (let k = 0; k < curHighlightCordsList.length; k++) {
+          if (cordList[j].left <= curHighlightCordsList[k].left && cordList[j].top <= curHighlightCordsList[k].top
+                  && cordList[j].bottom >= curHighlightCordsList[k].bottom
+                  && cordList[j].right >= curHighlightCordsList[k].right) {
+            highLightID = highlightList[i].id;
+            isExistinghighlightFound = true;
+          }
+          if (isExistinghighlightFound) {
+            break;
+          }
+        }
+        if (isExistinghighlightFound) {
+          break;
+        }
+      }
+      if (isExistinghighlightFound) {
+        break;
+      }
+    }
+
+    if (highLightID !== undefined && isExistinghighlightFound) {
+      this.handleHighlightClick(highLightID);
+    } else {
+      const highlightsLength = highlightList.length;
+      currentHighlight.id = highlightsLength + 1;
+      currentHighlight.highlightHash = highlightData1.serializedHighlight;
+      currentHighlight.selection = highlightData1.selection;
+      currentHighlight.pageIndex = highlightData1.pageInformation.pageNumber;
+      pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
+        this.saveHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
+        (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID);
+    }
   }
 /* Method created for displaying the selected highLights. */
   saveHighlight(currentHighlight, highLightMetadata) {
     const currentPageId = this.state.currPageIndex;
-    const courseId = '0';
+    let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
+    if (courseId === undefined || courseId === '' || courseId === null) {
+      courseId = 0;
+    }
     const note = highLightMetadata.noteText;
     const meta = {
       userroleid: _.toString(this.props.book.bookinfo.book.roleTypeID),
@@ -502,7 +547,7 @@ export class PdfBookReader extends Component {
     const highlightClicked = find(this.state.highlightList, highlight => highlight.id === hId);
     pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
       this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
-      (languages.translations[this.props.locale]));
+      (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID);
   }
 
  /* Method for creating the Highlight for selected area by user. */
@@ -545,7 +590,12 @@ export class PdfBookReader extends Component {
     const highlightList = [];
     this.props.book.annTotalData.forEach((annotation) => {
       if (annotation.pageId === currentPageId) {
-        highlightList.push(annotation);
+        if (_.toString(annotation.meta.roletypeid) === _.toString(this.props.book.bookinfo.book.roleTypeID)) {
+          highlightList.push(annotation);
+        } else if (this.props.book.bookinfo.book.roleTypeID === 2
+          && annotation.meta.roletypeid === 3 && annotation.shared) {
+          highlightList.push(annotation);
+        }
       }
     });
     this.setState({ highlightList });
@@ -554,7 +604,9 @@ export class PdfBookReader extends Component {
   /* Method for delete Highlight via passing the id of selected area. */
   deleteHighlight = (id) => {
     __pdfInstance.removeHighlightElement(id);
-    this.props.removeHighlightUsingReaderApi(id);
+    this.props.removeHighlightUsingReaderApi(id).then(() => {
+      this.displayHighlight();
+    });
   }
   clearSessionStorage = () => {
     sessionStorage.removeItem('assertUrls');

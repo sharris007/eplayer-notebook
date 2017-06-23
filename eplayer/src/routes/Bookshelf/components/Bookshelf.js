@@ -50,7 +50,7 @@ export default class BookshelfPage extends React.Component {
            piSession.login(redirectCourseUrl, 10);
         }
       });
-    },3000)
+    },2000)
     
   }
 
@@ -101,19 +101,14 @@ export default class BookshelfPage extends React.Component {
             + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
     }
     const secureToken  = localStorage.getItem('secureToken');
-    const userId = piSession.userId();
-    const piUserData = {
-      identityId : userId,
-      piToken : secureToken,
-    }
-    if ((secureToken === undefined || secureToken === null) &&
-        (this.props.location.query.eT1StandaloneBkshf === 'Y'
-          || this.props.location.query.eT1StandaloneBkshf === 'y')) {
+    // const secureToken = this.cookies.get('secureToken');
+    if (this.props.location.query.eT1StandaloneBkshf === 'Y'
+          || this.props.location.query.eT1StandaloneBkshf === 'y') {
       this.props.fetch(urn, piToken);
     } else {
       this.props.fetch(urn, secureToken);
     }
-  },4000);
+  },3000);
     // console.log(urn);
   }
 
@@ -219,6 +214,5 @@ BookshelfPage.propTypes = {
   storeSsoKey: React.PropTypes.func,
   book: React.PropTypes.object,
   login: React.PropTypes.object,
-  location: React.PropTypes.object,
-  dispatch : React.PropTypes.func
+  location: React.PropTypes.object
 };
