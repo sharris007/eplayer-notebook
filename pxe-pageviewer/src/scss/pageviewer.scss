@@ -19,16 +19,15 @@ div#book-render-component{
 }
 
 .navigation {
-  height: 64px;
+  height: 55px;
   border-top: 1px solid #c7c7c7;
-  padding: 1% 1.7%;
-  line-height: normal;
+  padding: 14px;
+  line-height: 1.195;
   position: fixed;
   bottom: 0;
-  background-color: #FFF;
+  background-color: #fff;
   width: 100%;
-  z-index:21;
-  -webkit-transition: all .25s;
+  z-index: 200;
   transition: all .25s;
   .hide {
     visibility: hidden;
@@ -105,6 +104,10 @@ div#book-render-component{
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 95%;
+    font-size: 16px;
+    font-weight: 400;
+    color: #6a7070;
+    margin-top: 5px;
   }
   .line {
     width: 2px;
@@ -113,6 +116,7 @@ div#book-render-component{
     display: inline-block;
     margin-top: 6px;
     vertical-align: top;
+    display: none;
   }
 }
 
