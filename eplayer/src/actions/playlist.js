@@ -27,16 +27,14 @@ function getTocUrlOnResp(resp) {
   }
   return tocUrl ? tocUrl.replace('http:', 'https:') : null;
 }
-export const getPiUserProfileService = data => dispatch =>{
-  PlaylistApi.doGetPiUserDetails(data);
-}
-      
-
-
-export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetails(data)
-   .then(response => response.json())
-   .then((response) => {
-     const bookId = response.bookDetail.bookId;
+export const getBookCallService = data => dispatch => 
+  PlaylistApi.doGetPiUserDetails(data).then(response => response.json())
+  .then((response)=>{
+      data.userName  = response.UserName;
+      PlaylistApi.doGetBookDetails(data)
+        .then(response => response.json())
+        .then((response) => {
+        const bookId = response.bookDetail.bookId;
 
      const tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
      const bookDetails = response.bookDetail.metadata;
@@ -82,6 +80,9 @@ export const getBookCallService = data => dispatch => PlaylistApi.doGetBookDetai
       .then(response => dispatch(getPlaylistCompleteDetails(response)));
    }
 );
+ 
+});
+
 
 export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseDetails(data)
    .then(response => response.json())

@@ -15,7 +15,7 @@ import languageName from '../../../../locale_config/configureLanguage';
 import { languages } from '../../../../locale_config/translations/index';
 
 import { resources, domain } from '../../../../const/Settings';
-import { getPiUserProfileService} from '../../../actions/playlist';
+
 const envType = domain.getEnvType();
  
 let languageid;
@@ -106,8 +106,6 @@ export default class BookshelfPage extends React.Component {
       identityId : userId,
       piToken : secureToken,
     }
-    this.props.getPiUserProfileService(piUserData);
-    // const secureToken = this.cookies.get('secureToken');
     if ((secureToken === undefined || secureToken === null) &&
         (this.props.location.query.eT1StandaloneBkshf === 'Y'
           || this.props.location.query.eT1StandaloneBkshf === 'y')) {

@@ -21,8 +21,8 @@ import BookshelfPage from '../components/Bookshelf';
 const mapDispatchToProps = {
   fetch,
   storeBookDetails,
-  storeSsoKey,
-  getPiUserProfileService
+  storeSsoKey
+ 
 };
 
 /* mapStateToProps method used for connecting the state from the store to corresponding props,
