@@ -24,7 +24,7 @@ export class Book extends Component {
       let redirectCourseUrl   = window.location.href;
       redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       piSession.getToken(function(result, userToken){
-        if(result === 'unknown' || result === 'notoken' ){
+        if(!userToken){
             if(window.location.pathname.indexOf('/eplayer/ETbook/')>-1){
               browserHistory.push('/eplayer/pilogin');
             }else if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
@@ -68,13 +68,12 @@ export class Book extends Component {
       let redirectCourseUrl   = window.location.href;
       redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       piSession.getToken(function(result, userToken){
+
           if(result === piSession['Success']){
-            const tokenCheck = localStorage.getItem('secureToken');
-            if(!tokenCheck){
               localStorage.setItem('secureToken',userToken);
-            }
           }
       }); 
+      
       const getSecureToken = localStorage.getItem('secureToken');
       const bookDetailsData = {
         context : this.state.urlParams.context,
@@ -87,7 +86,6 @@ export class Book extends Component {
       if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
           bookDetailsData.courseId = this.props.params.bookId;
           this.props.dispatch(getCourseCallService(bookDetailsData));
-           
       }else{
           this.props.dispatch(getBookCallService(bookDetailsData));
       }
