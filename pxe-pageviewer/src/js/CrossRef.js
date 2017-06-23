@@ -219,7 +219,7 @@ export const crossRef = (pageViewerRef) => {
   const audioLightBoxSettings = () => {
     try {
       const audioEle = pageViewerRef.bookContainerRef.querySelectorAll('[data-type=audio]');
-      const figures = pageViewerRef.bookContainerRef.getElementsByTagName('figure');
+      const figures = [];//pageViewerRef.bookContainerRef.getElementsByTagName('figure');
       const audioElements = [...audioEle];
       if (figures.length) {
       // Kindly, don't change the for loop here to high order functions
@@ -346,13 +346,12 @@ export const crossRef = (pageViewerRef) => {
     // Adding light box for all images
     imageLightBoxSettings();
     // video light box settings
-    videoLightBoxSettings();
+    // videoLightBoxSettings();
     // audio light box settings
     audioLightBoxSettings();
     // for gadgets lightbox
     lightBoxGadgetBindEvents();
     // PlaceHolder
-
     //
     // adding classes to the added ExternalLinkPreview component
     const externalPreview = pageViewerRef.bookContainerRef.querySelectorAll('[from-external-preview]');
