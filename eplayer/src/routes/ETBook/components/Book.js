@@ -403,6 +403,7 @@ export class Book extends Component {
     // const annData  = annotationData.rows;
     this.props.book.annTotalData  = annotationTotalData;
     this.props.book.toc           = tocData;
+    this.props.book.tocReceived   = tocReceived;
     this.props.book.bookmarks     = bookMarkData;
     
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;

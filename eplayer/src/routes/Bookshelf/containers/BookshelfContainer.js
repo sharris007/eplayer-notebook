@@ -2,7 +2,7 @@ import { connect } from 'react-redux'; /* Importing the react-redux library, con
 import { injectIntl } from 'react-intl';
 
 import { fetch, storeBookDetails, storeSsoKey } from '../modules/bookshelfActions'; /* Importing the defined method from reducers. */
-
+import { getPiUserProfileService} from '../../../actions/playlist';
 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -22,7 +22,7 @@ const mapDispatchToProps = {
   fetch,
   storeBookDetails,
   storeSsoKey
-
+ 
 };
 
 /* mapStateToProps method used for connecting the state from the store to corresponding props,

@@ -18,7 +18,6 @@ class PiLoginPage extends React.Component {
       loginname: '',
       password: '' 
     };
-
     if(piSession){
       let appPath             = window.location.origin;
       let redirectCourseUrl   = appPath+'/eplayer/bookshelf';

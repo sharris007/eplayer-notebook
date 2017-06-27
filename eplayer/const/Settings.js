@@ -72,6 +72,13 @@ export const resources = {
       qa           :"https://console-qa.pearsoned.com",
       stage        :"https://console-stg.pearson.com",
       prd          :"https://console.pearson.com",
+    },
+    piUserProfileApi:{
+      local        :"https://pi-tst.pearsoned.com/v1/piapi-test",
+      dev          :"https://pi-tst.pearsoned.com/v1/piapi-test",
+      qa           :"https://pi-tst.pearsoned.com/v1/piapi-test",
+      stage        :"https://int-piapi-internal.stg-openclass.com",
+      prd          :"https://piapi-internal.openclass.com",
     }
 
   }
