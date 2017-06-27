@@ -298,7 +298,7 @@ export class Book extends Component {
     if(viewerCallBack==false)
     this.setState({ drawerOpen: true });
   }
-  goToPageCallback = (pageId, searchText) => {
+  goToPageCallback = (pageId, annId,searchText) => {
     let id = pageId;
     let currentData = find(this.state.pageDetails.playListURL, list => list.id === pageId);
     if( currentData === undefined && pageId.indexOf('-') > -1 ) {
@@ -311,6 +311,9 @@ export class Book extends Component {
     playpageDetails.currentPageURL =  currentData;
     if(searchText) {
       playpageDetails.searchText = searchText;
+    }
+    else if(annId){
+      playpageDetails.annId = annId;
     }
     const parameters = this.state.urlParams;
     parameters.id    = currentData.id,
@@ -330,6 +333,11 @@ export class Book extends Component {
       this.props.dispatch(getBookmarkCallService(this.state.urlParams));
     }),
     this.viewerContentCallBack(true);
+    if($('span[data-ann-id='+annId+']')[0] && (annId || annId != '')) {
+          $('html, body').animate({
+                scrollTop: $('span[data-ann-id='+annId+']')[0].offsetTop
+          });
+      }
   }; 
   printFun = () => {
     const url = this.state.pageDetails.baseUrl + this.state.pageDetails.currentPageURL.href;

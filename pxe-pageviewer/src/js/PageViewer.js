@@ -123,6 +123,14 @@ class PageViewer extends React.Component {
               }, 2000);
             }, 1000); 
           }
+          else if(this.props.src.annId) {
+            let annId= this.props.src.annId;
+            setTimeout(()=>{
+              $('html, body').animate({
+                    scrollTop: $('span[data-ann-id='+annId+']')[0].offsetTop
+              },20);
+            }, 1200)
+          }  
         });
       }
       // this.setState({pageLoading:false});
