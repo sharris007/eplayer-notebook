@@ -313,12 +313,12 @@ export class Header extends React.Component {
             </div>}
         />
         {
-          this.state.drawerOpen &&
+          this.props.bookData.tocReceived &&
           <DrawerComponent
             locale={locale} messages={messages}
             bookData={this.props.bookData}
             bookCallbacks={this.props.bookCallbacks}
-            isOpen={this.props.drawerOpen}
+            isOpen={this.state.drawerOpen}
             hideDrawer={this.hideDrawer}
             isET1={this.props.isET1}
             pageId={this.props.currentPageID}
