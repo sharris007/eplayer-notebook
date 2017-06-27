@@ -114,11 +114,11 @@ export const domain = {
     const locationOrigin = this.getLocationOrigin();
 
     if (locationOrigin.indexOf('localhost') !== -1)
-          { return 'stage'; }
+          { return 'qa'; }
     else if (locationOrigin.indexOf('etext-dev.pearson.com') !== -1)
-          { return 'stage'; }
+          { return 'qa'; }
     else if (locationOrigin.indexOf('etext-qa-stg.pearson.com') !== -1)
-          { return 'stage'; }
+          { return 'qa'; }
     else if (locationOrigin.indexOf('etext-stg.pearson.com') !== -1)
           { return 'stage'; }
     else if (locationOrigin.indexOf('etext.pearson.com') !== -1)
