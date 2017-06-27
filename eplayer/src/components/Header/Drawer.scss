@@ -1,3 +1,79 @@
-.tabComp{
-	width: 99%;
+@mixin transition($transition) {
+  -webkit-transition: $transition;
+     -moz-transition: $transition;
+      -ms-transition: $transition;
+          transition: $transition;
+}
+.drawerWrap{
+	.tabCompwrapper {
+		background: #fff;
+		.bookTitleAndTabs {
+			padding: 54px 0 10px;
+			background: #005a70;
+			.tabComp{
+				//width: 99%;
+				padding: 0 74px 6px;
+				.tablabel {
+				  color: #fff !important;
+				  font-family: Open Sans !important;
+				  font-size: 14px !important;
+				  text-transform: none !important;
+				  font-weight: normal !important;
+				  font-style: normal !important;
+				  font-stretch: normal !important;
+				  &.active {
+				  	font-weight: bold !important;
+				  }
+				  &.contentTab {
+						width: 64px !important;
+					  margin-right: 37px !important;
+					}
+					&.bookmarksTab {
+						width: 74px !important;
+					  margin-right: 37px !important;
+					}
+					&.notesTab {
+						width: 42px !important;
+					}
+				}
+			}
+			.bookTitleSection {
+				color: #fff;
+				font-family: Open Sans;
+				text-transform: capitalize;
+				.title {
+					padding: 0 29px 7px 24px;
+					font-size: 28px;
+					font-weight: 300;
+				}
+				.author {
+					padding: 0 30px 68px 24px;
+					font-size: 16px;
+					color: #fff;
+				    margin: 0;
+				    font-weight: 400;
+				}
+			}
+			.bottomBar {
+				height: 3px;
+			  background: #19a6a4;
+			  position: relative;
+			  &.contentTab {
+			  	left:74px;
+			  	width:64px;
+			  }
+			  &.bookmarksTab {
+			  	left:175px;
+			  	width:79px;
+			  }
+			  &.notesTab {
+			  	left:286px;
+			  	width:41px;
+			  }
+			}
+		}
+	}
+}
+.bookmarkIcon, .back_rec, .drawerIcon, .prefIcon, .searchIcon{
+	outline: none;
 }

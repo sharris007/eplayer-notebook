@@ -45,7 +45,7 @@ export const getBookCallService = data => dispatch =>
         // response.bookConfig = bookDetails;
         const tocResponse = response.content;
         tocResponse.mainTitle = bookDetails.title;
-        tocResponse.author = `${bookDetails.creator.substring(0, 20)}...`;
+        tocResponse.author = bookDetails.creator;
         tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
 
 
@@ -106,7 +106,7 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
         // response.bookConfig = bookDetails;
         const tocResponse = response.content;
         tocResponse.mainTitle = bookDetails.section.sectionTitle;
-        tocResponse.author = `${bookDetails.authorName.substring(0, 20)}...`;
+        tocResponse.author = bookDetails.authorName;
         tocResponse.thumbnail = bookDetails.section.avatarUrl;
 
 

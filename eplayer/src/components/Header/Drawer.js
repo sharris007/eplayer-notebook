@@ -12,15 +12,6 @@ import './Drawer.scss';
 let locale;
 let counter = -1;
 let rowCount = 0;
-const grey = '#f5f5f5';
-const bkgColor = '#FFF';
-const drawerColor = '#3e3e3e';
-const eighteen = 18;
-const fortyNine = 49;
-const bcolor = '#005a70';
-const four = 4;
-const normal = 'normal';
-const center = 'center';
 class DrawerComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -31,10 +22,10 @@ class DrawerComponent extends React.Component {
     } else if (this.props.locale === 'fr-FR-CG') {
       locale = 'fr';
     } else if (this.props.locale === 'en-CA-PS' || this.props.locale === 'en-CA-ER') {
-      locale = 'en-CA';
+      locale = 'en-CA';   
     } else {
       locale = this.props.locale;
-    }
+    }   
     this.state = {
       slideIndex: 0,
       drawerOpen: false,
@@ -43,16 +34,20 @@ class DrawerComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.drawerListFocus();
+    if (this.props.isOpen) {
+      this.drawerListFocus();
+    }
   }
   componentDidUpdate() {
-    this.drawerListFocus();
+    if (this.props.isOpen) {
+      this.drawerListFocus();
+    }
   }
 
   drawerListFocus = () => {
     if (this.state.slideIndex === 0) {
       this.onActive('contents');
-      rowCount = document.getElementsByClassName('toc-parent').length;
+      rowCount = document.getElementsByClassName('list-group-item').length;
             // alert(rowCount);
     } else if (this.state.slideIndex === 1) {
       this.onActive('bookmarks');
@@ -100,16 +95,44 @@ class DrawerComponent extends React.Component {
   };
 
   setFocusbyClassName = (reqIndex) => {
-    if (reqIndex >= 0) {
+    let focusIndex = reqIndex;
+    if (focusIndex >= 0) {
       if (this.state.slideIndex === 0) {
-        document.getElementsByClassName('toc-parent')[reqIndex].focus();
+        let expanded = 'false';
+        if (focusIndex !== 0) {
+          if (keyAction === 'keydown') {
+            expanded = document.getElementsByClassName('list-group-item')[focusIndex - 1]
+            .querySelector('a.content').getAttribute('aria-expanded');
+            if (expanded !== 'true') {
+              const childLen = document.getElementsByClassName('list-group-item')[focusIndex - 1]
+              .getElementsByClassName('list-group-item').length;
+              focusIndex += childLen;
+              counter = focusIndex;
+            }
+          } else if (keyAction === 'keyup') {
+            const elm = document.getElementsByClassName('list-group-item')[focusIndex];
+            expanded = this.findParentBySelector(elm, '.child-list-group');
+            if (expanded !== null) {
+              const isparentHidden = expanded.getAttribute('aria-hidden');
+              if (isparentHidden === 'true') {
+                const upchildLen = expanded.getElementsByClassName('list-group-item').length;
+                focusIndex -= upchildLen;
+                counter = focusIndex;
+                this.setFocusbyClassName(focusIndex, 'keyup');
+              }
+            }
+          }
+        }
+        document.getElementsByClassName('list-group-item')[focusIndex].querySelector('a.content').focus();
       } else if (this.state.slideIndex === 1) {
-        document.getElementsByClassName('o-bookmark-content')[reqIndex].focus();
+        document.getElementsByClassName('o-bookmark-content')[focusIndex].focus();
       } else if (this.state.slideIndex === 2) {
-        document.getElementsByClassName('note-link')[reqIndex].focus();
+        document.getElementsByClassName('note-link')[focusIndex].focus();
       }
     }
   }
+
+
 
   navUpList = (reqIndex) => {
     this.setFocusbyClassName(reqIndex);
@@ -192,32 +215,47 @@ class DrawerComponent extends React.Component {
     }
     document.getElementById(tabid).className += ' active';
     document.getElementById(tabid).focus();
+    const isContentTabActive = document.querySelectorAll('.tablabel.active')[0].classList.contains('contentTab');
+    const isBookmarkTabActive = document.querySelectorAll('.tablabel.active')[0].classList.contains('bookmarksTab');
+    if (isContentTabActive) {
+      this.bottomBar.classList.remove('bookmarksTab', 'notesTab');
+      this.bottomBar.classList.add('contentTab');
+    } else if (isBookmarkTabActive) {
+      this.bottomBar.classList.remove('contentTab', 'notesTab');
+      this.bottomBar.classList.add('bookmarksTab');
+    } else {
+      this.bottomBar.classList.remove('contentTab', 'bookmarksTab');
+      this.bottomBar.classList.add('notesTab');
+    }
   }
   
 
   render() {
     const drawerTab = {
-      tabHeader: {
-        backgroundColor: bkgColor,
-        color: drawerColor,
-        textTransform: 'none',
-        fontSize: eighteen,
-        fontWeight: normal,
-        fontStyle: normal,
-        fontStretch: normal,
-        textAlign: center,
-        paddingTop: fortyNine
-        // borderRadius: 10
+      inkBarStyle: {
+        height: '0px'
       },
-      inlineinkBarStyle: {
-        backgroundColor: bcolor,
-        height: four
+      buttonStyle: {
+        height: 'auto',
+        alignItems: 'left'
+      },
+      notesButtonStyle: {
+        alignItems: 'right',
+        height: 'auto'
+      },
+      tabItemContainerStyle: {
+        backgroundColor: 'transparent'
+      },
+      style: {
+        overflow: 'hidden',
+        backgroundColor: '#f5f5f5'
       }
     };
-    const mystyle = {
-      overflow: 'hidden',
-      backgroundColor: grey
-    };
+    const callbacks = {};
+    callbacks.onActive = this.onActive;
+    callbacks.changeState = this.changeState;
+    const isTocWrapperRequired = false;
+    console.log("this.props.bookData.toc", this.props.bookData);
     return (<Drawer
       docked={false}
       width={400}
@@ -226,16 +264,22 @@ class DrawerComponent extends React.Component {
       className="drawerWrap"
       tabIndex="0"
       role="dialog"
-      containerStyle={mystyle}
-    >
+      containerStyle={drawerTab.style}
+    >{this.props.isOpen &&
       <div
         className="tabCompwrapper"
         tabIndex="0"
         role="dialog"
         onKeyUp={this.onArrowKeyPress}
       >
+      <div className="bookTitleAndTabs">
+        <div className="bookTitleSection">
+          <div className="title">{this.props.bookData.toc.content.mainTitle}</div>
+          <div className="author">{this.props.bookData.toc.content.author}</div>
+        </div>
         <Tabs
-          inkBarStyle={drawerTab.inlineinkBarStyle}
+          inkBarStyle={drawerTab.inkBarStyle}
+          tabItemContainerStyle={drawerTab.tabItemContainerStyle}
           className="tabComp"
           onChange={this.handleChange}
           value={this.state.slideIndex}
@@ -243,39 +287,41 @@ class DrawerComponent extends React.Component {
           <Tab
             label={this.props.messages !== undefined ? this.props.messages.contents : 'Contents'}
             id="contents"
-            style={drawerTab.tabHeader}
-            onActive={
-                () => this.onActive('contents')
-            }
-            className="tablabel active"
+            style={drawerTab.tabStyle}
+            onActive={ () => this.onActive('contents') }
+            buttonStyle={drawerTab.buttonStyle}
+            className="contentTab tablabel active"
             onKeyDown={this.keyBoardNavigation}
             value={0}
           /> <Tab
             label={this.props.messages !== undefined ? this.props.messages.bookmarks : 'Bookmarks'}
             id="bookmarks"
-            style={drawerTab.tabHeader}
-            onActive={
-                () => this.onActive('bookmarks')
-            }
-            className="tablabel "
+            style={drawerTab.bookmarks}
+            onActive={ () => this.onActive('bookmarks') }
+            buttonStyle={drawerTab.buttonStyle}
+            className="bookmarksTab tablabel"
             onKeyDown={this.keyBoardNavigation}
             value={1}
           /> <Tab
             label={this.props.messages !== undefined ? this.props.messages.notes : 'Notes'}
             id="notes"
-            style={drawerTab.tabHeader}
-            onActive={
-                () => this.onActive('notes')
-            }
-            className="tablabel "
+            style={drawerTab.notes}
+            buttonStyle={drawerTab.buttonStyle}
+            onActive={ () => this.onActive('notes') }
+            className="notesTab tablabel"
             onKeyDown={this.keyBoardNavigation}
             value={2}
-          /> </Tabs > <SwipeableViews
+          /> </Tabs > 
+          <div className="bottomBar" ref={(bottomBar) => { this.bottomBar = bottomBar; }} />
+        </div>
+
+          <SwipeableViews
             index={this.state.slideIndex}
             onChangeIndex={this.handleChange}
             className="swipeviewStyle"
           >
-            { this.props.bookData.toc.content &&
+            
+             { this.props.bookData.toc.content &&
               < TableOfContentsComponent
                 separateToggleIcon
                 data={this.props.bookData.toc}
@@ -284,6 +330,7 @@ class DrawerComponent extends React.Component {
                 childField={'children'}
                 clickTocHandler={this.props.bookCallbacks.goToPageCallback}
                 locale={locale}
+                isTocWrapperRequired={isTocWrapperRequired}
                 currentPageId={this.props.pageId}
               />
             }
@@ -304,7 +351,8 @@ class DrawerComponent extends React.Component {
               locale={locale}
             />
             }
-          </SwipeableViews> </div > </Drawer>
+           
+          </SwipeableViews> </div > } </Drawer>
     );
   }
 }
