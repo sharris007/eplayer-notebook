@@ -35,7 +35,7 @@ export class Book extends Component {
       this.state = {
         classname: 'headerBar',
         viewerContent: true,
-        drawerOpen: true,
+        drawerOpen: false,
         currentPageDetails: '',
         pageDetails, 
         currentPageTitle:'',
@@ -295,8 +295,12 @@ export class Book extends Component {
 
   viewerContentCallBack = (viewerCallBack) => {
     this.setState({ viewerContent: viewerCallBack });
-    if(viewerCallBack==false)
-    this.setState({ drawerOpen: true });
+    if(viewerCallBack==false) {
+      this.setState({ drawerOpen: true });
+    }
+    else{
+      this.setState({ drawerOpen: false });
+    }
   }
   goToPageCallback = (pageId, annId,searchText) => {
     let id = pageId;

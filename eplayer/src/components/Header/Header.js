@@ -93,6 +93,9 @@ export class Header extends React.Component {
   }
 
   hideDrawer = () => {
+    if (this.state.drawerOpen) {
+      document.getElementsByClassName('drawerIcon')[0].focus();
+    }
     this.setState({ drawerOpen: false });
     this.props.viewerContentCallBack(true);
   }
@@ -318,7 +321,7 @@ export class Header extends React.Component {
             locale={locale} messages={messages}
             bookData={this.props.bookData}
             bookCallbacks={this.props.bookCallbacks}
-            isOpen={this.state.drawerOpen}
+            isOpen={this.props.drawerOpen}
             hideDrawer={this.hideDrawer}
             isET1={this.props.isET1}
             pageId={this.props.currentPageID}

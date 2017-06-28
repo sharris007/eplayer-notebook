@@ -116,7 +116,7 @@ class FooterNav extends React.Component {
     );
     /* eslint-enable */
     return (
-      <div className={this.state.classname}>
+      <div className={`${this.state.classname} bottomnav`}>
         <div tabIndex="0" className={`prevSection section ${this.props.data.isFirstPage||!this.props.data.prevPageTitle ? 'hide' : ''}`} ref = {(el) => { this.ps = el; }} title={this.props.data.prevPageTitle} 
           onClick={() => this.sectionClk(false)} onKeyPress={() => this.sectionClk(false)} onKeyUp={() => this.handleFocus('prevSection')} onBlur={() => this.removeFocus('prevSection')}>
           <div className="prevContent">
