@@ -35,49 +35,9 @@ export class Header extends React.Component {
     this.state = {
       drawerOpen: false,
       prefOpen: false,
-      headerExists: false,
       searchOpen: false,
       goToTextVal: ''
     };
-  }
-
-  componentWillUnmount() {
-    if (this.headerInterval) {
-      clearInterval(this.headerInterval);
-    }
-    this.headerInterval = false;
-  }
-  componentDidMount() {
-    let didScroll = false;
-    let lastScrollPosition = 0;
-    window.addEventListener('scroll', () => {
-      didScroll = true;
-    });
-    this.headerInterval = setInterval(() => {
-      if (didScroll) {
-        const documentHeight = Math.max(
-          document.body.scrollHeight,
-          document.body.offsetHeight,
-          document.documentElement.clientHeight,
-          document.documentElement.scrollHeight,
-          document.documentElement.offsetHeight
-        );
-        const currentScrollPosition = window.pageYOffset;
-        const pageEndReached = currentScrollPosition + window.innerHeight === documentHeight;
-        // Scrolling down
-        if (currentScrollPosition > lastScrollPosition && !pageEndReached) {
-          this.setState({
-            headerExists: true
-          });
-        } else {
-          this.setState({
-            headerExists: false
-          });
-        }
-        lastScrollPosition = currentScrollPosition;
-        didScroll = false;
-      }
-    }, 100);
   }
 
   handleDrawerkeyselect = (event) => {
@@ -243,7 +203,7 @@ export class Header extends React.Component {
     const title = sessionStorage.getItem('title');
     /* eslint-disable */
     return (
-      <div className={`${this.props.classname} ${this.state.headerExists ? 'nav-up' : ''}`} >
+      <div className={`${this.props.classname}`} >
         <AppBar
           title={this.props.isET1 === 'Y' ? this.props.title || title : this.props.pageTitle}
           titleStyle={style.appBar.title}
