@@ -59,13 +59,13 @@ class FooterNav extends React.Component {
         height: '12px',
         width: '24px',
         float: 'right',
-        margin: '9px 0 0 0'
+        margin: '8px 0 0 0'
       },
       prevBtn: {
         height: '12px',
         width: '24px',
         float: 'left',
-        margin: '9px 0 0 0'
+        margin: '8px 0 0 0'
       }
     };
     /* eslint-disable */
