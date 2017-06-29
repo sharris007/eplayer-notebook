@@ -276,7 +276,7 @@ export class Header extends React.Component {
             </div>}
         />
         {
-          this.props.bookData.tocReceived &&
+          this.props.bookData.toc.content &&
           <DrawerComponent
             locale={locale} messages={messages}
             bookData={this.props.bookData}

@@ -451,7 +451,7 @@ export class Book extends Component {
           currentPageID = {currentBookId}
         />
            
-          <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent'}>
+          <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent viewerContent'}>
             {!playlistReceived ? <RefreshIndicator size={50} left={650} top={200} status="loading" /> :''}
             {playlistReceived ? <PxePlayer bootstrapParams={bootstrapParams}  applnCallback={this.onPageChange}/> : ''}
           </div>

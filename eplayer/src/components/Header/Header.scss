@@ -44,7 +44,7 @@ $headerPadding: 15px 55px;
   height:$prefIcon-height;
   width:$prefIcon-width;
 }
-.preferences-container, .searchContainer {
+.preferences-container, .searchContainer, .preferences-container-eT1 {
   position: absolute;
   right: $prefCont-right;
   top: $prefCont-top;
@@ -75,6 +75,11 @@ $headerPadding: 15px 55px;
 .moreIcon{
   float:right;
   margin-top: -14px;
+  width:24px;
+  height:22px;
+}
+.moreIcon > div{
+  right: 15px;
 }
 ////
 /// Custom SCSS for component-specific styling goes here
