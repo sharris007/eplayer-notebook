@@ -70,16 +70,22 @@ export class Header extends React.Component {
       let redirectConsoleUrl   = consoleUrl[envType];
       window.location.href = redirectConsoleUrl;
     }else {
-      const langQuery = sessionStorage.getItem('bookshelfLang');
+      if(window.location.pathname.indexOf('/eplayer/pdfbook/')>-1){
+        const langQuery = sessionStorage.getItem('bookshelfLang');
+        const identityId = sessionStorage.getItem('identityId');
+        const eT1Standaloneurlpart = 'eT1StandaloneBkshf=Y&piToken=dummypiToken';
       if (langQuery && langQuery !== '?languageid=1') {
-        browserHistory.push(`/eplayer/bookshelf${langQuery}`);
+        browserHistory.push(`/eplayer/bookshelf${langQuery}
+          &${eT1Standaloneurlpart}&identityId=${identityId}`);
       } else {
-        browserHistory.push('/eplayer/bookshelf');
+        browserHistory.push(`/eplayer/bookshelf?${eT1Standaloneurlpart}&identityId=${identityId}`);
       }
+     }
+     else
+     {
+        browserHistory.push('/eplayer/bookshelf');
+     }
     }
-   
-
-    
     this.props.bookCallbacks.clearSessionStorage();
     this.setState({ open: false });
   }

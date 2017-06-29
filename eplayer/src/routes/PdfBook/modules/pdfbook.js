@@ -581,6 +581,7 @@ export function saveHighlightUsingReaderApi(userId, bookId, pageId, pageNo,
         };
       }
       dispatch({ type: 'SAVE_HIGHLIGHT', hlObj });
+      return hlObj;
     });
   };
 }

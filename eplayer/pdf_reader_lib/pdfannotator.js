@@ -33,19 +33,16 @@ var userRoleTypeID = 0;
 
 function init()
 {
-  $("body").click(function(e) {
-    if(!isPopupOpen)
+  $("body").mousedown(function(e) {
+    if(isPopupOpen)
     {
-        if ($(e.target).parents("#docViewer_ViewContainer").length && 
-                $(e.target).parents("#openPopupHighlight").length == 0 )
+        if ($(e.target).parents("#docViewer_ViewContainer").length
+              && $(e.target).parents("#openPopupHighlight").length == 0
+              && $('#openPopupHighlight').is(':visible'))
                 
         { 
             hide();
         }
-    }
-    else
-    {
-      isPopupOpen = false;
     }
   });
   $(document).on('keyup',function(evt) {
@@ -55,7 +52,7 @@ function init()
   });
 }
 
-function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,targetElement,NotesMessages,roleTypeID)
+function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,editHighlightCallback,targetElement,NotesMessages,roleTypeID)
 {
    try{
         document.getElementById('openPopupHighlight').remove();
@@ -82,6 +79,7 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    var parentPageElement = document.getElementById(targetElement);  
    parentPageElement.appendChild(parentElement);
    annotatorCallbacks.saveHighlightCallback = saveHighlightCallback;
+   annotatorCallbacks.editHighlightCallback = editHighlightCallback;
    currentHighlight = currHighLightdata;
    isShared = false;
    isEditMode = false;
@@ -110,7 +108,7 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
          hide();
    });
    $("#save-annotation").on('click',function(e){
-         onSaveClick()
+         onSaveClick(false);
    });
    $("#ann-share").on('click',function(e){
          onShareClick(e)
@@ -138,6 +136,14 @@ function onColorChange(event)
    {
       currHighlightColor = "yellow";
    }
+   if($( "#annotator-outer-id" ).hasClass("hide-note"))
+   {
+    saveHighlight();
+   }
+   else
+   {
+    onSaveClick(true);
+   }
    $(".annotator-editor").removeClass("hide-note");
    $('.annotator-color').removeClass('active');
    $(event.target).addClass('active');
@@ -151,6 +157,7 @@ function onColorChange(event)
      isAlignReq = false;
    }
    alignPopup();
+
 }
 function alignPopup()
 {
@@ -261,50 +268,82 @@ function onCancelClick()
     panel4Sec.remove();
     isPopupOpen = false;
 }
-
-function onSaveClick()
+function setCurrentHighlight(highLightData)
 {
-   var noteText = document.getElementById('note-text-area').value;
+  currentHighlight = highLightData;
+}
+function saveHighlight()
+{
+   var noteText = '';
    const highLightMetadata = {
       currHighlightColor:currHighlightColor,
       currHighlightColorCode:currHighlightColorCode,
       noteText:noteText,
       isShared:isShared
    };
-   if(!isEditMode)
-   {
-    annotatorCallbacks.saveHighlightCallback(currentHighlight,highLightMetadata);
-   }
-   else
-   {
+   annotatorCallbacks.saveHighlightCallback(currentHighlight,highLightMetadata); 
+}
+function onSaveClick(isColorIconClkd)
+{
     const highLightMetadata = {
 
     };
-    if(currHighlightColor!=undefined)
+    var noteText;
+    if(isColorIconClkd)
     {
-      highLightMetadata.currHighlightColor = currHighlightColor;
+      if(currHighlightColor!=undefined)
+      {
+        highLightMetadata.currHighlightColor = currHighlightColor;
+      }
     }
-    highLightMetadata.isShared = isShared;
-    highLightMetadata.noteText = noteText;
+    else
+    {
+      noteText = document.getElementById('note-text-area').value;
+      highLightMetadata.currHighlightColor = currHighlightColor;
+      highLightMetadata.isShared = isShared;
+      highLightMetadata.noteText = noteText;
+    }
     annotatorCallbacks.editHighlightCallback(currentHighlight.id,highLightMetadata);
-   }
-   hide();
+    if(!isColorIconClkd)
+    {
+      hide();
+    }
 }
 
 function onNoteChange(event) {
     var characters = 3000;
-    if(event.target.value.length){
+    //if(event.target.value.length){
+    if(isEditMode)
+    {
       $(popupElementId).addClass('show-edit-options');
+      if(userRoleTypeID==3) {
+        $(popupElementId).find('.annotator-share-text, .annotator-share').show();
+      }
+      else {
+        $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
+      }
     }
-    else{
+    else
+    {
+      if(event.target.value.length){
+        $(popupElementId).addClass('show-edit-options');
+      }
+      else
+      {
+        $(popupElementId).removeClass('show-edit-options');
+      }
+      if(userRoleTypeID==3 && event.target.value.length) {
+        $(popupElementId).find('.annotator-share-text, .annotator-share').show();
+      }
+      else {
+        $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
+      }
+    }
+    //}
+    /*else{
       $(popupElementId).removeClass('show-edit-options');
-    }
-    if(userRoleTypeID==3 && $(popupElementId).find('textarea').val().length){
-      $(popupElementId).find('.annotator-share-text, .annotator-share').show();
-    }
-    else {
-      $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
-    }
+    }*/
+
     var charLeft=notesMessages.messages.charactersLeft;
     var inputCharLength = event.currentTarget.value.length, actualChar = characters;
     var remainingCount = actualChar-inputCharLength;
@@ -334,9 +373,10 @@ function onNoteChange(event) {
  function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID)
  {
   var parentHighlightElement = $('#'+highLightData.id);
-  var lastChildElementindex = parentHighlightElement[0].children.length - 1
-  var childHighlightElement = parentHighlightElement[0].children[lastChildElementindex];
-  var slectedHighlightsNotes=NotesMessages;
+  /*  var lastChildElementindex = parentHighlightElement[0].children.length - 1
+  var childHighlightElement = parentHighlightElement[0].children[lastChildElementindex];*/
+  var childHighlightElement = parentHighlightElement[0].children[0];
+  var notesMessages=NotesMessages;
   const coord = {
     left:childHighlightElement.offsetLeft,
     top:childHighlightElement.offsetTop,
@@ -380,8 +420,8 @@ function onNoteChange(event) {
    });
    $("#deleteIcon").on('click',function(e){
          onDeleteIconClick();
-         document.getElementById("label-confirm").innerHTML=slectedHighlightsNotes.messages.confirm;
-         document.getElementById("ann-confirm-cancel").innerHTML=slectedHighlightsNotes.messages.cancel;
+         document.getElementById("label-confirm").innerHTML=notesMessages.messages.confirm;
+         document.getElementById("ann-confirm-cancel").innerHTML=notesMessages.messages.cancel;
          document.getElementById("ann-confirm-del").innerHTML=notesMessages.messages.delete;
    });
    $("#editIcon").on('click',function(e){
@@ -392,7 +432,7 @@ function onNoteChange(event) {
          hide();
    });
    $("#save-annotation").on('click',function(e){
-         onSaveClick()
+         onSaveClick(false);
    });
    $("#ann-share").on('click',function(e){
          onShareClick(e)
@@ -451,7 +491,7 @@ function onNoteChange(event) {
   isAlignReq = false;
   isPopupOpen = true;
   document.getElementById("share-text").innerHTML=notesMessages.messages.share;
-  document.getElementById("save-annotation").innerHTML=slectedHighlightsNotes.messages.save;
+  document.getElementById("save-annotation").innerHTML=notesMessages.messages.save;
   alignPopup();
   $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
   if(userRoleTypeID == 2 && highLightData.shared)
@@ -475,6 +515,7 @@ function onNoteChange(event) {
  return {
     showCreateHighlightPopup:showCreateHighlightPopup,
     init:init,
-    showSelectedHighlight:showSelectedHighlight
+    showSelectedHighlight:showSelectedHighlight,
+    setCurrentHighlight:setCurrentHighlight
  }
 }();
