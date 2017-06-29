@@ -91,16 +91,17 @@ export default class BookshelfPage extends React.Component {
     /* Passing the sessionid. Stroing the SsoKey */
     this.props.storeSsoKey(sessionid);
     // console.log(`sessionid:: ${sessionid}`);
-
+    // Get Eps Auth Token to fetch eps book images
 
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
    setTimeout(()=>{
+    const secureToken  = localStorage.getItem('secureToken');
+    this.props.getAuthToken(secureToken);
     let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
     if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
       urn = 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
             + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
     }
-    const secureToken  = localStorage.getItem('secureToken');
     // const secureToken = this.cookies.get('secureToken');
     if (this.props.location.query.eT1StandaloneBkshf === 'Y'
           || this.props.location.query.eT1StandaloneBkshf === 'y') {

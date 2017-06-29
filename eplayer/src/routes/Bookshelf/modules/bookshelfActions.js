@@ -17,9 +17,9 @@ export const fetch = (urn, piToken) => {
     return {
       type: 'BOOKS',
       payload: axios.get(url, {
-        headers: { 'Content-Type': 'application/json',
-          'X-Authorization': piToken } })
-
+      headers: { 'Content-Type': 'application/json',
+        'X-Authorization': piToken } 
+      })
     };
   }
 
@@ -29,6 +29,16 @@ export const fetch = (urn, piToken) => {
   };
 };
 
+export const getAuthToken = (piToken) => {
+  const url = `${etextService[envType]}/nextext/eps/authtoken`;
+  return {
+    type: 'AUTH',
+    payload: axios.get(url, {
+    headers: { 'Content-Type': 'application/json',
+      'X-Authorization': piToken } 
+    })
+  };  
+};
 
 /* Created a Action creater for BOOK_DETAILS, contains all the Book data like, authorName, thumbnail, title and so on.  */
 
