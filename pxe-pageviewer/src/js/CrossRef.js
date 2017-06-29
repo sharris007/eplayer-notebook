@@ -6,7 +6,7 @@ import { IntlProvider } from 'react-intl';
 import { cyan500 } from 'material-ui/styles/colors';
 import { ExternalLinkPreview } from '@pearson-incubator/aquila-js-basics';
 import { ImageViewerPreview, VideoPlayerPreview, AudioPlayer } from '@pearson-incubator/aquila-js-media';
-
+import JqueryPageViewer from 'jquery';
 // Here pageViewerRef refers to "this" of PageViewer.js
 export const crossRef = (pageViewerRef) => {
   // destructuring props and state of PageViewer
@@ -257,6 +257,38 @@ export const crossRef = (pageViewerRef) => {
       console.log(e);
     }
   };
+  const audioSPPSettings = () => {
+    try {
+      setTimeout(() => {
+        const audioEle = pageViewerRef.bookContainerRef.querySelectorAll('[data-type=audio]');
+        for (let i = audioEle.length - 1; i >= 0; i--) {
+          if(!audioEle[i].hasAttribute('custom-event-added')){
+            audioEle[i].setAttribute('custom-event-added',true);
+            audioEle[i].addEventListener('click',(e)=>{
+              e.preventDefault();
+              if(!JqueryPageViewer(e.currentTarget).next().find('.player-container').hasClass('show')) {
+                JqueryPageViewer(e.currentTarget).next().find('.player-container').addClass('show');
+                JqueryPageViewer(e.currentTarget).find('p').html('Close');
+              } else {
+                let playerId = JqueryPageViewer(e.currentTarget).data('player-id');
+                let a = pageViewerRef.bookContainerRef.getElementById(playerId);
+                a.contentWindow.postMessage(JSON.stringify({
+                    method   : 'pause',
+                    playerId : playerId,
+                    type     : 'command'
+                }), '*');
+                JqueryPageViewer(e.currentTarget).next().find('.player-container').removeClass('show');
+                JqueryPageViewer(e.currentTarget).find('p').html('<span class="design-icon design-icon_1"></span> Listen to the Audio');
+              }
+              
+            });
+          }
+        };
+        }, 500);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const gadgetClickHandler = (e) => {
     e.preventDefault();
     const lightBoxProps = Object.assign({}, pageViewerRef.state.lightBoxProps, {
@@ -356,6 +388,7 @@ const crossrefs = [...xrefs, ...pagerefs, ...linksHasNoClass];
     // videoLightBoxSettings();
     // audio light box settings
     // audioLightBoxSettings();
+    audioSPPSettings(); //SPP Custom click event
     // for gadgets lightbox
     lightBoxGadgetBindEvents();
     // PlaceHolder
