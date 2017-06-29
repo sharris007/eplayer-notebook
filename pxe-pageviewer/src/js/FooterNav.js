@@ -8,7 +8,7 @@ class FooterNav extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      classname: 'bookcontainer-navigation'
+      classname: 'navigation'
     };
   }
 
