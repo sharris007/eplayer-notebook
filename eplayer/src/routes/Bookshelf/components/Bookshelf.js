@@ -94,26 +94,35 @@ export default class BookshelfPage extends React.Component {
     // Get Eps Auth Token to fetch eps book images
 
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
-   setTimeout(()=>{
-    const secureToken  = localStorage.getItem('secureToken');
-    this.props.getAuthToken(secureToken);
-    let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
-    if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
-      urn = 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
-            + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
-    }
-    // const secureToken = this.cookies.get('secureToken');
-    if (this.props.location.query.eT1StandaloneBkshf === 'Y'
-          || this.props.location.query.eT1StandaloneBkshf === 'y') {
-      this.props.fetch(urn, piToken);
-    } else {
-      this.props.fetch(urn, secureToken);
-    }
-  },3000);
-    // console.log(urn);
+     setTimeout(()=>{
+      const secureToken  = localStorage.getItem('secureToken');
+      this.props.getAuthToken(secureToken);
+      let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
+      if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
+        urn = 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
+              + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
+      }
+      // const secureToken = this.cookies.get('secureToken');
+      if (this.props.location.query.eT1StandaloneBkshf === 'Y'
+            || this.props.location.query.eT1StandaloneBkshf === 'y') {
+        this.props.fetch(urn, piToken);
+      } else {
+        this.props.fetch(urn, secureToken);
+      }
+    },3000);
   }
-
-/* Created function for handle single book click.*/
+  getCookie = (name) => {
+    console
+      var value = "; " + document.cookie;
+      var parts = value.split("; " + name + "=");
+      if (parts.length == 2) return parts.pop().split(";").shift();
+  }
+  componentWillReceiveProps = (nextProps) =>{
+    if(nextProps.bookshelf.authFetched){
+       $('body').append('<iframe src="https://etext-qa-stg.pearson.com/test.html" name="frame1" id="frame1"></iframe>');
+    }
+  }
+  /* Created function for handle single book click.*/
   handleBookClick = (bookId, iseT1) => {
     if (iseT1) {
        /* BrowserHistory used for navigating the next page from current page. */

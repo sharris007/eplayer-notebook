@@ -6,7 +6,7 @@ export const BOOKS_REJECTED = 'BOOKS_REJECTED';
 export const BOOKS_FULFILLED = 'BOOKS_FULFILLED';
 export const BOOK_DETAILS = 'BOOK_DETAILS';
 export const SSO_KEY = 'SSO_KEY';
-
+export const AUTH_FULFILLED = 'AUTH_FULFILLED';
 
 /**
  * Action Handlers for BOOKS actions.
@@ -27,7 +27,13 @@ const ACTION_HANDLERS = {
     error: null }),
   [BOOK_DETAILS]: (state, action) => ({ ...state, authorName: action.authorName, title: action.title, thumbnail: action.thumbnail, globalBookId: action.globalBookId, bookeditionid: action.bookeditionid, uPdf: action.uPdf, serverDetails: action.serverDetails, bookId: action.bookId, uid: action.uid, ubd: action.ubd, ubsd: action.ubsd, roleTypeID: action.roleTypeID }),  // eslint-disable-line max-len
   [BOOKS_REJECTED]: (state, action) => ({ ...state, fetching: false, fetched: false, error: action.payload }),
-  [SSO_KEY]: (state, action) => ({ ...state, ssoKey: action.ssoKey })
+  [SSO_KEY]: (state, action) => ({ ...state, ssoKey: action.ssoKey }),
+
+  [AUTH_FULFILLED]: (state, action) => ({
+    ...state,
+    authFetched: true,
+    authData: action.payload,
+    error: null }),
 
 
 };
@@ -51,7 +57,9 @@ const initialState = {
   uid: '',
   ubd: '',
   ubsd: '',
-  roleTypeID: ''
+  roleTypeID: '',
+  authFetched: false,
+  authData:[]
 };
 
 /* Action handler for checking the action type and pass the updated state to respective container. */
