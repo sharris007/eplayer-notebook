@@ -122,7 +122,7 @@ export default class BookshelfPage extends React.Component {
   }
   componentWillReceiveProps = (nextProps) =>{
     const cdnToken = this.cookies.get('etext-cdn-token');
-    if(!cdnToken && nextProps.bookshelf.authFetched){
+    if(cdnToken && nextProps.bookshelf.authFetched){
        $('body').append('<iframe src="https://etext-qa-stg.pearson.com/test.html" name="cdnIframe" id="cdnIframe" width=0 height=0></iframe>');
       this.props.gotAuthToken(false);
     }
