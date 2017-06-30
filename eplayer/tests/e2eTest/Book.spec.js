@@ -18,14 +18,13 @@ describe('Book',function(){
       browser.waitForExist('#bookshelf', 50000);
       console.log("Bookshelf Found");
 
-       browser.click('p*=Math');
+       browser.click('p*=teacher');
       
       console.log("Clicked on book");
 
       browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 60000);
       console.log("Book loaded");
 
-      browser.pause(10000);
 
     });*/
 
@@ -44,26 +43,19 @@ describe('Book',function(){
         browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 60000);
         console.log("Book loaded");
   
-        browser.pause(10000);
-
 
     });
 
-	/*TOC Related Test Cases
-*/
-  it('should click on TOC', function() {
+     it('should click on TOC', function() {
 
       browser.click('.icon-white:nth-child(2)');
       console.log("Clicked on TOC");
 
-      browser.waitForVisible('.header-title', 50000);
+      browser.waitForVisible('.bookTitleAndTabs', 50000);
       console.log("Header title appeared");
 
       browser.waitForExist(".list-group",10000);
       console.log("TOC content is visible");
-
-      browser.pause(5000);
-      
 
     });
 
@@ -81,11 +73,10 @@ describe('Book',function(){
       browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 50000);
       console.log("Page 2 appeared");
 
-      browser.pause(5000);
 
     });*/
 
-      it('should click on Bookmarks tab', function() {
+     it('should click on Bookmarks tab', function() {
 
 
       browser.click('button[id=bookmarks]');
@@ -97,7 +88,6 @@ describe('Book',function(){
       browser.click('.drawerWrap');
       browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 10000);
 
-      browser.pause(5000);
 
     });
 
@@ -111,8 +101,6 @@ describe('Book',function(){
       browser.waitForExist('.filled', 50000);
       console.log("Bookmark has been created");
 
-      browser.pause(5000);
-
     });
 
 
@@ -125,8 +113,6 @@ describe('Book',function(){
 
         browser.waitForVisible('.o-bookmark-content' , 50000);
         console.log('Bookmark added successfully');
-
-        browser.pause(5000);
 
       });
 
@@ -154,8 +140,6 @@ describe('Book',function(){
       browser.click('.drawerWrap');
       console.log('click drawerWrap to close the drawer');
 
-      browser.pause(5000);
-
     });
 
     it('should remove the Bookmark from drawer component', function() {
@@ -173,7 +157,7 @@ describe('Book',function(){
       browser.click('button[id=bookmarks]');
       console.log("Clicked on bookmarks tab");
 
-      browser.moveToObject('.o-bookmark-content',0,0);
+      browser.moveToObject('.o-bookmark-section',0,0);
 
       browser.waitForExist('.remove',10000);
       browser.click('.remove');
@@ -190,8 +174,7 @@ describe('Book',function(){
       console.log('click drawerWrap to close the TOC');
 
       browser.waitForExist('.unfilled',10000);
-
-      browser.pause(5000);
+      console.log('Bookmark removed');
 
     });
 
@@ -205,42 +188,24 @@ describe('Book',function(){
      // browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 50000);
       console.log("Page 2 appeared");
 
-      browser.pause(5000);
 
     });
 
-   /* it('should create an annotation', function() {
-
-       browser.waitForExist('#docViewer_ViewContainer_AnnotCanvas',50000);
-       browser.pause(20000);
-       browser.moveToObject('div[id=docViewer_ViewContainer_PageContainer_0]>img', 32.700000,690.600000);
-       console.log('First Move to moveToObject');
-       browser.buttonDown();
-       console.log(' buttonDown');
-       browser.moveToObject('div[id=docViewer_ViewContainer_PageContainer_0]>img', 402.400000,590.200000);
-       console.log('second Move to moveToObject');
-       browser.buttonUp();
-        console.log(' buttonUp');
-       browser.pause(20000);
-       browser.waitForExist('.annotator-panel-1.annotator-panel-triangle',10000);
-
-    });*/
-
+ 
     it('should filter search text and give the result', function() {
 
 
       browser.click('div[class=icon-white]');
       console.log("Clicked on Search Icon.");
+      
+      browser.waitForVisible('.searchCompContainer',10000);
+      console.log('search container is visible');
 
-      browser.pause(5000);
+      browser.waitForVisible('.search__no-results',10000);
+      console.log('no result found for empty search');
 
-      browser.click('#search__input');
+       browser.click('#search__input');
       console.log("Clicked on search area");
-
-      browser.waitForVisible('#search__box', 50000);
-      console.log("Search Box found");
-
-      browser.pause(5000);
 
       browser.setValue('input[id="search__input"]', 'school');
       console.log("Set the value as school");
@@ -248,15 +213,12 @@ describe('Book',function(){
       browser.waitForVisible('div[class=search__results]>ul>ul>li:nth-child(2)', 50000);
       console.log("Search list appeared");
 
-      browser.pause(10000);
-
       browser.click('div[class=search__results]>ul>ul>li:nth-child(2)');
       console.log("Clicked on 2nd result");
 
       browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 50000);
       console.log("Result page appeared");
 
-      browser.pause(10000);
 
     });
 
@@ -271,9 +233,6 @@ describe('Book',function(){
       //browser.doubleClick('.//*[@id="root"]/div/div/div/div/div/div[1]/div[1]/div[2]/div/div/ul/li');
       //console.log("Zoom button appeared");
 
-      browser.pause(5000);
-      
-
     });
 
      it('should refresh the page', function() {
@@ -282,37 +241,22 @@ describe('Book',function(){
       browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 50000);
       console.log("refresh pass.");
 
-      browser.pause(5000);
 
     });
 
+    it('should be able to logout from Book',function(){
+        browser.waitForVisible('.moreIcon',10000);
+    	browser.click('.moreIcon');
+    	console.log('Clicked More menu icon');
+
+    	browser.waitForExist('div*=Sign Out',5000);
+    	browser.click('div*=Sign Out');
+    	console.log('Clicked sign out button');
+
+        browser.waitForExist('input[id="username"]', 50000);
+        console.log("Back to login page");
+    })
 
 
-    it('should click on back button to go bookshelf', function() {
-
-     
-       
-      browser.click('.back_rec');
-      console.log("Clicked on back button");
-
-      browser.waitForVisible('#bookshelf', 50000);
-      console.log("Bookshelf found");
-
-      browser.pause(5000);
-
-    });
-
-    it('should click on logout button ', function() {
-
-
-      browser.click('.signoutBtn>div>button');
-      console.log("Clicked on logout button");
-
-      browser.waitForVisible('input[id="username"]', 50000);
-      console.log("Back to login page");
-
-       browser.pause(5000);
-          
-    });
 
 })

@@ -18,8 +18,6 @@ describe('BookShelf', function(){
       browser.waitForExist('#bookshelf', 50000);
       console.log("Bookshelf Found");
 
-      browser.pause(10000);
-
       });*/
      /*For Standalone Bookshelf*/
 	it('should let luach the standalone bookshelf',function(){
@@ -36,7 +34,6 @@ describe('BookShelf', function(){
       browser.waitForVisible('#bookshelf', 50000);
       console.log("refresh pass.");
 
-      browser.pause(5000);
 
     });
 
@@ -49,8 +46,30 @@ describe('BookShelf', function(){
       browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 60000);
       console.log("Book loaded");
 
-      browser.pause(5000);
 
+    });
+
+    
+    it('should click on back button to go bookshelf', function() {
+
+      browser.click('.back_rec');
+      console.log("Clicked on back button");
+
+      browser.waitForVisible('#bookshelf', 50000);
+      console.log("Bookshelf found");
+
+    });
+
+    it('should be able to logout from Bookshelf ', function() {
+
+
+      browser.click('.signoutBtn>div>button');
+      console.log("Clicked on logout button");
+
+      browser.waitForVisible('input[id="username"]', 50000);
+      console.log("Back to login page");
+
+          
     });
 
 })

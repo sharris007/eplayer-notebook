@@ -18,7 +18,6 @@ describe('LoginPage', function() {
       browser.waitForExist('.errorClass', 50000);
       console.log("Invalid Username or Password entered.");
 
-      browser.pause(5000);
 
       });
 
@@ -36,8 +35,6 @@ describe('LoginPage', function() {
       browser.waitForExist('.errorClass', 50000);
       console.log("Invalid Username or Password entered.");
 
-      browser.pause(5000);
-
       });
 
       it('should not let you log in with blank Username and correct password', function () {  
@@ -54,7 +51,6 @@ describe('LoginPage', function() {
       browser.waitForExist('.errorClass', 50000);
       console.log("Invalid Username or Password entered.");
 
-      browser.pause(5000);
 
       });
 
@@ -73,7 +69,6 @@ describe('LoginPage', function() {
       browser.waitForExist('.errorClass', 50000);
       console.log("Invalid Username or Password entered.");
 
-      browser.pause(5000);
 
       });
 
@@ -91,8 +86,6 @@ describe('LoginPage', function() {
     
       browser.waitForExist('#bookshelf', 50000);
       console.log("Bookshelf Found");
-
-      browser.pause(10000);
 
       });
   });
