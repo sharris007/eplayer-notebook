@@ -4,15 +4,22 @@
       -ms-transition: $transition;
           transition: $transition;
 }
+@mixin box-shadow($box-shadow) {
+  -webkit-box-shadow: $box-shadow;
+     -moz-box-shadow: $box-shadow;
+      		box-shadow: $box-shadow;
+}
+.box-shadow { @include box-shadow(0px 1px 1px 0px rgba(0,0,0,0.27)); }
 .drawerWrap{
 	.tabCompwrapper {
 		background: #fff;
 		.bookTitleAndTabs {
 			padding: 54px 0 10px;
 			background: #005a70;
+			@extend .box-shadow;
 			.tabComp{
 				//width: 99%;
-				padding: 0 74px 6px;
+				padding: 0 74px 8px;
 				.tablabel {
 				  color: #fff !important;
 				  font-family: Open Sans !important;
@@ -42,16 +49,18 @@
 				font-family: Open Sans;
 				text-transform: capitalize;
 				.title {
-					padding: 0 29px 7px 24px;
+					padding: 0 29px 0px 22px;
 					font-size: 28px;
 					font-weight: 300;
+					line-height: 1.75;
 				}
 				.author {
-					padding: 0 30px 68px 24px;
+					padding: 7px 193.9px 78px 24px;
 					font-size: 16px;
 					color: #fff;
 				    margin: 0;
 				    font-weight: 400;
+				    font-family: Open Sans !important;
 				}
 			}
 			.bottomBar {
