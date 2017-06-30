@@ -37,7 +37,8 @@ export const getAuthToken = (piToken) => {
     headers: { 'Content-Type': 'application/json',
       'X-Authorization': piToken } 
     })
-  };  
+  };
+   
 };
 
 /* Created a Action creater for BOOK_DETAILS, contains all the Book data like, authorName, thumbnail, title and so on.  */
