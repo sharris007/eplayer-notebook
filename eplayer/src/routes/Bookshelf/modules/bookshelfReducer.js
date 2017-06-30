@@ -7,6 +7,7 @@ export const BOOKS_FULFILLED = 'BOOKS_FULFILLED';
 export const BOOK_DETAILS = 'BOOK_DETAILS';
 export const SSO_KEY = 'SSO_KEY';
 export const AUTH_FULFILLED = 'AUTH_FULFILLED';
+export const GOTAUTH = 'GOTAUTH';
 
 /**
  * Action Handlers for BOOKS actions.
@@ -34,8 +35,10 @@ const ACTION_HANDLERS = {
     authFetched: true,
     authData: action.payload,
     error: null }),
-
-
+  [GOTAUTH]: (state, action) => ({
+    ...state,
+    authFetched: action.payload.authFetched,
+    error: null }),
 };
 
 /* Initial state for following properties. */

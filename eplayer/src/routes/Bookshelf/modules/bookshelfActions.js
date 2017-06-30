@@ -40,6 +40,16 @@ export const getAuthToken = (piToken) => {
   };
    
 };
+export const gotAuthToken = (status) => {
+  const url = `${etextService[envType]}/nextext/eps/authtoken`;
+  return {
+    type: 'GOTAUTH',
+    payload: {
+      authFetched : status
+    }
+  };
+   
+};
 
 /* Created a Action creater for BOOK_DETAILS, contains all the Book data like, authorName, thumbnail, title and so on.  */
 
