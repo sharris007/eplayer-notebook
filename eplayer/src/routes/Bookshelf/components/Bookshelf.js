@@ -38,6 +38,7 @@ export default class BookshelfPage extends React.Component {
    used to pass props for communication with other components. */
   constructor(props) {
     super(props);
+    this.cookies = new Cookies();
     let appPath             = window.location.origin;
     let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
     redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
@@ -96,7 +97,10 @@ export default class BookshelfPage extends React.Component {
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
      setTimeout(()=>{
       const secureToken  = localStorage.getItem('secureToken');
-      this.props.getAuthToken(secureToken);
+      const cdnToken = this.cookies.get('etext-cdn-token');
+      if(!cdnToken){
+        this.props.getAuthToken(secureToken);
+      }
       let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
       if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
         urn = 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
@@ -112,14 +116,15 @@ export default class BookshelfPage extends React.Component {
     },3000);
   }
   getCookie = (name) => {
-    console
       var value = "; " + document.cookie;
       var parts = value.split("; " + name + "=");
       if (parts.length == 2) return parts.pop().split(";").shift();
   }
   componentWillReceiveProps = (nextProps) =>{
-    if(nextProps.bookshelf.authFetched){
-       $('body').append('<iframe src="https://etext-qa-stg.pearson.com/test.html" name="frame1" id="frame1"></iframe>');
+    const cdnToken = this.cookies.get('etext-cdn-token');
+    if(!cdnToken && nextProps.bookshelf.authFetched){
+       $('body').append('<iframe src="https://etext-qa-stg.pearson.com/test.html" name="cdnIframe" id="cdnIframe" width=0 height=0></iframe>');
+      this.props.gotAuthToken(false);
     }
   }
   /* Created function for handle single book click.*/
