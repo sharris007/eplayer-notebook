@@ -63,10 +63,11 @@ div#book-render-component{
       float: left;
       min-width: 215px; 
       .wrapper {
-        width: 88%;
+        width: 90%;
         float: left;
         .content {
           width: 100%;
+          text-align: right;
         }
         .label {
           color: #007fa3;
@@ -202,3 +203,33 @@ div.aquila-audio-player {
   line-height: initial;
 }
 //Aquila audio player css override ends
+@media (max-width: 480px) {
+    .navigation .nextSection {
+        width:83%!important;
+        padding-right: 14px!important
+    }
+}
+@media (min-width: 737px) and (max-width:992px) {
+    .navigation .prevSection .prevContent .wrapper {
+        width:83%!important
+    }
+    .navigation .nextSection .nextContent .wrapper {
+        width: 84%!important
+    }
+}
+
+@media (min-width: 993px) and (max-width:1224px) {
+    .navigation .prevSection .prevContent .wrapper {
+        width:83%!important
+    }
+}
+@media (max-width: 736px){
+  .navigation .prevSection {
+    width: 50px!important;
+  }
+}
+@media (max-width: 736px) {
+    .navigation .prevSection .prevContent .wrapper {
+        display: none
+    }
+}
