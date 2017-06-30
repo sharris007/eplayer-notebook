@@ -132,16 +132,18 @@ export const crossRef = (pageViewerRef) => {
         for (let i = figures.length - 1; i >= 0; i--) {
           const figure = figures[i];
           const image = figure.getElementsByTagName('img')[0];
-          if (!image || image.classList.contains('design-icon')) {
+          if (!image || image.classList.contains('design-icon') || figure.hasAttribute('aquila-image-viewer')) {
             continue;
           }
+          figure.setAttribute('aquila-image-viewer',true)
           const cloneImg = image.cloneNode(true);
           const replaceImageDOM = document.createElement('div');
           replaceImageDOM.appendChild(cloneImg);
           image.parentNode.replaceChild(replaceImageDOM, image);
           const componentElement = figure.getElementsByTagName('img')[0].parentNode;
           const container = document.createElement('div');
-          container.classList.add('aquila-image-viewer', 'pearson-component');
+          // enable the below line if in aquila-js-media -> ImageViewerPreview.jsx adds overlay instead of null in previewScreen
+          // container.classList.add('aquila-image-viewer', 'pearson-component');
           let wrapper;
           if (componentElement) {
             container.setAttribute('tabindex', 0);
