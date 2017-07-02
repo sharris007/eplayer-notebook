@@ -398,8 +398,26 @@ Annotator = (function(_super) {
     if(normedRange.note && normedRange.note.length)
       cssClass+=" highlight-note";
     white = /^\s*$/;
-    hl = $("<span class='" + cssClass + "' style=background:" + normedRange.color + "></span>");
-    handle=$("<span class='annotator-handle'></span>");
+    var annBgColor = '';
+    var noteIconBgColor = '';
+    if(normedRange.color == '#FFD232') { //Yellow
+        annBgColor = 'rgba(248,230,0,0.5)';
+        noteIconBgColor = '#FFD232';
+    } else if (normedRange.color == '#55DF49') { //Green
+        annBgColor = 'rgba(143,218,60,0.4)';
+        noteIconBgColor = '#55DF49';
+    } else if (normedRange.color == '#FC92CF') { //Pink
+        annBgColor = 'rgba(254,132,201,0.5)';
+        noteIconBgColor = '#FC92CF';
+    } else if (normedRange.color == '#ccf5fd') { //Share(Blue)
+        annBgColor = '#ccf5fd';
+        noteIconBgColor = '#00a4e0';
+    } else {
+        annBgColor = normedRange.color;
+        noteIconBgColor = normedRange.color;
+    }
+    hl = $("<span class='" + cssClass + "' style=background:" + annBgColor + "></span>");
+    handle=$("<span class='annotator-handle' style=background-color:" + noteIconBgColor + "></span>");
     _ref = normedRange.textNodes();
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
