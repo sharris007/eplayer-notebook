@@ -122,6 +122,7 @@ export class Book extends Component {
     const playlistData = nextProps.playlistData;
     const pageParameters = this.state.pageDetails;
     if(nextProps.playlistReceived){
+
        const filteredData = find(playlistData.content, list => list.id === nextProps.params.pageId);
           pageParameters.baseUrl                = playlistData.baseUrl;
         if(pageParameters.currentPageURL === ""){
@@ -206,10 +207,10 @@ export class Book extends Component {
   };
 
   onPageChange = (type, data) => {
-
     switch(type){
       case 'continue':{
         if(data){
+          document.title  = data.title; 
           this.setState({isPanelOpen:true},()=>{
               const pageDetails={...this.state.pageDetails};
               pageDetails.currentPageURL=data;
@@ -245,6 +246,7 @@ export class Book extends Component {
       default:{
         // other than continue
         if(data){
+          document.title  = data.title; 
           const parameters = this.state.urlParams;
           parameters.id    = data.id,
           parameters.uri   = encodeURIComponent(data.href),

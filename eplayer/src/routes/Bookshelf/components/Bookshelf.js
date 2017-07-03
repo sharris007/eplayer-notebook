@@ -38,6 +38,7 @@ export default class BookshelfPage extends React.Component {
    used to pass props for communication with other components. */
   constructor(props) {
     super(props);
+    document.title = 'Bookshelf';
     this.cookies = new Cookies();
     let appPath             = window.location.origin;
     let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
