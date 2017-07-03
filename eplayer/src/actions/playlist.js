@@ -95,7 +95,7 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
      const tocUrl       = getTocUrlOnResp(response.userCourseSectionDetail.toc);
      const bookDetails  = response.userCourseSectionDetail;
      const piToken      = data.piToken;
-     const bookId       = bookDetails.section.courseId;
+     const bookId       = bookDetails.section.sectionId;
      PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then((response) => {
         // response.bookConfig =bookDetails;
