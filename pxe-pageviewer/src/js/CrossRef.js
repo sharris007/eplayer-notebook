@@ -273,7 +273,7 @@ export const crossRef = (pageViewerRef) => {
                 JqueryPageViewer(e.currentTarget).find('p').html('Close');
               } else {
                 let playerId = JqueryPageViewer(e.currentTarget).data('player-id');
-                let a = pageViewerRef.bookContainerRef.getElementById(playerId);
+                let a = document.getElementById(playerId);
                 a.contentWindow.postMessage(JSON.stringify({
                     method   : 'pause',
                     playerId : playerId,
