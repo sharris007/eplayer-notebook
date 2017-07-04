@@ -339,7 +339,7 @@ export class Book extends Component {
       this.props.dispatch(getBookmarkCallService(this.state.urlParams));
     }),
     this.viewerContentCallBack(true);
-    if($('span[data-ann-id='+annId+']')[0] && (annId || annId != '')) {
+    if(annId && $('span[data-ann-id='+annId+']') && $('span[data-ann-id='+annId+']')[0]) {
           $('html, body').animate({
                 scrollTop: $('span[data-ann-id='+annId+']')[0].offsetTop
           });
@@ -403,7 +403,7 @@ export class Book extends Component {
         bookObj = data;
       } 
     });
-    this.goToPageCallback(bookObj.id, pageId.split("OPS")[1].split('*')[1].split(','))
+    this.goToPageCallback(bookObj.id,'', pageId.split("OPS")[1].split('*')[1].split(','))
   }
 
   listClick = () => {
