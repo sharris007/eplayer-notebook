@@ -13,7 +13,7 @@ export const annStructureChange = (annTotalList) => {
     '#55DF49': 'Green',
     '#FC92CF': 'Pink',
     '#FFD232': 'Yellow',
-    '#00a4e0': 'Instructor'
+    '#ccf5fd': 'Instructor'
   };
   const annListArray = [];
   if (annTotalList && annTotalList.length > 0) {
