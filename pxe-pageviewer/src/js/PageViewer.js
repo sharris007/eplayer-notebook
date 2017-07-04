@@ -123,41 +123,41 @@ class PageViewer extends React.Component {
               }, 2000);
             }, 1000); 
           }
-          else if(this.props.src.annId) {
+          else if (this.props.src.annId) {
             let annId= this.props.src.annId;
             setTimeout(()=>{
               $('html, body').animate({
-                    scrollTop: $('span[data-ann-id='+annId+']')[0].offsetTop
-              },20);
-            }, 1200)
+                scrollTop: $('span[data-ann-id='+annId+']')[0].offsetTop
+              }, 20);
+            }, 1200);
           }  
         });
       }
       // this.setState({pageLoading:false});
       //callback
-    setTimeout(function() {
-       let ele = document.getElementById('book-container');  
-       var scripts = ele.getElementsByTagName("script")
-       var scriptsArr = [];
-       for (let i = 0; i < scripts.length; i++) {
-         if(scripts[i].src.indexOf('jquery') === -1 && scripts[i].src.indexOf('load_player') === -1){
-          scriptsArr.push(scripts[i]);
-         }
-       }
-       for (let i = 0; i < scriptsArr.length; i++) {
-         let currentScript = scriptsArr[i];
-         let scriptTag = document.createElement("script");
-         for (let j = 0; j < currentScript.attributes.length; j++) {
-           var attr = currentScript.attributes[j];
-           scriptTag.setAttribute(attr.name, attr.value);
-         }
-         if(!scriptTag.hasAttribute('loaded')){
-          scriptTag.setAttribute('loaded',true);
-          scriptTag.appendChild(document.createTextNode(currentScript.innerHTML));
-          currentScript.parentNode.replaceChild(scriptTag, currentScript);
-         }
-       }
-      },1000);
+      setTimeout(function() {
+        let ele = document.getElementById('book-container');  
+        var scripts = ele.getElementsByTagName('script');
+        var scriptsArr = [];
+        for (let i = 0; i < scripts.length; i++) {
+          if (scripts[i].src.indexOf('jquery') === -1 && scripts[i].src.indexOf('load_player') === -1) {
+            scriptsArr.push(scripts[i]);
+          }
+        }
+        for (let i = 0; i < scriptsArr.length; i++) {
+          let currentScript = scriptsArr[i];
+          let scriptTag = document.createElement('script');
+          for (let j = 0; j < currentScript.attributes.length; j++) {
+            var attr = currentScript.attributes[j];
+            scriptTag.setAttribute(attr.name, attr.value);
+          }
+          if (!scriptTag.hasAttribute('loaded')) {
+            scriptTag.setAttribute('loaded', true);
+            scriptTag.appendChild(document.createTextNode(currentScript.innerHTML));
+            currentScript.parentNode.replaceChild(scriptTag, currentScript);
+          }
+        }
+      }, 1000);
       
       if (pageFragmentID && document.getElementById(pageFragmentID)) {
         this.scrollToFragment(pageFragmentID);
@@ -281,7 +281,11 @@ class PageViewer extends React.Component {
       loadMathMLScript();
     }
   };
-
+  componentDidMount = () =>{
+    if (this.props.src.includeMathMLLib) {
+      reloadMathMl(this);
+    } 
+  }
   componentWillReceiveProps(newProps) {
     
     if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
@@ -339,10 +343,6 @@ class PageViewer extends React.Component {
     this.loadMultimediaNscrollToFragment();
     crossRef(this);
     document.addEventListener('click', this.clearSearchHighlights);
-    
-    if (this.props.src.includeMathMLLib) {
-      reloadMathMl(this);
-    } 
     this.setPageTheme();
     audioWbWHighlight(this);
     const pageBreakClass = $('#book-render-component').find('.pagebreak');
