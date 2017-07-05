@@ -140,7 +140,7 @@ class PageViewer extends React.Component {
         var scripts = ele.getElementsByTagName('script');
         var scriptsArr = [];
         for (let i = 0; i < scripts.length; i++) {
-          if (scripts[i].src.indexOf('jquery') === -1 && scripts[i].src.indexOf('load_player') === -1) {
+          if (scripts[i].src.indexOf('jquery') === -1 && scripts[i].src.indexOf('load_player') === -1 && scripts[i].type != 'math/mml') {
             scriptsArr.push(scripts[i]);
           }
         }
