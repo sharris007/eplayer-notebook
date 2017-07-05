@@ -281,11 +281,7 @@ class PageViewer extends React.Component {
       loadMathMLScript();
     }
   };
-  componentDidMount = () =>{
-    if (this.props.src.includeMathMLLib) {
-      reloadMathMl(this);
-    } 
-  }
+
   componentWillReceiveProps(newProps) {
     
     if (parseInt(this.props.src.currentPageURL.playOrder) !== parseInt(newProps.src.currentPageURL.playOrder)) {
@@ -343,6 +339,10 @@ class PageViewer extends React.Component {
     this.loadMultimediaNscrollToFragment();
     crossRef(this);
     document.addEventListener('click', this.clearSearchHighlights);
+        
+    if (this.props.src.includeMathMLLib) {
+      reloadMathMl(this);
+    } 
     this.setPageTheme();
     audioWbWHighlight(this);
     const pageBreakClass = $('#book-render-component').find('.pagebreak');
