@@ -647,9 +647,8 @@ export class PdfBookReader extends Component {
     } else {
       viewerClassName = '';
     }
-    const searchUrl = `${serverDetails}/ebook/ipad/searchbook?bookid=${this.props.params.bookId}`
-        + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=1.0&authkey=${ssoKey}`
-        + '&outputformat=JSON';
+    const searchUrl = `${serverDetails}/ebook/ipad/searchbookpage?bookid=${this.props.params.bookId}`
+        + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=1.0&authkey=${ssoKey}`;
 
     /* Here we are passing data, pages, goToPageCallback,
        getPrevNextPage method and isET1 flag in ViewerComponent

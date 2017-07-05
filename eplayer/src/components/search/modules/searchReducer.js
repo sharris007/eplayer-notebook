@@ -15,7 +15,7 @@ const ACTION_HANDLERS = {
     ...state,
     fetching: false,
     fetched: true,
-    data: action.searchState.searchResult.results.sort((res1, res2) => res1.urn - res2.urn),
+    data: action.searchState.searchResult.results,
     error: null }),
   [CLEAR_SEARCH]: state => ({
     ...state,
