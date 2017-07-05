@@ -79,7 +79,14 @@ export const resources = {
       qa           :"https://pi-tst.pearsoned.com/v1/piapi-test",
       stage        :"https://int-piapi-internal.stg-openclass.com",
       prd          :"https://piapi-internal.openclass.com",
-    }
+    },
+    authDomainUrl :{
+      local        :"https://etext-qa-stg.pearson.com",
+      dev          :"https://etext-qa-stg.pearson.com",
+      qa           :"https://etext-qa-stg.pearson.com",
+      stage        :"https://etext-stg.pearson.com",
+      prd          :"https://etext.pearson.com",
+    },
 
   }
 };
