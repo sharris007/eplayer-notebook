@@ -267,7 +267,6 @@ class DrawerComponent extends React.Component {
     callbacks.onActive = this.onActive;
     callbacks.changeState = this.changeState;
     const isTocWrapperRequired = false;
-    console.log("this.props.bookData.toc", this.props.bookData);
     return (<Drawer
       docked={false}
       width={400}

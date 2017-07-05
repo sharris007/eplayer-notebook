@@ -17,7 +17,6 @@ import { languages } from '../../../../locale_config/translations/index';
 import { resources, domain } from '../../../../const/Settings';
 
 const envType = domain.getEnvType();
- 
 let languageid;
 const url = window.location.href;
 const n = url.search('languageid');
@@ -124,7 +123,8 @@ export default class BookshelfPage extends React.Component {
   componentWillReceiveProps = (nextProps) =>{
     const cdnToken = this.cookies.get('etext-cdn-token');
     if(cdnToken && nextProps.bookshelf.authFetched){
-       $('body').append('<iframe src="https://etext-qa-stg.pearson.com/test.html" name="cdnIframe" id="cdnIframe" width=0 height=0></iframe>');
+      const frameSrc = resources.links.authDomainUrl[envType]+'/setEtextCDN.html';
+       $('body').append('<iframe src="'+frameSrc+'" name="cdnIframe" id="cdnIframe" width=0 height=0></iframe>');
       this.props.gotAuthToken(false);
     }
   }
