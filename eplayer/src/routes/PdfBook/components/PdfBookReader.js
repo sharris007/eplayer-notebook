@@ -163,11 +163,10 @@ export class PdfBookReader extends Component {
       if (this.state.isFirstPageBeingLoad === true) {
         this.setState({ isFirstPageBeingLoad: false });
       }
-      this.displayHighlight();
     }
     if (pdfEvent === 'pageLoaded') {
           // this.loadAssetUrl();
-
+      setTimeout(this.displayHighlight, 1000);
       if (this.state.executed === false) {
         const totalPagesToHit = this.getPageOrdersToGetAssertUrl(this.state.currPageIndex);
         this.props.loadAssertUrl(totalPagesToHit, this.openFile, this.storeAssertUrl, pages);
@@ -458,7 +457,7 @@ export class PdfBookReader extends Component {
   }
  /* Method for creating highLight for selected area by user. */
   createHighlight1(highlightData) {
-    /*const listValue = highlightData.length;
+    /* const listValue = highlightData.length;
     const i = listValue - 1;*/
     const highLightcordinates = {
       left: highlightData[0].offsetLeft,
@@ -480,11 +479,10 @@ export class PdfBookReader extends Component {
       const cordList = JSON.parse(objSt);
       for (let j = 0; j < cordList.length; j++) {
         for (let k = 0; k < curHighlightCordsList.length; k++) {
-          if (parseInt(cordList[j].left, 10) <= parseInt(curHighlightCordsList[k].left, 10) 
+          if (parseInt(cordList[j].left, 10) <= parseInt(curHighlightCordsList[k].left, 10)
                   && parseInt(cordList[j].top, 10) <= parseInt(curHighlightCordsList[k].top, 10)
                   && parseInt(cordList[j].bottom, 10) >= parseInt(curHighlightCordsList[k].bottom, 10)
-                  && parseInt(cordList[j].right, 10) >= parseInt(curHighlightCordsList[k].right, 10))
-         {
+                  && parseInt(cordList[j].right, 10) >= parseInt(curHighlightCordsList[k].right, 10)) {
             highLightID = highlightList[i].id;
             isExistinghighlightFound = true;
           }
@@ -510,7 +508,7 @@ export class PdfBookReader extends Component {
       currentHighlight.selection = highlightData1.selection;
       currentHighlight.pageIndex = highlightData1.pageInformation.pageNumber;
       pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
-        this.saveHighlight.bind(this),this.editHighlight.bind(this),'docViewer_ViewContainer_PageContainer_0',
+        this.saveHighlight.bind(this), this.editHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
         (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID);
     }
   }
@@ -536,7 +534,8 @@ export class PdfBookReader extends Component {
     this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid),
       _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(courseId), isShared, currentHighlight.highlightHash,
-      note, selectedText, highLightMetadata.currHighlightColor, meta, _.toString(currentPageId)).then((newHighlight) => {
+      note, selectedText, highLightMetadata.currHighlightColor,
+      meta, _.toString(currentPageId)).then((newHighlight) => {
         pdfAnnotatorInstance.setCurrentHighlight(newHighlight);
         this.displayHighlight();
       });
@@ -622,10 +621,9 @@ export class PdfBookReader extends Component {
   }
 
   viewerContentCallBack = (viewerCallBack) => {
-    if(viewerCallBack==false) {
+    if (viewerCallBack === false) {
       this.setState({ drawerOpen: true });
-    }
-    else{
+    } else {
       this.setState({ drawerOpen: false });
     }
   }
@@ -642,7 +640,7 @@ export class PdfBookReader extends Component {
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPageCallback;
     callbacks.clearSessionStorage = this.clearSessionStorage;
-    //const drawerOpen = true;
+    // const drawerOpen = true;
     let viewerClassName;
     if (this.state.pageLoaded !== true) {
       viewerClassName = 'hideViewerContent';
