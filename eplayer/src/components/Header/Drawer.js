@@ -238,7 +238,9 @@ class DrawerComponent extends React.Component {
       this.bottomBar.classList.remove('contentTab', 'bookmarksTab');
       this.bottomBar.classList.add('notesTab');
     }
-    this.fixSwipableHeight();
+    setTimeout(() => {
+     this.fixSwipableHeight();
+   }, 100);
   }
   
 
