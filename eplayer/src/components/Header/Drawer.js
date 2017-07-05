@@ -207,6 +207,17 @@ class DrawerComponent extends React.Component {
       }
     }
   }
+  
+  fixSwipableHeight = () => {
+    if (this.tabCompwrapper) {
+      const drawerHeight = this.tabCompwrapper.parentElement.clientHeight;
+      const titleSectionHeight = this.titleSection.clientHeight;
+      const swipableDiv = document.querySelectorAll('.swipeviewStyle div div[aria-hidden="false"]')[0];
+      if (swipableDiv) {
+        swipableDiv.style.height = `${drawerHeight - titleSectionHeight}px`;
+      }
+    }
+  }
 
   onActive = (tabid) => {
     const tabcontent = document.getElementsByClassName('tablabel');
@@ -227,6 +238,7 @@ class DrawerComponent extends React.Component {
       this.bottomBar.classList.remove('contentTab', 'bookmarksTab');
       this.bottomBar.classList.add('notesTab');
     }
+    this.fixSwipableHeight();
   }
   
 
@@ -266,12 +278,13 @@ class DrawerComponent extends React.Component {
       containerStyle={drawerTab.style}
     >{this.props.isOpen &&
       <div
+        ref={(tabCompwrapper) => { this.tabCompwrapper = tabCompwrapper; }}
         className="tabCompwrapper"
         tabIndex="0"
         role="dialog"
         onKeyUp={this.onArrowKeyPress}
       >
-      <div className="bookTitleAndTabs">
+      <div className="bookTitleAndTabs" ref={(titleSection) => { this.titleSection = titleSection; }}>
         <div className="bookTitleSection">
           <div className="title">{this.props.bookData.toc.content.mainTitle}</div>
           <div className="author">{this.props.bookData.toc.content.author}</div>
