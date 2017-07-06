@@ -1,4 +1,5 @@
-
+import {resources , domain ,typeConstants} from './Settings';
+const pxeServiceUrl = resources.links.pxeServiceUrl[domain.getEnvType()];
 export const pageDetails = {
   renderId: 'pxeViewer',
   locale: 'en-us',
@@ -26,7 +27,7 @@ export const pageDetails = {
   currentPageURL: '',
   bgColor: 'White',
   endPoints: {
-    services: 'https://pxe-sdk-qa.stg-openclass.com/services-api/api/3.1',
+    services: pxeServiceUrl,
     search: 'https://content-service.dev-prsn.com/csg',
     pi: '',
     ingest: 'http://dragonfly.dev-openclass.com/pxereader-cm/api/cm'
