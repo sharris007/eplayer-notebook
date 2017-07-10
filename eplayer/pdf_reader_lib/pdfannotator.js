@@ -36,7 +36,7 @@ function init()
   $("body").mousedown(function(e) {
     if(isPopupOpen)
     {
-        if ($(e.target).parents("#docViewer_ViewContainer").length
+        if ($(e.target).parents("#root").length
               && $(e.target).parents("#openPopupHighlight").length == 0
               && $('#openPopupHighlight').is(':visible'))
                 
