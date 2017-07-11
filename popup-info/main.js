@@ -31,7 +31,7 @@ export default class PopUpInfoComponent {
     const locale = config.locale ? config.locale : 'en';
     ReactDOM.render(
       <IntlProvider locale={locale} messages={translations[locale]}>
-        <ComponentOwner bookUrl = "https://content.stg-openclass.com/eps/pearson-reader/api/item/651da29d-c41d-415e-b8a4-3eafed0057db/1/file/LutgensAtm13-071415-MJ-DW/OPS/s9ml/chapter02/filep7000496728000000000000000000cae.xhtml" isFromComponent = {true} ParagraphNumeroUno = {config.ParagraphNumeroUno} />
+        <ComponentOwner bookUrl = "https://content.stg-openclass.com/eps/pearson-reader/api/item/9966a550-e4b6-11e5-b24e-c3e4bddda174/1/file/hap10_mathjaxfix_headfoot_071415LS/OPS/s9ml/chapter02/filep7000496138000000000000000000e2b.xhtml" isFromComponent = {true} ParagraphNumeroUno = {config.ParagraphNumeroUno} />
       </IntlProvider>,
         document.getElementById(config.contentId)
     );

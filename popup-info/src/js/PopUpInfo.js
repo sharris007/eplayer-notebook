@@ -14,7 +14,7 @@ class PopUpInfo extends Component {
     this.bookId = '';
     if (props && props.popUpCollection && props.popUpCollection.length > 0) {
       this.props = props;
-      this.bookId = this.props.bookId
+      this.bookId = this.props.bookId;
       this.props.popUpCollection.forEach((popUpProps, i) => {
         if (!popUpProps.item.getAttribute('rendered')) {
           popUpProps.item.setAttribute('rendered', true);
@@ -46,20 +46,28 @@ class PopUpInfo extends Component {
             const elementIdRect = element.getBoundingClientRect();
             const pseudoClassProperties = window.getComputedStyle(event.target, ':after');
             let elementOffsetWidth = element.offsetWidth/2;
-            if (pseudoClassProperties && pseudoClassProperties.getPropertyValue('content')) {
-              elementOffsetWidth = element.offsetWidth-5;
-            }
-            if (window.innerHeight - element.getBoundingClientRect().top < 135) {
-              document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpTopAlign');
-              box.style.top = (element.getBoundingClientRect().top + window.scrollY - element.clientHeight - 15 - document.getElementsByClassName('mm-popup__box')[0].clientHeight) + 'px';
-              box.style.left = (element.getBoundingClientRect().left-185+(elementOffsetWidth)) + 'px';
-            } else if (elementIdRect.left - bookIdRect.left > 350) {
-              document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
-              box.style.left = (element.getBoundingClientRect().left - 350 +  elementOffsetWidth) + 'px';
+            const isWordBroken = element.offsetHeight > 25 ? true : false;
+            if (isWordBroken) {
+              document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign');
+              box.style.top = (element.getBoundingClientRect().top + window.scrollY + element.offsetHeight + 12) + 'px';
+              box.style.left = (element.getBoundingClientRect().left) + 'px';
             } 
             else {
-              document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign'); 
-              box.style.left = (element.getBoundingClientRect().left - 50 +  elementOffsetWidth) + 'px';
+              if (pseudoClassProperties && pseudoClassProperties.getPropertyValue('content')) {
+                elementOffsetWidth = element.offsetWidth-5;
+              }
+              if (window.innerHeight - element.getBoundingClientRect().top < 135) {
+                document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpTopAlign');
+                box.style.top = (element.getBoundingClientRect().top + window.scrollY - element.clientHeight - 15 - document.getElementsByClassName('mm-popup__box')[0].clientHeight) + 'px';
+                box.style.left = (element.getBoundingClientRect().left-185+(elementOffsetWidth)) + 'px';
+              } else if (elementIdRect.left - bookIdRect.left > 350) {
+                document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
+                box.style.left = (element.getBoundingClientRect().left - 350 +  elementOffsetWidth) + 'px';
+              } 
+              else {
+                document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign'); 
+                box.style.left = (element.getBoundingClientRect().left - 50 +  elementOffsetWidth) + 'px';
+              }
             }
             
             box.style.margin = 0;
