@@ -174,8 +174,8 @@ export default class BookshelfPage extends React.Component {
         /* Created an object which contains all book properties. which we are passing in bookself component. */
         /* Book thumbnail Image change*/
         let bookThumbnail = bookRef.thumbnailImageUrl;
-        bookThumbnail = bookThumbnail.replace('http:', 'https:');
-        if(envType=='qa'){
+        bookThumbnail = bookThumbnail ? bookThumbnail.replace('http:', 'https:'):'';
+        if(envType=='qa' && bookThumbnail){
           if(bookThumbnail.match("etext-dev.pearson.com") ) {
             bookThumbnail = bookThumbnail.replace("etext-dev.pearson.com", "etext-qa-stg.pearson.com");
           }else if(bookThumbnail.match("etext-stg.pearson.com") ){
