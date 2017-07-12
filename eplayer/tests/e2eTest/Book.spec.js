@@ -4,7 +4,7 @@ var request = require('request');
 describe('Book',function(){
    /*For Normal Login*/
 
-	/*it('should let you log in and launch the book', function () {  
+  /*it('should let you log in and launch the book', function () {  
 
       browser.url('/eplayer/login');
 
@@ -32,11 +32,11 @@ describe('Book',function(){
 
     it('should let launch the book from standalone bookshelf',function(){
 
-    	browser.url('/eplayer/bookshelf?eT1StandaloneBkshf=Y&sessionid=8753852234725456492016&piToken=dummypiToken&identityId=10315477');
-    	browser.waitForExist('#bookshelf', 50000);
+      browser.url('/eplayer/bookshelf?eT1StandaloneBkshf=Y&sessionid=8753852234725456492016&piToken=dummypiToken&identityId=10315477');
+      browser.waitForExist('#bookshelf', 50000);
         console.log("Bookshelf Found");
 
-        browser.click('p*=QA Title');
+        browser.click('p*=Comprehensive Health Insurance');
       
         console.log("Clicked on book");
 
@@ -59,7 +59,7 @@ describe('Book',function(){
 
     });
 
-   /* it('should click on first TOC entry', function() {
+    /*it('should click on first TOC entry', function() {
      
       browser.waitForExist('.list-group-item.toc-parent',1000);
       browser.click('.list-group-item.toc-parent');
@@ -74,8 +74,8 @@ describe('Book',function(){
       console.log("Page 2 appeared");
 
 
-    });*/
-
+    });
+*/
      it('should click on Bookmarks tab', function() {
 
 
@@ -157,7 +157,7 @@ describe('Book',function(){
       browser.click('button[id=bookmarks]');
       console.log("Clicked on bookmarks tab");
 
-      browser.moveToObject('.o-bookmark-section',0,0);
+      browser.moveToObject('.o-bookmark-date',0,0);
 
       browser.waitForExist('.remove',10000);
       browser.click('.remove');
@@ -178,24 +178,127 @@ describe('Book',function(){
 
     });
 
-   
-     it('should click next page', function() {
 
+     
+     it('should create an annotation', function() {
 
-      browser.click('.nextSection.section');
-      console.log("Clicked on next page");
+       browser.waitForExist('#docViewer_ViewContainer_AnnotCanvas',50000);
+       browser.moveToObject('div[id=docViewer_ViewContainer_PageContainer_0]>img', 100,200);
+       browser.buttonDown();
+       browser.moveToObject('div[id=docViewer_ViewContainer_PageContainer_0]>img', 500,400);
+       browser.buttonUp();
+       
+       console.log(' Area Selected');
 
-     // browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 50000);
-      console.log("Page 2 appeared");
-
+       browser.waitForExist('#highlight-note-form',50000);
+       browser.click('#color-button-yellow');
+       browser.waitForExist('.annotator-panel-2',10000);
+       browser.click('.annotator-item')
+       browser.setValue('#note-text-area','automation test');
+       browser.waitForVisible('#save-annotation',10000);
+       browser.pause(10000);
+       browser.click('#save-annotation');
+       browser.waitForVisible('#highlight-note-form',10000,true);
+       console.log('Note has been created');
+       
 
     });
 
- 
+     it('should check the note created inside drawer component', function(){
+      
+      browser.click('.icon-white:nth-child(2)');
+      console.log('clicked on the drawer component');
+
+      browser.waitForExist('.bookTitleAndTabs',5000);
+      browser.click('#notes');
+      console.log('clicked on the notes tab');
+
+      browser.waitForVisible('p*=automation test',5000);
+      console.log('note created is present in the drawer');
+      
+      browser.click('.drawerWrap');
+      console.log('click drawerWrap to close the TOC');
+      browser.waitForExist('#docViewer_ViewContainer_AnnotCanvas',10000);
+
+     })
+
+     it('should delete note from UI', function(){
+
+      browser.moveToObject('div[id=docViewer_ViewContainer_PageContainer_0]>img', 100,200);
+      browser.buttonDown();
+      browser.moveToObject('div[id=docViewer_ViewContainer_PageContainer_0]>img', 500,400);
+      browser.buttonUp();
+      browser.waitForExist('#deleteIcon',10000);
+      browser.click('#deleteIcon');
+
+      browser.waitForExist('#ann-confirm-del',10000);
+      browser.click('#ann-confirm-del');
+
+      browser.click('.icon-white:nth-child(2)');
+      console.log('clicked on the drawer component');
+
+      browser.waitForExist('.bookTitleAndTabs',5000);
+      browser.click('#notes');
+      console.log('clicked on the notes tab');
+
+      browser.waitForVisible('p*=automation test',5000, true);
+      console.log('note is deleted');
+      
+      browser.click('.drawerWrap');
+      console.log('click drawerWrap to close the TOC');
+       
+     });
+
+     it('should delete the annotation from drawer',function(){
+
+       browser.moveToObject('div[id=docViewer_ViewContainer_PageContainer_0]>img', 100,200);
+       browser.buttonDown();
+       browser.moveToObject('div[id=docViewer_ViewContainer_PageContainer_0]>img', 500,400);
+       browser.buttonUp();
+       
+       console.log(' Area Selected');
+
+       browser.waitForExist('#highlight-note-form',50000);
+       browser.click('#color-button-yellow');
+       browser.waitForExist('.annotator-panel-2',10000);
+       browser.click('.annotator-item');
+       browser.setValue('#note-text-area','automation test');
+       browser.pause(5000);
+       browser.click('#save-annotation');
+       browser.waitForVisible('#highlight-note-form',10000,true);
+       console.log('Note has been created');
+
+       browser.click('.icon-white:nth-child(2)');
+       console.log('clicked on the drawer component');
+
+       browser.waitForExist('.bookTitleAndTabs',5000);
+       browser.click('#notes');
+       console.log('clicked on the notes tab');
+
+       browser.waitForVisible('p*=automation test',5000);
+       browser.moveToObject('.note-date',0,0);
+
+       browser.waitForVisible('.//a[@aria-label="Remove note"]',10000);
+       browser.click('.//a[@aria-label="Remove note"]');
+       console.log('clicked on remove icon');
+
+       browser.waitForExist('.deleteBtn',10000); 
+       browser.click('.deleteBtn');
+       console.log('clicked the deleteBtn');
+
+       browser.waitForExist('p*=automation test',5000,true);
+       browser.click('.drawerWrap');
+       console.log('click drawerWrap to close the TOC');
+
+     
+      
+     });
+
+
     it('should filter search text and give the result', function() {
 
 
-      browser.click('div[class=icon-white]');
+      browser.click('.icon-white.searchIcon');
       console.log("Clicked on Search Icon.");
       
       browser.waitForVisible('.searchCompContainer',10000);
@@ -222,6 +325,18 @@ describe('Book',function(){
 
     });
 
+     it('should click next page', function() {
+
+      browser.click('.nextSection.section');
+      console.log("Clicked on next page");
+
+       browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 50000);
+      console.log("Next page appeared");
+
+
+    });
+
+
     it('should check if Zoom button is clickable', function() {
 
       browser.click('.icon-white.prefIcon');
@@ -237,8 +352,7 @@ describe('Book',function(){
 
      it('should refresh the page', function() {
       browser.refresh();
-
-      browser.waitForVisible('#docViewer_ViewContainer_AnnotCanvas', 50000);
+      browser.waitForVisible('div[id=docViewer_ViewContainer_PageContainer_0]>img', 50000);
       console.log("refresh pass.");
 
 
@@ -246,12 +360,12 @@ describe('Book',function(){
 
     it('should be able to logout from Book',function(){
         browser.waitForVisible('.moreIcon',10000);
-    	browser.click('.moreIcon');
-    	console.log('Clicked More menu icon');
+      browser.click('.moreIcon');
+      console.log('Clicked More menu icon');
 
-    	browser.waitForExist('div*=Sign Out',5000);
-    	browser.click('div*=Sign Out');
-    	console.log('Clicked sign out button');
+      browser.waitForExist('div*=Sign Out',10000);
+      browser.click('div*=Sign Out');
+      console.log('Clicked sign out button');
 
         browser.waitForExist('input[id="username"]', 50000);
         console.log("Back to login page");
