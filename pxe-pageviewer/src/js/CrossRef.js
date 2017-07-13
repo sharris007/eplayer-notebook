@@ -84,46 +84,48 @@ export const crossRef = (pageViewerRef) => {
   const contentLightBoxSettings = (element, classList, targetUrl) => {
        // logic for content light box
        // For current page links
+    try {
+      if (targetUrl.indexOf('#') === 0) {
+        targetUrl = props.src.baseUrl + state.currentStatePlayListUrl.href.split('#')[0] + targetUrl;
+      } else if (targetUrl.indexOf('filep') > -1) {
+          // for toc links
+        targetUrl=targetUrl.substring(targetUrl.indexOf('filep'));
+        const href = targetUrl.split('#')[0];
+        const currentTargetPlayListIndex = props.src.playListURL.findIndex((el) => {
+          if (el.href) {
+            return el.href.indexOf(href) >= 0;
+          }
+        });
+        targetUrl = props.src.baseUrl + props.src.playListURL[currentTargetPlayListIndex].href.split('#')[0] + (targetUrl.split('#')[1] ? `#${targetUrl.split('#')[1]}` : '');
+      }
+      const externalLinkPreviewProps = {
+        title: element.innerText.trim().length ? element.innerText : ' ',
+        src: targetUrl,
+        type: 'External Links',
+        node: element
+      };
+      const component = (<MuiThemeProvider muiTheme={pageViewerRef.muiTheme}>
+        <IntlProvider locale="en">
+          <ExternalLinkPreview
+            title={externalLinkPreviewProps.title}
+            src={externalLinkPreviewProps.src}
+            type={externalLinkPreviewProps.type}
+                          />
+        </IntlProvider>
+      </MuiThemeProvider>);
+      const temp = document.createElement('span');
+      // temp.setAttribute('class', classList.join(' '));
+      ReactDOM.render(component, temp);
+      pageViewerRef.nodesTobeUnmounted.push(temp);
+      temp.getElementsByTagName('a')[0].setAttribute('from-external-preview', true);
+      temp.getElementsByTagName('a')[0].setAttribute('class-list', [...classList].join(' '));
+      temp.getElementsByTagName('a')[0].style.cursor = 'pointer';
+      temp.getElementsByTagName('a')[0].innerHTML = element.innerHTML;
+      element.parentNode.replaceChild(temp.getElementsByTagName('a')[0], element);
+      // element.innerHTML=eleInnerHtml;
+    }catch (e) {
 
-    if (targetUrl.indexOf('#') === 0) {
-      targetUrl = props.src.baseUrl + state.currentStatePlayListUrl.href.split('#')[0] + targetUrl;
-    } else if (targetUrl.indexOf('filep') > -1) {
-        // for toc links
-      targetUrl=targetUrl.substring(targetUrl.indexOf('filep'));
-      const href = targetUrl.split('#')[0];
-      const currentTargetPlayListIndex = props.src.playListURL.findIndex((el) => {
-        if (el.href) {
-          return el.href.indexOf(href) >= 0;
-        }
-      });
-      targetUrl = props.src.baseUrl + props.src.playListURL[currentTargetPlayListIndex].href.split('#')[0] + (targetUrl.split('#')[1] ? `#${targetUrl.split('#')[1]}` : '');
     }
-    const externalLinkPreviewProps = {
-      title: element.innerText.trim().length ? element.innerText : ' ',
-      src: targetUrl,
-      type: 'External Links',
-      node: element
-    };
-    const component = (<MuiThemeProvider muiTheme={pageViewerRef.muiTheme}>
-      <IntlProvider locale="en">
-        <ExternalLinkPreview
-          title={externalLinkPreviewProps.title}
-          src={externalLinkPreviewProps.src}
-          type={externalLinkPreviewProps.type}
-                        />
-      </IntlProvider>
-    </MuiThemeProvider>);
-    const temp = document.createElement('span');
-    // temp.setAttribute('class', classList.join(' '));
-    ReactDOM.render(component, temp);
-    pageViewerRef.nodesTobeUnmounted.push(temp);
-    temp.getElementsByTagName('a')[0].setAttribute('from-external-preview', true);
-    temp.getElementsByTagName('a')[0].setAttribute('class-list', [...classList].join(' '));
-    temp.getElementsByTagName('a')[0].style.cursor = 'pointer';
-    temp.getElementsByTagName('a')[0].innerHTML = element.innerHTML;
-    element.parentNode.replaceChild(temp.getElementsByTagName('a')[0], element);
-    // element.innerHTML=eleInnerHtml;
-
   };
   const imageLightBoxSettings = () => {
     try {
