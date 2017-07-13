@@ -69,7 +69,10 @@ class PopUpInfo extends Component {
                 box.style.left = (element.getBoundingClientRect().left - 50 +  elementOffsetWidth) + 'px';
               }
             }
-            
+            if (!props.popOverCollection.popOverTitle) {
+              // To align moreInfo popup
+              document.getElementsByClassName('mm-popup__box__body')[0].classList.add('reAlignPopUp');
+            }
             box.style.margin = 0;
             box.style.opacity = 1;
           }
@@ -83,7 +86,7 @@ class PopUpInfo extends Component {
   }
 
   checkValidURL = (str) => {
-    console.log(str)
+    //console.log(str)
     const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
     if (!regex .test(str)) {      
       document.getElementsByClassName('mm-popup__box')[0].style.width = '400px';
