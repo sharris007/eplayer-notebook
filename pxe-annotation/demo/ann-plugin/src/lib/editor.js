@@ -68,13 +68,20 @@ Annotator.Editor = (function(_super) {
     this.annotation = {};
   }
   Editor.prototype.unShareAnnotation=function() {
-    this.annotation.color=this.annotation.lastColor;
-    this.annotation.shareable=false;
-    $(this.annotation.highlights).css('background', this.annotation.color);
-    $('.annotator-color').removeClass('active');
-    $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
-    $('.annotator-color-container').removeClass('disabled-save');
-    $(this.annotation.highlights).removeClass('sharedNote');
+     this.annotation.color=this.annotation.lastColor;
+     if(this.annotation.color == '#FFD232') { //Yellow
+         annBgColor = 'rgba(248, 230, 0, 0.5)';
+     } else if (this.annotation.color == '#55DF49') { //Green
+         annBgColor = 'rgba(143, 218, 60, 0.4)';
+     } else if (this.annotation.color == '#FC92CF') { //Pink
+         annBgColor = 'rgba(254, 132, 201, 0.5)';
+     } 
+     this.annotation.shareable=false;
+     $(this.annotation.highlights).css('background', annBgColor);
+     $('.annotator-color').removeClass('active');
+     $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
+     $('.annotator-color-container').removeClass('disabled-save');
+     $(this.annotation.highlights).removeClass('sharedNote');
   }
   Editor.prototype.onShareClick=function(event) {
     var that=this;
