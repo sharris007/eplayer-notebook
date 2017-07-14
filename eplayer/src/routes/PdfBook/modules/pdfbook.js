@@ -31,6 +31,8 @@ export const RECIEVE_HIGHLIGHTS = 'RECIEVE_HIGHLIGHTS';
 export const REMOVE_HIGHLIGHT = 'REMOVE_HIGHLIGHT';
 export const LOAD_ASSERT_URL = 'LOAD_ASSERT_URL';
 export const EDIT_HIGHLIGHT = 'EDIT_HIGHLIGHT';
+export const REQUEST_REGIONS = 'REQUEST_REGIONS';
+export const RECEIVE_REGIONS = 'RECEIVE_REGIONS';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -48,6 +50,8 @@ export function request(component) {
       return { type: REQUEST_TOC };
     case 'highlights' :
       return { type: REQUEST_HIGHLIGHTS };
+    case 'regions' :
+      return {type: REQUEST_REGIONS};
     default:
       return {};
   }
@@ -456,6 +460,84 @@ export function fetchPageInfo(userid, userroleid, bookid, bookeditionid,
     // loadPdfPageCallback(pageIndexToLoad);
     });
 }
+export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,bookServerURL){
+  const bookState = {
+    regions: [],
+    isFetching: {
+      regions: true
+    }
+  };
+  return (dispatch) => {
+    dispatch(request('regions'));
+    return axios.get(''+bookServerURL+'/ebook/ipad/getregionsbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&bookeditionid='+bookeditionid+'&authkey='+sessionKey+'&outputformat=JSON',
+  {
+  timeout: 20000
+  }).then((response) => {
+      if (response.status >= 400) 
+      {
+        console.log(`fetchRegionsInfo error: ${response.statusText}`);
+      }
+      else if(response.data.length) 
+      {
+          for (var i=0;i<response.data[0].regionsList.length;i++)
+          {
+          response.data.forEach((region) => {
+          const regionObj= {};
+          regionObj.regionID = region.regionsList[i].regionID;
+          regionObj.globalBookID=region.regionsList[i].globalBookID;
+          regionObj.regionTypeID=region.regionsList[i].regionTypeID;
+          regionObj.guid=region.regionsList[i].guid;
+          regionObj.roleTypeID=region.regionsList[i].roleTypeID;
+          regionObj.isicon=region.regionsList[i].isicon;
+          regionObj.iconTypeID=region.regionsList[i].iconTypeID;
+          regionObj.page=region.regionsList[i].page;
+          regionObj.x=region.regionsList[i].x;
+          regionObj.y=region.regionsList[i].y;
+          regionObj.width=region.regionsList[i].width;
+          regionObj.height=region.regionsList[i].height;
+          regionObj.name=region.regionsList[i].name;
+          regionObj.description=region.regionsList[i].description;
+          regionObj.note=region.regionsList[i].note;
+          regionObj.linkSearch=region.regionsList[i].linkSearch;
+          regionObj.linkTypeID=region.regionsList[i].linkTypeID;
+          regionObj.linkTypeLocation=region.regionsList[i].linkTypeLocation;
+          regionObj.linkValue=region.regionsList[i].linkValue;
+          regionObj.linkX=region.regionsList[i].linkX;
+          regionObj.linkY=region.regionsList[i].linkY;
+          regionObj.linkWidth=region.regionsList[i].linkWidth;
+          regionObj.linkHeight=region.regionsList[i].linkHeight;
+          regionObj.mediaWidth=region.regionsList[i].mediaWidth;
+          regionObj.mediaHeight=region.regionsList[i].mediaHeight;
+          regionObj.glossaryEntryID=region.regionsList[i].glossaryEntryID;
+          regionObj.imagePath=region.regionsList[i].imagePath;
+          regionObj.useCustom=region.regionsList[i].useCustom;
+          regionObj.readyToPublish=region.regionsList[i].readyToPublish;
+          regionObj.sequenceId=region.regionsList[i].sequenceId;
+          regionObj.platformID=region.regionsList[i].platformID;
+          regionObj.isIpad=region.regionsList[i].isIpad;
+          regionObj.hasPlatformIcon=region.regionsList[i].hasPlatformIcon;
+          regionObj.regionType=region.regionsList[i].regionType;
+          regionObj.linkType=region.regionsList[i].linkType;
+          regionObj.iconType=region.regionsList[i].iconType;
+          regionObj.roleType=region.regionsList[i].roleType;
+          regionObj.alternateMediaLink=region.regionsList[i].alternateMediaLink;
+          regionObj.transparent=region.regionsList[i].transparent;
+          regionObj.pearsonSmartPlayer=region.regionsList[i].pearsonSmartPlayer;
+          regionObj.downloadable=region.regionsList[i].downloadable;
+          regionObj.isBrowserView=region.regionsList[i].isBrowserView;
+          regionObj.assetSize=region.regionsList[i].assetSize;
+          regionObj.assetLastModifiedDate=region.regionsList[i].assetLastModifiedDate;
+          regionObj.downloadURL=region.regionsList[i].downloadURL;
+          bookState.regions.push(regionObj);
+        
+        })
+        }
+      }
+      bookState.isFetching.regions=false;
+      return dispatch({ type: RECEIVE_REGIONS,bookState});
+    })
+    }
+  }
  /* Created Action creator for fetching user information. */
 export function fetchUserInfo(globaluserid, bookid, uid, ubd, ubsd, sessionKey, bookServerURL) {
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
@@ -916,7 +998,22 @@ const ACTION_HANDLERS = {
       assertUrls: state.bookinfo.assertUrls === undefined ?
       action.bookState.bookInfo.assertUrls : state.bookinfo.assertUrls.concat(action.bookState.bookInfo.assertUrls)
     }
-  })
+  }),
+  [REQUEST_REGIONS]: state => ({
+    ...state,
+    isFetching: {
+      ...state.isFetching,
+      regions: true
+    }
+  }),
+  [RECEIVE_REGIONS]: (state, action) => ({
+    ...state,
+    regions: action.bookState.regions,
+    isFetching: {
+      ...state.isFetching,
+      regions: action.bookState.isFetching.regions
+    }
+  }),
 };
 
 // ------------------------------------
@@ -926,6 +1023,7 @@ const initialState = {
   annotations: [],
   bookmarks: [],
   annTotalData: [],
+  regions:[],
   preferences: {},
   toc: {},
   viewer: {},
@@ -934,6 +1032,7 @@ const initialState = {
     preferences: false,
     bookmarks: false,
     toc: false,
+    regions: false,
     viewer: false
   },
   error: null,

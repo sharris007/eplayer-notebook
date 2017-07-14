@@ -99,6 +99,7 @@ used for before mounting occurs. */
           PdfbookMessages={PdfbookMessages}
           loadAssertUrl={this.props.loadAssertUrl}
           editHighlightUsingReaderApi={this.props.editHighlightUsingReaderApi}
+          fetchRegionsInfo={this.props.fetchRegionsInfo}
         />);
     }
 

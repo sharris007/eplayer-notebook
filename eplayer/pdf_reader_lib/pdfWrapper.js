@@ -808,7 +808,144 @@ function getAssetURLForPDFDownload(config,cb){
 
           }
       }
-          
+
+      _this.handleRegionClick = function(event) {
+        var hotspotID=this.getAttribute("id");
+        _this.triggerEvent("regionClicked",hotspotID);
+        return false;
+      }
+
+
+
+      _this.loadRegions = function(hotspots) {
+        console.log("Hotspots Loading ");
+        if(hotspots.length > 0) {
+          for (var i = 0; i < hotspots.length; i++) {
+            hotspots[i].addEventListener('click', _this.handleRegionClick);
+          }
+      }
+
+        var highlightNodes = document.querySelectorAll('.pdfHighlight');
+        for(var highlightIndex = 0; highlightIndex < highlightNodes.length; highlightIndex++) {
+          var Id = highlightNodes[highlightIndex].getAttribute('id');
+          var currenthighlightNode = $('.pdfHighlight#' + Id);
+          if(currenthighlightNode.length > 1) {
+            var node = document.querySelector('.pdfHighlight#' + Id);
+            document.querySelector('.pdfHighlight#' + Id).parentNode.removeChild(node);
+          }
+          }
+      }
+
+
+
+      function getRegionIcon(iconType){
+        var icon="";
+        switch(iconType){
+          case 1: icon = "defaultImage.jpg";
+                  break;
+          case 2: icon = "audio.png";
+                  break;
+          case 3: icon = "email.png";
+                  break;
+          case 4: icon = "excel.png";
+                  break;
+          case 5: icon = "media.png";
+                  break;
+          case 6: icon = "pdf.png";
+                  break;
+          case 7: icon = "powerpoint.png";
+                  break;
+          case 8: icon = "url.png";
+                  break;
+          case 9: icon = "video.png";
+                  break;
+          case 10: icon = "word.png";
+                  break;
+          case 11: icon = "custom1.png";
+                  break;
+          case 12: icon = "custom2.png";
+                  break;
+          case 13: icon = "custom3.png";
+                  break;
+          case 14: icon = "custom4.png";
+                  break;
+          case 15: icon = "custom5.png";
+                  break;
+          case 16: icon = "custom6.png";
+                  break;
+          case 17: icon = "custom7.png";
+                  break;
+          case 18: icon = "custom8.png";
+                  break;
+          case 19: icon = "custom9.png";
+                  break;
+          case 20: icon = "custom10.png";
+                  break;
+          case 21: icon = "custom11.png";
+                  break;
+          case 22: icon = "custom12.png";
+                  break;
+          case 23: icon = "toolbar1.png";
+                  break;
+          case 24: icon = "toolbar2.png";
+                  break;
+          case 25: icon = "toolbar3.png";
+                  break;
+          case 26: icon = "ltilink.png";
+                  break;
+          case 27: icon = "ipadapp.png";
+                  break;
+          case 28: icon = "jazzasset.png";
+                  break;              
+          default : icon = "defaultImage.jpg";
+                  break;                                                                                               
+        }
+        return icon;
+      }
+
+
+      displayRegions = function(hotspots) {
+        if(hotspots.length>0)
+        {
+          var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
+           var pageLeft = $("#docViewer_ViewContainer_BG_0").offset().left;
+          // var pageTop = $("#docViewer_ViewContainer").offset().top;
+          // v("#docViewer_ViewContainer").offset().left;
+          var regionType,mySpan,icon,iconArt,regionElement;
+          for(var i=0;i<hotspots.length;i++)
+            {              
+              regionType=hotspots[i].iconTypeID;
+              regionElement=document.createElement('div');
+              regionElement.setAttribute('id',hotspots[i].regionID);
+              if(hotspots[i].useCustom == 'Y' || hotspots[i].useCustom == 'y')
+              {
+                iconArt = null;
+              }
+              else
+              {
+                icon=getRegionIcon(regionType);
+                iconArt= '/images/' + icon ;
+              }
+              regionElement.style.left= pageLeft  + hotspots[i].x  + 'px';
+              regionElement.style.top= hotspots[i].y + 60+ 'px';
+              regionElement.style.width=hotspots[i].width + 'px';
+              regionElement.style.height=hotspots[i].height + 'px';
+              regionElement.style.backgroundImage = 'url('+iconArt+')';
+              regionElement.style.backgroundSize = 'cover';
+              regionElement.className='hotspot';
+              mySpan = document.createElement('span')
+              mySpan.className='tooltiptext';
+              mySpan.innerHTML = hotspots[i].name;
+              regionElement.onclick =function(event) { 
+                  _this.triggerEvent("regionClicked", event.currentTarget.id);                                  
+              }
+              regionElement.appendChild(mySpan);
+              parentPageElement.appendChild(regionElement);
+            }
+        }
+      }
+
+
       _this.getCurrentPage = function() {
          try{
           var currPage = WebPDF.ViewerInstance.getCurPageIndex();
@@ -1038,6 +1175,11 @@ function getAssetURLForPDFDownload(config,cb){
         {
           _this.removeHighlightElement(id);
         },
+
+        displayRegions:function(hotspots){
+          var currPage = displayRegions(hotspots);
+        },     
+
         /*Get the total Number of Pages in the PDF*/    
          getPageCount: function() {
           var pageCount = _this.getPageCount();
