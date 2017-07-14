@@ -10,6 +10,7 @@ const path = require('path');
 // const jquery = require('jquery');
 
 const annotationLibPath = path.join(__dirname, '../node_modules/pxe-annotation/demo/ann-plugin/output');
+const webInfPath        = path.join(__dirname, '../WEB-INF');
 
 const paths = config.utils_paths;
 const __DEV__ = config.globals.__DEV__;
@@ -65,7 +66,8 @@ webpackConfig.plugins = [
   }),
   new CopyWebpackPlugin([
       { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' },
-      { from: annotationLibPath, to: 'annotation-lib' }/* ,
+      { from: annotationLibPath, to: 'annotation-lib' },
+      { from: webInfPath, to: 'WEB-INF' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ]),
   new webpack.ProvidePlugin({

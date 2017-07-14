@@ -240,7 +240,7 @@ class DrawerComponent extends React.Component {
     }
     setTimeout(() => {
      this.fixSwipableHeight();
-   }, 100);
+    }, 100);
   }
   
 

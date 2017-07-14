@@ -56,36 +56,36 @@ export const resources = {
       local        : 'https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js',
       dev          : 'https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js',
       qa           : 'https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js',
-      stg          : 'https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js',
-      prd          : 'https://pi.pearsoned.com/v1/piapi/login/js/session.js'
+      stage        : 'https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js',
+      prod         : 'https://pi.pearsoned.com/v1/piapi/login/js/session.js'
     },
     clientId :{
       local        :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
       dev          :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
       qa           :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      stg          :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      prd          :"AT8R4irZrJRPstMMUdb8XaqOvbRJpqs4",
+      stage        :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
+      prod         :"AT8R4irZrJRPstMMUdb8XaqOvbRJpqs4",
     },
     consoleUrl :{
       local        :"https://console-qa.pearsoned.com",
       dev          :"https://console-qa.pearsoned.com",
       qa           :"https://console-qa.pearsoned.com",
       stage        :"https://console-stg.pearson.com",
-      prd          :"https://console.pearson.com",
+      prod         :"https://console.pearson.com",
     },
     piUserProfileApi:{
       local        :"https://pi-tst.pearsoned.com/v1/piapi-test",
       dev          :"https://pi-tst.pearsoned.com/v1/piapi-test",
       qa           :"https://pi-tst.pearsoned.com/v1/piapi-test",
       stage        :"https://int-piapi-internal.stg-openclass.com",
-      prd          :"https://piapi-internal.openclass.com",
+      prod         :"https://piapi-internal.openclass.com",
     },
     authDomainUrl :{
       local        :"https://etext-qa-stg.pearson.com",
       dev          :"https://etext-qa-stg.pearson.com",
       qa           :"https://etext-qa-stg.pearson.com",
       stage        :"https://etext-stg.pearson.com",
-      prd          :"https://etext.pearson.com",
+      prod         :"https://etext.pearson.com",
     },
 
   }
