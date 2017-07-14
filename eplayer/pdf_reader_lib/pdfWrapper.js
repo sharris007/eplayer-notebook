@@ -924,7 +924,7 @@ function getAssetURLForPDFDownload(config,cb){
               else
               {
                 icon=getRegionIcon(regionType);
-                iconArt= '/images/' + icon ;
+                iconArt= '/eplayer/images/' + icon ;
               }
               regionElement.style.left= pageLeft  + hotspots[i].x  + 'px';
               regionElement.style.top= hotspots[i].y + 60+ 'px';
