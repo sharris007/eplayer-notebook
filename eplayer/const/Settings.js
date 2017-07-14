@@ -30,7 +30,7 @@ export const resources = {
       dev          : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses',
       qa           : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot/courses',
       stage        : 'https://stpaperapi.stg-prsn.com/etext/v2/courseboot/courses',
-      prod         : 'https://stpaperapi.prsn.com/etext/v2/courseboot/courses'
+      prod         : 'https://stpaperapi.prd-prsn.com/etext/v2/courseboot/courses'
     },
     etextSearchUrl: {
       local        : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
