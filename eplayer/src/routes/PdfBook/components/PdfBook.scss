@@ -37,3 +37,13 @@ position: absolute;
 .hideViewerContent{
     visibility: hidden
 }
+.hotspotContent {
+  position: absolute;
+  margin-top:300px;
+  margin-bottom:100px;
+  left: 50%;
+  right:50%;
+  height:150px;
+  width:150px;
+  z-index : 100050;
+}

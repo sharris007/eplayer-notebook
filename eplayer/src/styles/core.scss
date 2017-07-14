@@ -168,5 +168,29 @@ svg[class$="-24"] {
   #pxe-viewer .book-container {
       margin-top: 66px;
   }
+  .hotspot {
+  position: absolute;
+  }
+
+  .hotspot .tooltiptext {
+    visibility: hidden;
+    width: auto;
+    background-color: #F2E9BD;
+    color: #black;
+    text-align: center;
+    position: absolute;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    left: 100%;
+    top: 30%;
+    font-size: 13px;
+    font-family: inherit;
+  }
+
+  .hotspot:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
   
  

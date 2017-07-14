@@ -10,6 +10,8 @@ import Header from '../../../components/Header';/* Importing header for padfPage
 import './PdfBook.scss';/* Importing the css for PdfBook. */
 import { languages } from '../../../../locale_config/translations/index';
 import { eT1Contants } from '../../../components/common/constants';
+import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
+import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -119,6 +121,7 @@ export class PdfBookReader extends Component {
     };
     __pdfInstance.registerEvent('textSelected', this.createHighlight1.bind(this));
     __pdfInstance.registerEvent('highlightClicked', this.handleHighlightClick.bind(this));
+        __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
     const data = this.state.data;
@@ -139,6 +142,16 @@ export class PdfBookReader extends Component {
      // this.setState({currPageIndex : currentPageIndex});
     if (pdfEvent === 'pageChanged') {
       sessionStorage.setItem('currentPageOrder', this.state.currPageIndex);
+      this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,serverDetails).then(() => {
+        if(this.props.book.regions.length > 0 )
+        {
+          __pdfInstance.displayRegions(this.props.book.regions);
+        }
+        else
+        {
+          console.log("None");
+        }
+      });
           // const currentPageOrder = 2;
           // const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageOrder);
           /* var data = this.state.data;
@@ -455,6 +468,140 @@ export class PdfBookReader extends Component {
     __pdfInstance.setCurrentZoomLevel(level);
     this.displayHighlight();
   }
+  onHotspotClose() {
+    if($('#hotspot').length > 0)
+    {
+      $('#hotspot').empty();
+    }
+  }
+goToPageNumber = (pageNo) => {
+  var totalPagesToHit = this.getPageOrdersToGetPageDetails(pageNo);
+  var currentPage = find(pages,page => page.pagenumber === pageNo)
+  if(currentPage == undefined)
+  {
+    this.props.fetchPageInfo(this.props.book.userInfo.userid,this.props.params.bookId,this.props.params.bookId, this.props.book.bookinfo.book.bookeditionid,
+    pageNo,totalPagesToHit,ssoKey,serverDetails, this.loadPdfPage,this.props.book.bookinfo.book.roleTypeID)
+    .then(() => {
+      pages = pages.concat(this.props.book.bookinfo.pages);
+      sessionStorage.setItem('pages',JSON.stringify(pages));
+      currentPage = find(pages,page => page.pagenumber == pageNo);
+      this.goToPageCallback(currentPage.pageorder);
+    });
+  }
+  else
+  {
+    this.goToPageCallback(currentPage.pageorder);
+  }
+  
+}
+/*Method to render the clicked region*/
+
+  renderHotspot = (hotspotDetails) => {
+    var regionComponent = " ";
+    var hotspotData;
+    switch(hotspotDetails.regionTypeID) {
+      case 1: hotspotData = {
+                audioSrc :hotspotDetails.linkValue,
+                audioTitle :hotspotDetails.name
+              };
+              regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
+              break;
+      case 2:
+      case 10: this.goToPageNumber(Number(hotspotDetails.linkValue));
+               break;
+      case 6: hotspotData = {
+                alt : hotspotDetails.name,
+                src : hotspotDetails.linkValue,
+                width : hotspotDetails.mediaWidth,
+                height : hotspotDetails.mediaHeight,
+                title : hotspotDetails.name,
+                items : hotspotDetails
+              };
+              regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
+              break;
+      case 12:hotspotData = {
+                title : hotspotDetails.name,
+                // src : hotspotDetails.linkValue,
+                // src : 'http://media.pearsoncmg.com/cmg/jazz_sample_content/videos/m4v_test_1.m4v',
+                 src: '//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm',
+                caption : 'Video is here',
+                id : hotspotDetails.regionID,
+                thumbnail : {
+                  src : '/images/videoThumbnail.jpg',
+                },
+                "transcript": [
+                {
+                  "id": "urn:pearson:text:0166E52D-5ABA-4341-999F-C3ACE48CF27B",
+                  "lang": "en",
+                  "type": "transcript",
+                  "src": "//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm?mimeType=vtt&lang=en"
+                }
+              ],
+                alt : hotspotDetails.name,
+              };
+              regionComponent = <VideoPlayerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
+              break;
+      case 9:
+      case 13:
+      case 15: var docLink=hotspotDetails.linkValue;
+               var iframe = document.getElementById('document');
+               iframe.src =  docLink;
+               break;
+      case 11: 
+      case 14: hotspotData = {
+                 title : hotspotDetails.name,
+                 src : hotspotDetails.linkValue
+               };
+               regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={(this.onHotspotClose)} />;
+               break;
+      case 16: var role = this.props.book.bookinfo.book.roleTypeID;
+               var courseId =0 ;
+               var userId = this.props.book.userInfo.userid;
+               var ltiLink = hotspotDetails.linkValue;
+               var ltiUrl = serverDetails + 'ebook/toolLaunch.do?json=' + ltiLink + '&contextid' + courseId + '&role' + role + '&userlogin' + userId ;
+               // var ltiUrl ="https://view.cert1.ebookplus.pearsoncmg.com/ebook/toolLaunch.do?json=handler_urn:pearson/xl_platform/slink/x-pearson-xl_platform,targetId:assignedhomework&contextid=82299&role=3&userlogin=115314";
+               window.open(ltiUrl,"_blank");
+               break;
+      default :regionComponent = null;
+               break;
+    };
+    return regionComponent;
+  }
+
+/*Method to update the state with details of the clicked region*/
+  handleRegionClick(hotspotID) {
+    if(this.state.regionData)
+    {
+      this.setState({regionData : null});
+    }
+    if(this.props.book.regions.length > 0 )
+    {
+      for(var i=0; i < this.props.book.regions.length ; i++)
+      {
+          if(hotspotID == this.props.book.regions[i].regionID)
+          {
+            var regionDetails = this.props.book.regions[i];
+            if (regionDetails.regionTypeID == 2 || regionDetails.regionTypeID == 7 || regionDetails.regionTypeID == 10 || regionDetails.regionTypeID == 14)
+            {
+              this.renderHotspot(regionDetails);
+            }
+            else if(regionDetails.regionTypeID == 9 || regionDetails.regionTypeID ==13 || regionDetails.regionTypeID ==15)
+            {
+              var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
+              var fileFrame=document.createElement("IFRAME");
+              fileFrame.style.display='none';
+              fileFrame.setAttribute('id','document');
+              parentPageElement.appendChild(fileFrame);
+            }
+            else
+            {
+              this.setState({regionData : regionDetails});
+            }
+            break;
+          }
+      }    
+    }    
+  }
  /* Method for creating highLight for selected area by user. */
   createHighlight1(highlightData) {
     /* const listValue = highlightData.length;
@@ -689,6 +836,7 @@ export class PdfBookReader extends Component {
           </div>
         </div>
         <div>
+        {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
           <div id="main">
             <div id="mainContainer" className="pdf-fwr-pc-main">
               <div id="right" className="pdf-fwr-pc-right">
