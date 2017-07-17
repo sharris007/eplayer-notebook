@@ -494,14 +494,27 @@ goToPageNumber = (pageNo) => {
   }
   
 }
+
+/*
+Convert http urls into https
+*/
+createHttps = (uri) => {
+  if(/^http:\/\//i.test(uri))
+  {
+    var link=uri.substring(4);
+    uri = 'https' + link ;
+  }
+  return uri;
+}
 /*Method to render the clicked region*/
 
   renderHotspot = (hotspotDetails) => {
     var regionComponent = " ";
     var hotspotData;
     switch(hotspotDetails.regionTypeID) {
-      case 1: hotspotData = {
-                audioSrc :hotspotDetails.linkValue,
+      case 1:   var source=this.createHttps(hotspotDetails.linkValue);
+                hotspotData = {
+                audioSrc :source,
                 audioTitle :hotspotDetails.name
               };
               regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
@@ -509,9 +522,10 @@ goToPageNumber = (pageNo) => {
       case 2:
       case 10: this.goToPageNumber(Number(hotspotDetails.linkValue));
                break;
-      case 6: hotspotData = {
+      case 6: var source=this.createHttps(hotspotDetails.linkValue);
+              hotspotData = {
                 alt : hotspotDetails.name,
-                src : hotspotDetails.linkValue,
+                src : source,
                 width : hotspotDetails.mediaWidth,
                 height : hotspotDetails.mediaHeight,
                 title : hotspotDetails.name,
@@ -519,15 +533,16 @@ goToPageNumber = (pageNo) => {
               };
               regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
               break;
-      case 12:hotspotData = {
+      case 12:  var source=this.createHttps(hotspotDetails.linkValue);
+                hotspotData = {
                 title : hotspotDetails.name,
                 // src : hotspotDetails.linkValue,
-                // src : 'http://media.pearsoncmg.com/cmg/jazz_sample_content/videos/m4v_test_1.m4v',
-                 src: '//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm',
+                 // src: '//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm',
+                 src : source,
                 caption : 'Video is here',
                 id : hotspotDetails.regionID,
                 thumbnail : {
-                  src : '/images/videoThumbnail.jpg',
+                  src : null,
                 },
                 "transcript": [
                 {
@@ -543,14 +558,16 @@ goToPageNumber = (pageNo) => {
               break;
       case 9:
       case 13:
-      case 15: var docLink=hotspotDetails.linkValue;
+      case 15: var source=this.createHttps(hotspotDetails.linkValue);
+               var docLink=source;
                var iframe = document.getElementById('document');
                iframe.src =  docLink;
                break;
       case 11: 
-      case 14: hotspotData = {
+      case 14: var source=this.createHttps(hotspotDetails.linkValue);
+               hotspotData = {
                  title : hotspotDetails.name,
-                 src : hotspotDetails.linkValue
+                 src : source
                };
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={(this.onHotspotClose)} />;
                break;
