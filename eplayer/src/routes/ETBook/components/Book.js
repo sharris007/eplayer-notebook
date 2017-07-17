@@ -313,6 +313,7 @@ export class Book extends Component {
     }
     currentData.uri  = currentData.href;
     currentData.label = currentData.title;
+    document.title = currentData.title;
     const playpageDetails  = this.state.pageDetails ; 
     playpageDetails.currentPageURL =  currentData;
     if(searchText) {
