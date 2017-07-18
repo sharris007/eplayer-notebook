@@ -510,9 +510,9 @@ createHttps = (uri) => {
 
   renderHotspot = (hotspotDetails) => {
     var regionComponent = " ";
-    var hotspotData;
+    var hotspotData,source;
     switch(hotspotDetails.regionTypeID) {
-      case 1:   var source=this.createHttps(hotspotDetails.linkValue);
+      case 1:   source=this.createHttps(hotspotDetails.linkValue);
                 hotspotData = {
                 audioSrc :source,
                 audioTitle :hotspotDetails.name
@@ -522,7 +522,7 @@ createHttps = (uri) => {
       case 2:
       case 10: this.goToPageNumber(Number(hotspotDetails.linkValue));
                break;
-      case 6: var source=this.createHttps(hotspotDetails.linkValue);
+      case 6: source=this.createHttps(hotspotDetails.linkValue);
               hotspotData = {
                 alt : hotspotDetails.name,
                 src : source,
@@ -533,12 +533,12 @@ createHttps = (uri) => {
               };
               regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
               break;
-      case 12:  var source=this.createHttps(hotspotDetails.linkValue);
+      case 12:  source=this.createHttps(hotspotDetails.linkValue);
                 hotspotData = {
                 title : hotspotDetails.name,
                 // src : hotspotDetails.linkValue,
                  // src: '//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm',
-                 src : source,
+                src : source,
                 caption : 'Video is here',
                 id : hotspotDetails.regionID,
                 thumbnail : {
@@ -558,25 +558,27 @@ createHttps = (uri) => {
               break;
       case 9:
       case 13:
-      case 15: var source=this.createHttps(hotspotDetails.linkValue);
+      case 15: source=this.createHttps(hotspotDetails.linkValue);
                var docLink=source;
                var iframe = document.getElementById('document');
                iframe.src =  docLink;
                break;
-      case 11: 
-      case 14: var source=this.createHttps(hotspotDetails.linkValue);
+      case 11: source=this.createHttps(hotspotDetails.linkValue);
                hotspotData = {
                  title : hotspotDetails.name,
                  src : source
                };
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={(this.onHotspotClose)} />;
                break;
+      case 14: source=this.createHttps(hotspotDetails.linkValue);
+               window.open(source,"_blank");
+               break;
       case 16: var role = this.props.book.bookinfo.book.roleTypeID;
                var courseId =0 ;
                var userId = this.props.book.userInfo.userid;
                var ltiLink = hotspotDetails.linkValue;
-               var ltiUrl = serverDetails + 'ebook/toolLaunch.do?json=' + ltiLink + '&contextid' + courseId + '&role' + role + '&userlogin' + userId ;
-               // var ltiUrl ="https://view.cert1.ebookplus.pearsoncmg.com/ebook/toolLaunch.do?json=handler_urn:pearson/xl_platform/slink/x-pearson-xl_platform,targetId:assignedhomework&contextid=82299&role=3&userlogin=115314";
+               // var ltiUrl = serverDetails + 'ebook/toolLaunch.do?json=' + ltiLink + '&contextid' + courseId + '&role' + role + '&userlogin' + userId ;
+               var ltiUrl ="https://view.cert1.ebookplus.pearsoncmg.com/ebook/toolLaunch.do?json=handler_urn:pearson/xl_platform/slink/x-pearson-xl_platform,targetId:assignedhomework&contextid=82299&role=3&userlogin=115314";
                window.open(ltiUrl,"_blank");
                break;
       default :regionComponent = null;
@@ -609,6 +611,7 @@ createHttps = (uri) => {
               fileFrame.style.display='none';
               fileFrame.setAttribute('id','document');
               parentPageElement.appendChild(fileFrame);
+              this.renderHotspot(regionDetails);
             }
             else
             {
