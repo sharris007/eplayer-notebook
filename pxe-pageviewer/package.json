@@ -1,6 +1,6 @@
 {
   "name": "@pearson-incubator/pxe-pageviewer",
-  "version": "1.0.57",
+  "version": "1.0.60",
   "description": "",
   "main": "./main.js",
   "scripts": {
