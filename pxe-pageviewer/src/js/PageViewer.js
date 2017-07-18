@@ -135,21 +135,21 @@ class PageViewer extends React.Component {
       }
       // this.setState({pageLoading:false});
       //callback
-      setTimeout(function() {
-        let ele = document.getElementById('book-container');  
-        var scripts = ele.getElementsByTagName('script');
-        var scriptsArr = [];
+      setTimeout(() => {
+        const ele = document.getElementById('book-container');
+        const scripts = ele.getElementsByTagName('script');
+        const scriptsArr = [];
         for (let i = 0; i < scripts.length; i++) {
           if (scripts[i].src.indexOf('jquery') === -1 && scripts[i].src.indexOf('load_player') === -1 && scripts[i].type != 'math/mml'
-            && scripts[i].src.indexOf('format_lg_obj') === -1 && scripts[i].src.indexOf('epub.js') === -1) {
+            && scripts[i].src.indexOf('format_lg_obj') === -1 && scripts[i].src.indexOf('epub.js') === -1 && scripts[i].src.indexOf('e2app.js') === -1) {
             scriptsArr.push(scripts[i]);
           }
         }
         for (let i = 0; i < scriptsArr.length; i++) {
-          let currentScript = scriptsArr[i];
-          let scriptTag = document.createElement('script');
+          const currentScript = scriptsArr[i];
+          const scriptTag = document.createElement('script');
           for (let j = 0; j < currentScript.attributes.length; j++) {
-            var attr = currentScript.attributes[j];
+            const attr = currentScript.attributes[j];
             scriptTag.setAttribute(attr.name, attr.value);
           }
           if (!scriptTag.hasAttribute('loaded')) {
