@@ -1,5 +1,7 @@
 var assert = require('assert');
 var request = require('request');
+import { LOGIN_NAME, LOGIN_PASSWORD, BOOK_NAME, NOTES_TEXT, SEARCH_TEXT} from './testConstant'
+
 
 describe('LoginPage', function() {
 
@@ -8,7 +10,7 @@ describe('LoginPage', function() {
 
       browser.url('/eplayer/login');
 
-      browser.setValue('input[name="loginname"]', 'amit_qa_edu1');
+      browser.setValue('input[name="loginname"]', LOGIN_NAME);
       browser.setValue('input[name="password"]', 'Pa55word111');
       console.log("Username and password Entered");
 
@@ -42,7 +44,7 @@ describe('LoginPage', function() {
       browser.url('/eplayer/login');
 
       browser.setValue('input[name="loginname"]', '');
-      browser.setValue('input[name="password"]', 'Pa55word');
+      browser.setValue('input[name="password"]', LOGIN_PASSWORD);
       console.log("Username and password");
 
       browser.submitForm('input[name="loginname"]');
@@ -77,8 +79,8 @@ describe('LoginPage', function() {
 
       browser.url('/eplayer/login');
 
-      browser.setValue('form input[name="loginname"]', 'amit_qa_edu2');
-      browser.setValue('form input[name="password"]', 'Pa55word');
+      browser.setValue('form input[name="loginname"]', LOGIN_NAME);
+      browser.setValue('form input[name="password"]', LOGIN_PASSWORD);
       console.log("Username and password");
 
       browser.submitForm('form input[name="loginname"]');

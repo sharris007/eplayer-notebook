@@ -15,7 +15,7 @@ exports.config = {
 
 
     specs: [
-        './tests/e2eTest/Login.spec.js'
+        './tests/e2eTest/Book.spec.js'
     ],
     suites: {
         e2eTest: [
@@ -174,6 +174,12 @@ exports.config = {
     expect = chai.expect;
     chai.Should();
   },*/
+   before: function() {
+   browser.url('/eplayer/bookshelf?eT1StandaloneBkshf=Y&sessionid=8753852234725456492016&piToken=dummypiToken&identityId=10315477');
+   browser.pause(5000);
+   browser.windowHandleMaximize();
+
+  },
     //
     // Hook that gets executed before the suite starts
     // beforeSuite: function (suite) {
