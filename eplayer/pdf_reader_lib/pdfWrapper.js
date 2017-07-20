@@ -697,6 +697,11 @@ function getAssetURLForPDFDownload(config,cb){
       _this.removeExistingHighlightElement = function() {
         $('.pdfHighlight').remove();
       }
+
+      _this.removeExistingHighlightCornerImages = function() {
+        $('#highlightcornerimages').remove();
+      }
+
       _this.removeHighlightElement = function(id){
         $('#'+id).remove();
       }
@@ -945,6 +950,107 @@ function getAssetURLForPDFDownload(config,cb){
         }
       }
 
+      _this.reRenderHighlightCornerImages = function(highlights) {
+        _this.removeExistingHighlightCornerImages();
+        var linewiseHighlightList = [];
+        try {
+          for (var i = 0; i < highlights.length; i++) {
+            if (highlights[i].comment !== '') {
+                var hId = highlights[i].id;
+                var parentHighlightElement = $('#' + hId);
+                var highlightHashList = parentHighlightElement[0].children;
+                if (linewiseHighlightList.length === 0) {
+                    var cordStatusObj = {
+                        top: parseInt(highlightHashList[0].offsetTop, 10),
+                        bottom: parseInt((highlightHashList[0].offsetHeight + highlightHashList[0].offsetTop), 10),
+                        highlightList: [],
+                        totalNoOfhighlights: 1
+                    };
+                    highlights[i].leftpos = highlightHashList[0].offsetLeft;
+                    cordStatusObj.highlightList.push(highlights[i]);
+                    linewiseHighlightList.push(cordStatusObj);
+                } else {
+                    var isCurHighlightOnSameLine = false;
+                    for (var k = 0; k < linewiseHighlightList.length; k++) {
+                        for (var l = 0; l < highlightHashList.length; l++) {
+                            if (parseInt(linewiseHighlightList[k].top, 10) >= parseInt(highlightHashList[l].offsetTop, 10) &&
+                                parseInt(linewiseHighlightList[k].bottom, 10) <= parseInt((highlightHashList[l].offsetHeight + highlightHashList[l].offsetTop), 10)) {
+                                linewiseHighlightList[k].totalNoOfhighlights = linewiseHighlightList[k].totalNoOfhighlights + 1;
+                                highlights[i].leftpos = highlightHashList[0].offsetLeft;
+                                linewiseHighlightList[k].highlightList.push(highlights[i]);
+                                isCurHighlightOnSameLine = true;
+                                break;
+                            }
+                        }
+                        if (isCurHighlightOnSameLine === true) {
+                            break;
+                        }
+                    }
+                    if (!isCurHighlightOnSameLine) {
+                        var cordStatusObj = {
+                            top: parseInt(highlightHashList[0].offsetTop, 10),
+                            bottom: parseInt((highlightHashList[0].offsetHeight + highlightHashList[0].offsetTop), 10),
+                            highlightList: [],
+                            totalNoOfhighlights: 1
+                        };
+                        highlights[i].leftpos = highlightHashList[0].offsetLeft;
+                        cordStatusObj.highlightList.push(highlights[i]);
+                        linewiseHighlightList.push(cordStatusObj);
+                    }
+                }
+            }
+        }
+        linewiseHighlightList.sort((lh1, lh2) => lh1.top - lh2.top);
+        var parentElement = document.createElement('div');
+        parentElement.setAttribute("id", "highlightcornerimages");
+        var finaltop = 0;
+        var isOverlap;
+        for (var m = 0; m < linewiseHighlightList.length; m++) {
+            isOverlap = false;
+            if ((finaltop + 32) > linewiseHighlightList[m].top) {
+                isOverlap = true;
+            }
+            var highlightList1 = linewiseHighlightList[m].highlightList;
+            highlightList1.sort((lh1, lh2) => lh1.leftpos - lh2.leftpos);
+            for (var n = 0; n < highlightList1.length; n++) {
+                finaltop = finaltop + 32;
+                var highlightColor = highlightList1[n].color;
+                var childElement = document.createElement('span');
+                childElement.classList.add('annotator-handle');
+                var hId = highlightList1[n].id;
+                var pageLeft = $("#docViewer_ViewContainer").offset().left;
+                var pageWidth = $("#docViewer_ViewContainer").width();
+                var parentHighlightElement = $('#' + hId);
+                var childHighlightElement = parentHighlightElement[0].children[0];
+                if (!isOverlap) {
+                    finaltop = childHighlightElement.offsetTop;
+                    isOverlap = true;
+                }
+                var finalleft = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287 + 32);
+                childElement.style.left = finalleft + "px";
+                childElement.style.top = (finaltop - 5) + "px";
+                childElement.style.position = "absolute";
+                childElement.style.backgroundColor = highlightColor;
+                childElement.style.visibility = "visible";
+                _this.setClickEvent(childElement, hId, (finaltop - 5));
+                parentElement.appendChild(childElement);
+            }
+        }
+        var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
+        parentPageElement.appendChild(parentElement);
+
+      } catch (e) {}
+    }
+
+    _this.setClickEvent = function(childElement, hId, top) {
+        childElement.onclick = function() {
+            var data = {
+              highlightId: hId,
+              cornerFoldedImageTop: top
+            }
+          _this.triggerEvent("highlightClicked", data);
+        }
+      }
 
       _this.getCurrentPage = function() {
          try{
@@ -1171,6 +1277,11 @@ function getAssetURLForPDFDownload(config,cb){
         restoreHighlights: function(highlights) {
           var currPage = _this.restoreHighlights(highlights);
         },
+
+        reRenderHighlightCornerImages: function(highlights) {
+         _this.reRenderHighlightCornerImages(highlights);
+        },
+
         removeHighlightElement: function(id)
         {
           _this.removeHighlightElement(id);

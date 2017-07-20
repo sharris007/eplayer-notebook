@@ -1,6 +1,6 @@
 pdfAnnotatorInstance = function() {
 
-var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input id="color-button-yellow" type="button" class="annotator-color annotator-yellow" value="#FFD232"/><input id="color-button-green" type="button" class="annotator-color annotator-green" value="#55DF49"/><input id="color-button-pink" type="button" class="annotator-color annotator-pink" value="#FC92CF"/><lable id="private-note-txt" style="font-size:14px;font-weight: bold;color:black;position: absolute;margin-left: 6px;margin-top: 2px;">Private Note</lable><lable id="shared-note-txt" style="font-size:14px;font-weight: bold;color:black;position: absolute;margin-left: 6px;margin-top: 2px;">Shared Note</lable></div><div id="deleteIcon" class="annotator-delete-container"></div><div id="editIcon" class="annotator-edit-container"></div></div>'
+var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input id="color-button-yellow" type="button" class="annotator-color annotator-yellow" value="#FFD232"/><input id="color-button-green" type="button" class="annotator-color annotator-green" value="#55DF49"/><input id="color-button-pink" type="button" class="annotator-color annotator-pink" value="#FC92CF"/></div><div id="deleteIcon" class="annotator-delete-container"></div><div id="editIcon" class="annotator-edit-container"></div></div>'
 
 var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"><li class="annotator-item"><textarea maxlength="3000" id="note-text-area" placeholder="Write a note." style="pointer-events: all; opacity: 1;"></textarea></li></ul></div>';
 
@@ -8,7 +8,7 @@ var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div
 
 var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label id="label-confirm" class="annotator-confirm">Confirm?</label></div><div class="ann-canceldelete-section"><a id="ann-confirm-cancel" class="annotator-confirm-cancel">CANCEL</a><a id="ann-confirm-del" class="annotator-confirm-delete">DELETE</a></div></div></div>';
 
-var panel5 ='<li class="characters-left"><span id="letter-count">3000</span id="letter-text"> Characters left<span><span></li>';
+var panel5 ='<li class="characters-left" style="visibility:hidden"><span id="letter-count">3000</span id="letter-text"> Characters left<span><span></li>';
         
 var htmlElements = '<div id="annotator-outer-id" class="annotator-outer annotator-editor hide-note"><form id="highlight-note-form" class="annotator-widget">'+panel1+ panel2+panel3+'</form></div>';
 
@@ -66,7 +66,8 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    notesMessages=NotesMessages;
    coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
    //coord.left = coord.left + (coord.width * 1.5);
-   coord.top = coord.top + (coord.height * 1.5);
+   //coord.top = coord.top + (coord.height * 1.5);
+   coord.top = (coord.top + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
    var id = 'openPopupHighlight';
    var parentElement = document.createElement('div');
    parentElement.setAttribute('id', id);
@@ -114,8 +115,6 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
          onShareClick(e)
    });
    $('.annotator-edit-container').hide();
-   $('#private-note-txt').hide();
-   $('#shared-note-txt').hide();
    textareaHeight = $('#note-text-area')[0].scrollHeight || 40; 
    $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
    document.getElementById("note-text-area").placeholder=notesMessages.messages.writeNote;
@@ -339,13 +338,27 @@ function onNoteChange(event) {
     if ($(event.target).hasClass('on')) {
       $(event.target).removeClass('on');
       isShared = false;
+      $("#color-button-yellow").prop("disabled", false);
+      $("#color-button-green").prop("disabled", false);
+      $("#color-button-pink").prop("disabled", false);
+      $("#color-button-yellow").css({'background':'#ffd232'});
+      $("#color-button-green").css({'background':'#55df49'});
+      $("#color-button-pink").css({'background':'#fc92cf'});
+      $('#color-button-'+currHighlightColor).addClass('active');
     }
     else {
       $(event.target).addClass('on');
       isShared=true;
-    } 
+      $("#color-button-yellow").prop("disabled", true);
+      $("#color-button-green").prop("disabled", true);
+      $("#color-button-pink").prop("disabled", true);
+      $("#color-button-yellow").css({'background':'#fff1c1'});
+      $("#color-button-green").css({'background':'#CCF5C8'});
+      $("#color-button-pink").css({'background':'#FEDEF0'});
+      $('.annotator-color').removeClass('active');
+    }
  }
- function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID)
+ function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID,cornerFoldedImageTop)
  {
   var parentHighlightElement = $('#'+highLightData.id);
   /*  var lastChildElementindex = parentHighlightElement[0].children.length - 1
@@ -368,7 +381,12 @@ function onNoteChange(event) {
    var pageLeft = $("#docViewer_ViewContainer").offset().left;
    var pageWidth = $("#docViewer_ViewContainer").width();
    coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
-   coord.top = coord.top + (coord.height * 1.5);
+   //coord.top = coord.top + (coord.height * 1.5);
+   coord.top = (coord.top + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
+   if(cornerFoldedImageTop!==undefined)
+   {
+     coord.top = (cornerFoldedImageTop + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
+   }
    var id = 'openPopupHighlight';
    var parentElement = document.createElement('div');
    parentElement.setAttribute('id', id);
@@ -431,17 +449,18 @@ function onNoteChange(event) {
   isEditMode = false;
   if (highLightData.shared) {
       $('.annotator-share').addClass('on');
-      $('#private-note-txt').hide();
     }
     else {
       $('.annotator-share').removeClass('on');
-      $('#shared-note-txt').hide();
     } 
   if (!$('.annotator-item input').length) {
      $('.annotator-item').prepend('<div class="noteContainer" id = "noteContainer"></div>');
   }
   $('.annotator-color').removeClass('active');
-  $('#color-button-'+highLightData.color).addClass('active');
+  if (!highLightData.shared)
+  {
+    $('#color-button-'+highLightData.color).addClass('active');
+  }
   currHighlightColor = highLightData.color;
   currHighlightColorCode = $('#color-button-'+highLightData.color).val();
   $(popupElementId).find('.annotator-save').addClass(classes.focus);
@@ -487,6 +506,15 @@ function onNoteChange(event) {
      //$("#editIcon").prop("disabled", true);
      $('.annotator-edit-container').hide();
      $('.annotator-delete-container').hide();
+  }
+  else if (highLightData.shared)
+  {
+     $("#color-button-yellow").prop("disabled", true);
+     $("#color-button-green").prop("disabled", true);
+     $("#color-button-pink").prop("disabled", true);
+     $("#color-button-yellow").css({'background':'#fff1c1'});
+     $("#color-button-green").css({'background':'#CCF5C8'});
+     $("#color-button-pink").css({'background':'#FEDEF0'});
   }
  }
  return {

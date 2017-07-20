@@ -715,11 +715,27 @@ createHttps = (uri) => {
       });
   }
 /* Method defined for when user click on Highlighted area on the page. */
-  handleHighlightClick(hId) {
-    const highlightClicked = find(this.state.highlightList, highlight => highlight.id === hId);
+  handleHighlightClick(highLightClickedData) {
+    var hId;
+    var cornerFoldedImageTop;
+    if(highLightClickedData.highlightId === undefined)
+    {
+      hId = highLightClickedData;
+    } 
+    else
+    {
+      // Note clicked from corner folded image 
+      hId = highLightClickedData.highlightId;
+      cornerFoldedImageTop = highLightClickedData.cornerFoldedImageTop;
+    }
+    var highlightClicked = find(this.state.highlightList, highlight => highlight.id === hId);
+    if (highlightClicked.shared === true)
+    {
+      highlightClicked = find(this.props.book.annTotalData, highlight => highlight.id === hId);
+    }
     pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
       this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
-      (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID);
+      (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID,cornerFoldedImageTop);
   }
 
  /* Method for creating the Highlight for selected area by user. */
@@ -771,7 +787,16 @@ createHttps = (uri) => {
       }
     });
     this.setState({ highlightList });
-    __pdfInstance.restoreHighlights(this.state.highlightList, this.deleteHighlight);
+    var highlightListToRender = JSON.parse(JSON.stringify(highlightList));
+    highlightListToRender.forEach((highlight) => {
+          if(highlight.shared)
+          {
+            highlight.color = '#00a4e0';
+            highlight.meta.colorcode = '#00a4e0';
+          }
+    });
+    __pdfInstance.restoreHighlights(highlightListToRender, this.deleteHighlight);
+    __pdfInstance.reRenderHighlightCornerImages(highlightListToRender);
   }
   /* Method for delete Highlight via passing the id of selected area. */
   deleteHighlight = (id) => {
@@ -793,6 +818,10 @@ createHttps = (uri) => {
     } else {
       this.setState({ drawerOpen: false });
     }
+  }
+
+  onPageClick = () => {
+    __pdfInstance.enableSelectTool();
   }
 /* Method for render the component and any change in store data, reload the changes. */
   render() {
@@ -861,7 +890,7 @@ createHttps = (uri) => {
             <div id="mainContainer" className="pdf-fwr-pc-main">
               <div id="right" className="pdf-fwr-pc-right">
                 <div id="toolbar" className="pdf-fwr-toolbar" />
-                <div id="frame" className={viewerClassName}>
+                <div id="frame" className={viewerClassName} onClick={this.onPageClick}>
                   <div id="docViewer" className="docViewer" />
                 </div>
               </div>
