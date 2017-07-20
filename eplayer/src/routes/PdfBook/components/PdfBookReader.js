@@ -201,7 +201,7 @@ export class PdfBookReader extends Component {
    }*/
   }
   storeAssertUrl = () => {
-    if (assertUrls === undefined) {
+    if (assertUrls === undefined || assertUrls === null) {
       assertUrls = this.props.book.bookinfo.assertUrls;
       sessionStorage.setItem('assertUrls', JSON.stringify(assertUrls));
     } else if (assertUrls.length > this.props.book.bookinfo.assertUrls.length) {
@@ -233,6 +233,7 @@ export class PdfBookReader extends Component {
   goToPage = (navType) => {
      // var currPageIndex=__pdfInstance.getCurrentPage();
      // this.setState({currPageIndex: currPageIndex});
+    __pdfInstance.removeExistingHighlightCornerImages();
     this.setState({ drawerOpen: false });
     this.setState({ pageLoaded: false });
     const currPageIndex = this.state.currPageIndex;
@@ -264,7 +265,7 @@ export class PdfBookReader extends Component {
       ssoKey,
       serverDetails, this.loadPdfPage, this.props.book.bookinfo.book.roleTypeID
       ).then(() => {
-        if (pages === undefined) {
+        if (pages === undefined || pages === null) {
           pages = this.props.book.bookinfo.pages;
           sessionStorage.setItem('pages', JSON.stringify(pages));
         } else if (pages.length > this.props.book.bookinfo.pages.length) {
@@ -284,6 +285,7 @@ export class PdfBookReader extends Component {
   };
 /* Method for loading the page after passing the pagenumber. */
   goToPageCallback = (pageNum) => {
+    __pdfInstance.removeExistingHighlightCornerImages();
     this.setState({ drawerOpen: false });
     this.setState({ pageLoaded: false });
     // pageNum=pageNum-1;
@@ -303,7 +305,7 @@ export class PdfBookReader extends Component {
       ssoKey,
       serverDetails, this.loadPdfPage, this.props.book.bookinfo.book.roleTypeID
       ).then(() => {
-        if (pages === undefined) {
+        if (pages === undefined || pages === null) {
           pages = this.props.book.bookinfo.pages;
           sessionStorage.setItem('pages', JSON.stringify(pages));
         } else {
@@ -808,6 +810,7 @@ createHttps = (uri) => {
   clearSessionStorage = () => {
     sessionStorage.removeItem('assertUrls');
     sessionStorage.removeItem('pages');
+    sessionStorage.removeItem('currentPageOrder');
     pages = '';
     assertUrls = '';
   }

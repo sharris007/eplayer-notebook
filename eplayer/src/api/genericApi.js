@@ -88,7 +88,7 @@ export const getPlaylistDetails = (bookId, tocurl, piToken) => fetch(`${etextSer
 });
 
 export const getCourseDetails = bookDetails =>
- fetch(`${courseServiceUrl[envType]}/${bookDetails.courseId}/sectionDetails`,
+ fetch(`${courseServiceUrl[envType]}/courses/${bookDetails.courseId}/sectionDetails`,
    {
      method: 'GET',
      headers: {

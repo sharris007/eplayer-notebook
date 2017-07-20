@@ -26,11 +26,11 @@ export const resources = {
       prod         : 'https://etext.pearson.com/api/nextext-api/v1/api'
     },
     courseServiceUrl: {
-      local        : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot/courses',
-      dev          : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot/courses',
-      qa           : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot/courses',
-      stage        : 'https://stpaperapi.stg-prsn.com/etext/v2/courseboot/courses',
-      prod         : 'https://stpaperapi.prsn.com/etext/v2/courseboot/courses'
+      local        : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',
+      dev          : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot',
+      qa           : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',
+      stage        : 'https://stpaperapi.stg-prsn.com/etext/v2/courseboot',
+      prod         : 'https://stpaperapi.prsn.com/etext/v2/courseboot'
     },
     etextSearchUrl: {
       local        : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
@@ -86,8 +86,7 @@ export const resources = {
       qa           :"https://etext-qa-stg.pearson.com",
       stage        :"https://etext-stg.pearson.com",
       prod         :"https://etext.pearson.com",
-    },
-
+    }
   }
 };
 

@@ -1282,6 +1282,10 @@ function getAssetURLForPDFDownload(config,cb){
          _this.reRenderHighlightCornerImages(highlights);
         },
 
+        removeExistingHighlightCornerImages: function() {
+         _this.removeExistingHighlightCornerImages();
+        },
+        
         removeHighlightElement: function(id)
         {
           _this.removeHighlightElement(id);

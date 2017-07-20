@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { resources, domain } from '../../../../const/Settings';
 
-const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
+const security = (resources.constants.secureApi === true ? 'courseServiceUrl' : 'courseServiceUrl');
 const etextService = resources.links[security];
 const envType = domain.getEnvType();
 
@@ -13,7 +13,7 @@ const envType = domain.getEnvType();
 export const fetch = (urn, piToken) => {
   // console.log('bookshelf Url '+ etextService[envType] + '/nextext/' + urn);
   if (piToken !== 'dummypiToken') {
-    const url = `${etextService[envType]}/nextext/${urn}`;
+    const url = `${etextService[envType]}/${urn}`;
     return {
       type: 'BOOKS',
       payload: axios.get(url, {

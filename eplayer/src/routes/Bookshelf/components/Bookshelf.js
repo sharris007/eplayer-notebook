@@ -101,7 +101,8 @@ export default class BookshelfPage extends React.Component {
       if(!cdnToken){
         this.props.getAuthToken(secureToken);
       }
-      let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
+      //let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
+      let urn = 'compositeBookShelf';
       if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
         urn = 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
               + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
