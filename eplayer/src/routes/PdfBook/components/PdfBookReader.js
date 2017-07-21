@@ -443,7 +443,7 @@ export class PdfBookReader extends Component {
     this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid),
       _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder),
-      courseId, true, this.props.PdfbookMessages.PageMsg);
+      _.toString(courseId), true, this.props.PdfbookMessages.PageMsg);
   }
   /* created removeBookmarkHandler method for removing bookmark for selected Page, after clicking on bookmark button. */
   removeBookmarkHandler = (bookmarkId) => {
