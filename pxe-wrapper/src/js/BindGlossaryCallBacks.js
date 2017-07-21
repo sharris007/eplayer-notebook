@@ -60,6 +60,10 @@ export class BindGlossaryCallBacks {
               popOverCollection.popOverDescription = glossaryDesc;
               if (popOverCollection.popOverTitle && popOverCollection.popOverDescription) {
                 this.glossaryCollection.push({'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
+              } else {
+                popOverCollection.popOverTitle = bookDivQuerySelectorClasses[i].innerHTML;
+                popOverCollection.popOverDescription = '';
+                this.glossaryCollection.push({'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
               }
             }
             //});
