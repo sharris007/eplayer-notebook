@@ -91,6 +91,7 @@ export class PdfBookReader extends Component {
       this.props.book.userInfo.userid, this.props.PdfbookMessages.PageMsg);
     this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid,
       this.props.params.bookId, true, courseId, authorName);
+    this.props.fetchUserIcons(this.props.params.bookId,ssoKey,serverDetails);
     const firstPage = 'firstPage';
     if (sessionStorage.getItem('currentPageOrder')) {
       this.goToPageCallback(Number(sessionStorage.getItem('currentPageOrder')));
@@ -145,7 +146,11 @@ export class PdfBookReader extends Component {
       this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
-          __pdfInstance.displayRegions(this.props.book.regions);
+            if(this.props.book.userIcons.length)
+            {
+              __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons);
+            } 
+            __pdfInstance.displayRegions(this.props.book.regions,null);
         }
         else
         {
@@ -470,37 +475,15 @@ export class PdfBookReader extends Component {
     __pdfInstance.setCurrentZoomLevel(level);
     this.displayHighlight();
   }
+/*Method for removing hotspot content on clicking the close button*/
   onHotspotClose() {
     if($('#hotspot').length > 0)
     {
       $('#hotspot').empty();
     }
   }
-goToPageNumber = (pageNo) => {
-  var totalPagesToHit = this.getPageOrdersToGetPageDetails(pageNo);
-  var currentPage = find(pages,page => page.pagenumber === pageNo)
-  if(currentPage == undefined)
-  {
-    this.props.fetchPageInfo(this.props.book.userInfo.userid,this.props.params.bookId,this.props.params.bookId, this.props.book.bookinfo.book.bookeditionid,
-    pageNo,totalPagesToHit,ssoKey,serverDetails, this.loadPdfPage,this.props.book.bookinfo.book.roleTypeID)
-    .then(() => {
-      pages = pages.concat(this.props.book.bookinfo.pages);
-      sessionStorage.setItem('pages',JSON.stringify(pages));
-      currentPage = find(pages,page => page.pagenumber == pageNo);
-      this.goToPageCallback(currentPage.pageorder);
-    });
-  }
-  else
-  {
-    this.goToPageCallback(currentPage.pageorder);
-  }
-  
-}
-
-/*
-Convert http urls into https
-*/
-createHttps = (uri) => {
+/* Method for checking if a url is starts with http:// and convert it to https:// */
+  createHttps = (uri) => {
   if(/^http:\/\//i.test(uri))
   {
     var link=uri.substring(4);
@@ -508,35 +491,66 @@ createHttps = (uri) => {
   }
   return uri;
 }
-/*Method to render the clicked region*/
+/*Method to navigate to a particular book page number based on bookPageNumber*/
+  goToPageNumber = (pageNo) => {
+    var totalPagesToHit = this.getPageOrdersToGetPageDetails(pageNo);
+    var currentPage = find(pages,page => page.pagenumber == pageNo)
+    if(currentPage == undefined && totalPagesToHit !== '')
+    {
+        this.props.fetchPagebyPageNumber(this.props.book.userInfo.userid,
+        this.props.book.bookinfo.book.roleTypeID,
+        this.props.params.bookId,
+        this.props.book.bookinfo.book.bookeditionid,
+        pageNo,
+        ssoKey,serverDetails)
+      .then(() => {
+          if (pages === undefined) {
+            pages = this.props.book.bookinfo.pages;
+            sessionStorage.setItem('pages', JSON.stringify(pages));
+            var currentPage = find(pages,page => page.pagenumber == pageNo)
+          } else {
+            pages = pages.concat(this.props.book.bookinfo.pages);
+            sessionStorage.setItem('pages', JSON.stringify(pages));
+            var currentPage = find(pages,page => page.pagenumber == pageNo)
+          }
+          this.goToPageCallback(Number(currentPage.pageorder));
+      });
+    }
+    else
+    {
+      this.goToPageCallback(Number(currentPage.pageorder));
+    }
+    
+  }
+/*Method to render the clicked region component.*/
 
   renderHotspot = (hotspotDetails) => {
     var regionComponent = " ";
     var hotspotData,source;
     switch(hotspotDetails.regionTypeID) {
-      case 1:   source=this.createHttps(hotspotDetails.linkValue);
-                hotspotData = {
-                audioSrc :source,
-                audioTitle :hotspotDetails.name
-              };
-              regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
-              break;
+      case 1:  source=this.createHttps(hotspotDetails.linkValue);
+               hotspotData = {
+                 audioSrc :source,
+                 audioTitle :hotspotDetails.name
+               };
+               regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
+               break;
       case 2:
       case 10: this.goToPageNumber(Number(hotspotDetails.linkValue));
                break;
-      case 6: source=this.createHttps(hotspotDetails.linkValue);
-              hotspotData = {
-                alt : hotspotDetails.name,
-                src : source,
-                width : hotspotDetails.mediaWidth,
-                height : hotspotDetails.mediaHeight,
-                title : hotspotDetails.name,
-                items : hotspotDetails
-              };
-              regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
-              break;
-      case 12:  source=this.createHttps(hotspotDetails.linkValue);
-                hotspotData = {
+      case 6:  source=this.createHttps(hotspotDetails.linkValue);
+               hotspotData = {
+                 alt : hotspotDetails.name,
+                 src : source,
+                 width : hotspotDetails.mediaWidth,
+                 height : hotspotDetails.mediaHeight,
+                 title : hotspotDetails.name,
+                 items : hotspotDetails
+               };
+               regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
+               break;
+      case 12: source=this.createHttps(hotspotDetails.linkValue);
+               hotspotData = {
                 title : hotspotDetails.name,
                 // src : hotspotDetails.linkValue,
                  // src: '//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm',
@@ -545,25 +559,23 @@ createHttps = (uri) => {
                 id : hotspotDetails.regionID,
                 thumbnail : {
                   src : null,
-                },
-                "transcript": [
-                {
-                  "id": "urn:pearson:text:0166E52D-5ABA-4341-999F-C3ACE48CF27B",
-                  "lang": "en",
-                  "type": "transcript",
-                  "src": "//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm?mimeType=vtt&lang=en"
-                }
-              ],
-                alt : hotspotDetails.name,
-              };
-              regionComponent = <VideoPlayerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
-              break;
+               },
+               "transcript": [
+               {
+                 "id": "urn:pearson:text:0166E52D-5ABA-4341-999F-C3ACE48CF27B",
+                 "lang": "en",
+                 "type": "transcript",
+                 "src": "//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm?mimeType=vtt&lang=en"
+               }],
+               alt : hotspotDetails.name,
+               };
+               regionComponent = <VideoPlayerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
+               break;
       case 9:
       case 13:
-      case 15: source=this.createHttps(hotspotDetails.linkValue);
-               var docLink=source;
-               var iframe = document.getElementById('document');
-               iframe.src =  docLink;
+      case 15: 
+      case 14: source=this.createHttps(hotspotDetails.linkValue);
+               window.open(source,"_blank");
                break;
       case 11: source=this.createHttps(hotspotDetails.linkValue);
                hotspotData = {
@@ -572,9 +584,7 @@ createHttps = (uri) => {
                };
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={(this.onHotspotClose)} />;
                break;
-      case 14: source=this.createHttps(hotspotDetails.linkValue);
-               window.open(source,"_blank");
-               break;
+
       case 16: var role = this.props.book.bookinfo.book.roleTypeID;
                var courseId =0 ;
                var userId = this.props.book.userInfo.userid;
@@ -589,7 +599,7 @@ createHttps = (uri) => {
     return regionComponent;
   }
 
-/*Method to update the state with details of the clicked region*/
+/*Method to handle the action to be performed when a region is clicked.*/
   handleRegionClick(hotspotID) {
     if(this.state.regionData)
     {
@@ -602,21 +612,14 @@ createHttps = (uri) => {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
             var regionDetails = this.props.book.regions[i];
-            if (regionDetails.regionTypeID == 2 || regionDetails.regionTypeID == 7 || regionDetails.regionTypeID == 10 || regionDetails.regionTypeID == 14)
+            /*Checking if the clicked region is tocLink,indexLink,crossrefernce,ltiLink,word,powerpoint,excel or pdfdocument */
+            if (regionDetails.regionTypeID == 2 || regionDetails.regionTypeID == 7 || regionDetails.regionTypeID == 10 || regionDetails.regionTypeID == 14 || regionDetails.regionTypeID ==9 || regionDetails.regionTypeID == 13 || regionDetails.regionTypeID == 15 || regionDetails.regionTypeID == 16)
             {
-              this.renderHotspot(regionDetails);
-            }
-            else if(regionDetails.regionTypeID == 9 || regionDetails.regionTypeID ==13 || regionDetails.regionTypeID ==15)
-            {
-              var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
-              var fileFrame=document.createElement("IFRAME");
-              fileFrame.style.display='none';
-              fileFrame.setAttribute('id','document');
-              parentPageElement.appendChild(fileFrame);
               this.renderHotspot(regionDetails);
             }
             else
             {
+              /*Updating the state to rerender the page with Aquila JS Component*/
               this.setState({regionData : regionDetails});
             }
             break;

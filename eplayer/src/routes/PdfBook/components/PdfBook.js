@@ -100,6 +100,8 @@ used for before mounting occurs. */
           loadAssertUrl={this.props.loadAssertUrl}
           editHighlightUsingReaderApi={this.props.editHighlightUsingReaderApi}
           fetchRegionsInfo={this.props.fetchRegionsInfo}
+          fetchPagebyPageNumber={this.props.fetchPagebyPageNumber}
+          fetchUserIcons={this.props.fetchUserIcons}
         />);
     }
 

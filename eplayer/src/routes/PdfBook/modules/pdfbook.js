@@ -33,6 +33,8 @@ export const LOAD_ASSERT_URL = 'LOAD_ASSERT_URL';
 export const EDIT_HIGHLIGHT = 'EDIT_HIGHLIGHT';
 export const REQUEST_REGIONS = 'REQUEST_REGIONS';
 export const RECEIVE_REGIONS = 'RECEIVE_REGIONS';
+export const REQUEST_CUSTOM_ICONS = 'REQUEST_USER_ICONS';
+export const RECEIVE_CUSTOM_ICONS = 'RECEIVE_CUSTOM_ICONS';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -52,6 +54,8 @@ export function request(component) {
       return { type: REQUEST_HIGHLIGHTS };
     case 'regions' :
       return {type: REQUEST_REGIONS};
+    case 'userIcons' :
+      return {type : REQUEST_CUSTOM_ICONS};
     default:
       return {};
   }
@@ -417,7 +421,50 @@ export function fetchBookInfo(bookid, sessionKey, userid, bookServerURL, roleTyp
     timeout: 20000
   };
 }
-/* Created Action creator for getting page details. */
+/* Created Action creator for getting page details by page number */
+export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
+  pageNo, sessionKey,bookServerURL) {
+  const bookState = {
+    bookInfo: {
+      pages: []
+    }
+  };
+  return dispatch =>
+     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
+     axios.get(`${bookServerURL}/ebook/ipad/getpagebybookpagenumber?`
+      + `userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&`
+      + `bookeditionid=${bookeditionid}&bookpagenumbers=${pageNo}&authkey=${sessionKey}&outputformat=JSON`,
+       {
+         timeout: 20000
+       })
+    .then((response) => {
+      if (response.status >= 400) {
+        // console.log(`FetchPage info error: ${response.statusText}`);
+      } else if (response.data.length) {
+        response.data.forEach((jsonData) => {
+          const pages = jsonData.viewerPageInfoRestTO;
+          pages.forEach((page) => {
+            const pageObj = {
+
+            };
+            pageObj.pageid = page.pageID;
+            pageObj.bookid = page.bookID;
+            pageObj.pagenumber = page.bookPageNumber;
+            pageObj.thumbnailpath = page.thumbnailFilePath;
+            pageObj.pageorder = page.pageOrder;
+            pageObj.bookeditionid = page.bookEditionID;
+            pageObj.chaptername = page.chapterName;
+            pageObj.isbookmark = page.isBookmark;
+            pageObj.pdfPath = page.pdfPath;
+            bookState.bookInfo.pages.push(pageObj);
+          });
+        });
+      }
+      dispatch({ type: 'RECEIVE_PAGE_INFO', bookState });
+    // loadPdfPageCallback(pageIndexToLoad);
+    });
+}
+/* Created Action creator for getting page details by page order */
 export function fetchPageInfo(userid, userroleid, bookid, bookeditionid,
   pageIndexToLoad, totalPagesToHit, sessionKey, bookServerURL, loadPdfPageCallback, roleTypeID) {
   const bookState = {
@@ -460,6 +507,7 @@ export function fetchPageInfo(userid, userroleid, bookid, bookeditionid,
     // loadPdfPageCallback(pageIndexToLoad);
     });
 }
+/* Created Action creator for getting regions/hotspots. */
 export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,bookServerURL){
   const bookState = {
     regions: [],
@@ -469,7 +517,7 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,bookS
   };
   return (dispatch) => {
     dispatch(request('regions'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getregionsbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&bookeditionid='+bookeditionid+'&authkey='+sessionKey+'&outputformat=JSON',
+    return axios.get(''+bookServerURL+'/ebook/ipad/getregionsbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&authkey='+sessionKey+'&outputformat=JSON',
   {
   timeout: 20000
   }).then((response) => {
@@ -535,6 +583,42 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,bookS
       }
       bookState.isFetching.regions=false;
       return dispatch({ type: RECEIVE_REGIONS,bookState});
+    })
+    }
+  }
+ /* Created Action creator for getting user uplaoded custom regions/hotspots icons. */
+ export function fetchUserIcons(bookid,sessionKey,bookServerURL){
+  const bookState = {
+    userIcons: [],
+    isFetching: {
+      userIcons: true
+    }
+  };
+  return (dispatch) => {
+    dispatch(request('userIcons'));
+    return axios.get(''+bookServerURL+'/ebook/ipad/getbookicons?bookid='+bookid+'&authkey='+sessionKey+'&outputformat=JSON',
+  {
+  timeout: 20000
+  }).then((response) => {
+      if (response.status >= 400) 
+      {
+        console.log(`fetchUserIcons error: ${response.statusText}`);
+      }
+      else if(response.data.length) 
+      {
+          for (var i=0;i<response.data[0].bookIconTOList.length;i++)
+          {
+          response.data.forEach((customBookIcon) => {
+          const userIconObj= {};
+          userIconObj.iconTypeID = customBookIcon.bookIconTOList[i].iconTypeID;
+          userIconObj.imagePath=customBookIcon.bookIconTOList[i].imagePath;
+          userIconObj.useCustom=customBookIcon.bookIconTOList[i].useCustom;
+          bookState.userIcons.push(userIconObj);
+        })
+        }
+      }
+      bookState.isFetching.userIcons=false;
+      return dispatch({ type: RECEIVE_CUSTOM_ICONS,bookState});
     })
     }
   }
@@ -1014,6 +1098,21 @@ const ACTION_HANDLERS = {
       regions: action.bookState.isFetching.regions
     }
   }),
+  [REQUEST_CUSTOM_ICONS]: state => ({
+    ...state,
+    isFetching : {
+      ...state.isFetching,
+      userIcons:true
+    }
+  }),
+  [RECEIVE_CUSTOM_ICONS]: (state,action) => ({
+    ...state,
+    userIcons: action.bookState.userIcons,
+    isFetching: {
+      ...state.isFetching,
+      userIcons: action.bookState.isFetching.userIcons
+    }
+  })
 };
 
 // ------------------------------------
@@ -1024,6 +1123,7 @@ const initialState = {
   bookmarks: [],
   annTotalData: [],
   regions:[],
+  userIcons:[],
   preferences: {},
   toc: {},
   viewer: {},
@@ -1033,6 +1133,7 @@ const initialState = {
     bookmarks: false,
     toc: false,
     regions: false,
+    userIcons: false,
     viewer: false
   },
   error: null,
