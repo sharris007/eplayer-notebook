@@ -31,7 +31,7 @@ export default class PxeWrapperComponent {
     const locale = config.locale ? config.locale : 'en';
     ReactDOM.render(
       <IntlProvider locale={locale} messages={translations[locale]}>
-        <ComponentOwner bookUrl = "https://content.openclass.com/eps/pearson-reader/api/item/0c0c9911-1724-41d7-8d05-f1be29193d3c/1/file/qatesting_changing_planet_v2_sjg/changing_planet/OPS/s9ml/chapter02/why_are_age_structures_and_dependency_ratios_important.xhtml" isFromComponent = {true}  />
+        <ComponentOwner bookUrl = "https://content.stg-openclass.com/eps/pearson-reader/api/item/d882cf78-3ccd-4415-99d9-54976c6b993e/1/file/AmermanHAP1-071415-MJ-DW/OPS/s9ml/chapter01/filep700049662800000000000000000d54e.xhtml" isFromComponent = {true}  />
       </IntlProvider>,
         document.getElementById(config.contentId)
     );
