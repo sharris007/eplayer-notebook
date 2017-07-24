@@ -1064,14 +1064,21 @@ function getAssetURLForPDFDownload(config,cb){
           childElement.style.height = highlightElements[i].style.height;
           childElement.style.backgroundColor = highlightColor ;
           childElement.onclick = function() {
-          var cornerFoldedImageTop = $("#"+id+"_cornerimg")[0].offsetTop;
-          var marginTop = $("#"+id+"_cornerimg").css('marginTop').replace('px', '');
-          cornerFoldedImageTop = cornerFoldedImageTop + parseInt(marginTop,10);
-          var data = {
-            highlightId: id,
-            cornerFoldedImageTop: cornerFoldedImageTop
-          }
-          _this.triggerEvent("highlightClicked", data);
+            if($("#"+id+"_cornerimg")[0] !== undefined)
+            {
+              var cornerFoldedImageTop = $("#"+id+"_cornerimg")[0].offsetTop;
+              var marginTop = $("#"+id+"_cornerimg").css('marginTop').replace('px', '');
+              cornerFoldedImageTop = cornerFoldedImageTop + parseInt(marginTop,10);
+              var data = {
+                highlightId: id,
+                cornerFoldedImageTop: cornerFoldedImageTop
+              }
+              _this.triggerEvent("highlightClicked", data);
+            }
+            else
+            {
+              _this.triggerEvent("highlightClicked", id);
+            }
           }
           parentElement.appendChild(childElement);
         }
