@@ -729,7 +729,6 @@ export class PdfBookReader extends Component {
     } 
     else
     {
-      // Note clicked from corner folded image 
       hId = highLightClickedData.highlightId;
       cornerFoldedImageTop = highLightClickedData.cornerFoldedImageTop;
     }

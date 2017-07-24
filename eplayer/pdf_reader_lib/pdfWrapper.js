@@ -944,6 +944,7 @@ function getAssetURLForPDFDownload(config,cb){
                 var highlightColor = highlightList1[n].color;
                 var childElement = document.createElement('span');
                 childElement.classList.add('annotator-handle');
+                childElement.setAttribute("id",highlightList1[n].id+"_cornerimg");
                 var hId = highlightList1[n].id;
                 var pageLeft = $("#docViewer_ViewContainer").offset().left;
                 var pageWidth = $("#docViewer_ViewContainer").width();
@@ -959,7 +960,7 @@ function getAssetURLForPDFDownload(config,cb){
                 childElement.style.position = "absolute";
                 childElement.style.backgroundColor = highlightColor;
                 childElement.style.visibility = "visible";
-                _this.setClickEvent(childElement, hId, (finaltop - 5));
+                _this.setClickEvent(childElement, hId, (finaltop + 5));
                 parentElement.appendChild(childElement);
             }
         }
@@ -1063,7 +1064,14 @@ function getAssetURLForPDFDownload(config,cb){
           childElement.style.height = highlightElements[i].style.height;
           childElement.style.backgroundColor = highlightColor ;
           childElement.onclick = function() {
-          _this.triggerEvent("highlightClicked", id);
+          var cornerFoldedImageTop = $("#"+id+"_cornerimg")[0].offsetTop;
+          var marginTop = $("#"+id+"_cornerimg").css('marginTop').replace('px', '');
+          cornerFoldedImageTop = cornerFoldedImageTop + parseInt(marginTop,10);
+          var data = {
+            highlightId: id,
+            cornerFoldedImageTop: cornerFoldedImageTop
+          }
+          _this.triggerEvent("highlightClicked", data);
           }
           parentElement.appendChild(childElement);
         }
