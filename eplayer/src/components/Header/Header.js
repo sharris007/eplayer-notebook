@@ -1,4 +1,4 @@
-/* global sessionStorage*/
+/* global localStorage*/
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
 // import find from 'lodash/find';
@@ -71,14 +71,13 @@ export class Header extends React.Component {
       let redirectConsoleUrl   = consoleUrl[envType];
       window.location.href = redirectConsoleUrl;
     }else {
-      const langQuery = sessionStorage.getItem('bookshelfLang');
+      const langQuery = localStorage.getItem('bookshelfLang');
       if (langQuery && langQuery !== '?languageid=1') {
         browserHistory.push(`/eplayer/bookshelf${langQuery}`);
       } else {
         browserHistory.push('/eplayer/bookshelf');
       }
     }
-    this.props.bookCallbacks.clearSessionStorage();
     this.setState({ open: false });
   }
 
@@ -198,7 +197,7 @@ export class Header extends React.Component {
 
     // const targetPageId = this.props.bookData.viewer.currentPageId;
     // const currPageObj = find(this.props.bookData.viewer.pages, page => page.id === targetPageId);
-    const title = sessionStorage.getItem('title');
+    const title = localStorage.getItem('title');
     /* eslint-disable */
     return (
       <div className={`${this.props.classname}`} >

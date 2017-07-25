@@ -3,6 +3,7 @@ import { injectIntl } from 'react-intl';
 
 import { fetch, storeBookDetails, storeSsoKey , getAuthToken , gotAuthToken } from '../modules/bookshelfActions'; /* Importing the defined method from reducers. */
 import { getPiUserProfileService} from '../../../actions/playlist';
+import { loadState } from '../../../localStorage';
 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -31,9 +32,10 @@ const mapDispatchToProps = {
 to access your reducer state objects from within your React components. */
 
 const mapStateToProps = state => ({
-  bookshelf: state.bookshelf ? state.bookshelf : {},
-  login: state.login ? state.login : {},
-  book: state.book ? state.book : {}
+  bookshelf:state.bookshelf ? state.bookshelf : loadState('bookshelf') ? loadState('bookshelf') : {},
+  book: state.book ? state.book : {},
+  login: state.login ? state.login : loadState('login') ? loadState('login') : {}
+
 });
 
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:

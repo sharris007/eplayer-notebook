@@ -12,11 +12,13 @@ import { fade } from 'material-ui/utils/colorManipulator';
 import spacing from 'material-ui/styles/spacing';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { IntlProvider, addLocaleData } from 'react-intl';
+import throttle from 'lodash';
 
 import createStore from './store/createStore';
 import AppContainer from './containers/AppContainer';
 import { languages } from '../locale_config/translations/index';
 import languageName from '../locale_config/configureLanguage';
+import { saveState, loadState } from './localStorage';
 
 const RedBox = require('redbox-react').default;
 
@@ -48,7 +50,15 @@ injectTapEventPlugin();
 const initialState = window.___INITIAL_STATE__; // eslint-disable-line no-underscore-dangle
 const store = createStore(initialState);
 const routes = require('./routes/index').default(store);
-
+/*Subscribed store to listen to state chages and storing them in local storage*/
+store.subscribe(() => {
+  throttle( saveState({
+    login : store.getState().login,
+    bookshelf : store.getState().bookshelf,
+    book : store.getState().book
+  }) , 1000)
+ 
+} );
 // ========================================================
 // Render Setup
 // ========================================================

@@ -1,11 +1,11 @@
-/* global sessionStorage */
+/* global localStorage */
 import React, { Component } from 'react';/* Importing the react and component from react library. */
 import CircularProgress from 'material-ui/CircularProgress';/* Import the CircularProgress for adding the progressBar. */
 import { addLocaleData } from 'react-intl';
 import { PdfBookReader } from './PdfBookReader';
 import { languages } from '../../../../locale_config/translations/index';
 import languageName from '../../../../locale_config/configureLanguage';
-/* Defining the variables for sessionStorage. */
+/* Defining the variables for localStorage. */
 let identityId;
 let ubd;
 let ubsd;
@@ -20,49 +20,23 @@ export class PdfBook extends Component {
 /* Async keyword used for independent calling the method, componentWillMount is lifecycle method,
 used for before mounting occurs. */
   async componentWillMount() {
-    if (this.props.login.data === undefined || this.props.bookshelf.ssoKey === undefined) {
-             /* sessionStorage is used to store the token, that will be remain in session untill we close the browser or any event action occured.
-             React store will keep the token untill we refresh the pages.
-             Multiple methods has been used, getItem to retrive the token,
-             setItem to set the  token, removeItme to delete the token. */
-      identityId = sessionStorage.getItem('identityId');
-             // uid = sessionStorage.getItem('uid');
-      ubd = sessionStorage.getItem('ubd');
-      ubsd = sessionStorage.getItem('ubsd');
-      ssoKey = sessionStorage.getItem('ssoKey');
-      serverDetails = sessionStorage.getItem('serverDetails');
-      if (this.props.bookshelf.uPdf) {
-        sessionStorage.setItem('authorName', this.props.bookshelf.authorName);
-        sessionStorage.setItem('title', this.props.bookshelf.title);
-        sessionStorage.setItem('thumbnail', this.props.bookshelf.thumbnail);
-        identityId = sessionStorage.getItem('identityId');
-        ubd = this.props.bookshelf.ubd;
-        ubsd = this.props.bookshelf.ubsd;
-        ssoKey = this.props.bookshelf.ssoKey;
-        serverDetails = this.props.bookshelf.serverDetails;
-        roleTypeID = this.props.bookshelf.roleTypeID;
+      if(this.props.login.data !== undefined)
+      {
+          identityId = this.props.login.data.identityId;
+                   
+      }else{
+          identityId = localStorage.getItem('identityId');
       }
-    } else {
-      sessionStorage.setItem('uPdf', this.props.bookshelf.uPdf);
-      sessionStorage.setItem('authorName', this.props.bookshelf.authorName);
-      sessionStorage.setItem('title', this.props.bookshelf.title);
-      sessionStorage.setItem('thumbnail', this.props.bookshelf.thumbnail);
-      sessionStorage.setItem('ubd', this.props.bookshelf.ubd);
-      sessionStorage.setItem('ubsd', this.props.bookshelf.ubsd);
-      sessionStorage.setItem('ssoKey', this.props.bookshelf.ssoKey);
-      sessionStorage.setItem('serverDetails', this.props.bookshelf.serverDetails);
-      identityId = this.props.login.data.identityId;
       ubd = this.props.bookshelf.ubd;
       ubsd = this.props.bookshelf.ubsd;
       ssoKey = this.props.bookshelf.ssoKey;
       serverDetails = this.props.bookshelf.serverDetails;
       roleTypeID = this.props.bookshelf.roleTypeID;
-    }
-
-       /* Await operator is used to wait for a Promise returned by an async function. */
+    
+        /* Await operator is used to wait for a Promise returned by an async function. */
        /* Method used for fetching the user details and book details. */
-    await this.props.fetchUserInfo(identityId, this.props.params.bookId, ubd, ubd, ubsd, ssoKey, serverDetails);
-    await this.props.fetchBookInfo(this.props.params.bookId, ssoKey,
+      await this.props.fetchUserInfo(identityId, this.props.params.bookId, ubd, ubd, ubsd, ssoKey, serverDetails);
+      await this.props.fetchBookInfo(this.props.params.bookId, ssoKey,
               this.props.book.userInfo.userid, serverDetails, roleTypeID);
   }
 

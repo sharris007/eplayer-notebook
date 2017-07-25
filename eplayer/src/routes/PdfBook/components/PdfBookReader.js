@@ -1,4 +1,4 @@
-/* global sessionStorage, __pdfInstance, pdfAnnotatorInstance */
+/* global sessionStorage, __pdfInstance, pdfAnnotatorInstance, localStorage */
 import React, { Component } from 'react'; /* Importing the react and component from react library. */
 import { ViewerComponent } from '@pearson-incubator/viewer';/* Injecting the viewer component from @pearson-incubator. */
 import find from 'lodash/find';/* lodash is a JavaScript utility library delivering modularity, performance and find is method used for searching. */
@@ -12,6 +12,7 @@ import { languages } from '../../../../locale_config/translations/index';
 import { eT1Contants } from '../../../components/common/constants';
 import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
+import { loadState } from '../../../localStorage'; 
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -54,30 +55,13 @@ export class PdfBookReader extends Component {
   }
  /* componentDidMount() is invoked immediately after a component is mounted. */
   componentDidMount() {
-    if (this.props.bookshelf.uPdf === undefined) {
-      title = sessionStorage.getItem('title');
-      authorName = sessionStorage.getItem('authorName');
-      thumbnail = sessionStorage.getItem('thumbnail');
-      ssoKey = sessionStorage.getItem('ssoKey');
-      serverDetails = sessionStorage.getItem('serverDetails');
-      globalbookid = sessionStorage.getItem('globalbookid');
-      pages = JSON.parse(sessionStorage.getItem('pages'));
-      assertUrls = JSON.parse(sessionStorage.getItem('assertUrls'));
-    } else {
-       /* sessionStorage is used to set the token, get the token and remove the token for session management. */
-      sessionStorage.setItem('ubd', this.props.bookshelf.ubd);
-      sessionStorage.setItem('ubsd', this.props.bookshelf.ubsd);
-      sessionStorage.setItem('ssoKey', this.props.bookshelf.ssoKey);
-      sessionStorage.setItem('serverDetails', this.props.bookshelf.serverDetails);
-      sessionStorage.setItem('globalbookid', this.props.book.bookinfo.book.globalbookid);
-      sessionStorage.removeItem('currentPageOrder');
       title = this.props.bookshelf.title;
       authorName = this.props.bookshelf.authorName;
       thumbnail = this.props.bookshelf.thumbnail;
       ssoKey = this.props.bookshelf.ssoKey;
       serverDetails = this.props.bookshelf.serverDetails;
       globalbookid = this.props.book.bookinfo.book.globalbookid;
-    }
+    
     /* Method for getting the toc details for particular book. */
     this.props.fetchTocAndViewer(this.props.params.bookId, authorName, title, thumbnail,
       this.props.book.bookinfo.book.bookeditionid, ssoKey, serverDetails,
@@ -93,11 +77,20 @@ export class PdfBookReader extends Component {
       this.props.params.bookId, true, courseId, authorName);
     this.props.fetchUserIcons(this.props.params.bookId,ssoKey,serverDetails);
     const firstPage = 'firstPage';
-    if (sessionStorage.getItem('currentPageOrder')) {
+    if (sessionStorage.getItem('isReloaded') && sessionStorage.getItem('currentPageOrder')) {
       this.goToPageCallback(Number(sessionStorage.getItem('currentPageOrder')));
     } else {
       this.goToPage(firstPage);
     }
+  }
+  /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
+   componentWillUnmount(){
+    sessionStorage.removeItem('isReloaded');
+    sessionStorage.removeItem('currentPageOrder');
+    sessionStorage.removeItem('pages');
+    sessionStorage.removeItem('assertUrls');
+    pages = null;
+    assertUrls = null;
   }
   /*  Method for loading the pdfpage for particular book by passing the pageIndex. */
   loadPdfPage = (currentPageIndex) => {
@@ -122,9 +115,11 @@ export class PdfBookReader extends Component {
     };
     __pdfInstance.registerEvent('textSelected', this.createHighlight1.bind(this));
     __pdfInstance.registerEvent('highlightClicked', this.handleHighlightClick.bind(this));
-        __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
+    __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
+    sessionStorage.setItem("currentPageOrder",currentPageIndex);
+    sessionStorage.setItem('isReloaded',true);
     const data = this.state.data;
     if (currentPageIndex === 1) {
       data.isFirstPage = true;
@@ -809,13 +804,6 @@ export class PdfBookReader extends Component {
       this.displayHighlight();
     });
   }
-  clearSessionStorage = () => {
-    sessionStorage.removeItem('assertUrls');
-    sessionStorage.removeItem('pages');
-    sessionStorage.removeItem('currentPageOrder');
-    pages = '';
-    assertUrls = '';
-  }
 
   viewerContentCallBack = (viewerCallBack) => {
     if (viewerCallBack === false) {
@@ -840,7 +828,6 @@ export class PdfBookReader extends Component {
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPageCallback;
-    callbacks.clearSessionStorage = this.clearSessionStorage;
     // const drawerOpen = true;
     let viewerClassName;
     if (this.state.pageLoaded !== true) {

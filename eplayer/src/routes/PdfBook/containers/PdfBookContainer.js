@@ -3,7 +3,7 @@ import { fetchBookmarksUsingReaderApi, addBookmarkUsingReaderApi, removeBookmark
          fetchTocAndViewer, goToPage, fetchBookInfo, fetchPageInfo, fetchUserInfo,
          fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi,
          loadAssertUrl, editHighlightUsingReaderApi, fetchRegionsInfo, fetchUserIcons,fetchPagebyPageNumber  } from '../modules/pdfbook';/* Importing the action creator from reducer to container. */
-
+import { loadState } from '../../../localStorage'; 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
     wiring in the actions and state necessary to render a presentational
@@ -38,9 +38,9 @@ const mapDispatchToProps = {
 
 /* Method used for connecting and accessing the state data in component via props. */
 const mapStateToProps = state => ({
-  book: state.book,
-  bookshelf: state.bookshelf ? state.bookshelf : {},
-  login: state.login ? state.login : {}
+  book: state.book ? state.book : {},
+  bookshelf:state.bookshelf ? state.bookshelf : loadState('bookshelf') ? loadState('bookshelf') : {},
+  login: state.login ? state.login : loadState('login') ? loadState('login') : {}
 });
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:
 

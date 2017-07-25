@@ -1,4 +1,4 @@
-/* global sessionStorage ,piSession */
+/* global localStorage ,piSession */
 import React from 'react'; /* Importing the react library, for using the react methods and keywords.*/
 // import ReactDOM from 'react-dom';/* Importing the reactDom library for rendering the react element. */
 // import { browserHistory } from 'react-router';/* Import the react-router for routing the react component. */
@@ -57,15 +57,9 @@ class LoginPage extends React.Component {
       const lastName = [];
       if (this.props.fetched) {
         LoginToken.push(this.props.data.token);
-        /* SessionStorage used for storing the data in session. */
-        sessionStorage.setItem('identityId', this.props.data.identityId);
-        sessionStorage.setItem('sessionid', this.props.data.token);
-        /* loginPiToken.push(this.props.data.piToken);
-        sessionStorage.setItem('piToken', this.props.data.piToken);*/
+        /* loginPiToken.push(this.props.data.piToken);*/
         firstName.push(this.props.data.firstName);
-        sessionStorage.setItem('firstName', this.props.data.firstName);
         lastName.push(this.props.data.lastName);
-        sessionStorage.setItem('lastName', this.props.data.lastName);
         /* BrowserHistory used for navigating the user to bookself page. */
         piSession.autologin(this.state.loginname, this.state.password, 'vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb', `${window.location.origin}/eplayer/bookshelf`);  // eslint-disable-line
         // browserHistory.push(`/eplayer/bookshelf${this.props.location.search}`);

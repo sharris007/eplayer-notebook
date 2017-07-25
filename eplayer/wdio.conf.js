@@ -85,7 +85,7 @@ exports.config = {
     //
     // Set a base URL in order to shorten url command calls. If your url parameter starts
     // with "/", then the base url gets prepended.
-     baseUrl: 'http://localhost:3000',
+     baseUrl: 'http://etext-dev.pearson.com:3000',
     //baseUrl: 'http://webdriver.io',
     //
     // Default timeout for all waitFor* commands.
@@ -165,21 +165,11 @@ exports.config = {
     //
     // Gets executed before test execution begins. At this point you can access all global
     // variables, such as `browser`. It is the perfect place to define custom commands.
-    /*before: function() {
-    var webdriverio = require('webdriverio');
-    var chai = require('chai');
-    var chaiAsPromised = require('chai-as-promised');
-
-    chai.use(chaiAsPromised);
-    expect = chai.expect;
-    chai.Should();
-  },*/
-   before: function() {
-   browser.url('/eplayer/bookshelf?eT1StandaloneBkshf=Y&sessionid=8753852234725456492016&piToken=dummypiToken&identityId=10315477');
-   browser.pause(5000);
-   browser.windowHandleMaximize();
-
-  },
+    before: function() {
+        browser.url('/eplayer/login');
+        browser.pause(5000);
+        browser.windowHandleMaximize();
+    },
     //
     // Hook that gets executed before the suite starts
     // beforeSuite: function (suite) {

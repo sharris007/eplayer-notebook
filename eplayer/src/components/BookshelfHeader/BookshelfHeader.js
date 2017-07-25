@@ -40,12 +40,12 @@ export class BookshelfHeader extends React.Component {
     });
   };
   onClick = () => {
-    const langQuery = sessionStorage.getItem('bookshelfLang');
-    let i = sessionStorage.length;
+    const langQuery = localStorage.getItem('bookshelfLang');
+    let i = localStorage.length;
     while (i--) {
-      const key = sessionStorage.key(i);
+      const key = localStorage.key(i);
       if ((key)) {
-        sessionStorage.removeItem(key);
+        localStorage.removeItem(key);
       }
     }
     const storagAarr = [];

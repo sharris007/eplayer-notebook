@@ -1,4 +1,4 @@
-/* global piSession ,sessionStorage */
+/* global piSession ,localStorage */
 import React from 'react';/* Importing the react library, for using the react methods and keywords. */
 import { browserHistory } from 'react-router'; /* Importing the react-router for routing the react component. */
 import { BookshelfComponent } from '@pearson-incubator/bookshelf';/* Injecting the bookself component from @pearson-incubator. */
@@ -71,13 +71,10 @@ export default class BookshelfPage extends React.Component {
       this.props.book.bookmarks = [];
     }
 
-    /* Implementing sessionStorage for accessing data once the page get refresh. */
-
     let sessionid;
     let piToken;
     if (this.props.login.data === undefined) {
-      // piToken = sessionStorage.getItem('piToken');
-      sessionid = sessionStorage.getItem('sessionid');
+      sessionid = localStorage.getItem('sessionid');
     } else {
       // piToken = this.props.login.data.piToken;
       sessionid = this.props.login.data.token;
@@ -87,7 +84,7 @@ export default class BookshelfPage extends React.Component {
     if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
       sessionid = this.props.location.query.sessionid;
       piToken = this.props.location.query.piToken;
-      sessionStorage.setItem('identityId', this.props.location.query.identityId);
+      localStorage.setItem('identityId', this.props.location.query.identityId);
     }
     /* Passing the sessionid. Stroing the SsoKey */
     this.props.storeSsoKey(sessionid);
@@ -140,20 +137,13 @@ export default class BookshelfPage extends React.Component {
   }
   /* Method used for loading the data. Any change in store data it will reload the view. */
   render() {
-    /* Setting the item in sessionStorage */
-    sessionStorage.setItem('bookshelfLang', langQuery);
-    sessionStorage.setItem('uPdf', this.props.bookshelf.uPdf);
-    sessionStorage.setItem('authorName', this.props.bookshelf.authorName);
-    sessionStorage.setItem('title', this.props.bookshelf.title);
-    sessionStorage.setItem('thumbnail', this.props.bookshelf.thumbnail);
-    sessionStorage.setItem('ubd', this.props.bookshelf.ubd);
-    sessionStorage.setItem('uid', this.props.bookshelf.uid);
-    sessionStorage.setItem('ubsd', this.props.bookshelf.ubsd);
-    sessionStorage.setItem('ssoKey', this.props.bookshelf.ssoKey);
-    sessionStorage.setItem('serverDetails', this.props.bookshelf.serverDetails);
-    sessionStorage.setItem('roleTypeID', this.props.bookshelf.roleTypeID);
-    const firstName = sessionStorage.getItem('firstName');
-    const lastName = sessionStorage.getItem('lastName');
+    /* Setting the bookshelfLang in localStorage */
+    localStorage.setItem('bookshelfLang', langQuery);
+    let firstName,lastName;
+    if(this.props.login.data !== undefined){
+      firstName = this.props.login.data.firstName;
+      lastName = this.props.login.data.lastName;
+    }
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {
