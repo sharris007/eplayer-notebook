@@ -127,12 +127,15 @@ export default class BookshelfPage extends React.Component {
     }
   }
   /* Created function for handle single book click.*/
-  handleBookClick = (bookId, iseT1) => {
-    if (iseT1) {
+  handleBookClick = (bookId, type) => {
+    if ( type === 'et1') {
        /* BrowserHistory used for navigating the next page from current page. */
       browserHistory.push(`/eplayer/pdfbook/${bookId}`);
-    } else {
+    } else if( type === 'et2'){
       browserHistory.push(`/eplayer/ETbook/${bookId}`);
+    }
+    else if( type === 'course') {
+      browserHistory.push(`/eplayer/Course/${bookId}`);
     }
   }
   /* Method used for loading the data. Any change in store data it will reload the view. */
@@ -149,12 +152,14 @@ export default class BookshelfPage extends React.Component {
     if (fetched && !isEmpty(books)) {
       /* Iterate the data coming from RestApi */
       let booksArray = [];
+      let courseBookArray = [];
       /* Assigning list of books into booksArray from eT1 bookshelf response
       if eT1StandaloneBkshf query param value is 'Y' or 'y'*/
       if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') { // eslint-disable-line
         booksArray = books.data[0].entries;
       } else {
         booksArray = books.data.entries;
+        courseBookArray = books.data.userCourseSectionEntries || [];
       }
       booksArray.forEach((bookData) => {
         const bookRef = bookData;
@@ -183,12 +188,32 @@ export default class BookshelfPage extends React.Component {
           updfUrl: bookRef.uPdfUrl,
           globalBookId: bookRef.globalBookId,
           bookeditionid: bookRef.bookeditionid,
-          iseT1: bookRef.iseT1,
+          type: bookRef.iseT1 ? 'et1':'et2',
           bookServerUrl: bookRef.bookServerUrl,
           userInfoLastModifiedDate: bookRef.userInfoLastModifiedDate,
           userBookLastModifiedDate: bookRef.userBookLastModifiedDate,
           userBookScenarioLastModifiedDate: bookRef.userBookScenarioLastModifiedDate,
           roleTypeID: bookRef.roleTypeID
+        };
+        booksdata.push(book);
+      });
+      courseBookArray.forEach((CourseBookData) => {
+        const book = {
+          id: CourseBookData.section.sectionId,
+          author: CourseBookData.id || '',
+          image: CourseBookData.section.avatarUrl ? CourseBookData.section.avatarUrl : '',
+          title: CourseBookData.section.sectionTitle || '',
+          description: '',
+          tocId: '',
+          updfUrl: '',
+          globalBookId: '',
+          bookeditionid: '',
+          type: 'course',
+          bookServerUrl: '',
+          userInfoLastModifiedDate: null ,
+          userBookLastModifiedDate: null,
+          userBookScenarioLastModifiedDate: null,
+          roleTypeID: ''
         };
         booksdata.push(book);
       });

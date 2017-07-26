@@ -89,7 +89,7 @@
     "@pearson-incubator/aquila-js-timeline": "*",
     "@pearson-incubator/bookmark-icon": "*",
     "@pearson-incubator/bookmarks": "^0.1.22",
-    "@pearson-incubator/bookshelf": "^0.1.28",
+    "@pearson-incubator/bookshelf": "*",
     "@pearson-incubator/notes": "^0.1.31",
     "@pearson-incubator/popup-info": "*",
     "@pearson-incubator/preferences": "^0.1.21",
