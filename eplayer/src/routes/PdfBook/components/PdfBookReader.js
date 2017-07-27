@@ -732,6 +732,7 @@ export class PdfBookReader extends Component {
     {
       highlightClicked = find(this.props.book.annTotalData, highlight => highlight.id === hId);
     }
+    highlightClicked.color = highlightClicked.originalColor;
     pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
       this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
       (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID,cornerFoldedImageTop);
@@ -777,6 +778,14 @@ export class PdfBookReader extends Component {
     const highlightList = [];
     this.props.book.annTotalData.forEach((annotation) => {
       if (annotation.pageId === currentPageId) {
+        if(annotation.shared){
+          annotation.color = '#00a4e0';
+          annotation.meta.colorcode = '#00a4e0';
+        }
+        else{
+          annotation.color = annotation.originalColor;
+          annotation.meta.colorcode = annotation.originalColor;
+        }
         if (_.toString(annotation.meta.roletypeid) === _.toString(this.props.book.bookinfo.book.roleTypeID)) {
           highlightList.push(annotation);
         } else if (this.props.book.bookinfo.book.roleTypeID === 2
@@ -785,17 +794,17 @@ export class PdfBookReader extends Component {
         }
       }
     });
-    this.setState({ highlightList });
-    var highlightListToRender = JSON.parse(JSON.stringify(highlightList));
+    /*var highlightListToRender = JSON.parse(JSON.stringify(highlightList));
     highlightListToRender.forEach((highlight) => {
           if(highlight.shared)
           {
             highlight.color = '#00a4e0';
             highlight.meta.colorcode = '#00a4e0';
           }
-    });
-    __pdfInstance.restoreHighlights(highlightListToRender, this.deleteHighlight);
-    __pdfInstance.reRenderHighlightCornerImages(highlightListToRender);
+    });*/
+    __pdfInstance.restoreHighlights(highlightList, this.deleteHighlight);
+    __pdfInstance.reRenderHighlightCornerImages(highlightList);
+    this.setState({ highlightList });
   }
   /* Method for delete Highlight via passing the id of selected area. */
   deleteHighlight = (id) => {
@@ -837,7 +846,14 @@ export class PdfBookReader extends Component {
     }
     const searchUrl = `${serverDetails}/ebook/ipad/searchbookpage?bookid=${this.props.params.bookId}`
         + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=1.0&authkey=${ssoKey}`;
-
+    this.props.book.annTotalData.forEach((annotation) => {
+      if(annotation.shared){
+          annotation.color = 'Instructor';
+        }
+        else{
+          annotation.color = annotation.originalColor;
+        }
+      });
     /* Here we are passing data, pages, goToPageCallback,
        getPrevNextPage method and isET1 flag in ViewerComponent
        which is defined in @pearson-incubator/viewer . */

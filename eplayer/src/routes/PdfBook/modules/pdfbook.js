@@ -677,6 +677,7 @@ export function fetchHighlightUsingReaderApi(userId, bookId, shared, courseId) {
             hlObj.comment = highlight.note;
             hlObj.text = highlight.selectedText;
             hlObj.color = highlight.colour;
+            hlObj.originalColor = highlight.colour;
             hlObj.id = highlight.id;
             hlObj.pageNo = highlight.pageNumber;
             hlObj.meta = highlight.meta;
@@ -737,6 +738,7 @@ export function saveHighlightUsingReaderApi(userId, bookId, pageId, pageNo,
           comment: highlightResponse.note,
           text: highlightResponse.selectedText,
           color: highlightResponse.colour,
+          originalColor: highlightResponse.colour,
           id: highlightResponse.id,
           pageNo: highlightResponse.pageNo,
           meta: highlightResponse.meta,
@@ -847,6 +849,7 @@ export function editHighlightUsingReaderApi(id, note, colour, isShared) {
           comment: highlightResponse.note,
           text: highlightResponse.selectedText,
           color: highlightResponse.colour,
+          originalColor: highlightResponse.colour,
           id: highlightResponse.id,
           pageNo: highlightResponse.pageNo,
           meta: highlightResponse.meta,
@@ -947,6 +950,7 @@ const ACTION_HANDLERS = {
         comment: action.hlObj.comment,
         text: action.hlObj.text,
         color: action.hlObj.color,
+        originalColor: action.hlObj.originalColor,
         id: action.hlObj.id,
         pageNo: action.hlObj.pageNo,
         meta: action.hlObj.meta,
@@ -975,6 +979,7 @@ const ACTION_HANDLERS = {
         comment: action.highlightObj.comment,
         text: action.highlightObj.text,
         color: action.highlightObj.color,
+        originalColor: action.highlightObj.originalColor,
         id: action.highlightObj.id,
         pageNo: action.highlightObj.pageNo,
         meta: action.highlightObj.meta,
