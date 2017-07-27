@@ -1038,7 +1038,8 @@ const ACTION_HANDLERS = {
         hastocflatten: action.payload.data[0].userBookTOList[0].hastocflatten,
         languageid: action.payload.data[0].userBookTOList[0].languageID,
         roleTypeID: action.payload.data[0].userBookTOList[0].roleTypeID,
-        activeCourseID: action.payload.data[0].userBookTOList[0].lastAccessedCourseID
+        activeCourseID: action.payload.data[0].userBookTOList[0].lastAccessedCourseID,
+        version: action.payload.data[0].userBookTOList[0].version
       }
     }
   }),

@@ -4,6 +4,7 @@ import { ViewerComponent } from '@pearson-incubator/viewer';/* Injecting the vie
 import find from 'lodash/find';/* lodash is a JavaScript utility library delivering modularity, performance and find is method used for searching. */
 import { browserHistory } from 'react-router'; /* Import the react-router for routing the react component. */
 import CircularProgress from 'material-ui/CircularProgress'; /* Import the CircularProgress for adding the progressBar. */
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 import _ from 'lodash'; /* lodash is a JavaScript utility library delivering modularity and performance. */
 import WidgetManager from '../../../components/widget-integration/widgetManager';/* */
 import Header from '../../../components/Header';/* Importing header for padfPage. */
@@ -844,8 +845,8 @@ export class PdfBookReader extends Component {
     } else {
       viewerClassName = '';
     }
-    const searchUrl = `${serverDetails}/ebook/ipad/searchbookpage?bookid=${this.props.params.bookId}`
-        + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=1.0&authkey=${ssoKey}`;
+    const searchUrl = `${serverDetails}/ebook/ipad/searchbookv2?bookid=${this.props.params.bookId}`
+        + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=${this.props.book.bookinfo.book.version}&authkey=${ssoKey}`;
     this.props.book.annTotalData.forEach((annotation) => {
       if(annotation.shared){
           annotation.color = 'Instructor';
@@ -907,7 +908,7 @@ export class PdfBookReader extends Component {
         </div>
         {this.state.pageLoaded !== true ?
           <div className="centerCircularBar">
-            <CircularProgress style={{ margin: '40px auto', display: 'block' }} />
+          <RefreshIndicator size={50} left={650} top={200} status="loading" />
           </div> : null}
       </div>
     );

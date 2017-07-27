@@ -1,6 +1,7 @@
 /* global localStorage */
 import React, { Component } from 'react';/* Importing the react and component from react library. */
 import CircularProgress from 'material-ui/CircularProgress';/* Import the CircularProgress for adding the progressBar. */
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 import { addLocaleData } from 'react-intl';
 import { PdfBookReader } from './PdfBookReader';
 import { languages } from '../../../../locale_config/translations/index';
@@ -81,7 +82,7 @@ used for before mounting occurs. */
 
     return (
       <div className="centerCircularBar">
-        <CircularProgress style={{ margin: '40px auto', display: 'block' }} />
+        <RefreshIndicator size={50} left={650} top={200} status="loading" />
       </div>);
   }
 

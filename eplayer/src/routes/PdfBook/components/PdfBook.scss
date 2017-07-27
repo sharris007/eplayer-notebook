@@ -25,15 +25,17 @@ $cont-padding-bottom: 85px;
     }
 
 }
-.centerCircularBar {
-position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-top: -50px;
-            margin-left: -50px;
-            width: 100px;
-            height: 100px;
-            }
+.centerCircularBar  {
+position: relative;
+  background: #FFF;
+  min-width: $viewer-min-width;
+  padding-top: 20px;
+  .container {
+    min-width: $cont-min-width;
+    padding-top: $cont-padding-top;
+    padding-bottom: $cont-padding-bottom;
+  }
+}
 .hideViewerContent{
     visibility: hidden
 }
