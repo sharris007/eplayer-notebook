@@ -1,1 +1,1 @@
-./node_modules/.bin/allure generate allure-results
+./node_modules/.bin/allure generate --clean allure-results

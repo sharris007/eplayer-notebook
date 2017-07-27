@@ -1,1 +1,1 @@
-./node_modules/.bin/allure report open
+./node_modules/.bin/allure open allure-report
