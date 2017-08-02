@@ -26,7 +26,7 @@ const ACTION_HANDLERS = {
     fetched: true,
     books: action.payload,
     error: null }),
-  [BOOK_DETAILS]: (state, action) => ({ ...state, authorName: action.authorName, title: action.title, thumbnail: action.thumbnail, globalBookId: action.globalBookId, bookeditionid: action.bookeditionid, uPdf: action.uPdf, serverDetails: action.serverDetails, bookId: action.bookId, uid: action.uid, ubd: action.ubd, ubsd: action.ubsd, roleTypeID: action.roleTypeID }),  // eslint-disable-line max-len
+  [BOOK_DETAILS]: (state, action) => ({ ...state, authorName: action.authorName, title: action.title, thumbnail: action.thumbnail, globalUserId: action.globalUserId, globalBookId: action.globalBookId, bookeditionid: action.bookeditionid, uPdf: action.uPdf, serverDetails: action.serverDetails, bookId: action.bookId, uid: action.uid, ubd: action.ubd, ubsd: action.ubsd, roleTypeID: action.roleTypeID }),  // eslint-disable-line max-len
   [BOOKS_REJECTED]: (state, action) => ({ ...state, fetching: false, fetched: false, error: action.payload }),
   [SSO_KEY]: (state, action) => ({ ...state, ssoKey: action.ssoKey }),
 

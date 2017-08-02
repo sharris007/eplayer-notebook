@@ -28,6 +28,10 @@ used for before mounting occurs. */
       }else{
           identityId = localStorage.getItem('identityId');
       }
+      if(identityId === undefined || identityId === '' || identityId === null)
+      {
+        identityId = this.props.bookshelf.globalUserId;
+      }
       ubd = this.props.bookshelf.ubd;
       ubsd = this.props.bookshelf.ubsd;
       ssoKey = this.props.bookshelf.ssoKey;

@@ -60,6 +60,7 @@ export const storeBookDetails = book => ({
   thumbnail: book.image,
   title: book.title,
   globalBookId: book.globalBookId,
+  globalUserId: book.globalUserId,
   bookeditionid: book.bookeditionid,
   uPdf: book.updfUrl,
   serverDetails: book.bookServerUrl,
