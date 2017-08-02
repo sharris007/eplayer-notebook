@@ -531,7 +531,7 @@ export class PdfBookReader extends Component {
     var regionComponent = " ";
     var hotspotData,source;
     switch(hotspotDetails.regionTypeID) {
-      case 1:  source=this.createHttps(hotspotDetails.linkValue);
+      case 1:  source=hotspotDetails.linkValue;
                hotspotData = {
                  audioSrc :source,
                  audioTitle :hotspotDetails.name
@@ -541,7 +541,7 @@ export class PdfBookReader extends Component {
       case 2:
       case 10: this.goToPageNumber(hotspotDetails.linkValue);
                break;
-      case 6:  source=this.createHttps(hotspotDetails.linkValue);
+      case 6:  source=hotspotDetails.linkValue;
                hotspotData = {
                  alt : hotspotDetails.name,
                  src : source,
@@ -552,7 +552,7 @@ export class PdfBookReader extends Component {
                };
                regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
                break;
-      case 12: source=this.createHttps(hotspotDetails.linkValue);
+      case 12: source=hotspotDetails.linkValue;
                hotspotData = {
                 title : hotspotDetails.name,
                 // src : hotspotDetails.linkValue,
@@ -577,10 +577,10 @@ export class PdfBookReader extends Component {
       case 9:
       case 13:
       case 15: 
-      case 14: source=this.createHttps(hotspotDetails.linkValue);
+      case 14: source=hotspotDetails.linkValue;
                window.open(source,"_blank");
                break;
-      case 11: source=this.createHttps(hotspotDetails.linkValue);
+      case 11: source=hotspotDetails.linkValue;
                hotspotData = {
                  title : hotspotDetails.name,
                  src : source
@@ -615,6 +615,11 @@ export class PdfBookReader extends Component {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
             var regionDetails = this.props.book.regions[i];
+            if(regionDetails.regionTypeID !== 2 || regionDetails.regionTypeID !== 7 || regionDetails.regionTypeID !== 10)
+            {
+              regionDetails.linkValue=this.createHttps(regionDetails.linkValue);
+              regionDetails.linkTypeLocation=this.createHttps(regionDetails.linkTypeLocation);
+            }            
             /*For Relative assetts*/
             if (regionDetails.linkTypeLocation !== null && !(regionDetails.linkValue).startsWith(regionDetails.linkTypeLocation))
             {
