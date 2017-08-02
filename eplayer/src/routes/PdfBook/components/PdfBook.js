@@ -39,6 +39,7 @@ used for before mounting occurs. */
       await this.props.fetchUserInfo(identityId, this.props.params.bookId, ubd, ubd, ubsd, ssoKey, serverDetails);
       await this.props.fetchBookInfo(this.props.params.bookId, ssoKey,
               this.props.book.userInfo.userid, serverDetails, roleTypeID);
+     await this.props.fetchBookFeatures(this.props.params.bookId,ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID);
   }
 
  /* Multiple methods we have paased in PdfBookReader inside return, fetchTocViewer fot fetching the value of TOC,
@@ -77,6 +78,7 @@ used for before mounting occurs. */
           fetchRegionsInfo={this.props.fetchRegionsInfo}
           fetchPagebyPageNumber={this.props.fetchPagebyPageNumber}
           fetchUserIcons={this.props.fetchUserIcons}
+          fetchBookFeatures={this.props.fetchBookFeatures}
         />);
     }
 

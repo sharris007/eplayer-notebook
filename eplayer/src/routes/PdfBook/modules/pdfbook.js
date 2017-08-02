@@ -35,6 +35,10 @@ export const REQUEST_REGIONS = 'REQUEST_REGIONS';
 export const RECEIVE_REGIONS = 'RECEIVE_REGIONS';
 export const REQUEST_CUSTOM_ICONS = 'REQUEST_USER_ICONS';
 export const RECEIVE_CUSTOM_ICONS = 'RECEIVE_CUSTOM_ICONS';
+export const RECEIVE_BOOK_FEATURES_PENDING= 'RECEIVE_BOOK_FEATURES_PENDING';
+export const RECEIVE_BOOK_FEATURES_FULFILLED= 'RECEIVE_BOOK_FEATURES_FULFILLED';
+export const RECEIVE_BOOK_FEATURES_REJECTED='RECEIVE_BOOK_FEATURES_REJECTED';
+
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -508,7 +512,7 @@ export function fetchPageInfo(userid, userroleid, bookid, bookeditionid,
     });
 }
 /* Created Action creator for getting regions/hotspots. */
-export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,bookServerURL){
+export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleTypeID,bookServerURL){
   const bookState = {
     regions: [],
     isFetching: {
@@ -517,7 +521,7 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,bookS
   };
   return (dispatch) => {
     dispatch(request('regions'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getregionsbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&authkey='+sessionKey+'&outputformat=JSON',
+    return axios.get(''+bookServerURL+'/ebook/ipad/getregionsbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON',
   {
   timeout: 20000
   }).then((response) => {
@@ -586,6 +590,15 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,bookS
     })
     }
   }
+ /* Created Action creator for getting book features. */
+export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, roleTypeID) {
+    // payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON',
+  return {
+    type: 'RECEIVE_BOOK_FEATURES',
+    payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON'),
+    timeout: 20000
+  };
+}
  /* Created Action creator for getting user uplaoded custom regions/hotspots icons. */
  export function fetchUserIcons(bookid,sessionKey,bookServerURL){
   const bookState = {
@@ -1118,7 +1131,43 @@ const ACTION_HANDLERS = {
       ...state.isFetching,
       userIcons: action.bookState.isFetching.userIcons
     }
-  })
+  }),
+  [RECEIVE_BOOK_FEATURES_PENDING]: state => ({
+    ...state,
+    bookFeatures: {
+      fetching: true,
+      fetched: false
+    }
+  }),
+  [RECEIVE_BOOK_FEATURES_FULFILLED]: (state,action) => ({
+    ...state,
+    bookFeatures: {
+      fetching: false,
+      fetched: true,
+      hasnotesmanager : action.payload.data[0].bookfeatures.ipadfeatures.hasnotesmanager,
+      hasglossarybutton : action.payload.data[0].bookfeatures.ipadfeatures.hasglossarybutton,
+      hascoursemanagement : action.payload.data[0].bookfeatures.ipadfeatures.hascoursemanagement,
+      hassearchbutton : action.payload.data[0].bookfeatures.ipadfeatures.hassearchbutton,
+      hasshowlinksbutton : action.payload.data[0].bookfeatures.ipadfeatures.hasshowlinksbutton,
+      hasshowmyprofile : action.payload.data[0].bookfeatures.ipadfeatures.hasshowmyprofile,
+      hotspotcolor : action.payload.data[0].bookfeatures.ipadfeatures.hotspotcolor,
+      hasaudiosyncbutton : action.payload.data[0].bookfeatures.ipadfeatures.hasaudiosyncbutton,
+      hastwopageview : action.payload.data[0].bookfeatures.ipadfeatures.hastwopageview,
+      hasportraitview : action.payload.data[0].bookfeatures.ipadfeatures.hasportraitview,
+      underlinehotspot : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspot,
+      regionhotspotalpha : action.payload.data[0].bookfeatures.ipadfeatures.regionhotspotalpha,
+      underlinehotspotcolor : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspotcolor,
+      underlinehotspotthickness : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspotthickness,
+      hasmultipleaudioflow : action.payload.data[0].bookfeatures.ipadfeatures.hasmultipleaudioflow      
+    }
+  }),
+  [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({
+    ...state,
+    bookFeatures: {
+      fetching: false,
+      fetched: false
+    }
+  }),
 };
 
 // ------------------------------------
@@ -1143,6 +1192,10 @@ const initialState = {
     viewer: false
   },
   error: null,
+  bookFeatures: {
+    fetching: false,
+    fetched: false
+  },
   bookinfo: {
     fetching: false,
     fetched: false,

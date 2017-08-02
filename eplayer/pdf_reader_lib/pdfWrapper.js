@@ -830,7 +830,7 @@ function getAssetURLForPDFDownload(config,cb){
           }
       }
 /*Function to render regions/hotspots on the page*/
-      displayRegions = function(hotspots,Hotspoticon) {
+      displayRegions = function(hotspots,Hotspoticon,hotspotFeatures) {
         if(hotspots.length>0)
         {
           var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
@@ -841,7 +841,7 @@ function getAssetURLForPDFDownload(config,cb){
               regionType=hotspots[i].iconTypeID;
               for(j=0 ; j< Hotspoticon.length;j++)
               {
-                if(regionType == Hotspoticon[j].iconTypeID)
+                if(regionType == Hotspoticon[j].iconTypeID && regionType !== 1)
                 {
                     iconArt = Hotspoticon[j].imagePath;
                     if(!(/^http:\/\//i.test(iconArt)) && !(/^https:\/\//i.test(iconArt)))
@@ -862,7 +862,15 @@ function getAssetURLForPDFDownload(config,cb){
               regionElement.style.top= hotspots[i].y + 30+ 'px';
               regionElement.style.width=hotspots[i].width + 'px';
               regionElement.style.height=hotspots[i].height + 'px';
-              regionElement.style.backgroundImage = 'url('+iconArt+')';
+              if (regionType == 1)
+              {
+                regionElement.style.background = hotspotFeatures.hotspotcolor;
+                regionElement.style.opacity=hotspotFeatures.regionhotspotalpha/100;
+              }
+              else
+              {
+                regionElement.style.backgroundImage = 'url('+iconArt+')';
+              }
               regionElement.style.backgroundSize = 'cover';
               regionElement.className='hotspot';
               tooltip = document.createElement('span')
@@ -1232,8 +1240,8 @@ function getAssetURLForPDFDownload(config,cb){
         {
           _this.removeHighlightElement(id);
         },
-        displayRegions:function(hotspots,Hotspoticon){
-          var currPage = displayRegions(hotspots,Hotspoticon);
+        displayRegions:function(hotspots,Hotspoticon,hotspotFeatures){
+          var currPage = displayRegions(hotspots,Hotspoticon,hotspotFeatures);
         },     
         /*Get the total Number of Pages in the PDF*/    
          getPageCount: function() {

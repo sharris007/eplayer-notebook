@@ -134,23 +134,29 @@ export class PdfBookReader extends Component {
     }
     data.currentPageNo = currentPageIndex;
     this.setState({ data });
+    const viewer = this;
+    $(document).on('keyup',function(evt) {
+      if (evt.keyCode === 27 && $('#hotspot')) 
+      {
+        viewer.setState({regionData : null});
+      }
+  });
   }
   pdfBookCallback = (pdfEvent) => {
      // this.setState({currPageIndex : currentPageIndex});
     if (pdfEvent === 'pageChanged') {
       sessionStorage.setItem('currentPageOrder', this.state.currPageIndex);
-      this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,serverDetails).then(() => {
+      this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
             if(this.props.book.userIcons.length)
             {
-              __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons);
+              __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
             } 
-            __pdfInstance.displayRegions(this.props.book.regions,null);
-        }
-        else
-        {
-          console.log("None");
+            else
+            {
+              __pdfInstance.displayRegions(this.props.book.regions,null,this.props.book.bookFeatures);
+            }
         }
       });
           // const currentPageOrder = 2;
@@ -237,6 +243,7 @@ export class PdfBookReader extends Component {
     __pdfInstance.removeExistingHighlightCornerImages();
     this.setState({ drawerOpen: false });
     this.setState({ pageLoaded: false });
+    this.setState({ regionData: null});
     const currPageIndex = this.state.currPageIndex;
     let pageIndexToLoad;
     if (navType === 'prev') {
@@ -532,7 +539,7 @@ export class PdfBookReader extends Component {
                regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
                break;
       case 2:
-      case 10: this.goToPageNumber(Number(hotspotDetails.linkValue));
+      case 10: this.goToPageNumber(hotspotDetails.linkValue);
                break;
       case 6:  source=this.createHttps(hotspotDetails.linkValue);
                hotspotData = {
@@ -608,6 +615,11 @@ export class PdfBookReader extends Component {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
             var regionDetails = this.props.book.regions[i];
+            /*For Relative assetts*/
+            if (regionDetails.linkTypeLocation !== null && !(regionDetails.linkValue).startsWith(regionDetails.linkTypeLocation))
+            {
+              regionDetails.linkValue = regionDetails.linkTypeLocation + regionDetails.linkValue;
+            }
             /*Checking if the clicked region is tocLink,indexLink,crossrefernce,ltiLink,word,powerpoint,excel or pdfdocument */
             if (regionDetails.regionTypeID == 2 || regionDetails.regionTypeID == 7 || regionDetails.regionTypeID == 10 || regionDetails.regionTypeID == 14 || regionDetails.regionTypeID ==9 || regionDetails.regionTypeID == 13 || regionDetails.regionTypeID == 15 || regionDetails.regionTypeID == 16)
             {
