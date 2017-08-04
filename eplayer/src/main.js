@@ -26,16 +26,17 @@ const RedBox = require('redbox-react').default;
 //= =======================================================
 // Locale Setup
 //= =======================================================
-let languageid;
+let launchLocale;
 const url = window.location.href;
-const n = url.search('languageid');
+const n = url.search('launchLocale');
 if (n > 0) {
-  const urlSplit = url.split('languageid=');
-  languageid = Number(urlSplit[1]);
+  const urlSplit = url.split('launchLocale=');
+  launchLocale = urlSplit[1];
 } else {
-  languageid = 1;
+  launchLocale = 'en-US';
 }
-const locale = languageName(languageid);
+const locale = launchLocale;
+window.annotationLocale = launchLocale;
 const { messages } = languages.translations[locale];
 const localisedData = locale.split('-')[0];
 addLocaleData((require(`react-intl/locale-data/${localisedData}`))); // eslint-disable-line import/no-dynamic-require

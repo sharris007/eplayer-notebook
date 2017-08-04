@@ -153,9 +153,9 @@ export class Book extends Component {
           playpageDetails1.tocUpdated  = true;
           this.onPageChange("pagescroll",nextProps.gotoPageObj.page.title); 
           if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-            browserHistory.replace('/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}');
+            browserHistory.replace('/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale='+ window.annotationLocale);
           }else{
-            browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}');
+            browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale='+ window.annotationLocale);
           }
           this.props.dispatch({
             type: "GOT_GOTOPAGE",
@@ -259,9 +259,9 @@ export class Book extends Component {
           },function(){
             // eslint-disable-next-line
             if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-              browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${data.id}`);
+              browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${data.id}?launchLocale=`+ window.annotationLocale);
             }else{
-              browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
+              browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=`+ window.annotationLocale);
             }
             this.props.dispatch(getBookmarkCallService(this.state.urlParams));
             // this.props.dispatch(getAnnCallService(this.state.urlParams));
@@ -333,9 +333,9 @@ export class Book extends Component {
       drawerOpen: false
     },()=>{
       if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-        browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${id}`);
+        browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${id}?launchLocale=`+ window.annotationLocale);
       }else{
-        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}`);
+        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=`+ window.annotationLocale);
       }
       this.props.dispatch(getBookmarkCallService(this.state.urlParams));
     }),
