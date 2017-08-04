@@ -152,10 +152,6 @@ export class PdfBookReader extends Component {
             if(this.props.book.userIcons.length)
             {
               __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
-            } 
-            else
-            {
-              __pdfInstance.displayRegions(this.props.book.regions,null,this.props.book.bookFeatures);
             }
         }
       });
@@ -477,6 +473,13 @@ export class PdfBookReader extends Component {
   setCurrentZoomLevel = (level) => {
     __pdfInstance.setCurrentZoomLevel(level);
     this.displayHighlight();
+    if(this.props.book.regions.length > 0 )
+    {
+        if(this.props.book.userIcons.length)
+        {
+          __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
+        } 
+    }
   }
 /*Method for removing hotspot content on clicking the close button*/
   onHotspotClose() {

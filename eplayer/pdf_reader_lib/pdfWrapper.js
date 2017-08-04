@@ -831,13 +831,26 @@ function getAssetURLForPDFDownload(config,cb){
       }
 /*Function to render regions/hotspots on the page*/
       displayRegions = function(hotspots,Hotspoticon,hotspotFeatures) {
+       try
+       {
         if(hotspots.length>0)
         {
           var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
-          var pageLeft=$("#docViewer_ViewContainer").offset().left;
           var regionType,mySpan,icon,iconArt,regionElement;
+          var widthScale,heightScale;
+          const pageWidth = $("#docViewer_ViewContainer_BG_0").width();
+          const pageHeight = $("#docViewer_ViewContainer_BG_0").height();
+          const originalPdfWidth = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageWidth();
+          const originalPdfHeight = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageHeight();
+          widthScale = pageWidth / originalPdfWidth;
+          heightScale = pageHeight / originalPdfHeight;
           for(var i=0;i<hotspots.length;i++)
-            {              
+            {
+              try{
+              $('#'+hotspots[i].regionID).remove();
+              }
+              catch(e){
+              }                 
               regionType=hotspots[i].iconTypeID;
               for(j=0 ; j< Hotspoticon.length;j++)
               {
@@ -858,14 +871,14 @@ function getAssetURLForPDFDownload(config,cb){
               }
               regionElement=document.createElement('div');
               regionElement.setAttribute('id',hotspots[i].regionID);
-              regionElement.style.left= pageLeft  + hotspots[i].x  + 'px';
-              regionElement.style.top= hotspots[i].y + 30+ 'px';
-              regionElement.style.width=hotspots[i].width + 'px';
-              regionElement.style.height=hotspots[i].height + 'px';
+              regionElement.style.left= (hotspots[i].x * widthScale)  + 'px';
+              regionElement.style.top= (hotspots[i].y * heightScale) + 'px';
+              regionElement.style.width=(hotspots[i].width * widthScale) + 'px';
+              regionElement.style.height=(hotspots[i].height * heightScale) + 'px';
               if (regionType == 1)
               {
                 regionElement.style.background = hotspotFeatures.hotspotcolor;
-                regionElement.style.opacity=hotspotFeatures.regionhotspotalpha/100;
+                regionElement.style.opacity = hotspotFeatures.regionhotspotalpha / 100;
               }
               else
               {
@@ -884,6 +897,9 @@ function getAssetURLForPDFDownload(config,cb){
             }
         }
       }
+      catch(e){}
+      }
+
 
       _this.reRenderHighlightCornerImages = function(highlights) {
         _this.removeExistingHighlightCornerImages();
