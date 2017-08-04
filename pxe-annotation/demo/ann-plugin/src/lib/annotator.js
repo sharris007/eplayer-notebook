@@ -5,7 +5,7 @@ var Annotator, g, _Annotator, _ref,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 _Annotator = this.Annotator;
-
+var language = window.annotationLocale;
 Annotator = (function(_super) {
   __extends(Annotator, _super);
 
@@ -108,7 +108,7 @@ Annotator = (function(_super) {
     this.editor = new Annotator.Editor();
     this.editor.hide().on('hide', this.onEditorHide).on('save', this.onEditorSubmit).addField({
       type: 'textarea',
-      label: _t('Write a note.'),
+      label: locale_data[language]['write_note'],
       load: function(field, annotation) {
         return $(field).find('textarea').val(annotation.text || '');
       },

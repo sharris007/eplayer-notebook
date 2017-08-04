@@ -1,4 +1,39 @@
-;(function () {
+var locale_data = {
+  "en-US":{
+	"delete" : "DELETE",
+	"edit" : "Edit",
+	"save" : "SAVE",
+	"cancel" : "CANCEL",
+	"green":"Green",
+	"pink":"Pink",
+	"yellow":"Yellow",
+	"share":"Share",
+	"print":"Print",
+	"write_note":"Write a note.",
+	"confirm":"Confirm",
+	"addtitle":"Add a title",
+	"charleft":"characters left",
+	"close":"Close"
+  },
+  "fr" : {
+	"delete":"SUPPRIMER",
+	"edit":"Modifier",
+	"cancel":"ANNULER",
+	"green":"Vert",
+	"pink":"Rose",
+	"yellow":"Jaune",
+	"none":"aucun",
+	"share":"Partage",
+	"print":"Imprimer",
+	"write_note":"Ajouter une note.",
+	"save":"SAUVEGARDER",
+	"confirm":"Confirmer",
+	"addtitle":"Ajouter un titre",
+	"charleft":"Nombre de caractères restants",
+	"close":"Fermer"
+  }
+};
+;;(function () {
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -2610,7 +2645,7 @@ var Annotator, g, _Annotator, _ref,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 _Annotator = this.Annotator;
-
+var language = window.annotationLocale;
 Annotator = (function(_super) {
   __extends(Annotator, _super);
 
@@ -2713,7 +2748,7 @@ Annotator = (function(_super) {
     this.editor = new Annotator.Editor();
     this.editor.hide().on('hide', this.onEditorHide).on('save', this.onEditorSubmit).addField({
       type: 'textarea',
-      label: _t('Write a note.'),
+      label: locale_data[language]['write_note'],
       load: function(field, annotation) {
         return $(field).find('textarea').val(annotation.text || '');
       },
@@ -3532,7 +3567,6 @@ Annotator.Widget = (function(_super) {
 var __bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
 Annotator.Editor = (function(_super) {
   __extends(Editor, _super);
 
@@ -3562,16 +3596,16 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.const={
     characters :3000
   }
-
-  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" value="#FFD232"/><input type="button" class="annotator-color annotator-green" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" value="#FC92CF"/></div><div class="annotator-delete-container"></div><div class="annotator-edit-container"></div></div>'
+  var language = window.annotationLocale;
+  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" title="' + locale_data[language]['yellow'] + '" value="#FFD232"/><input type="button" class="annotator-color annotator-green" title="' + locale_data[language]['green'] + '" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" title="' + locale_data[language]['pink'] + '" value="#FC92CF"/></div><div class="annotator-delete-container"></div><div class="annotator-edit-container"></div></div>'
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
-  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">Share</label><div class="annotator-share"></div></div><div class="ann-cancelsave-section"><a class="annotator-cancel">' + _t('CANCEL') + '</a><a class="annotator-save annotator-focus">' + _t('SAVE') + '</a></div></div></div>';
+  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share"></div></div><div class="ann-cancelsave-section"><a class="annotator-cancel">' + locale_data[language]['cancel'] + '</a><a class="annotator-save annotator-focus">' + locale_data[language]['save'] + '</a></div></div></div>';
 
-  var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">Confirm?</label></div><div class="ann-canceldelete-section"><a class="annotator-confirm-cancel">' + _t('CANCEL') + '</a><a class="annotator-confirm-delete">' + _t('DELETE') + '</a></div></div></div>';
+  var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a class="annotator-confirm-delete">' + locale_data[language]['delete'] + '</a><a class="annotator-confirm-cancel">' + locale_data[language]['cancel'] + '</a></div></div></div>';
 
-  var panel5 ='<li style="display:none"; class="characters-left"><span id="letter-count">'+(Editor.prototype.const.characters)+'</span id="letter-text">  Characters left<span><span></li>';
+  var panel5 ='<li style="display:none"; class="characters-left"><span id="letter-count">'+(Editor.prototype.const.characters)+'</span id="letter-text">  ' + locale_data[language]['charleft'] + '<span><span></li>';
 
   Editor.prototype.html = '<div class="annotator-outer annotator-editor hide-note"><form class="annotator-widget">'+panel1+ panel2+panel3+'</form></div>';
   
@@ -3852,7 +3886,7 @@ Annotator.Editor = (function(_super) {
     else      
       $('.annotator-share-text, .annotator-share').show();
     if (!$('.annotator-item input').length) {
-     $('.annotator-item').prepend('<input placeholder="Add title."/><div class="noteContainer" id = "noteContainer"></div>');
+     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '."/><div class="noteContainer" id = "noteContainer"></div>');
     }
     $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax')){
