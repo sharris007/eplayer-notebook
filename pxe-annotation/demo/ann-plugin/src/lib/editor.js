@@ -151,7 +151,7 @@ Annotator.Editor = (function(_super) {
     this.element.find('#letter-count').text((remainingCount>0 && remainingCount<51) ? '-'+remainingCount : remainingCount);
     $('.characters-left').css('display', (remainingCount < 51)?'block':'none');
     var selectors = this.element.find('.annotator-item textarea'); 
-    var temp = this.textareaHeight;
+    var temp = selectors.height();
     this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight;
     if(temp!==this.textareaHeight) {
       selectors.height(this.textareaHeight);
@@ -233,6 +233,10 @@ Annotator.Editor = (function(_super) {
       oldHeight=this.element.find('textarea').height();
       this.element.find('textarea').height(textareaScroll);
       actualPos = this.element.position().top;
+      if( this.element.find('textarea').val().length === 0 )
+        textareaScroll = textareaScroll - $(this.element).find('#noteContainer').height();
+      if(!(this.element.find('#mathTitle').css('display') === 'none'))
+        actualPos = actualPos + 27;
       pos  = (textareaScroll-oldHeight) + actualPos;
       this.element.css({top:pos});
     } 
@@ -253,7 +257,7 @@ Annotator.Editor = (function(_super) {
     this.element.find('.annotator-listing').append(panel5);
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
-    this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight || 40; 
+    this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight || 22; 
     if(!this.annotation.text || !this.annotation.text.length){
       this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
       this.element.find('input').css({'pointer-events':'all','opacity':'1'});
@@ -316,12 +320,12 @@ Annotator.Editor = (function(_super) {
   }
   Editor.prototype.load = function(annotation, isShareable) {
     this.isShareable=isShareable;
-    if (!isShareable || !annotation.id || !annotation.text)
+    if (!isShareable || (annotation && (!annotation.id || !annotation.text)))
       $('.annotator-share-text, .annotator-share').hide();
     else      
       $('.annotator-share-text, .annotator-share').show();
     if (!$('.annotator-item input').length) {
-     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '."/><div class="noteContainer" id = "noteContainer"></div>');
+     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '." id = "mathTitle"/><div class="noteContainer" id = "noteContainer"></div>');
     }
     $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax')){
@@ -366,7 +370,7 @@ Annotator.Editor = (function(_super) {
         break;
     }
     if(_i == currentSelection.length)
-          $(currentSelection[_i-1]).prepend("<span class='annotator-handle'></span>")
+          $(currentSelection[0]).prepend("<span class='annotator-handle'></span>")
     $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
     // this.publish('save', [this.annotation]);
     return this.hide();

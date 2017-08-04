@@ -45,7 +45,7 @@ class Annotation extends Component {
       else {
         setTimeout(function() {
           $('.' + nextProps.contentId).annotator().annotator(flag, annData);
-        }, 300);
+        }, 4500);
       }
     }
   } 

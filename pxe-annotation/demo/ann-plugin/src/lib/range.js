@@ -29,12 +29,15 @@ Range.nodeFromXPath = function(xpath, root) {
       nsResolver = null;
     }
     try {
-      return document.evaluate('.' + xp, root, nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    } catch (_error) {
-      exception = _error;
-      console.log("XPath evaluation failed.");
-      console.log("Trying fallback...");
-      return Util.nodeFromXPath(xp, root);
+      var evalNode = document.evaluate('.' + xp, root, nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+      if(evalNode === null )
+          return Util.nodeFromXPath(xp, root);
+      return evalNode;
+      } catch (_error) {
+        exception = _error;
+        console.log("XPath evaluation failed.");
+        console.log("Trying fallback...");
+        return Util.nodeFromXPath(xp, root);
     }
   };
   if (!$.isXMLDoc(document.documentElement)) {
