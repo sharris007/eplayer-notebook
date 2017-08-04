@@ -82,14 +82,12 @@ export class Book extends Component {
       }
       const piUserId = piSession.userId();
       this.state.urlParams.user = piUserId;
-      this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
       if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
           bookDetailsData.courseId = this.props.params.bookId;
           this.props.dispatch(getCourseCallService(bookDetailsData));
       }else{
           this.props.dispatch(getBookCallService(bookDetailsData));
       }
-      this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
   }, 2000);
     
   }
@@ -263,6 +261,7 @@ export class Book extends Component {
             }else{
               browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}`);
             }
+            
             this.props.dispatch(getBookmarkCallService(this.state.urlParams));
             // this.props.dispatch(getAnnCallService(this.state.urlParams));
           });
@@ -298,7 +297,10 @@ export class Book extends Component {
   viewerContentCallBack = (viewerCallBack) => {
     this.setState({ viewerContent: viewerCallBack });
     if(viewerCallBack==false) {
-      this.setState({ drawerOpen: true });
+      this.setState({ drawerOpen: true },function(){
+          this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
+          this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+      });
     }
     else{
       this.setState({ drawerOpen: false });
@@ -359,6 +361,7 @@ export class Book extends Component {
       this.setState({ popUpCollection : [] });
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
       this.wrapper.bindPopUpCallBacks();
+      
     }    
   }
 

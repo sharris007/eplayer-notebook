@@ -98,17 +98,11 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
      const bookId       = bookDetails.section.sectionId;
      PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then((response) => {
-        // response.bookConfig =bookDetails;
-        // const tocResponse = response.content;
-        // tocResponse.mainTitle = bookDetails.title;
-        // tocResponse.author    = bookDetails.creator.substring(0,20)+'...';
-        // tocResponse.thumbnail = bookDetails.coverImageUrl;
-        // response.bookConfig = bookDetails;
+        
         const tocResponse = response.content;
         tocResponse.mainTitle = bookDetails.section.sectionTitle;
         tocResponse.author = bookDetails.authorName;
         tocResponse.thumbnail = bookDetails.section.avatarUrl;
-
 
         tocResponse.list = [];
         const tocItems = tocResponse.items;
