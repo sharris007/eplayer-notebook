@@ -539,7 +539,10 @@ export class PdfBookReader extends Component {
                regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
                break;
       case 2:
+      case 7:
       case 10: this.goToPageNumber(hotspotDetails.linkValue);
+               break;
+      case 3:  document.location = "mailto:" + hotspotDetails.linkValue;
                break;
       case 6:  source=hotspotDetails.linkValue;
                hotspotData = {
@@ -555,8 +558,6 @@ export class PdfBookReader extends Component {
       case 12: source=hotspotDetails.linkValue;
                hotspotData = {
                 title : hotspotDetails.name,
-                // src : hotspotDetails.linkValue,
-                 // src: '//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm',
                 src : source,
                 caption : 'Video is here',
                 id : hotspotDetails.regionID,
@@ -592,8 +593,9 @@ export class PdfBookReader extends Component {
                var courseId =0 ;
                var userId = this.props.book.userInfo.userid;
                var ltiLink = hotspotDetails.linkValue;
-               // var ltiUrl = serverDetails + 'ebook/toolLaunch.do?json=' + ltiLink + '&contextid' + courseId + '&role' + role + '&userlogin' + userId ;
-               var ltiUrl ="https://view.cert1.ebookplus.pearsoncmg.com/ebook/toolLaunch.do?json=handler_urn:pearson/xl_platform/slink/x-pearson-xl_platform,targetId:assignedhomework&contextid=82299&role=3&userlogin=115314";
+               var link = serverDetails + 'ebook/toolLaunch.do?json=' + ltiLink + '&contextid' + courseId + '&role' + role + '&userlogin' + userId ;
+               var ltiUrl = this.createHttps(link);
+               // var ltiUrl ="https://view.cert1.ebookplus.pearsoncmg.com/ebook/toolLaunch.do?json=handler_urn:pearson/xl_platform/slink/x-pearson-xl_platform,targetId:assignedhomework&contextid=82299&role=3&userlogin=115314";
                window.open(ltiUrl,"_blank");
                break;
       default :regionComponent = null;
@@ -615,7 +617,7 @@ export class PdfBookReader extends Component {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
             var regionDetails = this.props.book.regions[i];
-            if(regionDetails.regionTypeID !== 2 || regionDetails.regionTypeID !== 7 || regionDetails.regionTypeID !== 10)
+            if(regionDetails.regionTypeID !== 2 || regionDetails.regionTypeID !== 7 || regionDetails.regionTypeID !== 10 || regionDetails.regionTypeID !== 3 || regionDetails.regionTypeID !== 16)
             {
               regionDetails.linkValue=this.createHttps(regionDetails.linkValue);
               regionDetails.linkTypeLocation=this.createHttps(regionDetails.linkTypeLocation);
