@@ -2322,12 +2322,15 @@ Range.nodeFromXPath = function(xpath, root) {
       nsResolver = null;
     }
     try {
-      return document.evaluate('.' + xp, root, nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    } catch (_error) {
-      exception = _error;
-      console.log("XPath evaluation failed.");
-      console.log("Trying fallback...");
-      return Util.nodeFromXPath(xp, root);
+      var evalNode = document.evaluate('.' + xp, root, nsResolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+      if(evalNode === null )
+          return Util.nodeFromXPath(xp, root);
+      return evalNode;
+      } catch (_error) {
+        exception = _error;
+        console.log("XPath evaluation failed.");
+        console.log("Trying fallback...");
+        return Util.nodeFromXPath(xp, root);
     }
   };
   if (!$.isXMLDoc(document.documentElement)) {
@@ -3001,19 +3004,6 @@ Annotator = (function(_super) {
   };
   Annotator.prototype.alignNotes = function() {
     var notes=document.getElementsByClassName('annotator-handle');
-    for (var i = 0; i < notes.length; i++) {
-      var annId = notes[i].parentNode.getAttribute('data-ann-id');
-      if(annId) {
-        var highlights = $('span[data-ann-id='+annId+']');
-        noHighlights = $(highlights).length;
-        if( noHighlights > 1) {
-          var lastElement = $(highlights)[noHighlights-1];
-          var noteIconPos = (lastElement.offsetTop - $(highlights)[0].offsetTop)-6;   
-          $(lastElement).find('.annotator-handle').css({'margin-top': -noteIconPos+'px'});
-
-        }
-      }
-    };
     for (var i = 0; i<notes.length - 1; i++) {
       for(var j=i+1;j<notes.length;j++){
         var noteOne=notes[i];
@@ -3067,7 +3057,7 @@ Annotator = (function(_super) {
         if($(node).closest('.pxereaderSearchHighlight').length > 0) {
           $(node).parent().find('.annotator-handle').css('background-color', normedRange.color);
         }
-        //handle='';
+        handle='';
       }
     }
     window.getSelection().removeAllRanges();
@@ -3111,13 +3101,13 @@ Annotator = (function(_super) {
 
   Annotator.prototype.showEditor = function(annotation, location, isAdderClick) {
     var height=0,annId = annotation?annotation.id:'',len;
-    len = $('span[data-ann-id='+annId+']').length;
-    var annElement = $('span[data-ann-id='+annId+']')[len-1];
+    //len = $('span[data-ann-id='+annId+']').length;
+    var annElement = $('span[data-ann-id='+annId+']')[0];
     if(annElement) {
       var noteIconHght=0;
       if($(annElement).find('.annotator-handle').length>0)
         noteIconHght = isNaN(parseInt($(annElement.innerHTML).css('margin-top')))?0:parseInt($(annElement.innerHTML).css('margin-top'));
-      height = $(annElement).offset().top+27+noteIconHght;
+      height = $(annElement).offset().top+noteIconHght;
     }
     else
       height = location.top+39;
@@ -3185,10 +3175,13 @@ Annotator = (function(_super) {
     }
     if(elementSelection.length == 0) {  //Checks overlapping on the same content
       var selectedText = getHTMLContents.cloneContents().textContent;
+      var ancesterContainer = getHTMLContents.commonAncestorContainer;
       elementSelection = [];
       if(selectedText==getHTMLContents.startContainer.innerText 
         && $(getHTMLContents.startContainer).hasClass('annotator-hl'))
         elementSelection.push(getHTMLContents.startContainer)
+      else if($(ancesterContainer).hasClass('annotator-hl'))
+        elementSelection.push(ancesterContainer);
     }
     if(elementSelection.length>0){  //finds overlapping annotations
         for (var i=0;i<=elementSelection.length;i++){
@@ -3309,7 +3302,7 @@ Annotator = (function(_super) {
 
   Annotator.prototype.onAdderClick = function(event) {
     var annArray =[],oldAnnArr=[],annObjElement;
-    var annotation, cancel, cleanup, position, save, noHighlights;
+    var annotation, cancel, cleanup, position, save;
     annArray = this.getSelectedAnnotations();
      if(annArray.length>0) {
       var hlElements = $(event.target).addBack().find('.annotator-hl');
@@ -3335,12 +3328,6 @@ Annotator = (function(_super) {
     position = Util.mousePosition(event, this.wrapper[0]);
     // this.clearTextSelection();
     $(annotation.highlights).addClass('annotator-hl-temporary');
-    noHighlights = $(annotation.highlights).length;
-    if( noHighlights > 1) {
-      var lastElement = $(annotation.highlights)[noHighlights-1];
-      var noteIconPos = (lastElement.offsetTop - $(annotation.highlights)[0].offsetTop)-6;  
-      $(lastElement).find('.annotator-handle').css({'margin-top': -noteIconPos+'px'});
-    }
     save = (function(_this) {
       return function() {
         cleanup();
@@ -3716,7 +3703,7 @@ Annotator.Editor = (function(_super) {
     this.element.find('#letter-count').text((remainingCount>0 && remainingCount<51) ? '-'+remainingCount : remainingCount);
     $('.characters-left').css('display', (remainingCount < 51)?'block':'none');
     var selectors = this.element.find('.annotator-item textarea'); 
-    var temp = this.textareaHeight;
+    var temp = selectors.height();
     this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight;
     if(temp!==this.textareaHeight) {
       selectors.height(this.textareaHeight);
@@ -3798,6 +3785,10 @@ Annotator.Editor = (function(_super) {
       oldHeight=this.element.find('textarea').height();
       this.element.find('textarea').height(textareaScroll);
       actualPos = this.element.position().top;
+      if( this.element.find('textarea').val().length === 0 )
+        textareaScroll = textareaScroll - $(this.element).find('#noteContainer').height();
+      if(!(this.element.find('#mathTitle').css('display') === 'none'))
+        actualPos = actualPos + 27;
       pos  = (textareaScroll-oldHeight) + actualPos;
       this.element.css({top:pos});
     } 
@@ -3818,7 +3809,7 @@ Annotator.Editor = (function(_super) {
     this.element.find('.annotator-listing').append(panel5);
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
-    this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight || 40; 
+    this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight || 22; 
     if(!this.annotation.text || !this.annotation.text.length){
       this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
       this.element.find('input').css({'pointer-events':'all','opacity':'1'});
@@ -3881,12 +3872,12 @@ Annotator.Editor = (function(_super) {
   }
   Editor.prototype.load = function(annotation, isShareable) {
     this.isShareable=isShareable;
-    if (!isShareable || !annotation.id || !annotation.text)
+    if (!isShareable || (annotation && (!annotation.id || !annotation.text)))
       $('.annotator-share-text, .annotator-share').hide();
     else      
       $('.annotator-share-text, .annotator-share').show();
     if (!$('.annotator-item input').length) {
-     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '."/><div class="noteContainer" id = "noteContainer"></div>');
+     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '." id = "mathTitle"/><div class="noteContainer" id = "noteContainer"></div>');
     }
     $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax')){
@@ -3931,7 +3922,7 @@ Annotator.Editor = (function(_super) {
         break;
     }
     if(_i == currentSelection.length)
-          $(currentSelection[_i-1]).prepend("<span class='annotator-handle'></span>")
+          $(currentSelection[0]).prepend("<span class='annotator-handle'></span>")
     $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
     // this.publish('save', [this.annotation]);
     return this.hide();
