@@ -1,9 +1,9 @@
 var locale_data = {
   "en-US":{
-	"delete" : "DELETE",
+	"delete" : "Delete",
 	"edit" : "Edit",
-	"save" : "SAVE",
-	"cancel" : "CANCEL",
+	"save" : "Save",
+	"cancel" : "Cancel",
 	"green":"Green",
 	"pink":"Pink",
 	"yellow":"Yellow",
@@ -16,9 +16,9 @@ var locale_data = {
 	"close":"Close"
   },
   "fr" : {
-	"delete":"SUPPRIMER",
+	"delete":"Supprimer",
 	"edit":"Modifier",
-	"cancel":"ANNULER",
+	"cancel":"Annuler",
 	"green":"Vert",
 	"pink":"Rose",
 	"yellow":"Jaune",
@@ -26,7 +26,7 @@ var locale_data = {
 	"share":"Partage",
 	"print":"Imprimer",
 	"write_note":"Ajouter une note.",
-	"save":"SAUVEGARDER",
+	"save":"Sauvegarder",
 	"confirm":"Confirmer",
 	"addtitle":"Ajouter un titre",
 	"charleft":"Nombre de caractères restants",

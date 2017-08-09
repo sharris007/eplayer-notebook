@@ -806,6 +806,7 @@
     margin: 5px 0 0 5px;
     float: left;
 	position: relative;
+	cursor: pointer;
 }
 .annotator-share::after{
 	width: 15px;
@@ -966,6 +967,7 @@
   text-decoration: none;
   cursor: pointer;
   margin: 0 10px;
+  text-transform: uppercase;
 
 }
 .annotator-cancel{
@@ -983,6 +985,7 @@
   margin-right: 10px;
   text-decoration: none;
   cursor: pointer;
+  text-transform: uppercase;
 }
 .annotator-confirm{
   width: 83px;
@@ -1014,6 +1017,7 @@
   margin: 0 5px 0 0;
   text-decoration: none;
   cursor: pointer;
+  text-transform: uppercase;
 }
 .annotator-confirm-delete {
   float: right;
@@ -1031,6 +1035,7 @@
   margin: 0 8px 0 5px;
   text-decoration: none;
   cursor: pointer;
+  text-transform: uppercase;
 }
 .overlay{
 	pointer-events:none;

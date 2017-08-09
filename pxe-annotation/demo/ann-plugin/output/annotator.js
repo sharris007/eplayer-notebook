@@ -1,9 +1,9 @@
 var locale_data = {
   "en-US":{
-	"delete" : "DELETE",
+	"delete" : "Delete",
 	"edit" : "Edit",
-	"save" : "SAVE",
-	"cancel" : "CANCEL",
+	"save" : "Save",
+	"cancel" : "Cancel",
 	"green":"Green",
 	"pink":"Pink",
 	"yellow":"Yellow",
@@ -16,9 +16,9 @@ var locale_data = {
 	"close":"Close"
   },
   "fr" : {
-	"delete":"SUPPRIMER",
+	"delete":"Supprimer",
 	"edit":"Modifier",
-	"cancel":"ANNULER",
+	"cancel":"Annuler",
 	"green":"Vert",
 	"pink":"Rose",
 	"yellow":"Jaune",
@@ -26,7 +26,7 @@ var locale_data = {
 	"share":"Partage",
 	"print":"Imprimer",
 	"write_note":"Ajouter une note.",
-	"save":"SAUVEGARDER",
+	"save":"Sauvegarder",
 	"confirm":"Confirmer",
 	"addtitle":"Ajouter un titre",
 	"charleft":"Nombre de caractères restants",
@@ -3584,13 +3584,13 @@ Annotator.Editor = (function(_super) {
     characters :3000
   }
   var language = window.annotationLocale;
-  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" title="' + locale_data[language]['yellow'] + '" value="#FFD232"/><input type="button" class="annotator-color annotator-green" title="' + locale_data[language]['green'] + '" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" title="' + locale_data[language]['pink'] + '" value="#FC92CF"/></div><div class="annotator-delete-container"></div><div class="annotator-edit-container"></div></div>'
+  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" title="' + locale_data[language]['yellow'] + '" value="#FFD232"/><input type="button" class="annotator-color annotator-green" title="' + locale_data[language]['green'] + '" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" title="' + locale_data[language]['pink'] + '" value="#FC92CF"/></div><div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"></div><div class="annotator-edit-container" title="' + locale_data[language]['edit'] + '"></div></div>'
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
-  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share"></div></div><div class="ann-cancelsave-section"><a class="annotator-cancel">' + locale_data[language]['cancel'] + '</a><a class="annotator-save annotator-focus">' + locale_data[language]['save'] + '</a></div></div></div>';
+  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share" title="' + locale_data[language]['share'] + '"></div></div><div class="ann-cancelsave-section"><a class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a><a class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a></div></div></div>';
 
-  var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a class="annotator-confirm-delete">' + locale_data[language]['delete'] + '</a><a class="annotator-confirm-cancel">' + locale_data[language]['cancel'] + '</a></div></div></div>';
+  var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a><a class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a></div></div></div>';
 
   var panel5 ='<li style="display:none"; class="characters-left"><span id="letter-count">'+(Editor.prototype.const.characters)+'</span id="letter-text">  ' + locale_data[language]['charleft'] + '<span><span></li>';
 
