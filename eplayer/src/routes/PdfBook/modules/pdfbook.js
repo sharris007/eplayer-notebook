@@ -202,7 +202,6 @@ export function addBookmarkUsingReaderApi(userId, bookId, pageId, pageNo, extern
 /* Method for deleting the selected bookmark. */
 export function removeBookmarkUsingReaderApi(bookmarkId) {
   const authorizationHeaderVal = createAuthorizationToken(`/bookmark/${bookmarkId}`, 'DELETE');
-
   return (dispatch) => {
     dispatch(request('bookmarks'));
     return clients.readerApi.delete(`/bookmark/${bookmarkId}`, {
@@ -413,7 +412,7 @@ export function goToPage(pageId) {
 /* Created Action creator for fetching all book detail. */
 export function fetchBookInfo(bookid, sessionKey, userid, bookServerURL, roleTypeId) {
   let roleTypeID = roleTypeId;
-  if (roleTypeID === undefined) {
+  if (roleTypeID === undefined || roleTypeID === null || roleTypeID === '') {
     roleTypeID = 2;
   }
 
@@ -469,8 +468,8 @@ export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
     });
 }
 /* Created Action creator for getting page details by page order */
-export function fetchPageInfo(userid, userroleid, bookid, bookeditionid,
-  pageIndexToLoad, totalPagesToHit, sessionKey, bookServerURL, loadPdfPageCallback, roleTypeID) {
+export function fetchPageInfo(userid, bookid, bookeditionid,
+  pageIndexToLoad, totalPagesToHit, sessionKey, bookServerURL, roleTypeID) {
   const bookState = {
     bookInfo: {
       pages: []
@@ -1083,7 +1082,6 @@ const ACTION_HANDLERS = {
     userInfo: {
       fetching: false,
       fetched: true,
-            // ...state.userInfo,
       userid: action.payload.data[0].userid
     }
   }),
