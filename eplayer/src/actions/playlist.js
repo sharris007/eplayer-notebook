@@ -135,44 +135,11 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       // const bookDetails = response.bookDetail.metadata;
       // const piToken     = data.piToken;
      const baseUrl      = response.userCourseSectionDetail.baseUrl;
-     const tocUrl       = getTocUrlOnResp(response.userCourseSectionDetail.toc);
-     const bookDetails  = response.userCourseSectionDetail;
-     const piToken      = data.piToken;
-     const bookId       = bookDetails.section.sectionId;
-     PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
-      .then((response) => {
-        
-        const tocResponse = response.content;
-        tocResponse.mainTitle = bookDetails.section.sectionTitle;
-        tocResponse.author = bookDetails.authorName;
-        tocResponse.thumbnail = bookDetails.section.avatarUrl;
-
-        tocResponse.list = [];
-        const tocItems = tocResponse.items;
-        let subItems = [];
-        const listData = tocItems.map((itemObj) => {
-          if (itemObj.items) {
-            subItems = itemObj.items.map(n => ({
-              urn: n.id,
-              href: n.href,
-              id: n.id,
-              playorder: n.playorder,
-              title: n.title
-            }));
-          }
-          return {
-            id: itemObj.id,
-            title: itemObj.title,
-            coPage: itemObj.coPage,
-            playOrder: itemObj.playOrder,
-            children: subItems
-          };
-        });
-        tocResponse.list = listData;
-        delete tocResponse.items;
-        const tocFinalModifiedData = { content: tocResponse, bookDetails };
-        dispatch(getTocCompleteDetails(tocFinalModifiedData));
-      });
+     tocUrl       = getTocUrlOnResp(response.userCourseSectionDetail.toc);
+     bookDetails  = response.userCourseSectionDetail;
+     piToken      = data.piToken;
+     bookId       = bookDetails.section.sectionId;
+     /**/
 
      PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then(response => {
