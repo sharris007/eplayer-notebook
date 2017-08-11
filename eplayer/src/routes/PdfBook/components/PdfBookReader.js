@@ -13,7 +13,7 @@ import { languages } from '../../../../locale_config/translations/index';
 import { eT1Contants } from '../../../components/common/et1constants';
 import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
-import { loadState } from '../../../localStorage'; 
+import { loadState } from '../../../localStorage';
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -62,7 +62,7 @@ export class PdfBookReader extends Component {
       ssoKey = this.props.bookshelf.ssoKey;
       serverDetails = this.props.bookshelf.serverDetails;
       globalbookid = this.props.book.bookinfo.book.globalbookid;
-    
+
     /* Method for getting the toc details for particular book. */
     this.props.fetchTocAndViewer(this.props.params.bookId, authorName, title, thumbnail,
       this.props.book.bookinfo.book.bookeditionid, ssoKey, serverDetails,
@@ -78,18 +78,18 @@ export class PdfBookReader extends Component {
       this.props.params.bookId, true, courseId, authorName);
     this.props.fetchUserIcons(this.props.params.bookId,ssoKey,serverDetails);
     const firstPage = 'firstPage';
-    if (sessionStorage.getItem('isReloaded') && sessionStorage.getItem('currentPageOrder')) {
-      this.goToPageCallback(Number(sessionStorage.getItem('currentPageOrder')));
+    if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
+      this.goToPageCallback(Number(localStorage.getItem('currentPageOrder')));
     } else {
       this.goToPage(firstPage);
     }
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
    componentWillUnmount(){
-    sessionStorage.removeItem('isReloaded');
-    sessionStorage.removeItem('currentPageOrder');
-    sessionStorage.removeItem('pages');
-    sessionStorage.removeItem('assertUrls');
+    localStorage.removeItem('isReloaded');
+    localStorage.removeItem('currentPageOrder');
+    localStorage.removeItem('pages');
+    localStorage.removeItem('assertUrls');
     pages = null;
     assertUrls = null;
   }
@@ -119,8 +119,8 @@ export class PdfBookReader extends Component {
     __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
-    sessionStorage.setItem("currentPageOrder",currentPageIndex);
-    sessionStorage.setItem('isReloaded',true);
+    localStorage.setItem("currentPageOrder",currentPageIndex);
+    localStorage.setItem('isReloaded',true);
     const data = this.state.data;
     if (currentPageIndex === 1) {
       data.isFirstPage = true;
@@ -136,7 +136,7 @@ export class PdfBookReader extends Component {
     this.setState({ data });
     const viewer = this;
     $(document).on('keyup',function(evt) {
-      if (evt.keyCode === 27 && $('#hotspot')) 
+      if (evt.keyCode === 27 && $('#hotspot'))
       {
         viewer.setState({regionData : null});
       }
@@ -145,7 +145,7 @@ export class PdfBookReader extends Component {
   pdfBookCallback = (pdfEvent) => {
      // this.setState({currPageIndex : currentPageIndex});
     if (pdfEvent === 'pageChanged') {
-      sessionStorage.setItem('currentPageOrder', this.state.currPageIndex);
+      localStorage.setItem('currentPageOrder', this.state.currPageIndex);
       this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
@@ -174,13 +174,13 @@ export class PdfBookReader extends Component {
   storeAssertUrl = () => {
     if (assertUrls === undefined || assertUrls === null) {
       assertUrls = this.props.book.bookinfo.assertUrls;
-      sessionStorage.setItem('assertUrls', JSON.stringify(assertUrls));
+      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
     } else if (assertUrls.length > this.props.book.bookinfo.assertUrls.length) {
       assertUrls = assertUrls.concat(this.props.book.bookinfo.assertUrls);
-      sessionStorage.setItem('assertUrls', JSON.stringify(assertUrls));
+      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
     } else {
       assertUrls = this.props.book.bookinfo.assertUrls;
-      sessionStorage.setItem('assertUrls', JSON.stringify(assertUrls));
+      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
     }
   }
 
@@ -228,13 +228,13 @@ export class PdfBookReader extends Component {
       ).then(() => {
         if (pages === undefined || pages === null) {
           pages = this.props.book.bookinfo.pages;
-          sessionStorage.setItem('pages', JSON.stringify(pages));
+          localStorage.setItem('pages', JSON.stringify(pages));
         } else if (pages.length > this.props.book.bookinfo.pages.length) {
           pages = pages.concat(this.props.book.bookinfo.pages);
-          sessionStorage.setItem('pages', JSON.stringify(pages));
+          localStorage.setItem('pages', JSON.stringify(pages));
         } else {
           pages = this.props.book.bookinfo.pages;
-          sessionStorage.setItem('pages', JSON.stringify(pages));
+          localStorage.setItem('pages', JSON.stringify(pages));
         }
         this.loadPdfPage(pageIndexToLoad);
       });
@@ -259,10 +259,10 @@ export class PdfBookReader extends Component {
       ).then(() => {
         if (pages === undefined || pages === null) {
           pages = this.props.book.bookinfo.pages;
-          sessionStorage.setItem('pages', JSON.stringify(pages));
+          localStorage.setItem('pages', JSON.stringify(pages));
         } else {
           pages = pages.concat(this.props.book.bookinfo.pages);
-          sessionStorage.setItem('pages', JSON.stringify(pages));
+          localStorage.setItem('pages', JSON.stringify(pages));
         }
         this.loadPdfPage(pageNum);
       });
@@ -407,7 +407,7 @@ export class PdfBookReader extends Component {
         if(this.props.book.userIcons.length)
         {
           __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
-        } 
+        }
     }
   }
 /*Method for removing hotspot content on clicking the close button*/
@@ -441,11 +441,11 @@ export class PdfBookReader extends Component {
       .then(() => {
           if (pages === undefined) {
             pages = this.props.book.bookinfo.pages;
-            sessionStorage.setItem('pages', JSON.stringify(pages));
+            localStorage.setItem('pages', JSON.stringify(pages));
             var currentPage = find(pages,page => page.pagenumber == pageNo)
           } else {
             pages = pages.concat(this.props.book.bookinfo.pages);
-            sessionStorage.setItem('pages', JSON.stringify(pages));
+            localStorage.setItem('pages', JSON.stringify(pages));
             var currentPage = find(pages,page => page.pagenumber == pageNo)
           }
           this.goToPageCallback(Number(currentPage.pageorder));
@@ -455,7 +455,7 @@ export class PdfBookReader extends Component {
     {
       this.goToPageCallback(Number(currentPage.pageorder));
     }
-    
+
   }
 /*Method to render the clicked region component.*/
 
@@ -463,7 +463,7 @@ export class PdfBookReader extends Component {
     var regionComponent = " ";
     var hotspotData,source;
     switch(hotspotDetails.regionTypeID) {
-      case eT1Contants.RegionType.AUDIO:  
+      case eT1Contants.RegionType.AUDIO:
                 source=hotspotDetails.linkValue;
                 hotspotData = {
                   audioSrc :source,
@@ -473,13 +473,13 @@ export class PdfBookReader extends Component {
                 break;
       case eT1Contants.RegionType.CROSS_REFERENCE:
       case eT1Contants.RegionType.INDEX_LINK:
-      case eT1Contants.RegionType.TOC_LINK: 
+      case eT1Contants.RegionType.TOC_LINK:
                this.goToPageNumber(hotspotDetails.linkValue);
                break;
-      case eT1Contants.RegionType.EMAIL:  
+      case eT1Contants.RegionType.EMAIL:
                document.location = "mailto:" + hotspotDetails.linkValue;
                break;
-      case eT1Contants.RegionType.IMAGE:  
+      case eT1Contants.RegionType.IMAGE:
                source=hotspotDetails.linkValue;
                hotspotData = {
                  alt : hotspotDetails.name,
@@ -491,7 +491,7 @@ export class PdfBookReader extends Component {
                };
                regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
                break;
-      case eT1Contants.RegionType.VIDEO: 
+      case eT1Contants.RegionType.VIDEO:
                source=hotspotDetails.linkValue;
                hotspotData = {
                 title : hotspotDetails.name,
@@ -514,12 +514,12 @@ export class PdfBookReader extends Component {
                break;
       case eT1Contants.RegionType.POWERPOINT:
       case eT1Contants.RegionType.EXCEL:
-      case eT1Contants.RegionType.WORD_DOC: 
-      case eT1Contants.RegionType.PDF: 
+      case eT1Contants.RegionType.WORD_DOC:
+      case eT1Contants.RegionType.PDF:
                source=hotspotDetails.linkValue;
                window.open(source,"_blank");
                break;
-      case eT1Contants.RegionType.URL: 
+      case eT1Contants.RegionType.URL:
                source=hotspotDetails.linkValue;
                hotspotData = {
                  title : hotspotDetails.name,
@@ -527,7 +527,7 @@ export class PdfBookReader extends Component {
                };
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={(this.onHotspotClose)} />;
                break;
-      case eT1Contants.RegionType.LTILINK: 
+      case eT1Contants.RegionType.LTILINK:
                var role = this.props.book.bookinfo.book.roleTypeID;
                var courseId =0 ;
                var userId = this.props.book.userInfo.userid;
@@ -556,12 +556,12 @@ export class PdfBookReader extends Component {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
             var regionDetails = this.props.book.regions[i];
-            if(regionDetails.regionTypeID !== eT1Contants.RegionType.CROSS_REFERENCE || regionDetails.regionTypeID !== eT1Contants.RegionType.INDEX_LINK || 
+            if(regionDetails.regionTypeID !== eT1Contants.RegionType.CROSS_REFERENCE || regionDetails.regionTypeID !== eT1Contants.RegionType.INDEX_LINK ||
                   regionDetails.regionTypeID !== eT1Contants.RegionType.TOC_LINK || regionDetails.regionTypeID !== eT1Contants.RegionType.EMAIL || regionDetails.regionTypeID !== eT1Contants.RegionType.LTILINK)
             {
               regionDetails.linkValue=this.createHttps(regionDetails.linkValue);
               regionDetails.linkTypeLocation=this.createHttps(regionDetails.linkTypeLocation);
-            }            
+            }
             /*For Relative assetts*/
             if (regionDetails.linkTypeLocation !== null && !(regionDetails.linkValue).startsWith(regionDetails.linkTypeLocation))
             {
@@ -569,8 +569,8 @@ export class PdfBookReader extends Component {
             }
             /*Checking if the clicked region is tocLink,indexLink,crossrefernce,ltiLink,word,powerpoint,excel or pdfdocument */
             if (regionDetails.regionTypeID == eT1Contants.RegionType.CROSS_REFERENCE || regionDetails.regionTypeID == eT1Contants.RegionType.INDEX_LINK ||
-                   regionDetails.regionTypeID == eT1Contants.RegionType.TOC_LINK || regionDetails.regionTypeID == eT1Contants.RegionType.PDF || 
-                   regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || 
+                   regionDetails.regionTypeID == eT1Contants.RegionType.TOC_LINK || regionDetails.regionTypeID == eT1Contants.RegionType.PDF ||
+                   regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL ||
                    regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || regionDetails.regionTypeID == eT1Contants.RegionType.LTILINK)
             {
               this.renderHotspot(regionDetails);
@@ -582,8 +582,8 @@ export class PdfBookReader extends Component {
             }
             break;
           }
-      }    
-    }    
+      }
+    }
   }
  /* Method for creating highLight for selected area by user. */
   createHighlight(highlightData) {
@@ -682,7 +682,7 @@ export class PdfBookReader extends Component {
     if(highLightClickedData.highlightId === undefined)
     {
       hId = highLightClickedData;
-    } 
+    }
     else
     {
       hId = highLightClickedData.highlightId;
