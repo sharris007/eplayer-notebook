@@ -1,7 +1,7 @@
 // import { clients } from '../../../components/common/client'; /* Importing the client file for framing the complete url, since baseurls are stored in client file. */
 import axios from 'axios'; /* axios is third party library, used to make ajax request. */
 import { resources, domain } from '../../../../const/Settings';
-import {getSiteId} from '../../../components/Util/Util';
+import {getSiteId} from '../../../components/Utility/Util';
 
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
