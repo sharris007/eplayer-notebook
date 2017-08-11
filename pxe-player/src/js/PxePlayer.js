@@ -124,41 +124,30 @@ class PxePlayer extends React.Component {
     receivedAnnotationData.context = this.state.urlParams.context;
     receivedAnnotationData.source = this.state.currentPageDetails;
     receivedAnnotationData.source.baseUrl = this.props.bootstrapParams.pageDetails.baseUrl;
-      // delete receivedAnnotationData.source.href;
-      // delete receivedAnnotationData.source.title;
     switch (eventType) {
     case 'annotationCreated': {
-      // this.createAnnotation(receivedAnnotationData).then((newAnnotation)=>{
-      //   const annotationData={...this.state.annotationData};
-      //   annotationData.total=annotationData.total+1;
-      //   annotationData.rows.push(newAnnotation);
-      //   this.setState({annotationData:annotationData});
-      // });
-      this.annotationCallDispatch('POST', receivedAnnotationData).then((newAnnotation) => {
+        this.annotationCallDispatch('POST', receivedAnnotationData).then((newAnnotation) => {
         const annotationData = { ...this.state.annotationData };
         annotationData.total += 1;
         annotationData.rows.push(newAnnotation);
         this.setState({ annotationData }, () => {
             // Making empty so that Annotation component loads with new annotation created and duplicates the existing one.
-          this.setState({ annotationData: {
+        this.setState({ annotationData: {
             rows: [],
             total: 0
-          } });
+          }});
         });
         this.props.applnCallback(playerConstants.ANNOTATION_CREATED, newAnnotation);
-      });
-      break;
+        });
+        break;
     }
     case 'annotationUpdated': {
-      // this.updateAnnotation(receivedAnnotationData);
       this.annotationCallDispatch('PUT', receivedAnnotationData).then((updatedAnnotation) => {
         this.props.applnCallback(playerConstants.ANNOTATION_UPDATED, updatedAnnotation);
       });
       break;
     }
     case 'annotationDeleted': {
-      // receivedAnnotationData.annId    = data.id;
-      // this.deleteAnnotation(receivedAnnotationData);
       this.annotationCallDispatch('DELETE', receivedAnnotationData).then((deletedAnnotation) => {
         this.props.applnCallback(playerConstants.ANNOTATION_DELETED, deletedAnnotation);
       });

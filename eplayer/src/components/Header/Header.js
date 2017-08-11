@@ -62,7 +62,7 @@ export class Header extends React.Component {
 
   handleBookshelfClick = () => {
     if (this.props.bookData.toc.content !== undefined) {
-      this.props.bookData.toc.content = {};
+      this.props.bookData.toc.content = {list:[]};
       this.props.bookData.bookmarks = [];
       this.props.bookData.bookinfo = [];
       this.props.bookData.annTotalData = [];

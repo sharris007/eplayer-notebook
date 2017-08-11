@@ -335,7 +335,7 @@ class DrawerComponent extends React.Component {
             className="swipeviewStyle"
           >
             
-             { this.props.bookData.toc.content &&
+             
               < TableOfContentsComponent
                 separateToggleIcon
                 data={this.props.bookData.toc}
@@ -347,7 +347,7 @@ class DrawerComponent extends React.Component {
                 isTocWrapperRequired={isTocWrapperRequired}
                 currentPageId={this.props.pageId}
               />
-            }
+            
             { this.props.bookData.bookmarks &&
               <BookmarkListComponent
                 bookmarksArr={this.props.bookData.bookmarks}

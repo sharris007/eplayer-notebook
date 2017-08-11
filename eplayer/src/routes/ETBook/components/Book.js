@@ -8,7 +8,7 @@ import { pageDetails , customAttributes } from '../../../../const/Mockdata';
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookCallService, getPlaylistCallService, getCourseCallService} from '../../../actions/playlist';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService} from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
@@ -46,7 +46,8 @@ export class Book extends Component {
         },
         annAttributes:customAttributes,
         goToTextVal:'',
-        isPanelOpen:false
+        isPanelOpen:false,
+        totalAnnBookmarkLoaded:false
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -86,7 +87,7 @@ export class Book extends Component {
           bookDetailsData.courseId = this.props.params.bookId;
           this.props.dispatch(getCourseCallService(bookDetailsData));
       }else{
-          this.props.dispatch(getBookCallService(bookDetailsData));
+          this.props.dispatch(getBookPlayListCallService(bookDetailsData));
       }
   }, 2000);
     
@@ -298,8 +299,12 @@ export class Book extends Component {
     this.setState({ viewerContent: viewerCallBack });
     if(viewerCallBack==false) {
       this.setState({ drawerOpen: true },function(){
-          this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-          this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+          if(!this.state.totalAnnBookmarkLoaded) {
+             this.props.dispatch(getBookTocCallService());
+             this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
+             this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+             this.state.totalAnnBookmarkLoaded = true;
+          }
       });
     }
     else{
