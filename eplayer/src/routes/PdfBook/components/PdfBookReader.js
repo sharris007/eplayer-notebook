@@ -14,6 +14,7 @@ import { eT1Contants } from '../../../components/common/et1constants';
 import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
 import { loadState } from '../../../localStorage';
+import { PopUpInfo } from '@pearson-incubator/popup-info';
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -45,7 +46,8 @@ export class PdfBookReader extends Component {
       highlightList: [],
       assertUrlList: [],
       totalPagesToHit: '',
-      executed: false
+      executed: false,
+      popUpCollection : []
     };
     this.nodesToUnMount = [];
     /* Adding the eventListener on the attribute and attaching the method.
@@ -77,6 +79,7 @@ export class PdfBookReader extends Component {
     this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid,
       this.props.params.bookId, true, courseId, authorName);
     this.props.fetchUserIcons(this.props.params.bookId,ssoKey,serverDetails);
+    this.props.fetchBasepaths(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
     const firstPage = 'firstPage';
     if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
       this.goToPageCallback(Number(localStorage.getItem('currentPageOrder')));
@@ -144,15 +147,52 @@ export class PdfBookReader extends Component {
   }
   pdfBookCallback = (pdfEvent) => {
      // this.setState({currPageIndex : currentPageIndex});
+    var glossaryRegionDetails = [] ;
+    var count = 0 ;
     if (pdfEvent === 'pageChanged') {
       localStorage.setItem('currentPageOrder', this.state.currPageIndex);
       this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
-            if(this.props.book.userIcons.length)
-            {
-              __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
+          if(this.props.book.userIcons.length)
+          {
+            __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
+          }
+          var glossaryEntryIDsToFetch = '';
+          for(var arr=0;arr < this.props.book.regions.length ; arr++)
+          {
+            if(this.props.book.regions[arr].regionTypeID == 5 && this.props.book.regions[arr].glossaryEntryID !== null)
+            {       
+              /************************************Static Data Start********************************************/
+              // var glossaryItem = [{
+              //   item : document.getElementById(this.props.book.regions[arr].regionID),
+              //   popOverCollection : {
+              //     popOverDescription : '  Data and observations that are collected through scientific processes and that explain a particular observation.',
+              //     popOverTitle : 'empirical evidence'
+              //   }
+              // }];
+              // this.setState({popUpCollection : glossaryItem});
+              /************************************Static Data End********************************************/
+              glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + this.props.book.regions[arr].glossaryEntryID;
+              //This break statement added temp for to show only one glossary hotspot
+              break;
             }
+          }
+              this.props.fetchGlossaryItems(this.props.params.bookId,glossaryEntryIDsToFetch,ssoKey,serverDetails).then(() => {
+                var glossaryData = [];
+                for(var i=0;i<this.props.book.glossaryInfoList.length;i++)
+                {
+                    var glossTerm = {
+                      item : document.getElementById(this.props.book.regions[arr].regionID),
+                      popOverCollection : {
+                        popOverDescription : this.props.book.glossaryInfoList[i].glossaryDefinition,
+                        popOverTitle : this.props.book.glossaryInfoList[i].glossaryTerm
+                      }                
+                    };
+                    glossaryData.push(glossTerm);                
+                }
+                this.setState({popUpCollection : glossaryData});
+              });
         }
       });
       this.setState({ pageLoaded: true });
@@ -206,6 +246,7 @@ export class PdfBookReader extends Component {
     this.setState({ drawerOpen: false });
     this.setState({ pageLoaded: false });
     this.setState({ regionData: null});
+    this.setState({ popUpCollection: []});
     const currPageIndex = this.state.currPageIndex;
     let pageIndexToLoad;
     if (navType === 'prev') {
@@ -245,6 +286,7 @@ export class PdfBookReader extends Component {
     __pdfInstance.removeExistingHighlightCornerImages();
     this.setState({ drawerOpen: false });
     this.setState({ pageLoaded: false });
+    this.setState({ popUpCollection: []});
     if (pageNum > 0) {
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageNum);
       this.setState({ totalPagesToHit });
@@ -477,7 +519,7 @@ export class PdfBookReader extends Component {
                this.goToPageNumber(hotspotDetails.linkValue);
                break;
       case eT1Contants.RegionType.EMAIL:
-               document.location = "mailto:" + hotspotDetails.linkValue;
+               var loc=document.location;
                break;
       case eT1Contants.RegionType.IMAGE:
                source=hotspotDetails.linkValue;
@@ -501,13 +543,13 @@ export class PdfBookReader extends Component {
                 thumbnail : {
                   src : null,
                },
-               "transcript": [
+            /*   "transcript": [
                {
                  "id": "urn:pearson:text:0166E52D-5ABA-4341-999F-C3ACE48CF27B",
                  "lang": "en",
                  "type": "transcript",
                  "src": "//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm?mimeType=vtt&lang=en"
-               }],
+               }],*/
                alt : hotspotDetails.name,
                };
                regionComponent = <VideoPlayerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
@@ -529,12 +571,20 @@ export class PdfBookReader extends Component {
                break;
       case eT1Contants.RegionType.LTILINK:
                var role = this.props.book.bookinfo.book.roleTypeID;
-               var courseId =0 ;
+               if (this.props.book.bookinfo.book.activeCourseID === undefined || this.props.book.bookinfo.book.activeCourseID === '' || this.props.book.bookinfo.book.activeCourseID === null)
+               {
+                var courseId = -1;
+               }
+               else
+               {
+                var courseId = this.props.book.bookinfo.book.activeCourseID;
+               }
                var userId = this.props.book.userInfo.userid;
                var ltiLink = hotspotDetails.linkValue;
+               /*Framing Complete LTI URl*/
                var link = serverDetails + 'ebook/toolLaunch.do?json=' + ltiLink + '&contextid' + courseId + '&role' + role + '&userlogin' + userId ;
+               /*Converting URL into https*/
                var ltiUrl = this.createHttps(link);
-               // var ltiUrl ="https://view.cert1.ebookplus.pearsoncmg.com/ebook/toolLaunch.do?json=handler_urn:pearson/xl_platform/slink/x-pearson-xl_platform,targetId:assignedhomework&contextid=82299&role=3&userlogin=115314";
                window.open(ltiUrl,"_blank");
                break;
       default :regionComponent = null;
@@ -544,10 +594,11 @@ export class PdfBookReader extends Component {
   }
 
 /*Method to handle the action to be performed when a region is clicked.*/
-  handleRegionClick(hotspotID) {
+handleRegionClick(hotspotID) {
     if(this.state.regionData)
     {
       this.setState({regionData : null});
+      this.onHotspotClose();
     }
     if(this.props.book.regions.length > 0 )
     {
@@ -556,22 +607,56 @@ export class PdfBookReader extends Component {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
             var regionDetails = this.props.book.regions[i];
-            if(regionDetails.regionTypeID !== eT1Contants.RegionType.CROSS_REFERENCE || regionDetails.regionTypeID !== eT1Contants.RegionType.INDEX_LINK ||
-                  regionDetails.regionTypeID !== eT1Contants.RegionType.TOC_LINK || regionDetails.regionTypeID !== eT1Contants.RegionType.EMAIL || regionDetails.regionTypeID !== eT1Contants.RegionType.LTILINK)
+            if(regionDetails.regionTypeID == 1 || regionDetails.regionTypeID == 6 || regionDetails.regionTypeID == 11 || regionDetails.regionTypeID == 12 || regionDetails.regionTypeID == 9 || regionDetails.regionTypeID == 13 || regionDetails.regionTypeID == 14 || regionDetails.regionTypeID == 15)
             {
               regionDetails.linkValue=this.createHttps(regionDetails.linkValue);
-              regionDetails.linkTypeLocation=this.createHttps(regionDetails.linkTypeLocation);
-            }
-            /*For Relative assetts*/
-            if (regionDetails.linkTypeLocation !== null && !(regionDetails.linkValue).startsWith(regionDetails.linkTypeLocation))
-            {
-              regionDetails.linkValue = regionDetails.linkTypeLocation + regionDetails.linkValue;
+              if(this.props.book.basepaths !== null)
+              {
+                var basepath;
+                if(regionDetails.linkTypeID == 1 && this.props.book.basepaths.imagepath !== null && this.props.book.basepaths.imagepath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.imagepath);
+                }
+                else if(regionDetails.linkTypeID == 2 && this.props.book.basepaths.flvpath !== null && this.props.book.basepaths.flvpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.flvpath);                
+                }
+                else if(regionDetails.linkTypeID == 4 ||  regionDetails.linkTypeID == 12)
+                {
+                  if(this.props.book.basepaths.mp3path !== null && this.props.book.basepaths.mp3path !== "")
+                  {
+                    basepath=this.createHttps(this.props.book.basepaths.mp3path);                
+                  }
+                }
+                else if(regionDetails.linkTypeID == 6 && this.props.book.basepaths.swfassetpath !== null && this.props.book.basepaths.flvpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.swfassetpath);                
+                }
+                else if(regionDetails.linkTypeID == 7 && this.props.book.basepaths.urlpath !== null && this.props.book.basepaths.urlpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.urlpath);                
+                }
+                else if(regionDetails.linkTypeID == 9 && this.props.book.basepaths.virtuallearningassetpath !== null && this.props.book.basepaths.virtuallearningassetpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.virtuallearningassetpath);                
+                }
+                else if(regionDetails.linkTypeID == 13 && this.props.book.basepaths.h264path !== null && this.props.book.basepaths.h264path !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.h264path);                
+                }
+                else if(regionDetails.linkTypeID == 15 && this.props.book.basepaths.chromelessurlpath !== null && this.props.book.basepaths.chromelessurlpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.chromelessurlpath);                
+                }
+                if(!((regionDetails.linkValue).startsWith("http")) && basepath !== undefined)
+                {
+                  regionDetails.linkValue = basepath + regionDetails.linkValue;
+                }              
+              }
+
             }
             /*Checking if the clicked region is tocLink,indexLink,crossrefernce,ltiLink,word,powerpoint,excel or pdfdocument */
-            if (regionDetails.regionTypeID == eT1Contants.RegionType.CROSS_REFERENCE || regionDetails.regionTypeID == eT1Contants.RegionType.INDEX_LINK ||
-                   regionDetails.regionTypeID == eT1Contants.RegionType.TOC_LINK || regionDetails.regionTypeID == eT1Contants.RegionType.PDF ||
-                   regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL ||
-                   regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || regionDetails.regionTypeID == eT1Contants.RegionType.LTILINK)
+            if (regionDetails.regionTypeID == 2 || regionDetails.regionTypeID == 7 || regionDetails.regionTypeID == 10 || regionDetails.regionTypeID == 14 || regionDetails.regionTypeID ==9 || regionDetails.regionTypeID == 13 || regionDetails.regionTypeID == 15 || regionDetails.regionTypeID == 16)
             {
               this.renderHotspot(regionDetails);
             }
@@ -582,8 +667,8 @@ export class PdfBookReader extends Component {
             }
             break;
           }
-      }
-    }
+      }    
+    }    
   }
  /* Method for creating highLight for selected area by user. */
   createHighlight(highlightData) {
@@ -813,6 +898,7 @@ export class PdfBookReader extends Component {
         </div>
         <div>
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
+        {this.state.popUpCollection.length ? <PopUpInfo bookId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} /> : null }
           <div id="main">
             <div id="mainContainer" className="pdf-fwr-pc-main">
               <div id="right" className="pdf-fwr-pc-right">

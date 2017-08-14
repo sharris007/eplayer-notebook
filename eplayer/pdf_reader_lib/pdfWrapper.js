@@ -889,9 +889,13 @@ function getAssetURLForPDFDownload(config,cb){
               tooltip = document.createElement('span')
               tooltip.className='tooltiptext';
               tooltip.innerHTML = hotspots[i].name;
-              regionElement.onclick =function(event) { 
-                  _this.triggerEvent("regionClicked", event.currentTarget.id);                                  
+              if(hotspots[i].regionTypeID !== 5)
+              {
+                 regionElement.onclick =function(event) { 
+                 _this.triggerEvent("regionClicked", event.currentTarget.id);                                  
+                 }
               }
+
               regionElement.appendChild(tooltip);
               parentPageElement.appendChild(regionElement);
             }

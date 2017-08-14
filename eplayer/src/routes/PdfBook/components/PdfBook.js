@@ -83,6 +83,8 @@ used for before mounting occurs. */
           fetchPagebyPageNumber={this.props.fetchPagebyPageNumber}
           fetchUserIcons={this.props.fetchUserIcons}
           fetchBookFeatures={this.props.fetchBookFeatures}
+          fetchGlossaryItems={this.props.fetchGlossaryItems}
+          fetchBasepaths={this.props.fetchBasepaths}
         />);
     }
 

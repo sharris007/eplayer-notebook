@@ -38,7 +38,10 @@ export const RECEIVE_CUSTOM_ICONS = 'RECEIVE_CUSTOM_ICONS';
 export const RECEIVE_BOOK_FEATURES_PENDING= 'RECEIVE_BOOK_FEATURES_PENDING';
 export const RECEIVE_BOOK_FEATURES_FULFILLED= 'RECEIVE_BOOK_FEATURES_FULFILLED';
 export const RECEIVE_BOOK_FEATURES_REJECTED='RECEIVE_BOOK_FEATURES_REJECTED';
-
+export const RECEIVE_GLOSSARY_TERM= 'RECEIVE_GLOSSARY_TERM';
+export const RECEIVE_BASEPATH_PENDING= 'RECEIVE_BASEPATH_PENDING';
+export const RECEIVE_BASEPATH_FULFILLED= 'RECEIVE_BASEPATH_FULFILLED';
+export const RECEIVE_BASEPATH_REJECTED= 'RECEIVE_BASEPATH_REJECTED';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -63,6 +66,11 @@ export function request(component) {
     default:
       return {};
   }
+}
+function extractTextContent(content) {
+  var span= document.createElement('span');
+  span.innerHTML= content;
+  return span.textContent || span.innerText;
 }
 function randomString(length) {
   let text = '';
@@ -580,15 +588,47 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
           regionObj.assetLastModifiedDate=region.regionsList[i].assetLastModifiedDate;
           regionObj.downloadURL=region.regionsList[i].downloadURL;
           bookState.regions.push(regionObj);
-        
-        })
+        });
         }
       }
       bookState.isFetching.regions=false;
       return dispatch({ type: RECEIVE_REGIONS,bookState});
-    })
+    });
     }
   }
+/* Created Action creator for getting Glossary Information. */
+export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerURL) {
+  const bookState = {
+    bookInfo : {
+      glossaryInfoList : [],
+    }
+  };
+  return dispatch =>
+     axios.get(''+bookServerURL+'/ebook/ipad/getglossary?bookid='+bookid+'&glossaryentryid='+glossaryentryid+'&authkey='+sessionKey+'&outputformat=JSON',
+       {
+         timeout: 20000
+       })
+    .then((response) => {
+      if (response.status >= 400) {
+        console.log(`fetch Glossary Items error: ${response.statusText}`);
+      } else if (response.data.length) {
+          const glossaryInfo = {};
+          glossaryInfo.glossaryTerm = response.data[0].glossaryTerm;
+          glossaryInfo.glossaryDefinition = response.data[0].glossaryDefinition;
+          glossaryInfo.glossaryEntryID = response.data[0].glossaryEntryID;
+          bookState.bookInfo.glossaryInfoList.push(glossaryInfo);
+      }
+      dispatch({ type: 'RECEIVE_GLOSSARY_TERM', bookState });
+    });
+}
+ /* Created Action creator for getting basepath of relative regions/hotspots. */
+export function fetchBasepaths(bookid, sessionKey, userid, bookServerURL, roleTypeID) {
+  return {
+    type: 'RECEIVE_BASEPATH',
+    payload: axios.get(''+bookServerURL+'/ebook/ipad/launchbook?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON'),
+    timeout: 20000
+  };
+}
  /* Created Action creator for getting book features. */
 export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, roleTypeID) {
     // payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON',
@@ -1166,6 +1206,40 @@ const ACTION_HANDLERS = {
       fetched: false
     }
   }),
+  [RECEIVE_BASEPATH_PENDING]: state => ({
+    ...state,
+    basepaths: {
+      fetching: true,
+      fetched: false
+    }
+  }),
+  [RECEIVE_BASEPATH_FULFILLED]: (state,action) => ({
+    ...state,
+    basepaths: {
+      fetching: false,
+      fetched: true,
+      flvpath: action.payload.data[0].booklist.book.flvpath,
+      chromelessurlpath: action.payload.data[0].booklist.book.chromelessurlpath,
+      urlpath: action.payload.data[0].booklist.book.urlpath,
+      swfassetpath: action.payload.data[0].booklist.book.swfassetpath,
+      audiotextpath: action.payload.data[0].booklist.book.audiotextpath,
+      imagepath: action.payload.data[0].booklist.book.imagepath,
+      h264path: action.payload.data[0].booklist.book.h264path,
+      mp3path: action.payload.data[0].booklist.book.mp3path,
+      virtuallearningassetpath: action.payload.data[0].booklist.book.virtuallearningassetpath
+    }
+  }),
+  [RECEIVE_BASEPATH_REJECTED]: state => ({
+    ...state,
+    basepaths: {
+      fetching: false,
+      fetched: false
+    }
+  }),
+  [RECEIVE_GLOSSARY_TERM]: (state,action) => ({
+    ...state,
+    glossaryInfoList: action.bookState.bookInfo.glossaryInfoList
+  })
 };
 
 // ------------------------------------
@@ -1177,6 +1251,7 @@ const initialState = {
   annTotalData: [],
   regions:[],
   userIcons:[],
+  glossaryInfoList:[],
   preferences: {},
   toc: {},
   viewer: {},
@@ -1191,6 +1266,10 @@ const initialState = {
   },
   error: null,
   bookFeatures: {
+    fetching: false,
+    fetched: false
+  },
+  basepaths: {
     fetching: false,
     fetched: false
   },
