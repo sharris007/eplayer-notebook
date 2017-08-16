@@ -1,6 +1,6 @@
 const initalData = {
   data: [],
-  tocdata: [],
+  tocdata: {bookDetails:{},content:{list:[]}},
   playlistReceived: false,
   tocReceived: false
 };
