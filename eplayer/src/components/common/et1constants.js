@@ -21,6 +21,24 @@ export const eT1Contants = {
   	LTILINK : 16,
   	IPADAPP : 17,
   	JAZZASSET : 18
+  },
+  LinkType : {
+    IMAGE : 1,
+    FLV :2,
+    GLOSSARY_TERM : 3,
+    MP3 : 4,
+    PAGE_NUMBER : 5,
+    SWF : 6,
+    URL : 7,
+    EMAIL : 8,
+    VIRTUAL_LEARNING_ASSET : 9,
+    AUDIO_TEXT_SYNCH : 10,
+    LTILINK : 11,
+    FACELESSAUDIO : 12,
+    H264 : 13,
+    IPADAPP : 14,
+    CHROMELESS_URL : 15,
+    JAZZASSET : 16
   }
 };
 export default eT1Contants;

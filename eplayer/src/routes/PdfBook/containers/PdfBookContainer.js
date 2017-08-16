@@ -42,7 +42,7 @@ const mapDispatchToProps = {
 /* Method used for connecting and accessing the state data in component via props. */
 const mapStateToProps = state => ({
   book: state.book ? state.book : {},
-  bookshelf:state.bookshelf ? state.bookshelf : loadState('bookshelf') ? loadState('bookshelf') : {},
+  currentbook:state.bookshelf ? state.bookshelf : loadState('bookshelf') ? loadState('bookshelf') : {},
   login: state.login ? state.login : loadState('login') ? loadState('login') : {}
 });
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:

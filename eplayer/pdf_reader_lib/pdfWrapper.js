@@ -875,6 +875,7 @@ function getAssetURLForPDFDownload(config,cb){
               regionElement.style.top= (hotspots[i].y * heightScale) + 'px';
               regionElement.style.width=(hotspots[i].width * widthScale) + 'px';
               regionElement.style.height=(hotspots[i].height * heightScale) + 'px';
+              regionElement.setAttribute('name',hotspots[i].name);
               if (regionType == 1)
               {
                 regionElement.style.background = hotspotFeatures.hotspotcolor;

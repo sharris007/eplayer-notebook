@@ -58,11 +58,11 @@ export class PdfBookReader extends Component {
   }
  /* componentDidMount() is invoked immediately after a component is mounted. */
   componentDidMount() {
-      title = this.props.bookshelf.title;
-      authorName = this.props.bookshelf.authorName;
-      thumbnail = this.props.bookshelf.thumbnail;
-      ssoKey = this.props.bookshelf.ssoKey;
-      serverDetails = this.props.bookshelf.serverDetails;
+      title = this.props.currentbook.title;
+      authorName = this.props.currentbook.authorName;
+      thumbnail = this.props.currentbook.thumbnail;
+      ssoKey = this.props.currentbook.ssoKey;
+      serverDetails = this.props.currentbook.serverDetails;
       globalbookid = this.props.book.bookinfo.book.globalbookid;
 
     /* Method for getting the toc details for particular book. */
@@ -82,7 +82,7 @@ export class PdfBookReader extends Component {
     this.props.fetchBasepaths(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
     const firstPage = 'firstPage';
     if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
-      this.goToPageCallback(Number(localStorage.getItem('currentPageOrder')));
+      this.goToPage(Number(localStorage.getItem('currentPageOrder')));
     } else {
       this.goToPage(firstPage);
     }
@@ -241,24 +241,35 @@ export class PdfBookReader extends Component {
     return assertUrl;
   }
 
-  goToPage = (navType) => {
+  goToPage = (pageno) => {
     __pdfInstance.removeExistingHighlightCornerImages();
     this.setState({ drawerOpen: false });
     this.setState({ pageLoaded: false });
     this.setState({ regionData: null});
     this.setState({ popUpCollection: []});
     const currPageIndex = this.state.currPageIndex;
-    let pageIndexToLoad;
-    if (navType === 'prev') {
-      pageIndexToLoad = currPageIndex - 1;
-    } else if (navType === 'next') {
-      pageIndexToLoad = currPageIndex + 1;
-    } else if (navType === 'firstPage') {
-      pageIndexToLoad = 1;
+    // pageIndexToLoad initialized with 1 to avoid loading invalid pages
+    let pageIndexToLoad = 1;
+    // pageno can be page navigation type like 'prev','next' or exact page order to navigate
+    if(isNaN(pageno))
+    {
+      if (pageno === 'prev') {
+        pageIndexToLoad = currPageIndex - 1;
+      } else if (pageno === 'next') {
+        pageIndexToLoad = currPageIndex + 1;
+      } else if (pageno === 'firstPage') {
+        pageIndexToLoad = 1;
+      }
+    }
+    else
+    {
+      if (pageno > 0) {
+        pageIndexToLoad = pageno;
+      }
     }
     const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
     this.setState({ totalPagesToHit });
-    if (totalPagesToHit !== undefined) {
+    if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
       this.props.fetchPageInfo(this.props.book.userInfo.userid,
       this.props.params.bookId,
       this.props.book.bookinfo.book.bookeditionid,
@@ -267,22 +278,17 @@ export class PdfBookReader extends Component {
       ssoKey,
       serverDetails, this.props.book.bookinfo.book.roleTypeID
       ).then(() => {
-        if (pages === undefined || pages === null) {
+        if (this.props.book.bookinfo.pages !== undefined || this.props.book.bookinfo.pages !== null
+          || this.props.book.bookinfo.pages.length !== 0) {
           pages = this.props.book.bookinfo.pages;
           localStorage.setItem('pages', JSON.stringify(pages));
-        } else if (pages.length > this.props.book.bookinfo.pages.length) {
-          pages = pages.concat(this.props.book.bookinfo.pages);
-          localStorage.setItem('pages', JSON.stringify(pages));
-        } else {
-          pages = this.props.book.bookinfo.pages;
-          localStorage.setItem('pages', JSON.stringify(pages));
-        }
+        } 
         this.loadPdfPage(pageIndexToLoad);
       });
     }
-  };
+  }
 /* Method for loading the page after passing the pagenumber. */
-  goToPageCallback = (pageNum) => {
+ /* goToPageCallback = (pageNum) => {
     __pdfInstance.removeExistingHighlightCornerImages();
     this.setState({ drawerOpen: false });
     this.setState({ pageLoaded: false });
@@ -310,7 +316,7 @@ export class PdfBookReader extends Component {
       });
      }
     }
-  }
+  }*/
 
   findPages = (lPages, pageOrder) => find(lPages, page => page.pageorder === pageOrder)
   findAssertUrl = (lassertUrls, pageOrder) => find(lassertUrls, url => url.pageorder === pageOrder)
@@ -490,12 +496,12 @@ export class PdfBookReader extends Component {
             localStorage.setItem('pages', JSON.stringify(pages));
             var currentPage = find(pages,page => page.pagenumber == pageNo)
           }
-          this.goToPageCallback(Number(currentPage.pageorder));
+          this.goToPage(Number(currentPage.pageorder));
       });
     }
     else
     {
-      this.goToPageCallback(Number(currentPage.pageorder));
+      this.goToPage(Number(currentPage.pageorder));
     }
 
   }
@@ -607,44 +613,46 @@ handleRegionClick(hotspotID) {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
             var regionDetails = this.props.book.regions[i];
-            if(regionDetails.regionTypeID == 1 || regionDetails.regionTypeID == 6 || regionDetails.regionTypeID == 11 || regionDetails.regionTypeID == 12 || regionDetails.regionTypeID == 9 || regionDetails.regionTypeID == 13 || regionDetails.regionTypeID == 14 || regionDetails.regionTypeID == 15)
+            if(regionDetails.regionTypeID == eT1Contants.RegionType.AUDIO || regionDetails.regionTypeID == eT1Contants.RegionType.IMAGE || regionDetails.regionTypeID == eT1Contants.RegionType.URL
+                || regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL
+                || regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC)
             {
               regionDetails.linkValue=this.createHttps(regionDetails.linkValue);
               if(this.props.book.basepaths !== null)
               {
                 var basepath;
-                if(regionDetails.linkTypeID == 1 && this.props.book.basepaths.imagepath !== null && this.props.book.basepaths.imagepath !== "")
+                if(regionDetails.linkTypeID == eT1Contants.LinkType.IMAGE && this.props.book.basepaths.imagepath !== null && this.props.book.basepaths.imagepath !== "")
                 {
                   basepath=this.createHttps(this.props.book.basepaths.imagepath);
                 }
-                else if(regionDetails.linkTypeID == 2 && this.props.book.basepaths.flvpath !== null && this.props.book.basepaths.flvpath !== "")
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.FLV && this.props.book.basepaths.flvpath !== null && this.props.book.basepaths.flvpath !== "")
                 {
                   basepath=this.createHttps(this.props.book.basepaths.flvpath);                
                 }
-                else if(regionDetails.linkTypeID == 4 ||  regionDetails.linkTypeID == 12)
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.MP3 ||  regionDetails.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
                 {
                   if(this.props.book.basepaths.mp3path !== null && this.props.book.basepaths.mp3path !== "")
                   {
                     basepath=this.createHttps(this.props.book.basepaths.mp3path);                
                   }
                 }
-                else if(regionDetails.linkTypeID == 6 && this.props.book.basepaths.swfassetpath !== null && this.props.book.basepaths.flvpath !== "")
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.SWF && this.props.book.basepaths.swfassetpath !== null && this.props.book.basepaths.flvpath !== "")
                 {
                   basepath=this.createHttps(this.props.book.basepaths.swfassetpath);                
                 }
-                else if(regionDetails.linkTypeID == 7 && this.props.book.basepaths.urlpath !== null && this.props.book.basepaths.urlpath !== "")
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.URL && this.props.book.basepaths.urlpath !== null && this.props.book.basepaths.urlpath !== "")
                 {
                   basepath=this.createHttps(this.props.book.basepaths.urlpath);                
                 }
-                else if(regionDetails.linkTypeID == 9 && this.props.book.basepaths.virtuallearningassetpath !== null && this.props.book.basepaths.virtuallearningassetpath !== "")
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.VIRTUAL_LEARNING_ASSET && this.props.book.basepaths.virtuallearningassetpath !== null && this.props.book.basepaths.virtuallearningassetpath !== "")
                 {
                   basepath=this.createHttps(this.props.book.basepaths.virtuallearningassetpath);                
                 }
-                else if(regionDetails.linkTypeID == 13 && this.props.book.basepaths.h264path !== null && this.props.book.basepaths.h264path !== "")
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.H264 && this.props.book.basepaths.h264path !== null && this.props.book.basepaths.h264path !== "")
                 {
                   basepath=this.createHttps(this.props.book.basepaths.h264path);                
                 }
-                else if(regionDetails.linkTypeID == 15 && this.props.book.basepaths.chromelessurlpath !== null && this.props.book.basepaths.chromelessurlpath !== "")
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.CHROMELESS_URL && this.props.book.basepaths.chromelessurlpath !== null && this.props.book.basepaths.chromelessurlpath !== "")
                 {
                   basepath=this.createHttps(this.props.book.basepaths.chromelessurlpath);                
                 }
@@ -656,7 +664,10 @@ handleRegionClick(hotspotID) {
 
             }
             /*Checking if the clicked region is tocLink,indexLink,crossrefernce,ltiLink,word,powerpoint,excel or pdfdocument */
-            if (regionDetails.regionTypeID == 2 || regionDetails.regionTypeID == 7 || regionDetails.regionTypeID == 10 || regionDetails.regionTypeID == 14 || regionDetails.regionTypeID ==9 || regionDetails.regionTypeID == 13 || regionDetails.regionTypeID == 15 || regionDetails.regionTypeID == 16)
+            if (regionDetails.regionTypeID == eT1Contants.RegionType.CROSS_REFERENCE || regionDetails.regionTypeID == eT1Contants.RegionType.INDEX_LINK
+              || regionDetails.regionTypeID == eT1Contants.RegionType.TOC_LINK || regionDetails.regionTypeID == eT1Contants.RegionType.PDF
+              || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL
+              || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || regionDetails.regionTypeID == eT1Contants.RegionType.LTILINK)
             {
               this.renderHotspot(regionDetails);
             }
@@ -840,7 +851,7 @@ handleRegionClick(hotspotID) {
     // callbacks.removeBookmarkHandlerForBookmarkList =this.removeBookmarkHandlerForBookmarkList;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
-    callbacks.goToPageCallback = this.goToPageCallback;
+    callbacks.goToPageCallback = this.goToPage;
     // const drawerOpen = true;
     let viewerClassName;
     if (this.state.pageLoaded !== true) {
@@ -872,15 +883,15 @@ handleRegionClick(hotspotID) {
             bookCallbacks={callbacks}
             setCurrentZoomLevel={this.setCurrentZoomLevel}
             store={this.context.store}
-            goToPage={this.goToPageCallback}
+            goToPage={this.goToPage}
             bookId={this.props.params.bookId}
-            globalBookId={this.props.bookshelf.globalBookId}
-            ssoKey={this.props.bookshelf.ssoKey}
-            title={this.props.bookshelf.title}
+            globalBookId={this.props.currentbook.globalBookId}
+            ssoKey={this.props.currentbook.ssoKey}
+            title={this.props.currentbook.title}
             curbookID={this.props.params.bookId}
             isET1="Y"
             disableBackgroundColor="true"
-            serverDetails={this.props.bookshelf.serverDetails}
+            serverDetails={this.props.currentbook.serverDetails}
             drawerOpen={this.state.drawerOpen}
             indexId={{ searchUrl }}
             userid={this.props.book.userInfo.userid}
