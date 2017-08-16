@@ -347,7 +347,7 @@ class DrawerComponent extends React.Component {
                 locale={locale}
                 isTocWrapperRequired={isTocWrapperRequired}
                 currentPageId={this.props.pageId}
-              />:<RefreshIndicator size={30} left={150} top={140} status="loading" />}
+              />:<RefreshIndicator size={30} left={200} top={140} status="loading" />}
             
             { this.props.bookData.bookmarks &&
               <BookmarkListComponent
