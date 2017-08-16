@@ -8,6 +8,7 @@ import { TableOfContentsComponent } from '@pearson-incubator/toc';
 import { BookmarkListComponent } from '@pearson-incubator/bookmarks';
 import { NoteListComponent } from '@pearson-incubator/notes';
 import './Drawer.scss';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 let locale;
 let counter = -1;
@@ -336,7 +337,7 @@ class DrawerComponent extends React.Component {
           >
             
              
-              < TableOfContentsComponent
+              {this.props.bookData.tocReceived ? < TableOfContentsComponent
                 separateToggleIcon
                 data={this.props.bookData.toc}
                 showDuplicateTitle
@@ -346,7 +347,7 @@ class DrawerComponent extends React.Component {
                 locale={locale}
                 isTocWrapperRequired={isTocWrapperRequired}
                 currentPageId={this.props.pageId}
-              />
+              />:<RefreshIndicator size={30} left={150} top={140} status="loading" />}
             
             { this.props.bookData.bookmarks &&
               <BookmarkListComponent

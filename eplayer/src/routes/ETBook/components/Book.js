@@ -47,7 +47,7 @@ export class Book extends Component {
         annAttributes:customAttributes,
         goToTextVal:'',
         isPanelOpen:false,
-        totalAnnBookmarkLoaded:false
+        asynCallLoaded:false
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -299,11 +299,11 @@ export class Book extends Component {
     this.setState({ viewerContent: viewerCallBack });
     if(viewerCallBack==false) {
       this.setState({ drawerOpen: true },function(){
-          if(!this.state.totalAnnBookmarkLoaded) {
+          if(!this.state.asynCallLoaded) {
              this.props.dispatch(getBookTocCallService());
              this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
              this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
-             this.state.totalAnnBookmarkLoaded = true;
+             this.state.asynCallLoaded = true;
           }
       });
     }
