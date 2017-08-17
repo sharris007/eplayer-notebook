@@ -5,6 +5,7 @@ export const SEARCH_PENDING = 'SEARCH_PENDING';
 export const SEARCH_REJECTED = 'SEARCH_REJECTED';
 export const SEARCH = 'SEARCH';
 export const CLEAR_SEARCH = 'CLEAR_SEARCH';
+export const CLEAR_SEARCH_OBJ = 'CLEAR_SEARCH_OBJ';
 /**
  * Action Handlers for Search actions.
  *
@@ -22,7 +23,10 @@ const ACTION_HANDLERS = {
     data: [],
     fetched: false,
     fetching: false,
-    error: null })
+    error: null }),
+  [CLEAR_SEARCH_OBJ]: (state, action) => ({
+    ...state,
+    data :[] })
 };
 
 const initialState = {

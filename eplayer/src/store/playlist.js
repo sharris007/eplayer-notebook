@@ -1,6 +1,6 @@
 const initalData = {
   data: [],
-  tocdata: [],
+  tocdata: {bookDetails:{},content:{list:[]}},
   playlistReceived: false,
   tocReceived: false
 };
@@ -17,7 +17,8 @@ export default (state = initalData, action) => {
       return {
         ...state,
         data: [],
-        playlistReceived: false
+        playlistReceived: false,
+        tocReceived: false
       };
     }
     case 'GET_TOC': {

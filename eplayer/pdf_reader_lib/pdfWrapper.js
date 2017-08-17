@@ -875,6 +875,7 @@ function getAssetURLForPDFDownload(config,cb){
               regionElement.style.top= (hotspots[i].y * heightScale) + 'px';
               regionElement.style.width=(hotspots[i].width * widthScale) + 'px';
               regionElement.style.height=(hotspots[i].height * heightScale) + 'px';
+              regionElement.setAttribute('name',hotspots[i].name);
               if (regionType == 1)
               {
                 regionElement.style.background = hotspotFeatures.hotspotcolor;
@@ -889,9 +890,13 @@ function getAssetURLForPDFDownload(config,cb){
               tooltip = document.createElement('span')
               tooltip.className='tooltiptext';
               tooltip.innerHTML = hotspots[i].name;
-              regionElement.onclick =function(event) { 
-                  _this.triggerEvent("regionClicked", event.currentTarget.id);                                  
+              if(hotspots[i].regionTypeID !== 5)
+              {
+                 regionElement.onclick =function(event) { 
+                 _this.triggerEvent("regionClicked", event.currentTarget.id);                                  
+                 }
               }
+
               regionElement.appendChild(tooltip);
               parentPageElement.appendChild(regionElement);
             }

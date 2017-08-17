@@ -36,9 +36,7 @@ const ACTION_HANDLERS = {
     fetched: false,
     error: true,
     errorMessage: '*Invalid Username/Password or you do not have a subscription to this site'
-  }),
-
-  [LOGIN_DETAILS]: (state, action) => ({ ...state, data: action.data })
+  })
 };
 /* Defining the initial state for action handler. */
 const initialState = {

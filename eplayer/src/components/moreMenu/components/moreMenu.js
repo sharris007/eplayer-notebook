@@ -12,7 +12,7 @@ import { resources, domain } from '../../../../const/Settings';
 
 const envType = domain.getEnvType();
 const consoleUrl = resources.links.consoleUrl;
- 
+
 class MoreMenuComponent extends React.Component {
   componentWillMount() {
     injectReducer(this.props.store, { key: 'moreMenu', reducer });
@@ -21,12 +21,12 @@ class MoreMenuComponent extends React.Component {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
   handleClick = () => {
-    const langQuery = sessionStorage.getItem('bookshelfLang');
-    let i = sessionStorage.length;
+    const langQuery = localStorage.getItem('bookshelfLang');
+    let i = localStorage.length;
     while (i--) {
-      const key = sessionStorage.key(i);
+      const key = localStorage.key(i);
       if ((key)) {
-        sessionStorage.removeItem(key);
+        localStorage.removeItem(key);
       }
     }
     const storagAarr = [];

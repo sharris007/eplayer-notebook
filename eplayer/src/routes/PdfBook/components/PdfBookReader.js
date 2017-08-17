@@ -10,10 +10,11 @@ import WidgetManager from '../../../components/widget-integration/widgetManager'
 import Header from '../../../components/Header';/* Importing header for padfPage. */
 import './PdfBook.scss';/* Importing the css for PdfBook. */
 import { languages } from '../../../../locale_config/translations/index';
-import { eT1Contants } from '../../../components/common/constants';
+import { eT1Contants } from '../../../components/common/et1constants';
 import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
-import { loadState } from '../../../localStorage'; 
+import { loadState } from '../../../localStorage';
+import { PopUpInfo } from '@pearson-incubator/popup-info';
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -45,7 +46,8 @@ export class PdfBookReader extends Component {
       highlightList: [],
       assertUrlList: [],
       totalPagesToHit: '',
-      executed: false
+      executed: false,
+      popUpCollection : []
     };
     this.nodesToUnMount = [];
     /* Adding the eventListener on the attribute and attaching the method.
@@ -56,20 +58,20 @@ export class PdfBookReader extends Component {
   }
  /* componentDidMount() is invoked immediately after a component is mounted. */
   componentDidMount() {
-      title = this.props.bookshelf.title;
-      authorName = this.props.bookshelf.authorName;
-      thumbnail = this.props.bookshelf.thumbnail;
-      ssoKey = this.props.bookshelf.ssoKey;
-      serverDetails = this.props.bookshelf.serverDetails;
+      title = this.props.currentbook.title;
+      authorName = this.props.currentbook.authorName;
+      thumbnail = this.props.currentbook.thumbnail;
+      ssoKey = this.props.currentbook.ssoKey;
+      serverDetails = this.props.currentbook.serverDetails;
       globalbookid = this.props.book.bookinfo.book.globalbookid;
-    
+
     /* Method for getting the toc details for particular book. */
     this.props.fetchTocAndViewer(this.props.params.bookId, authorName, title, thumbnail,
       this.props.book.bookinfo.book.bookeditionid, ssoKey, serverDetails,
       this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
     let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
     if (courseId === undefined || courseId === '' || courseId === null) {
-      courseId = 0;
+      courseId = -1;
     }
     /* Method for getting the bookmarks details which is already in book. */
     this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId, true, courseId,
@@ -77,19 +79,20 @@ export class PdfBookReader extends Component {
     this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid,
       this.props.params.bookId, true, courseId, authorName);
     this.props.fetchUserIcons(this.props.params.bookId,ssoKey,serverDetails);
+    this.props.fetchBasepaths(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
     const firstPage = 'firstPage';
-    if (sessionStorage.getItem('isReloaded') && sessionStorage.getItem('currentPageOrder')) {
-      this.goToPageCallback(Number(sessionStorage.getItem('currentPageOrder')));
+    if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
+      this.goToPage(Number(localStorage.getItem('currentPageOrder')));
     } else {
       this.goToPage(firstPage);
     }
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
    componentWillUnmount(){
-    sessionStorage.removeItem('isReloaded');
-    sessionStorage.removeItem('currentPageOrder');
-    sessionStorage.removeItem('pages');
-    sessionStorage.removeItem('assertUrls');
+    localStorage.removeItem('isReloaded');
+    localStorage.removeItem('currentPageOrder');
+    localStorage.removeItem('pages');
+    localStorage.removeItem('assertUrls');
     pages = null;
     assertUrls = null;
   }
@@ -114,13 +117,13 @@ export class PdfBookReader extends Component {
       callbackOnPageChange: this.pdfBookCallback,
       assertUrl
     };
-    __pdfInstance.registerEvent('textSelected', this.createHighlight1.bind(this));
+    __pdfInstance.registerEvent('textSelected', this.createHighlight.bind(this));
     __pdfInstance.registerEvent('highlightClicked', this.handleHighlightClick.bind(this));
     __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
-    sessionStorage.setItem("currentPageOrder",currentPageIndex);
-    sessionStorage.setItem('isReloaded',true);
+    localStorage.setItem("currentPageOrder",currentPageIndex);
+    localStorage.setItem('isReloaded',true);
     const data = this.state.data;
     if (currentPageIndex === 1) {
       data.isFirstPage = true;
@@ -136,7 +139,7 @@ export class PdfBookReader extends Component {
     this.setState({ data });
     const viewer = this;
     $(document).on('keyup',function(evt) {
-      if (evt.keyCode === 27 && $('#hotspot')) 
+      if (evt.keyCode === 27 && $('#hotspot'))
       {
         viewer.setState({regionData : null});
       }
@@ -144,36 +147,54 @@ export class PdfBookReader extends Component {
   }
   pdfBookCallback = (pdfEvent) => {
      // this.setState({currPageIndex : currentPageIndex});
+    var glossaryRegionDetails = [] ;
+    var count = 0 ;
     if (pdfEvent === 'pageChanged') {
-      sessionStorage.setItem('currentPageOrder', this.state.currPageIndex);
+      localStorage.setItem('currentPageOrder', this.state.currPageIndex);
       this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
-            if(this.props.book.userIcons.length)
-            {
-              __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
+          if(this.props.book.userIcons.length)
+          {
+            __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
+          }
+          var glossaryEntryIDsToFetch = '';
+          for(var arr=0;arr < this.props.book.regions.length ; arr++)
+          {
+            if(this.props.book.regions[arr].regionTypeID == 5 && this.props.book.regions[arr].glossaryEntryID !== null)
+            {       
+              /************************************Static Data Start********************************************/
+              // var glossaryItem = [{
+              //   item : document.getElementById(this.props.book.regions[arr].regionID),
+              //   popOverCollection : {
+              //     popOverDescription : '  Data and observations that are collected through scientific processes and that explain a particular observation.',
+              //     popOverTitle : 'empirical evidence'
+              //   }
+              // }];
+              // this.setState({popUpCollection : glossaryItem});
+              /************************************Static Data End********************************************/
+              glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + this.props.book.regions[arr].glossaryEntryID;
+              //This break statement added temp for to show only one glossary hotspot
+              break;
             }
+          }
+              this.props.fetchGlossaryItems(this.props.params.bookId,glossaryEntryIDsToFetch,ssoKey,serverDetails).then(() => {
+                var glossaryData = [];
+                for(var i=0;i<this.props.book.glossaryInfoList.length;i++)
+                {
+                    var glossTerm = {
+                      item : document.getElementById(this.props.book.regions[arr].regionID),
+                      popOverCollection : {
+                        popOverDescription : this.props.book.glossaryInfoList[i].glossaryDefinition,
+                        popOverTitle : this.props.book.glossaryInfoList[i].glossaryTerm
+                      }                
+                    };
+                    glossaryData.push(glossTerm);                
+                }
+                this.setState({popUpCollection : glossaryData});
+              });
         }
       });
-          // const currentPageOrder = 2;
-          // const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === currentPageOrder);
-          /* var data = this.state.data;
-          if(currentPageOrder == 1){
-           data.isFirstPage =true;
-           //this.setState({data : data})
-          }else{
-            data.isFirstPage =false;
-            //this.setState({data : data})
-          }
-          if(currentPageOrder == this.getPageCount()){
-            data.isLastPage =true;
-           //this.setState({data : data})
-          }else{
-           data.isLastPage =false;
-           //this.setState({data : data})
-          }
-          data.currentPageNo = currentPageOrder;
-          this.setState({data : data});*/
       this.setState({ pageLoaded: true });
       this.setState({ executed: false });
       if (this.state.isFirstPageBeingLoad === true) {
@@ -189,30 +210,17 @@ export class PdfBookReader extends Component {
         this.setState({ executed: true });
       }
     }
-
-     // If already page details are in store then we do not hit fetchPageInfo again
-     /* if(currentPage===undefined)
-     {
-      this.props.fetchPageInfo(this.props.book.userInfo.userid,
-      this.props.params.bookId,
-      this.props.params.bookId,
-      this.props.book.bookinfo.book.bookeditionid,
-      currentPageOrder,
-      this.props.bookshelf.ssoKey,
-      this.props.bookshelf.serverDetails
-      );
-   }*/
   }
   storeAssertUrl = () => {
     if (assertUrls === undefined || assertUrls === null) {
       assertUrls = this.props.book.bookinfo.assertUrls;
-      sessionStorage.setItem('assertUrls', JSON.stringify(assertUrls));
+      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
     } else if (assertUrls.length > this.props.book.bookinfo.assertUrls.length) {
       assertUrls = assertUrls.concat(this.props.book.bookinfo.assertUrls);
-      sessionStorage.setItem('assertUrls', JSON.stringify(assertUrls));
+      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
     } else {
       assertUrls = this.props.book.bookinfo.assertUrls;
-      sessionStorage.setItem('assertUrls', JSON.stringify(assertUrls));
+      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
     }
   }
 
@@ -233,98 +241,90 @@ export class PdfBookReader extends Component {
     return assertUrl;
   }
 
-  goToPage = (navType) => {
-     // var currPageIndex=__pdfInstance.getCurrentPage();
-     // this.setState({currPageIndex: currPageIndex});
-    __pdfInstance.removeExistingHighlightCornerImages();
-    this.setState({ drawerOpen: false });
-    this.setState({ pageLoaded: false });
-    this.setState({ regionData: null});
+  goToPage = (pageno) => {
     const currPageIndex = this.state.currPageIndex;
-    let pageIndexToLoad;
-    if (navType === 'prev') {
-      pageIndexToLoad = currPageIndex - 1;
-      // this.setState({currPageIndex: prevPageIndex});
-      // __pdfInstance.gotoPdfPage(prevPageIndex);
-      // currPageIndex=prevPageIndex;
-    } else if (navType === 'next') {
-      pageIndexToLoad = currPageIndex + 1;
-      // this.setState({currPageIndex: nextPageIndex});
-      // __pdfInstance.gotoPdfPage(nextPageIndex);
-      // currPageIndex=nextPageIndex;
-    } else if (navType === 'firstPage') {
-      // this.setState({currPageIndex: 1});
-      pageIndexToLoad = 1;
-    }
-    // const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageIndexToLoad);
-    const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
-    this.setState({ totalPagesToHit });
-    if (totalPagesToHit !== undefined) {
-      this.props.fetchPageInfo(this.props.book.userInfo.userid,
-      this.props.params.bookId,
-      this.props.params.bookId,
-      this.props.book.bookinfo.book.bookeditionid,
-      pageIndexToLoad,
-      totalPagesToHit,
-      ssoKey,
-      serverDetails, this.loadPdfPage, this.props.book.bookinfo.book.roleTypeID
-      ).then(() => {
-        if (pages === undefined || pages === null) {
-          pages = this.props.book.bookinfo.pages;
-          sessionStorage.setItem('pages', JSON.stringify(pages));
-        } else if (pages.length > this.props.book.bookinfo.pages.length) {
-          pages = pages.concat(this.props.book.bookinfo.pages);
-          sessionStorage.setItem('pages', JSON.stringify(pages));
-        } else {
-          pages = this.props.book.bookinfo.pages;
-          sessionStorage.setItem('pages', JSON.stringify(pages));
-        }
-        this.loadPdfPage(pageIndexToLoad);
-      });
-    }
-    /* else
+    // If we are navigating to current page then do nothing
+    if (pageno !== currPageIndex)
     {
-      this.loadPdfPage(currentPage.pdfPath,currentPage.pageorder);
-    }*/
-  };
+      __pdfInstance.removeExistingHighlightCornerImages();
+      this.setState({ drawerOpen: false });
+      this.setState({ pageLoaded: false });
+      this.setState({ regionData: null});
+      this.setState({ popUpCollection: []});
+      // pageIndexToLoad initialized with 1 to avoid loading invalid pages
+      let pageIndexToLoad = 1;
+      // pageno can be page navigation type like 'prev','next' or exact page order to navigate
+      if(isNaN(pageno))
+      {
+        if (pageno === 'prev') {
+          pageIndexToLoad = currPageIndex - 1;
+        } else if (pageno === 'next') {
+          pageIndexToLoad = currPageIndex + 1;
+        } else if (pageno === 'firstPage') {
+          pageIndexToLoad = 1;
+        }
+      }
+      else
+      {
+        if (pageno > 0) {
+          pageIndexToLoad = pageno;
+        }
+      }
+      const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
+      this.setState({ totalPagesToHit });
+      if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
+        this.props.fetchPageInfo(this.props.book.userInfo.userid,
+        this.props.params.bookId,
+        this.props.book.bookinfo.book.bookeditionid,
+        pageIndexToLoad,
+        totalPagesToHit,
+        ssoKey,
+        serverDetails, this.props.book.bookinfo.book.roleTypeID
+        ).then(() => {
+          if (this.props.book.bookinfo.pages !== undefined || this.props.book.bookinfo.pages !== null
+            || this.props.book.bookinfo.pages.length !== 0) {
+            pages = this.props.book.bookinfo.pages;
+            localStorage.setItem('pages', JSON.stringify(pages));
+          } 
+          this.loadPdfPage(pageIndexToLoad);
+        });
+      }
+    }
+    else
+    {
+      this.setState({ drawerOpen: false });
+    }
+  }
 /* Method for loading the page after passing the pagenumber. */
-  goToPageCallback = (pageNum) => {
+ /* goToPageCallback = (pageNum) => {
     __pdfInstance.removeExistingHighlightCornerImages();
     this.setState({ drawerOpen: false });
     this.setState({ pageLoaded: false });
-    // pageNum=pageNum-1;
+    this.setState({ popUpCollection: []});
     if (pageNum > 0) {
-      // __pdfInstance.gotoPdfPage(pageNum);
-      // var currPageIndex=__pdfInstance.getCurrentPage();
-      // const currentPage = find(this.props.book.bookinfo.pages, page => page.pageorder === pageNum);
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageNum);
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== '') {
         this.props.fetchPageInfo(this.props.book.userInfo.userid,
-      this.props.params.bookId,
-      this.props.params.bookId,
-      this.props.book.bookinfo.book.bookeditionid,
-      pageNum,
-      totalPagesToHit,
-      ssoKey,
-      serverDetails, this.loadPdfPage, this.props.book.bookinfo.book.roleTypeID
+        this.props.params.bookId,
+        this.props.book.bookinfo.book.bookeditionid,
+        pageNum,
+        totalPagesToHit,
+        ssoKey,
+        serverDetails, this.props.book.bookinfo.book.roleTypeID
       ).then(() => {
         if (pages === undefined || pages === null) {
           pages = this.props.book.bookinfo.pages;
-          sessionStorage.setItem('pages', JSON.stringify(pages));
+          localStorage.setItem('pages', JSON.stringify(pages));
         } else {
           pages = pages.concat(this.props.book.bookinfo.pages);
-          sessionStorage.setItem('pages', JSON.stringify(pages));
+          localStorage.setItem('pages', JSON.stringify(pages));
         }
         this.loadPdfPage(pageNum);
       });
-      }
-    /* else
-    {
-      this.loadPdfPage(currentPage.pdfPath,currentPage.pageorder);
-    }*/
+     }
     }
-  }
+  }*/
 
   findPages = (lPages, pageOrder) => find(lPages, page => page.pageorder === pageOrder)
   findAssertUrl = (lassertUrls, pageOrder) => find(lassertUrls, url => url.pageorder === pageOrder)
@@ -383,7 +383,6 @@ export class PdfBookReader extends Component {
   }
   /* Method for getting the page count and defined a variable inside method that will store the value of numberOfPages. */
   getPageCount = () => {
-    // var pagecount = __pdfInstance.getPageCount();
     const pagecount = this.props.book.bookinfo.book.numberOfPages;
     return pagecount;
   }
@@ -407,11 +406,6 @@ export class PdfBookReader extends Component {
     return (currentPage.pagenumber);
   }
 
-  /* getCurrentPageIndex = () => {
-   var currPageIndex=this.props.book.bookinfo.book.numberOfPages;
-   return currPageIndex;
-  }*/
-
   /*  created a  handleBackClick to navigate to bookshelf from any book,
      also we have used browserHistory (that is React-Router concept) method for page navigation, here are navigating to bookshelf.*/
   handleBackClick = () => {
@@ -430,15 +424,12 @@ export class PdfBookReader extends Component {
 
    /* created addBookmarkHandler method for adding bookmark for selected Page, after clicking on bookmark button. */
   addBookmarkHandler = () => {
-    // const currentPageId=__pdfInstance.getCurrentPage()+1;
     const currentPageId = this.state.currPageIndex;
     const currentPage = find(pages, page => page.pageorder === currentPageId);
-    // const currTimeInMillsc = (new Date()).getTime();
     let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
     if (courseId === undefined || courseId === '' || courseId === null) {
-      courseId = 0;
+      courseId = -1;
     }
-
     this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid),
       _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder),
@@ -450,23 +441,17 @@ export class PdfBookReader extends Component {
     if (bookmarkId !== undefined) {
       currentPageId = bookmarkId;
     } else {
-      // currentPageId =__pdfInstance.getCurrentPage()+1;
       currentPageId = this.state.currPageIndex;
     }
-
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
     const targetBookmarkId = targetBookmark.bkmarkId;
-
     this.props.removeBookmarkUsingReaderApi(targetBookmarkId);
   };
-
 
 /* Checking the particular page you are trying to set bookmark already a bookmark or not. */
   isCurrentPageBookmarked = () => {
     const currentPageId = this.state.currPageIndex;
-
     const targetBookmark = find(this.props.book.bookmarks, bookmark => bookmark.uri === currentPageId);
-
     return !(targetBookmark === undefined);
   };
   /* Method for setting the zoom level selected by user, using passing the selected value. */
@@ -478,7 +463,7 @@ export class PdfBookReader extends Component {
         if(this.props.book.userIcons.length)
         {
           __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
-        } 
+        }
     }
   }
 /*Method for removing hotspot content on clicking the close button*/
@@ -512,21 +497,21 @@ export class PdfBookReader extends Component {
       .then(() => {
           if (pages === undefined) {
             pages = this.props.book.bookinfo.pages;
-            sessionStorage.setItem('pages', JSON.stringify(pages));
+            localStorage.setItem('pages', JSON.stringify(pages));
             var currentPage = find(pages,page => page.pagenumber == pageNo)
           } else {
             pages = pages.concat(this.props.book.bookinfo.pages);
-            sessionStorage.setItem('pages', JSON.stringify(pages));
+            localStorage.setItem('pages', JSON.stringify(pages));
             var currentPage = find(pages,page => page.pagenumber == pageNo)
           }
-          this.goToPageCallback(Number(currentPage.pageorder));
+          this.goToPage(Number(currentPage.pageorder));
       });
     }
     else
     {
-      this.goToPageCallback(Number(currentPage.pageorder));
+      this.goToPage(Number(currentPage.pageorder));
     }
-    
+
   }
 /*Method to render the clicked region component.*/
 
@@ -534,20 +519,24 @@ export class PdfBookReader extends Component {
     var regionComponent = " ";
     var hotspotData,source;
     switch(hotspotDetails.regionTypeID) {
-      case 1:  source=hotspotDetails.linkValue;
-               hotspotData = {
-                 audioSrc :source,
-                 audioTitle :hotspotDetails.name
-               };
-               regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
+      case eT1Contants.RegionType.AUDIO:
+                source=hotspotDetails.linkValue;
+                hotspotData = {
+                  audioSrc :source,
+                  audioTitle :hotspotDetails.name
+                };
+                regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
+                break;
+      case eT1Contants.RegionType.CROSS_REFERENCE:
+      case eT1Contants.RegionType.INDEX_LINK:
+      case eT1Contants.RegionType.TOC_LINK:
+               this.goToPageNumber(hotspotDetails.linkValue);
                break;
-      case 2:
-      case 7:
-      case 10: this.goToPageNumber(hotspotDetails.linkValue);
+      case eT1Contants.RegionType.EMAIL:
+               var loc=document.location;
                break;
-      case 3:  document.location = "mailto:" + hotspotDetails.linkValue;
-               break;
-      case 6:  source=hotspotDetails.linkValue;
+      case eT1Contants.RegionType.IMAGE:
+               source=hotspotDetails.linkValue;
                hotspotData = {
                  alt : hotspotDetails.name,
                  src : source,
@@ -558,7 +547,8 @@ export class PdfBookReader extends Component {
                };
                regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
                break;
-      case 12: source=hotspotDetails.linkValue;
+      case eT1Contants.RegionType.VIDEO:
+               source=hotspotDetails.linkValue;
                hotspotData = {
                 title : hotspotDetails.name,
                 src : source,
@@ -567,38 +557,48 @@ export class PdfBookReader extends Component {
                 thumbnail : {
                   src : null,
                },
-               "transcript": [
+            /*   "transcript": [
                {
                  "id": "urn:pearson:text:0166E52D-5ABA-4341-999F-C3ACE48CF27B",
                  "lang": "en",
                  "type": "transcript",
                  "src": "//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm?mimeType=vtt&lang=en"
-               }],
+               }],*/
                alt : hotspotDetails.name,
                };
                regionComponent = <VideoPlayerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
                break;
-      case 9:
-      case 13:
-      case 15: 
-      case 14: source=hotspotDetails.linkValue;
+      case eT1Contants.RegionType.POWERPOINT:
+      case eT1Contants.RegionType.EXCEL:
+      case eT1Contants.RegionType.WORD_DOC:
+      case eT1Contants.RegionType.PDF:
+               source=hotspotDetails.linkValue;
                window.open(source,"_blank");
                break;
-      case 11: source=hotspotDetails.linkValue;
+      case eT1Contants.RegionType.URL:
+               source=hotspotDetails.linkValue;
                hotspotData = {
                  title : hotspotDetails.name,
                  src : source
                };
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={(this.onHotspotClose)} />;
                break;
-
-      case 16: var role = this.props.book.bookinfo.book.roleTypeID;
-               var courseId =0 ;
+      case eT1Contants.RegionType.LTILINK:
+               var role = this.props.book.bookinfo.book.roleTypeID;
+               if (this.props.book.bookinfo.book.activeCourseID === undefined || this.props.book.bookinfo.book.activeCourseID === '' || this.props.book.bookinfo.book.activeCourseID === null)
+               {
+                var courseId = -1;
+               }
+               else
+               {
+                var courseId = this.props.book.bookinfo.book.activeCourseID;
+               }
                var userId = this.props.book.userInfo.userid;
                var ltiLink = hotspotDetails.linkValue;
+               /*Framing Complete LTI URl*/
                var link = serverDetails + 'ebook/toolLaunch.do?json=' + ltiLink + '&contextid' + courseId + '&role' + role + '&userlogin' + userId ;
+               /*Converting URL into https*/
                var ltiUrl = this.createHttps(link);
-               // var ltiUrl ="https://view.cert1.ebookplus.pearsoncmg.com/ebook/toolLaunch.do?json=handler_urn:pearson/xl_platform/slink/x-pearson-xl_platform,targetId:assignedhomework&contextid=82299&role=3&userlogin=115314";
                window.open(ltiUrl,"_blank");
                break;
       default :regionComponent = null;
@@ -608,10 +608,11 @@ export class PdfBookReader extends Component {
   }
 
 /*Method to handle the action to be performed when a region is clicked.*/
-  handleRegionClick(hotspotID) {
+handleRegionClick(hotspotID) {
     if(this.state.regionData)
     {
       this.setState({regionData : null});
+      this.onHotspotClose();
     }
     if(this.props.book.regions.length > 0 )
     {
@@ -620,18 +621,61 @@ export class PdfBookReader extends Component {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
             var regionDetails = this.props.book.regions[i];
-            if(regionDetails.regionTypeID !== 2 || regionDetails.regionTypeID !== 7 || regionDetails.regionTypeID !== 10 || regionDetails.regionTypeID !== 3 || regionDetails.regionTypeID !== 16)
+            if(regionDetails.regionTypeID == eT1Contants.RegionType.AUDIO || regionDetails.regionTypeID == eT1Contants.RegionType.IMAGE || regionDetails.regionTypeID == eT1Contants.RegionType.URL
+                || regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL
+                || regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC)
             {
               regionDetails.linkValue=this.createHttps(regionDetails.linkValue);
-              regionDetails.linkTypeLocation=this.createHttps(regionDetails.linkTypeLocation);
-            }            
-            /*For Relative assetts*/
-            if (regionDetails.linkTypeLocation !== null && !(regionDetails.linkValue).startsWith(regionDetails.linkTypeLocation))
-            {
-              regionDetails.linkValue = regionDetails.linkTypeLocation + regionDetails.linkValue;
+              if(this.props.book.basepaths !== null)
+              {
+                var basepath;
+                if(regionDetails.linkTypeID == eT1Contants.LinkType.IMAGE && this.props.book.basepaths.imagepath !== null && this.props.book.basepaths.imagepath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.imagepath);
+                }
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.FLV && this.props.book.basepaths.flvpath !== null && this.props.book.basepaths.flvpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.flvpath);                
+                }
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.MP3 ||  regionDetails.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
+                {
+                  if(this.props.book.basepaths.mp3path !== null && this.props.book.basepaths.mp3path !== "")
+                  {
+                    basepath=this.createHttps(this.props.book.basepaths.mp3path);                
+                  }
+                }
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.SWF && this.props.book.basepaths.swfassetpath !== null && this.props.book.basepaths.flvpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.swfassetpath);                
+                }
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.URL && this.props.book.basepaths.urlpath !== null && this.props.book.basepaths.urlpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.urlpath);                
+                }
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.VIRTUAL_LEARNING_ASSET && this.props.book.basepaths.virtuallearningassetpath !== null && this.props.book.basepaths.virtuallearningassetpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.virtuallearningassetpath);                
+                }
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.H264 && this.props.book.basepaths.h264path !== null && this.props.book.basepaths.h264path !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.h264path);                
+                }
+                else if(regionDetails.linkTypeID == eT1Contants.LinkType.CHROMELESS_URL && this.props.book.basepaths.chromelessurlpath !== null && this.props.book.basepaths.chromelessurlpath !== "")
+                {
+                  basepath=this.createHttps(this.props.book.basepaths.chromelessurlpath);                
+                }
+                if(!((regionDetails.linkValue).startsWith("http")) && basepath !== undefined)
+                {
+                  regionDetails.linkValue = basepath + regionDetails.linkValue;
+                }              
+              }
+
             }
             /*Checking if the clicked region is tocLink,indexLink,crossrefernce,ltiLink,word,powerpoint,excel or pdfdocument */
-            if (regionDetails.regionTypeID == 2 || regionDetails.regionTypeID == 7 || regionDetails.regionTypeID == 10 || regionDetails.regionTypeID == 14 || regionDetails.regionTypeID ==9 || regionDetails.regionTypeID == 13 || regionDetails.regionTypeID == 15 || regionDetails.regionTypeID == 16)
+            if (regionDetails.regionTypeID == eT1Contants.RegionType.CROSS_REFERENCE || regionDetails.regionTypeID == eT1Contants.RegionType.INDEX_LINK
+              || regionDetails.regionTypeID == eT1Contants.RegionType.TOC_LINK || regionDetails.regionTypeID == eT1Contants.RegionType.PDF
+              || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL
+              || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || regionDetails.regionTypeID == eT1Contants.RegionType.LTILINK)
             {
               this.renderHotspot(regionDetails);
             }
@@ -646,9 +690,7 @@ export class PdfBookReader extends Component {
     }    
   }
  /* Method for creating highLight for selected area by user. */
-  createHighlight1(highlightData) {
-    /* const listValue = highlightData.length;
-    const i = listValue - 1;*/
+  createHighlight(highlightData) {
     const highLightcordinates = {
       left: highlightData[0].offsetLeft,
       top: highlightData[0].offsetTop,
@@ -744,7 +786,7 @@ export class PdfBookReader extends Component {
     if(highLightClickedData.highlightId === undefined)
     {
       hId = highLightClickedData;
-    } 
+    }
     else
     {
       hId = highLightClickedData.highlightId;
@@ -761,40 +803,6 @@ export class PdfBookReader extends Component {
       (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID,cornerFoldedImageTop);
   }
 
- /* Method for creating the Highlight for selected area by user. */
-  createHighlight() {
-    const currentHighlight = {};
-    const highlightList = this.state.highlightList;
-    const highlightData = __pdfInstance.createHighlight();
-    const highlightsLength = highlightList.length;
-    currentHighlight.id = highlightsLength + 1;
-    currentHighlight.highlightHash = highlightData.serializedHighlight;
-    currentHighlight.selection = highlightData.selection;
-    currentHighlight.pageIndex = highlightData.pageInformation.pageNumber;
-    highlightList.push(currentHighlight);
-    const currentPageId = this.state.currPageIndex;
-    const courseId = '0';
-    const note = '';
-
-    const meta = {
-      userroleid: _.toString(this.props.book.bookinfo.book.roleTypeID),
-      userbookid: _.toString(this.props.book.bookinfo.userbook.userbookid),
-      bookeditionid: _.toString(this.props.book.bookinfo.book.bookeditionid),
-      roletypeid: _.toString(this.props.book.bookinfo.book.roleTypeID),
-      colorcode: '32CCFF'
-
-    };
-    const selectedText = currentHighlight.selection;
-    const currentPage = find(pages, page => page.pageorder === currentPageId);
-    this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid),
-      _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
-      _.toString(currentPage.pagenumber), _.toString(courseId), true,
-      currentHighlight.highlightHash, note, selectedText, 'Blue',
-      meta, _.toString(currentPageId)).then(() => {
-        this.setState({ highlightList });
-        this.displayHighlight();
-      });
-  }
   /* Method for displaying the Highlight already stored. */
   displayHighlight = () => {
     const currentPageId = this.state.currPageIndex;
@@ -817,14 +825,6 @@ export class PdfBookReader extends Component {
         }
       }
     });
-    /*var highlightListToRender = JSON.parse(JSON.stringify(highlightList));
-    highlightListToRender.forEach((highlight) => {
-          if(highlight.shared)
-          {
-            highlight.color = '#00a4e0';
-            highlight.meta.colorcode = '#00a4e0';
-          }
-    });*/
     __pdfInstance.restoreHighlights(highlightList, this.deleteHighlight);
     __pdfInstance.reRenderHighlightCornerImages(highlightList);
     this.setState({ highlightList });
@@ -859,7 +859,7 @@ export class PdfBookReader extends Component {
     // callbacks.removeBookmarkHandlerForBookmarkList =this.removeBookmarkHandlerForBookmarkList;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
-    callbacks.goToPageCallback = this.goToPageCallback;
+    callbacks.goToPageCallback = this.goToPage;
     // const drawerOpen = true;
     let viewerClassName;
     if (this.state.pageLoaded !== true) {
@@ -877,6 +877,15 @@ export class PdfBookReader extends Component {
           annotation.color = annotation.originalColor;
         }
       });
+    if (this.props.book.toc.fetched && this.props.book.toc.content !== undefined
+              && this.props.book.toc.content.list !== undefined && this.props.book.toc.content.list.length !== 0)
+    {
+      this.props.book.tocReceived = true;
+    }
+    else
+    {
+      this.props.book.tocReceived = false;
+    }
     /* Here we are passing data, pages, goToPageCallback,
        getPrevNextPage method and isET1 flag in ViewerComponent
        which is defined in @pearson-incubator/viewer . */
@@ -891,15 +900,15 @@ export class PdfBookReader extends Component {
             bookCallbacks={callbacks}
             setCurrentZoomLevel={this.setCurrentZoomLevel}
             store={this.context.store}
-            goToPage={this.goToPageCallback}
+            goToPage={this.goToPage}
             bookId={this.props.params.bookId}
-            globalBookId={this.props.bookshelf.globalBookId}
-            ssoKey={this.props.bookshelf.ssoKey}
-            title={this.props.bookshelf.title}
+            globalBookId={this.props.currentbook.globalBookId}
+            ssoKey={this.props.currentbook.ssoKey}
+            title={this.props.currentbook.title}
             curbookID={this.props.params.bookId}
             isET1="Y"
             disableBackgroundColor="true"
-            serverDetails={this.props.bookshelf.serverDetails}
+            serverDetails={this.props.currentbook.serverDetails}
             drawerOpen={this.state.drawerOpen}
             indexId={{ searchUrl }}
             userid={this.props.book.userInfo.userid}
@@ -917,6 +926,7 @@ export class PdfBookReader extends Component {
         </div>
         <div>
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
+        {this.state.popUpCollection.length ? <PopUpInfo bookId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} /> : null }
           <div id="main">
             <div id="mainContainer" className="pdf-fwr-pc-main">
               <div id="right" className="pdf-fwr-pc-right">

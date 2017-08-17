@@ -14,7 +14,8 @@ import Search from '../components/search'; // eslint-disable-line import/no-name
     implementing our wrapper around increment; the component doesn't care   */
 
 const mapDispatchToProps = {
-  fetch: searchActions.fetch
+  fetch: searchActions.fetch, 
+  clearSearchResults: searchActions.clearSearchResults
 };
 
 const mapStateToProps = state => ({

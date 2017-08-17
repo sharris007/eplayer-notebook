@@ -30,13 +30,13 @@ used for before mounting occurs. */
       }
       if(identityId === undefined || identityId === '' || identityId === null)
       {
-        identityId = this.props.bookshelf.globalUserId;
+        identityId = this.props.currentbook.globalUserId;
       }
-      ubd = this.props.bookshelf.ubd;
-      ubsd = this.props.bookshelf.ubsd;
-      ssoKey = this.props.bookshelf.ssoKey;
-      serverDetails = this.props.bookshelf.serverDetails;
-      roleTypeID = this.props.bookshelf.roleTypeID;
+      ubd = this.props.currentbook.ubd;
+      ubsd = this.props.currentbook.ubsd;
+      ssoKey = this.props.currentbook.ssoKey;
+      serverDetails = this.props.currentbook.serverDetails;
+      roleTypeID = this.props.currentbook.roleTypeID;
     
         /* Await operator is used to wait for a Promise returned by an async function. */
        /* Method used for fetching the user details and book details. */
@@ -70,7 +70,7 @@ used for before mounting occurs. */
           fetchPageInfo={this.props.fetchPageInfo}
           goToPage={this.props.goToPage}
           book={this.props.book}
-          bookshelf={this.props.bookshelf}
+          currentbook={this.props.currentbook}
           login={this.props.login}
           params={this.props.params}
           fetchHighlightUsingReaderApi={this.props.fetchHighlightUsingReaderApi}
@@ -83,6 +83,8 @@ used for before mounting occurs. */
           fetchPagebyPageNumber={this.props.fetchPagebyPageNumber}
           fetchUserIcons={this.props.fetchUserIcons}
           fetchBookFeatures={this.props.fetchBookFeatures}
+          fetchGlossaryItems={this.props.fetchGlossaryItems}
+          fetchBasepaths={this.props.fetchBasepaths}
         />);
     }
 

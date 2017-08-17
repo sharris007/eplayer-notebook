@@ -51,16 +51,7 @@ class LoginPage extends React.Component {
     /* Method for calling the Rest Api for login with passing credientails. */
     this.props.fetch(this.state.loginname, this.state.password)
     .then(() => {
-      const LoginToken = [];
-      // const loginPiToken = [];
-      const firstName = [];
-      const lastName = [];
       if (this.props.fetched) {
-        LoginToken.push(this.props.data.token);
-        /* loginPiToken.push(this.props.data.piToken);*/
-        firstName.push(this.props.data.firstName);
-        lastName.push(this.props.data.lastName);
-        /* BrowserHistory used for navigating the user to bookself page. */
         piSession.autologin(this.state.loginname, this.state.password, 'vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb', `${window.location.origin}/eplayer/bookshelf`);  // eslint-disable-line
         // browserHistory.push(`/eplayer/bookshelf${this.props.location.search}`);
       }

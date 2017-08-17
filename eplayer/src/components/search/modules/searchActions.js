@@ -5,7 +5,7 @@
 // const ROOT_URL = 'http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/searchbook?bookid=7443104&globalbookid=CM76820710&sortby=1&version=1.0&authkey=31358503403719696212017&outputformat=JSON';
 
 export const SEARCH = 'SEARCH';
-
+export const CLEAR_SEARCH_OBJ = 'CLEAR_SEARCH_OBJ';
 /* const searchActions = {
   fetch(searchText,bookID,globalBookId,ssoKey) {
 
@@ -84,6 +84,13 @@ const searchActions = {
         }
         dispatch({ type: 'SEARCH', searchState });
       });
-  }
+  },
+clearSearchResults() {
+    return (dispatch) => {
+    dispatch({ type: CLEAR_SEARCH_OBJ });
+  };
+}
 };
+
+
 export default searchActions;

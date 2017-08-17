@@ -8,7 +8,7 @@ import { pageDetails , customAttributes } from '../../../../const/Mockdata';
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookCallService, getPlaylistCallService, getCourseCallService} from '../../../actions/playlist';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService} from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
@@ -46,7 +46,8 @@ export class Book extends Component {
         },
         annAttributes:customAttributes,
         goToTextVal:'',
-        isPanelOpen:false
+        isPanelOpen:false,
+        asynCallLoaded:false
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -104,7 +105,7 @@ export class Book extends Component {
     this.props.dispatch({type: "CLEAR_BOOKMARKS"});
     this.props.dispatch({type: "CLEAR_SEARCH"});
     delete this.state.pageDetails.searchText;
-    this.setState({pageDetails : this.state.pageDetails});
+    this.setState({pageDetails : this.state.pageDetails,asynCallLoaded:false});
   }
   componentDidMount() {    
    let pageDetails = this.state.pageDetails;
@@ -267,6 +268,7 @@ export class Book extends Component {
             }else{
               browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=`+ window.annotationLocale);
             }
+            
             this.props.dispatch(getBookmarkCallService(this.state.urlParams));
             // this.props.dispatch(getAnnCallService(this.state.urlParams));
           });
@@ -302,7 +304,14 @@ export class Book extends Component {
   viewerContentCallBack = (viewerCallBack) => {
     this.setState({ viewerContent: viewerCallBack });
     if(viewerCallBack==false) {
-      this.setState({ drawerOpen: true });
+      this.setState({ drawerOpen: true },function(){
+          if(!this.state.asynCallLoaded) {
+             this.props.dispatch(getBookTocCallService());
+             this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
+             this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+             this.state.asynCallLoaded = true;
+          }
+      });
     }
     else{
       this.setState({ drawerOpen: false });
@@ -363,6 +372,7 @@ export class Book extends Component {
       this.setState({ popUpCollection : [] });
       this.wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'book-container'});
       this.wrapper.bindPopUpCallBacks();
+      
     }    
   }
 

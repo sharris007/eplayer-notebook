@@ -2,7 +2,7 @@ import { connect } from 'react-redux';/* Importing react-redux library for conne
 import { fetchBookmarksUsingReaderApi, addBookmarkUsingReaderApi, removeBookmarkUsingReaderApi,
          fetchTocAndViewer, goToPage, fetchBookInfo, fetchPageInfo, fetchUserInfo,
          fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi,
-         loadAssertUrl, editHighlightUsingReaderApi, fetchRegionsInfo, fetchUserIcons,fetchPagebyPageNumber, fetchBookFeatures  } from '../modules/pdfbook';/* Importing the action creator from reducer to container. */
+         loadAssertUrl, editHighlightUsingReaderApi, fetchRegionsInfo, fetchUserIcons,fetchPagebyPageNumber, fetchBookFeatures, fetchGlossaryItems, fetchBasepaths } from '../modules/pdfbook';/* Importing the action creator from reducer to container. */
 import { loadState } from '../../../localStorage'; 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -34,13 +34,15 @@ const mapDispatchToProps = {
   fetchRegionsInfo,
   fetchPagebyPageNumber,
   fetchUserIcons,
-  fetchBookFeatures
+  fetchBookFeatures,
+  fetchGlossaryItems,
+  fetchBasepaths
 };
 
 /* Method used for connecting and accessing the state data in component via props. */
 const mapStateToProps = state => ({
   book: state.book ? state.book : {},
-  bookshelf:state.bookshelf ? state.bookshelf : loadState('bookshelf') ? loadState('bookshelf') : {},
+  currentbook:state.bookshelf ? state.bookshelf : loadState('bookshelf') ? loadState('bookshelf') : {},
   login: state.login ? state.login : loadState('login') ? loadState('login') : {}
 });
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:
