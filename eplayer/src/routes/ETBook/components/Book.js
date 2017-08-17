@@ -63,35 +63,39 @@ export class Book extends Component {
        
   }
   componentWillMount  = () => {
-    setTimeout( () => {
-    // deeper code
-      let redirectCourseUrl   = window.location.href;
-      redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
-      piSession.getToken(function(result, userToken){
-
-          if(result === piSession['Success']){
-              localStorage.setItem('secureToken',userToken);
+    let isSessionLoaded = false; 
+    const IntervalCheck = setInterval(()=>{
+      // deeper code
+      if(!isSessionLoaded) {
+          let redirectCourseUrl   = window.location.href;
+          redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
+          if(piSession){
+            isSessionLoaded = true;
+            piSession.getToken(function(result, userToken){
+              if(result === piSession['Success']){
+                  localStorage.setItem('secureToken',userToken);
+                  clearInterval(IntervalCheck);
+              }
+            }); 
           }
-      }); 
-      
-      const getSecureToken = localStorage.getItem('secureToken');
-      const bookDetailsData = {
-        context : this.state.urlParams.context,
-        piToken : getSecureToken,
-        bookId  : this.props.params.bookId
-      }
-      const piUserId = piSession.userId();
-      this.state.urlParams.user = piUserId;
-      this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-      if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-          bookDetailsData.courseId = this.props.params.bookId;
-          this.props.dispatch(getCourseCallService(bookDetailsData));
-      }else{
-          this.props.dispatch(getBookCallService(bookDetailsData));
-      }
-      this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
-  }, 2000);
-    
+          const getSecureToken = localStorage.getItem('secureToken');
+          const bookDetailsData = {
+            context : this.state.urlParams.context,
+            piToken : getSecureToken,
+            bookId  : this.props.params.bookId
+          }
+          const piUserId = piSession.userId();
+          this.state.urlParams.user = piUserId;
+          this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
+          if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+              bookDetailsData.courseId = this.props.params.bookId;
+              this.props.dispatch(getCourseCallService(bookDetailsData));
+          }else{
+              this.props.dispatch(getBookCallService(bookDetailsData));
+          }
+          this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+        }
+    },200)    
   }
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
