@@ -242,49 +242,57 @@ export class PdfBookReader extends Component {
   }
 
   goToPage = (pageno) => {
-    __pdfInstance.removeExistingHighlightCornerImages();
-    this.setState({ drawerOpen: false });
-    this.setState({ pageLoaded: false });
-    this.setState({ regionData: null});
-    this.setState({ popUpCollection: []});
     const currPageIndex = this.state.currPageIndex;
-    // pageIndexToLoad initialized with 1 to avoid loading invalid pages
-    let pageIndexToLoad = 1;
-    // pageno can be page navigation type like 'prev','next' or exact page order to navigate
-    if(isNaN(pageno))
+    // If we are navigating to current page then do nothing
+    if (pageno !== currPageIndex)
     {
-      if (pageno === 'prev') {
-        pageIndexToLoad = currPageIndex - 1;
-      } else if (pageno === 'next') {
-        pageIndexToLoad = currPageIndex + 1;
-      } else if (pageno === 'firstPage') {
-        pageIndexToLoad = 1;
+      __pdfInstance.removeExistingHighlightCornerImages();
+      this.setState({ drawerOpen: false });
+      this.setState({ pageLoaded: false });
+      this.setState({ regionData: null});
+      this.setState({ popUpCollection: []});
+      // pageIndexToLoad initialized with 1 to avoid loading invalid pages
+      let pageIndexToLoad = 1;
+      // pageno can be page navigation type like 'prev','next' or exact page order to navigate
+      if(isNaN(pageno))
+      {
+        if (pageno === 'prev') {
+          pageIndexToLoad = currPageIndex - 1;
+        } else if (pageno === 'next') {
+          pageIndexToLoad = currPageIndex + 1;
+        } else if (pageno === 'firstPage') {
+          pageIndexToLoad = 1;
+        }
+      }
+      else
+      {
+        if (pageno > 0) {
+          pageIndexToLoad = pageno;
+        }
+      }
+      const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
+      this.setState({ totalPagesToHit });
+      if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
+        this.props.fetchPageInfo(this.props.book.userInfo.userid,
+        this.props.params.bookId,
+        this.props.book.bookinfo.book.bookeditionid,
+        pageIndexToLoad,
+        totalPagesToHit,
+        ssoKey,
+        serverDetails, this.props.book.bookinfo.book.roleTypeID
+        ).then(() => {
+          if (this.props.book.bookinfo.pages !== undefined || this.props.book.bookinfo.pages !== null
+            || this.props.book.bookinfo.pages.length !== 0) {
+            pages = this.props.book.bookinfo.pages;
+            localStorage.setItem('pages', JSON.stringify(pages));
+          } 
+          this.loadPdfPage(pageIndexToLoad);
+        });
       }
     }
     else
     {
-      if (pageno > 0) {
-        pageIndexToLoad = pageno;
-      }
-    }
-    const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
-    this.setState({ totalPagesToHit });
-    if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
-      this.props.fetchPageInfo(this.props.book.userInfo.userid,
-      this.props.params.bookId,
-      this.props.book.bookinfo.book.bookeditionid,
-      pageIndexToLoad,
-      totalPagesToHit,
-      ssoKey,
-      serverDetails, this.props.book.bookinfo.book.roleTypeID
-      ).then(() => {
-        if (this.props.book.bookinfo.pages !== undefined || this.props.book.bookinfo.pages !== null
-          || this.props.book.bookinfo.pages.length !== 0) {
-          pages = this.props.book.bookinfo.pages;
-          localStorage.setItem('pages', JSON.stringify(pages));
-        } 
-        this.loadPdfPage(pageIndexToLoad);
-      });
+      this.setState({ drawerOpen: false });
     }
   }
 /* Method for loading the page after passing the pagenumber. */
@@ -869,6 +877,15 @@ handleRegionClick(hotspotID) {
           annotation.color = annotation.originalColor;
         }
       });
+    if (this.props.book.toc.fetched && this.props.book.toc.content !== undefined
+              && this.props.book.toc.content.list !== undefined && this.props.book.toc.content.list.length !== 0)
+    {
+      this.props.book.tocReceived = true;
+    }
+    else
+    {
+      this.props.book.tocReceived = false;
+    }
     /* Here we are passing data, pages, goToPageCallback,
        getPrevNextPage method and isET1 flag in ViewerComponent
        which is defined in @pearson-incubator/viewer . */

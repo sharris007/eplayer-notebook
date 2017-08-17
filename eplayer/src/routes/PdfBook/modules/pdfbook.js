@@ -359,7 +359,7 @@ export function fetchTocAndViewer(bookId, authorName, title,
       + `userroleid=${roleTypeID}&bookid=${bookId}&language=en_US`
       + `&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`,
       {
-        timeout: 20000
+        timeout: 100000
       })
     .then((response) => {
       response.data.forEach((allBaskets) => {
@@ -403,6 +403,8 @@ export function fetchTocAndViewer(bookId, authorName, title,
         // bookState.toc.content.list=flatten1(tocLevel1ChildList);
         });
       });
+      bookState.toc.fetching = false;
+      bookState.toc.fetched = true;
       bookState.isFetching.toc = false;
       dispatch({ type: RECEIVE_TOC, bookState });
     });
@@ -1047,6 +1049,10 @@ const ACTION_HANDLERS = {
   }),
   [REQUEST_TOC]: state => ({
     ...state,
+    toc : {
+      fetching: true,
+      fetched: false
+    },
     isFetching: {
       ...state.isFetching,
       toc: true
@@ -1253,7 +1259,10 @@ const initialState = {
   userIcons:[],
   glossaryInfoList:[],
   preferences: {},
-  toc: {},
+  toc: {
+    fetching: false,
+    fetched: false
+  },
   viewer: {},
   isFetching: {
     annotations: false,
