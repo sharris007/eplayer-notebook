@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { resources, domain } from '../../../../const/Settings';
 
-const security = (resources.constants.secureApi === true ? 'courseServiceUrl' : 'courseServiceUrl');
+const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
 const etextCourseService = resources.links['courseServiceUrl'];
 const envType = domain.getEnvType();
@@ -12,7 +12,7 @@ const envType = domain.getEnvType();
    piToken that is coming from Login response in order to make Ajax request.*/
 
 export const fetch = (urn, piToken) => {
-  // console.log('bookshelf Url '+ etextService[envType] + '/nextext/' + urn);
+   
   if (piToken !== 'dummypiToken') {
     const url = `${etextCourseService[envType]}/web/compositeBookShelf`;
     return {
