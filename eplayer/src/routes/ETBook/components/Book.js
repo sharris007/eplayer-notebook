@@ -87,14 +87,12 @@ export class Book extends Component {
           }
           const piUserId = piSession.userId();
           this.state.urlParams.user = piUserId;
-          this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
           if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
               bookDetailsData.courseId = this.props.params.bookId;
               this.props.dispatch(getCourseCallService(bookDetailsData));
           }else{
-              this.props.dispatch(getBookCallService(bookDetailsData));
+              this.props.dispatch(getBookPlayListCallService(bookDetailsData));
           }
-          this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
         }
     },200)    
   }

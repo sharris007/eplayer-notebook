@@ -14,7 +14,7 @@ const envType = domain.getEnvType();
 export const fetch = (urn, piToken) => {
   // console.log('bookshelf Url '+ etextService[envType] + '/nextext/' + urn);
   if (piToken !== 'dummypiToken') {
-    const url = `${etextCourseService[envType]}/compositeBookShelf`;
+    const url = `${etextCourseService[envType]}/web/compositeBookShelf`;
     return {
       type: 'BOOKS',
       payload: axios.get(url, {

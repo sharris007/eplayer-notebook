@@ -96,27 +96,34 @@ export default class BookshelfPage extends React.Component {
     // Get Eps Auth Token to fetch eps book images
 
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
-     setTimeout(()=>{
-      const secureToken  = localStorage.getItem('secureToken');
-      const cdnToken = this.cookies.get('etext-cdn-token');
-      if(!cdnToken){
-        this.props.getAuthToken(secureToken);
-      }
-      //let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
-      let urn = 'compositeBookShelf';
-      if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
-        urn = 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
-              + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
-      }
-      // const secureToken = this.cookies.get('secureToken');
-      if (this.props.location.query.eT1StandaloneBkshf === 'Y'
-            || this.props.location.query.eT1StandaloneBkshf === 'y') {
-        this.props.fetch(urn, piToken);
-      } else {
-        this.props.fetch(urn, secureToken);
-      }
-    },3000);
-  }
+     let isSessionLoaded = false; 
+     const IntervalCheck = setInterval(()=>{
+      if(!isSessionLoaded) {
+        const secureToken  = localStorage.getItem('secureToken');
+        if(secureToken) {
+          const cdnToken = this.cookies.get('etext-cdn-token');
+          if(!cdnToken){
+             this.props.getAuthToken(secureToken);
+           }
+          //let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
+          let urn = 'compositeBookShelf';
+          if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
+            urn = 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
+                + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
+          }
+          // const secureToken = this.cookies.get('secureToken');
+          if (this.props.location.query.eT1StandaloneBkshf === 'Y'
+                || this.props.location.query.eT1StandaloneBkshf === 'y') {
+            this.props.fetch(urn, piToken);
+          } else {
+            this.props.fetch(urn, secureToken);
+          }
+          isSessionLoaded = true;
+          clearInterval(IntervalCheck);
+        }
+      }   
+     },200);
+   }
   getCookie = (name) => {
       var value = "; " + document.cookie;
       var parts = value.split("; " + name + "=");
