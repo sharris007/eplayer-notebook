@@ -14,7 +14,8 @@ import { eT1Contants } from '../../../components/common/et1constants';
 import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
 import { loadState } from '../../../localStorage';
-import { PopUpInfo } from '@pearson-incubator/popup-info';
+import Popup from 'react-popup';
+import { PopUpInfo } from '../../../components/GlossaryPopup/PopUpInfo';
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -158,6 +159,7 @@ export class PdfBookReader extends Component {
           {
             __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
           }
+          var regionsData = [];
           var glossaryEntryIDsToFetch = '';
           for(var arr=0;arr < this.props.book.regions.length ; arr++)
           {
@@ -173,26 +175,32 @@ export class PdfBookReader extends Component {
               // }];
               // this.setState({popUpCollection : glossaryItem});
               /************************************Static Data End********************************************/
-              glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + this.props.book.regions[arr].glossaryEntryID;
-              //This break statement added temp for to show only one glossary hotspot
-              break;
+              glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + this.props.book.regions[arr].glossaryEntryID;
+              regionsData.push(this.props.book.regions[arr]);
             }
           }
-              this.props.fetchGlossaryItems(this.props.params.bookId,glossaryEntryIDsToFetch,ssoKey,serverDetails).then(() => {
-                var glossaryData = [];
-                for(var i=0;i<this.props.book.glossaryInfoList.length;i++)
+          this.props.fetchGlossaryItems(this.props.params.bookId,glossaryEntryIDsToFetch,ssoKey,serverDetails).then(() => {
+            var glossaryData = [];
+            for(var i=0;i<this.props.book.glossaryInfoList.length;i++)
+            {
+              for(var k=0 ; k < regionsData.length ; k++)
+              {
+                if((this.props.book.glossaryInfoList[i].glossaryEntryID).trim() == (regionsData[k].glossaryEntryID).trim())
                 {
-                    var glossTerm = {
-                      item : document.getElementById(this.props.book.regions[arr].regionID),
-                      popOverCollection : {
-                        popOverDescription : this.props.book.glossaryInfoList[i].glossaryDefinition,
-                        popOverTitle : this.props.book.glossaryInfoList[i].glossaryTerm
-                      }                
-                    };
-                    glossaryData.push(glossTerm);                
+                  var glossTerm = {
+                    isET1 : 'Y' ,
+                    item : document.getElementById(regionsData[k].regionID),
+                    popOverCollection : {
+                      popOverDescription : this.props.book.glossaryInfoList[i].glossaryDefinition,
+                      popOverTitle : this.props.book.glossaryInfoList[i].glossaryTerm
+                    }                
+                  };
+                  glossaryData.push(glossTerm);                
                 }
-                this.setState({popUpCollection : glossaryData});
-              });
+              }
+            }
+            this.setState({popUpCollection : glossaryData});
+          });
         }
       });
       this.setState({ pageLoaded: true });
@@ -242,6 +250,12 @@ export class PdfBookReader extends Component {
   }
 
   goToPage = (pageno) => {
+    try
+    {
+      Popup.close();
+    }
+    catch(e){
+    }
     const currPageIndex = this.state.currPageIndex;
     // If we are navigating to current page then do nothing
     if (pageno !== currPageIndex)
@@ -932,7 +946,9 @@ handleRegionClick(hotspotID) {
               <div id="right" className="pdf-fwr-pc-right">
                 <div id="toolbar" className="pdf-fwr-toolbar" />
                 <div id="frame" className={viewerClassName} onClick={this.onPageClick}>
-                  <div id="docViewer" className="docViewer" />
+                  <div id="docViewer" className="docViewer" >
+                    {this.state.popUpCollection.length > 0? <PopUpInfo bookId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} /> : null }
+                  </div>
                 </div>
               </div>
             </div>

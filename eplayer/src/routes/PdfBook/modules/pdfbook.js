@@ -606,7 +606,7 @@ export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerU
     }
   };
   return dispatch =>
-     axios.get(''+bookServerURL+'/ebook/ipad/getglossary?bookid='+bookid+'&glossaryentryid='+glossaryentryid+'&authkey='+sessionKey+'&outputformat=JSON',
+     axios.get(''+bookServerURL+'/ebook/ipad/getglossaryv2?bookid='+bookid+'&glossaryentryid='+glossaryentryid+'&authkey='+sessionKey+'&outputformat=JSON',
        {
          timeout: 20000
        })
@@ -614,11 +614,16 @@ export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerU
       if (response.status >= 400) {
         console.log(`fetch Glossary Items error: ${response.statusText}`);
       } else if (response.data.length) {
-          const glossaryInfo = {};
-          glossaryInfo.glossaryTerm = response.data[0].glossaryTerm;
-          glossaryInfo.glossaryDefinition = response.data[0].glossaryDefinition;
-          glossaryInfo.glossaryEntryID = response.data[0].glossaryEntryID;
-          bookState.bookInfo.glossaryInfoList.push(glossaryInfo);
+          for(var i=0;i<response.data[0].glossaryList.length;i++)
+          { 
+            response.data.forEach((glossTerm) => {
+              const glossaryInfo = {};
+              glossaryInfo.glossaryTerm = glossTerm.glossaryList[i].glossaryTerm;
+              glossaryInfo.glossaryDefinition = extractTextContent(glossTerm.glossaryList[i].glossaryDefinition);
+              glossaryInfo.glossaryEntryID = glossTerm.glossaryList[i].glossaryEntryID;
+              bookState.bookInfo.glossaryInfoList.push(glossaryInfo);
+            });
+          }
       }
       dispatch({ type: 'RECEIVE_GLOSSARY_TERM', bookState });
     });
