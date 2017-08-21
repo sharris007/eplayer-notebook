@@ -54,6 +54,7 @@ $headerPadding: 15px 55px;
 .bookmarkIcon {
   margin: 0 0 0 15px;
   float: left;
+  cursor: pointer;
 }
 .volumeIcon.icon-white {
   margin-right: 0;
@@ -218,12 +219,12 @@ $headerPadding: 15px 55px;
 
 .headerBar.chapterOpenerPg.fixHeader .PrefernceTriangleUp,.headerBar .PrefernceTriangleUp {
     border-bottom: 20px solid #f2f2f2;
-    margin-left: 178px!important
+    margin-left: 147px!important
 }
 
 .headerBar.chapterOpenerPg.fixHeader .triangle-up,.headerBar .triangle-up {
     border-bottom: 20px solid #f2f2f2;
-    margin-left: 298px
+    margin-left: 300px
 }
 
 .headerBar.chapterOpenerPg .PrefernceTriangleUp,.headerBar.chapterOpenerPg .triangle-up {
@@ -244,7 +245,7 @@ $headerPadding: 15px 55px;
 }
 
 @media only screen and (min-width : 1600px){
-  
+
   .drawerIcon {
     margin-left: 50px !important;
   }
