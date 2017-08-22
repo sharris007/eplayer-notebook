@@ -114,8 +114,10 @@ export class Book extends Component {
     this.props.dispatch({type: "CLEAR_BOOKMARKS"});
     this.props.dispatch({type: "CLEAR_SEARCH"});
     //PLA pageunload Event
-    const unloadPageNxtpageId = this.getNxtPageId(this.state.currentPageId).id;
-    this.UnloadFu(this.state.currentPageId, unloadPageNxtpageId, '', '', false);
+    if( this.props.bookdetailsdata.userCourseSectionDetail !== undefined ) {
+      const unloadPageNxtpageId = this.getNxtPageId(this.state.currentPageId);
+      this.UnloadFu(this.state.currentPageId, unloadPageNxtpageId, '', '', false);
+    }
     delete this.state.pageDetails.searchText;
     this.setState({pageDetails : this.state.pageDetails,asynCallLoaded:false});
   }
