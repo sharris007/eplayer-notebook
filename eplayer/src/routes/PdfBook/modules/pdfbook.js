@@ -33,8 +33,6 @@ export const LOAD_ASSERT_URL = 'LOAD_ASSERT_URL';
 export const EDIT_HIGHLIGHT = 'EDIT_HIGHLIGHT';
 export const REQUEST_REGIONS = 'REQUEST_REGIONS';
 export const RECEIVE_REGIONS = 'RECEIVE_REGIONS';
-export const REQUEST_CUSTOM_ICONS = 'REQUEST_USER_ICONS';
-export const RECEIVE_CUSTOM_ICONS = 'RECEIVE_CUSTOM_ICONS';
 export const RECEIVE_BOOK_FEATURES_PENDING= 'RECEIVE_BOOK_FEATURES_PENDING';
 export const RECEIVE_BOOK_FEATURES_FULFILLED= 'RECEIVE_BOOK_FEATURES_FULFILLED';
 export const RECEIVE_BOOK_FEATURES_REJECTED='RECEIVE_BOOK_FEATURES_REJECTED';
@@ -61,8 +59,6 @@ export function request(component) {
       return { type: REQUEST_HIGHLIGHTS };
     case 'regions' :
       return {type: REQUEST_REGIONS};
-    case 'userIcons' :
-      return {type : REQUEST_CUSTOM_ICONS};
     default:
       return {};
   }
@@ -530,7 +526,7 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
   };
   return (dispatch) => {
     dispatch(request('regions'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getregionsbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON',
+    return axios.get(''+bookServerURL+'/ebook/ipad/getregionbypageorderv2?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON',
   {
   timeout: 20000
   }).then((response) => {
@@ -645,42 +641,6 @@ export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, rol
     timeout: 20000
   };
 }
- /* Created Action creator for getting user uplaoded custom regions/hotspots icons. */
- export function fetchUserIcons(bookid,sessionKey,bookServerURL){
-  const bookState = {
-    userIcons: [],
-    isFetching: {
-      userIcons: true
-    }
-  };
-  return (dispatch) => {
-    dispatch(request('userIcons'));
-    return axios.get(''+bookServerURL+'/ebook/ipad/getbookicons?bookid='+bookid+'&authkey='+sessionKey+'&outputformat=JSON',
-  {
-  timeout: 20000
-  }).then((response) => {
-      if (response.status >= 400) 
-      {
-        console.log(`fetchUserIcons error: ${response.statusText}`);
-      }
-      else if(response.data.length) 
-      {
-          for (var i=0;i<response.data[0].bookIconTOList.length;i++)
-          {
-          response.data.forEach((customBookIcon) => {
-          const userIconObj= {};
-          userIconObj.iconTypeID = customBookIcon.bookIconTOList[i].iconTypeID;
-          userIconObj.imagePath=customBookIcon.bookIconTOList[i].imagePath;
-          userIconObj.useCustom=customBookIcon.bookIconTOList[i].useCustom;
-          bookState.userIcons.push(userIconObj);
-        })
-        }
-      }
-      bookState.isFetching.userIcons=false;
-      return dispatch({ type: RECEIVE_CUSTOM_ICONS,bookState});
-    })
-    }
-  }
  /* Created Action creator for fetching user information. */
 export function fetchUserInfo(globaluserid, bookid, uid, ubd, ubsd, sessionKey, bookServerURL) {
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
@@ -1166,21 +1126,6 @@ const ACTION_HANDLERS = {
       regions: action.bookState.isFetching.regions
     }
   }),
-  [REQUEST_CUSTOM_ICONS]: state => ({
-    ...state,
-    isFetching : {
-      ...state.isFetching,
-      userIcons:true
-    }
-  }),
-  [RECEIVE_CUSTOM_ICONS]: (state,action) => ({
-    ...state,
-    userIcons: action.bookState.userIcons,
-    isFetching: {
-      ...state.isFetching,
-      userIcons: action.bookState.isFetching.userIcons
-    }
-  }),
   [RECEIVE_BOOK_FEATURES_PENDING]: state => ({
     ...state,
     bookFeatures: {
@@ -1261,7 +1206,6 @@ const initialState = {
   bookmarks: [],
   annTotalData: [],
   regions:[],
-  userIcons:[],
   glossaryInfoList:[],
   preferences: {},
   toc: {
@@ -1275,7 +1219,6 @@ const initialState = {
     bookmarks: false,
     toc: false,
     regions: false,
-    userIcons: false,
     viewer: false
   },
   error: null,

@@ -79,7 +79,6 @@ export class PdfBookReader extends Component {
       this.props.book.userInfo.userid, this.props.PdfbookMessages.PageMsg);
     this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid,
       this.props.params.bookId, true, courseId, authorName);
-    this.props.fetchUserIcons(this.props.params.bookId,ssoKey,serverDetails);
     this.props.fetchBasepaths(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
     const firstPage = 'firstPage';
     if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
@@ -142,9 +141,14 @@ export class PdfBookReader extends Component {
     $(document).on('keyup',function(evt) {
       if (evt.keyCode === 27 && $('#hotspot'))
       {
+        try{
+          Popup.close();
+        }
+        catch(e){
+        }
         viewer.setState({regionData : null});
       }
-  });
+    });
   }
   pdfBookCallback = (pdfEvent) => {
      // this.setState({currPageIndex : currentPageIndex});
@@ -155,26 +159,13 @@ export class PdfBookReader extends Component {
       this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
-          if(this.props.book.userIcons.length)
-          {
-            __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
-          }
+          __pdfInstance.displayRegions(this.props.book.regions,this.props.book.bookFeatures);
           var regionsData = [];
           var glossaryEntryIDsToFetch = '';
           for(var arr=0;arr < this.props.book.regions.length ; arr++)
           {
             if(this.props.book.regions[arr].regionTypeID == 5 && this.props.book.regions[arr].glossaryEntryID !== null)
             {       
-              /************************************Static Data Start********************************************/
-              // var glossaryItem = [{
-              //   item : document.getElementById(this.props.book.regions[arr].regionID),
-              //   popOverCollection : {
-              //     popOverDescription : '  Data and observations that are collected through scientific processes and that explain a particular observation.',
-              //     popOverTitle : 'empirical evidence'
-              //   }
-              // }];
-              // this.setState({popUpCollection : glossaryItem});
-              /************************************Static Data End********************************************/
               glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + this.props.book.regions[arr].glossaryEntryID;
               regionsData.push(this.props.book.regions[arr]);
             }
@@ -474,10 +465,7 @@ export class PdfBookReader extends Component {
     this.displayHighlight();
     if(this.props.book.regions.length > 0 )
     {
-        if(this.props.book.userIcons.length)
-        {
-          __pdfInstance.displayRegions(this.props.book.regions,this.props.book.userIcons,this.props.book.bookFeatures);
-        }
+      __pdfInstance.displayRegions(this.props.book.regions,this.props.book.bookFeatures);
     }
   }
 /*Method for removing hotspot content on clicking the close button*/
@@ -940,14 +928,13 @@ handleRegionClick(hotspotID) {
         </div>
         <div>
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
-        {this.state.popUpCollection.length ? <PopUpInfo bookId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} /> : null }
           <div id="main">
             <div id="mainContainer" className="pdf-fwr-pc-main">
               <div id="right" className="pdf-fwr-pc-right">
                 <div id="toolbar" className="pdf-fwr-toolbar" />
                 <div id="frame" className={viewerClassName} onClick={this.onPageClick}>
                   <div id="docViewer" className="docViewer" >
-                    {this.state.popUpCollection.length > 0? <PopUpInfo bookId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} /> : null }
+                    {this.state.popUpCollection.length ? <PopUpInfo bookId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} /> : null }
                   </div>
                 </div>
               </div>
