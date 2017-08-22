@@ -2,7 +2,7 @@ pdfAnnotatorInstance = function() {
 
 var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input id="color-button-yellow" type="button" class="annotator-color annotator-yellow" value="#FFD232"/><input id="color-button-green" type="button" class="annotator-color annotator-green" value="#55DF49"/><input id="color-button-pink" type="button" class="annotator-color annotator-pink" value="#FC92CF"/></div><div id="deleteIcon" class="annotator-delete-container"></div><div id="editIcon" class="annotator-edit-container"></div></div>'
 
-var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"><li class="annotator-item"><textarea maxlength="3000" id="note-text-area" placeholder="Write a note." style="pointer-events: all; opacity: 1;"></textarea></li></ul></div>';
+var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"><li class="annotator-item"><textarea maxlength="3000" id="note-text-area" placeholder="Write a note." style="pointer-events: all; opacity: 1; max-height:75px; min-height:75px; resize:none"></textarea></li></ul></div>';
 
 var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label id="share-text" class="annotator-share-text">Share</label><div id="ann-share" class="annotator-share"></div></div><div class="ann-cancelsave-section"><a id="cancel-saving" class="annotator-cancel">CANCEL</a><a id="save-annotation" class="annotator-save annotator-focus">SAVE</a></div></div></div>';
 
@@ -150,7 +150,7 @@ function onColorChange(event)
    $('.annotator-color').removeClass('active');
    $(event.target).addClass('active');
    $(popupElementId).find('.annotator-listing .characters-left').remove();
-   $(popupElementId).find('.annotator-listing').append(panel5);
+   //$(popupElementId).find('.annotator-listing').append(panel5);
    $('#letter-count').text(3000-$(popupElementId).find('textarea').val().length);
    if(isAlignReq)
    {
@@ -318,7 +318,7 @@ function onNoteChange(event) {
         $(popupElementId).find('.annotator-share-text, .annotator-share').hide();
       }
     }
-    var charLeft=notesMessages.messages.charactersLeft;
+    /*var charLeft=notesMessages.messages.charactersLeft;
     var inputCharLength = event.currentTarget.value.length, actualChar = characters;
     var remainingCount = actualChar-inputCharLength;
     $(popupElementId).find('#letter-text').text(charLeft);
@@ -331,7 +331,7 @@ function onNoteChange(event) {
       textareaHeight = $('#note-text-area')[0].scrollHeight; 
       var topPosition=($(popupElementId).position().top) + (textareaHeight-temp);
       $(popupElementId).css({top:topPosition});
-    }    
+    }   */ 
  }
  function onShareClick(event)
  {
@@ -454,7 +454,7 @@ function onNoteChange(event) {
       $('.annotator-share').removeClass('on');
     } 
   if (!$('.annotator-item input').length) {
-     $('.annotator-item').prepend('<div class="noteContainer" id = "noteContainer"></div>');
+     $('.annotator-item').prepend('<div class="noteContainer" id = "noteContainer" style="height:100px;"></div>');
   }
   $('.annotator-color').removeClass('active');
   if (!highLightData.shared)
@@ -465,7 +465,7 @@ function onNoteChange(event) {
   currHighlightColorCode = $('#color-button-'+highLightData.color).val();
   $(popupElementId).find('.annotator-save').addClass(classes.focus);
   $(popupElementId).find('.annotator-listing .characters-left').remove();
-  $(popupElementId).find('.annotator-listing').append(panel5);
+  //$(popupElementId).find('.annotator-listing').append(panel5);
   $('#note-text-area').val(highLightData.comment);
   $('#letter-count').text(3000-$(popupElementId).find('textarea').val().length);
   textareaHeight = $('#note-text-area')[0].scrollHeight || 40; 
