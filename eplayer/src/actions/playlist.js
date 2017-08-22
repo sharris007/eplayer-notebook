@@ -15,6 +15,12 @@ export const getTocCompleteDetails = json => ({
   tocReceived: true
 });
 
+export const getBookDetails = json => ({
+  type: typeConstants.BOOK_DETAILS,
+  data: json,
+  bookDetailsRecived: true
+});
+
  var tocUrl = '';
  var piToken = '';
  var bookId='';
@@ -39,6 +45,7 @@ export const getBookPlayListCallService = data => dispatch =>
       PlaylistApi.doGetBookDetails(data)
         .then(response => response.json())
         .then((response) => {
+         dispatch(getBookDetails(response));
          bookId = response.bookDetail.bookId;
 
      tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
@@ -134,6 +141,7 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       // const tocUrl      = getTocUrlOnResp(response.bookDetail.metadata.toc);
       // const bookDetails = response.bookDetail.metadata;
       // const piToken     = data.piToken;
+      dispatch(getBookDetails(response));
      const baseUrl      = response.userCourseSectionDetail.baseUrl;
      tocUrl       = getTocUrlOnResp(response.userCourseSectionDetail.toc);
      bookDetails  = response.userCourseSectionDetail;

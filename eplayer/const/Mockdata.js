@@ -47,3 +47,84 @@ export const customAttributes = {
   shareable: 'shareable'
 };
 
+export const pageLoadData = {
+       "originatingSystemCode": "ETEXT",
+       "activities": [{
+               "messageTypeCode": "UserLoadsContent",
+               "messageVersion": "1.0.0",
+               "namespace": "common",
+               "payload": {
+            "environmentCode":"Dev",
+            "messageTypeCode":"UserLoadsContent",
+            "originatingSystemCode":"eText",
+            "namespaceCode":"Common",
+            "messageVersion":"1.0.0",
+            "transactionDt":"",
+            "messageTransferType":"LiveStream",
+            "messageId":"",
+            "appId":"ETEXT",
+            "accessedUsingAppId":"WebApp",    
+            "appActivityAreaCode":"Learning",        
+            "personId":"",
+            "personIdType":"PI",    
+            "personRoleCode":"Instructor",
+            "organizationId":"6e8bc430-9c3a-11d9-9669-0800200c9a66",
+            "organizationIdType":"Organization", 
+            "courseId":"",
+            "courseIdType":"Instructor",     
+            "courseSectionId":"",
+            "courseSectionIdType":"PI",    
+            "timeCategorization": "Learning",
+            "contentId":"",  
+            "contentIdType":"ETEXT",
+            "timeOnTaskUuid":"",    
+            "loadDt":"2017-07-25T15:33:47.651Z",
+            "datetimeSourceCode":"Client",
+            "pageUserNavigatedToUrn":"",
+            "userAgent":"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+            "deviceType":"Desktop",
+            "operatingSystemCode":"Win32"
+               }
+       }]
+}
+
+export const pageUnLoadData = {
+       "originatingSystemCode": "ETEXT",
+       "activities": [{
+               "messageTypeCode": "UserUnloadsContent",
+               "messageVersion": "1.0.0",
+               "namespace": "common",
+               "payload": {
+            "environmentCode":"Dev",
+            "messageTypeCode":"UserUnloadsContent",
+            "originatingSystemCode":"eText",
+            "namespaceCode":"Common",
+            "messageVersion":"1.0.0",
+            "transactionDt":"",
+            "messageTransferType":"LiveStream",
+            "messageId":"",
+            "appId":"ETEXT",
+            "accessedUsingAppId":"WebApp",    
+            "appActivityAreaCode":"Learning",        
+            "personId":"",
+            "personIdType":"PI",    
+            "personRoleCode":"Instructor",
+            "organizationId":"6e8bc430-9c3a-11d9-9669-0800200c9a66",
+            "organizationIdType":"Organization", 
+            "courseId":"",
+            "courseIdType":"Instructor",     
+            "courseSectionId":"",
+            "courseSectionIdType":"PI",    
+            "timeCategorization": "Learning",
+            "contentId":"",  
+            "contentIdType":"ETEXT",
+            "timeOnTaskUuid":"",    
+            "loadDt":"2017-07-25T15:33:47.651Z",
+            "datetimeSourceCode":"Client",
+            "pageUserNavigatedToUrn":"",
+            "userAgent":"Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+            "deviceType":"Desktop",
+            "operatingSystemCode":"Win32"
+               }
+       }]
+}

@@ -1,8 +1,10 @@
 const initalData = {
   data: [],
+  bookdetailsdata: [],
   tocdata: {bookDetails:{},content:{list:[]}},
   playlistReceived: false,
-  tocReceived: false
+  tocReceived: false,
+  bookDetailsRecived: false
 };
 export default (state = initalData, action) => {
   switch (action.type) {
@@ -26,6 +28,13 @@ export default (state = initalData, action) => {
         ...state,
         tocdata: action.data,
         tocReceived: action.tocReceived
+      };
+    }
+    case 'BOOK_DETAILS': {
+      return {
+        ...state,
+        bookdetailsdata: action.data,
+        bookDetailsRecived: action.bookDetailsRecived
       };
     }
     default :

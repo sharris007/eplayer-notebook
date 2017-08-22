@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import Header from '../../../components/Header';
-import { pageDetails , customAttributes } from '../../../../const/Mockdata'; 
+import { pageDetails , customAttributes, pageLoadData, pageUnLoadData } from '../../../../const/Mockdata';
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService,deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
 import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService} from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
+import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
 import { getBookmarkCallService ,postBookmarkCallService ,deleteBookmarkCallService,getTotalBookmarkCallService } from '../../../actions/bookmark';
 import { PxePlayer } from 'pxe-player';
@@ -47,7 +48,17 @@ export class Book extends Component {
         annAttributes:customAttributes,
         goToTextVal:'',
         isPanelOpen:false,
-        asynCallLoaded:false
+        asynCallLoaded:false,
+        pageLoadData,
+        pageUnLoadData,
+        userAgent : navigator.userAgent,
+        nextPageId : '',
+        timeOnTaskUuid :'',
+        contentId : '',
+        sectionId : '',
+        piToken : localStorage.getItem('secureToken'),
+        pageLoad : false,
+        currentPageId : ''
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -102,6 +113,9 @@ export class Book extends Component {
     this.props.dispatch({type: "CLEAR_ANNOTATIONS"});
     this.props.dispatch({type: "CLEAR_BOOKMARKS"});
     this.props.dispatch({type: "CLEAR_SEARCH"});
+    //PLA pageunload Event
+    const unloadPageNxtpageId = this.getNxtPageId(this.state.currentPageId).id;
+    this.UnloadFu(this.state.currentPageId, unloadPageNxtpageId, '', '', false);
     delete this.state.pageDetails.searchText;
     this.setState({pageDetails : this.state.pageDetails,asynCallLoaded:false});
   }
@@ -270,10 +284,111 @@ export class Book extends Component {
             this.props.dispatch(getBookmarkCallService(this.state.urlParams));
             // this.props.dispatch(getAnnCallService(this.state.urlParams));
           });
+
+          //PLA Events Functions
+          console.log("this.props", this.props);
+          console.log("userCourseSectionDetail", this.props.bookdetailsdata.userCourseSectionDetail);
+          if( this.props.bookdetailsdata.userCourseSectionDetail !== undefined ) {
+            let getnextPageId = '';
+            if( !this.state.pageLoad ) {
+                getnextPageId = this.getNxtPageId(data.id);
+                this.loadFu(data.id, getnextPageId);
+            }
+            else{
+                getnextPageId = this.getNxtPageId(this.state.currentPageId);
+                this.UnloadFu(this.state.currentPageId, getnextPageId, data.id, this.getNxtPageId(data.id), true);
+                //getnextPageId = this.getNxtPageId(data.id);
+                //this.loadFu(data.id, getnextPageId);
+            }
+          }
         }
         break;
       }
     }
+  }
+
+  loadFu = (cu, nx) =>{
+    const timeOnTaskUuid = this.getGUID();
+            this.setState({ 
+              nextPageId : nx,
+              timeOnTaskUuid : this.getGUID(),
+              contentId : cu,
+              sectionId: this.props.bookdetailsdata.userCourseSectionDetail.section.sectionId
+            },function(){
+               this.setState({pageLoad : true});
+               this.setState({ currentPageId : cu });
+               let updatedPageLoadData = this.state.pageLoadData;
+              const messageId = this.getGUID();
+              const transactionDt = new Date().toISOString();
+              updatedPageLoadData.activities[0].payload.personId = "urn:udson:pearson.com/sms/prod:user/"+this.state.urlParams.user;
+              updatedPageLoadData.activities[0].payload.courseId = "urn:udson:pearson.com/sms/prod:course/"+this.props.params.bookId;
+              updatedPageLoadData.activities[0].payload.pageUserNavigatedToUrn = "urn:udson:pearson.com/sms/prod:course/"+this.state.nextPageId;
+              updatedPageLoadData.activities[0].payload.courseSectionId = this.state.sectionId;
+              updatedPageLoadData.activities[0].payload.contentId = this.state.contentId;
+              updatedPageLoadData.activities[0].payload.messageId = messageId;
+              updatedPageLoadData.activities[0].payload.timeOnTaskUuid = this.state.timeOnTaskUuid;
+              updatedPageLoadData.activities[0].payload.transactionDt = transactionDt;
+              updatedPageLoadData.activities[0].payload.loadDt = transactionDt;
+              updatedPageLoadData.activities[0].payload.userAgent = this.state.userAgent;
+              console.log("updatedPageLoadData12", updatedPageLoadData);
+
+              loadPageEvent(this.state.piToken, updatedPageLoadData);
+
+            });
+  }
+
+  UnloadFu = (cu, nx,loadPageid, loadNxtPageId, loadFunCall) =>{
+            let updatedPageUnLoadData = this.state.pageUnLoadData;
+            if( this.state.pageLoadData.activities[0].payload.timeOnTaskUuid === this.state.timeOnTaskUuid){
+              updatedPageUnLoadData.activities[0].payload.timeOnTaskUuid = this.state.pageLoadData.activities[0].payload.timeOnTaskUuid;
+            }
+            
+            this.setState({ 
+              nextPageId : nx,
+              contentId : cu,
+              sectionId: this.props.bookdetailsdata.userCourseSectionDetail.section.sectionId
+            },function(){
+               this.setState({ currentPageId : cu });
+               
+              const messageId = this.getGUID();
+              const transactionDt = new Date().toISOString();
+              updatedPageUnLoadData.activities[0].payload.personId = "urn:udson:pearson.com/sms/prod:user/"+this.state.urlParams.user;
+              updatedPageUnLoadData.activities[0].payload.courseId = "urn:udson:pearson.com/sms/prod:course/"+this.props.params.bookId;
+              updatedPageUnLoadData.activities[0].payload.pageUserNavigatedToUrn = "urn:udson:pearson.com/sms/prod:course/"+this.state.nextPageId;
+              updatedPageUnLoadData.activities[0].payload.courseSectionId = this.state.sectionId;
+              updatedPageUnLoadData.activities[0].payload.contentId = this.state.contentId;
+              updatedPageUnLoadData.activities[0].payload.messageId = messageId;
+              updatedPageUnLoadData.activities[0].payload.transactionDt = transactionDt;
+              updatedPageUnLoadData.activities[0].payload.loadDt = transactionDt;
+              updatedPageUnLoadData.activities[0].payload.userAgent = this.state.userAgent;
+              console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
+
+              unLoadPageEvent(this.state.piToken, updatedPageUnLoadData);
+              if(loadFunCall){
+                this.loadFu(loadPageid, loadNxtPageId);
+              }
+
+            });
+  }
+
+  getNxtPageId = (getid) => {
+    const playlistLength = this.props.playlistData.content.length;
+    const playlist = this.props.playlistData.content;
+    for (let i = 0; i < playlistLength; i++) {
+        if (playlist[i].id === getid) {
+            return playlist[i+1].id;
+        }
+    }
+  }
+
+  getGUID = () => {
+    this.getId = () => {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1);
+    }
+    return this.getId() + this.getId() + '-' + this.getId() + '-' + this.getId() + '-' +
+      this.getId() + '-' + this.getId() + this.getId() + this.getId();
   }
 
   isCurrentPageBookmarked = () => {
@@ -426,7 +541,7 @@ export class Book extends Component {
 
   render() {
     const callbacks = {};
-    const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived} = this.props; // eslint-disable-line react/prop-types
+    const { annotationData, annDataloaded ,annotationTotalData ,playlistData, playlistReceived, bookMarkData ,tocData ,tocReceived, bookdetailsdata} = this.props; // eslint-disable-line react/prop-types
     // const annData  = annotationData.rows;
     this.props.book.annTotalData  = annotationTotalData;
     this.props.book.toc           = tocData;
@@ -511,7 +626,8 @@ const mapStateToProps = state => {
     isBookmarked         : state.bookmarkReducer.data.isBookmarked,
     bookMarkData         : state.bookmarkReducer.bookmarksData,
     gotoPageObj          : state.gotopageReducer.gotoPageObj,
-    isGoToPageRecived    : state.gotopageReducer.isGoToPageRecived
+    isGoToPageRecived    : state.gotopageReducer.isGoToPageRecived,
+    bookdetailsdata      : state.playlistReducer.bookdetailsdata,
   }
 };// eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book);// eslint-disable-line no-class-assign
