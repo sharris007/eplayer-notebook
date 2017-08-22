@@ -286,8 +286,6 @@ export class Book extends Component {
           });
 
           //PLA Events Functions
-          console.log("this.props", this.props);
-          console.log("userCourseSectionDetail", this.props.bookdetailsdata.userCourseSectionDetail);
           if( this.props.bookdetailsdata.userCourseSectionDetail !== undefined ) {
             let getnextPageId = '';
             if( !this.state.pageLoad ) {
@@ -330,7 +328,7 @@ export class Book extends Component {
               updatedPageLoadData.activities[0].payload.transactionDt = transactionDt;
               updatedPageLoadData.activities[0].payload.loadDt = transactionDt;
               updatedPageLoadData.activities[0].payload.userAgent = this.state.userAgent;
-              console.log("updatedPageLoadData12", updatedPageLoadData);
+              // console.log("updatedPageLoadData12", updatedPageLoadData);
 
               loadPageEvent(this.state.piToken, updatedPageLoadData);
 
@@ -361,7 +359,7 @@ export class Book extends Component {
               updatedPageUnLoadData.activities[0].payload.transactionDt = transactionDt;
               updatedPageUnLoadData.activities[0].payload.loadDt = transactionDt;
               updatedPageUnLoadData.activities[0].payload.userAgent = this.state.userAgent;
-              console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
+              // console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
 
               unLoadPageEvent(this.state.piToken, updatedPageUnLoadData);
               if(loadFunCall){
