@@ -75,7 +75,7 @@ export class PdfBookReader extends Component {
       courseId = -1;
     }
     /* Method for getting the bookmarks details which is already in book. */
-    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId, true, courseId,
+    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId, false, courseId,
       this.props.book.userInfo.userid, this.props.PdfbookMessages.PageMsg);
     this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid,
       this.props.params.bookId, true, courseId, authorName);
@@ -438,7 +438,7 @@ export class PdfBookReader extends Component {
     this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid),
       _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder),
-      _.toString(courseId), true, this.props.PdfbookMessages.PageMsg);
+      _.toString(courseId), false, this.props.PdfbookMessages.PageMsg);
   }
   /* created removeBookmarkHandler method for removing bookmark for selected Page, after clicking on bookmark button. */
   removeBookmarkHandler = (bookmarkId) => {
