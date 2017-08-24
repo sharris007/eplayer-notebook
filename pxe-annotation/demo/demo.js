@@ -61,8 +61,9 @@ function init() {
     }
   ];
 
-  // Create new instance of bookshelf component
-  new AnnotationComponent({
+  window.annotationLocale = 'en-US';
+
+  window.annotationProps = {
     elementId: 'demo',   
     contentId:'demo-content',
     annotationData:annotationData,
@@ -70,9 +71,18 @@ function init() {
     currentPageDetails:{},
     annotationEventHandler:annotationEvent,
     annAttributes:customeAttributes
-  });  
+  }
+
+  // Create new instance of bookshelf component
+  window.annotationComponent = new AnnotationComponent(window.annotationProps);  
 }
 function annotationEvent(type, data) {
   console.log(type, data);
+  data.id = Date.parse(data.createdTimestamp);
+  data.createdTimestamp = Date.parse(data.createdTimestamp);
+  window.annotationProps.annotationData = [data]
+  if (type === 'annotationCreated') {
+    window.annotationComponent.init(window.annotationProps)
+  }
 }
 window.onload = init;
