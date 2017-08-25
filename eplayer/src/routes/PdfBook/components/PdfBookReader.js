@@ -833,7 +833,7 @@ handleRegionClick(hotspotID) {
       currentHighlight.pageIndex = highlightData1.pageInformation.pageNumber;
       pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
         this.saveHighlight.bind(this), this.editHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
-        (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID);
+        (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID, this.props.book.bookinfo.book.activeCourseID);
     }
   }
 /* Method created for displaying the selected highLights. */
@@ -892,7 +892,7 @@ handleRegionClick(hotspotID) {
     highlightClicked.color = highlightClicked.originalColor;
     pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
       this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
-      (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID,cornerFoldedImageTop);
+      (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID,cornerFoldedImageTop, this.props.book.bookinfo.book.activeCourseID);
   }
 
   /* Method for displaying the Highlight already stored. */
@@ -911,8 +911,8 @@ handleRegionClick(hotspotID) {
         }
         if (_.toString(annotation.meta.roletypeid) === _.toString(this.props.book.bookinfo.book.roleTypeID)) {
           highlightList.push(annotation);
-        } else if (this.props.book.bookinfo.book.roleTypeID === 2
-          && annotation.meta.roletypeid === 3 && annotation.shared) {
+        } else if (this.props.book.bookinfo.book.roleTypeID == 2
+          && annotation.meta.roletypeid == 3 && annotation.shared) {
           highlightList.push(annotation);
         }
       }

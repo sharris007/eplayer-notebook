@@ -30,7 +30,7 @@ var isAlignReq;
 var notesMessages;
 var isPopupOpen = false;
 var userRoleTypeID = 0;
-
+var userCourseID = 0;
 function init()
 {
   $("body").mousedown(function(e) {
@@ -52,7 +52,7 @@ function init()
   });
 }
 
-function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,editHighlightCallback,targetElement,NotesMessages,roleTypeID)
+function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,editHighlightCallback,targetElement,NotesMessages,roleTypeID,courseID)
 {
    try{
         document.getElementById('openPopupHighlight').remove();
@@ -87,6 +87,7 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    isAlignReq = true;
    isPopupOpen = true;
    userRoleTypeID = roleTypeID;
+   userCourseID = courseID;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          onColorChange(e);
    });
@@ -230,7 +231,7 @@ function onEditClick()
     $(popupElementId).find('#noteContainer').hide();
     $(popupElementId).find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     $(popupElementId).find('input').css({'pointer-events':'all', 'opacity':'1'});
-    if($(popupElementId).find('textarea').val().length && userRoleTypeID == 3){
+    if($(popupElementId).find('textarea').val().length && userRoleTypeID == 3 && userCourseID !=-1){
       $(popupElementId).find('.annotator-share-text, .annotator-share').show();
     }
     else {
@@ -295,7 +296,7 @@ function onNoteChange(event) {
     if(isEditMode)
     {
       $(popupElementId).addClass('show-edit-options');
-      if(userRoleTypeID==3) {
+      if(userRoleTypeID==3 && userCourseID !=-1) {
         $(popupElementId).find('.annotator-share-text, .annotator-share').show();
       }
       else {
@@ -311,7 +312,7 @@ function onNoteChange(event) {
       {
         $(popupElementId).removeClass('show-edit-options');
       }
-      if(userRoleTypeID==3 && event.target.value.length) {
+      if(userRoleTypeID==3 && userCourseID !=-1 && event.target.value.length) {
         $(popupElementId).find('.annotator-share-text, .annotator-share').show();
       }
       else {
@@ -358,7 +359,7 @@ function onNoteChange(event) {
       $('.annotator-color').removeClass('active');
     }
  }
- function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID,cornerFoldedImageTop)
+ function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID,cornerFoldedImageTop,courseID)
  {
   var parentHighlightElement = $('#'+highLightData.id);
   /*  var lastChildElementindex = parentHighlightElement[0].children.length - 1
@@ -402,6 +403,7 @@ function onNoteChange(event) {
    annotatorCallbacks.deleteHighlightCallback = deleteHighlightCallback;
    currentHighlight = highLightData;
    userRoleTypeID = roleTypeID;
+   userCourseID = courseID;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          onColorChange(e);
    });
