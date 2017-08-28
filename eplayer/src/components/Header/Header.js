@@ -39,13 +39,12 @@ export class Header extends React.Component {
       goToTextVal: ''
     };
   }
-  componentWillReceiveProps(nextProps){
-    if (this.props !== nextProps) {
-    this.setState({prefOpen: false});
-    this.setState({searchOpen:false});
-  }
-}
-
+//   componentWillReceiveProps(nextProps){
+//     if (this.props !== nextProps) {
+//     this.setState({prefOpen: false});
+//     this.setState({searchOpen:false});
+//   }
+// }
   handleDrawerkeyselect = (event) => {
     if ((event.which || event.keyCode) === 13) {
       this.setState({ drawerOpen: true });
