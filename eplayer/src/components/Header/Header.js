@@ -18,7 +18,7 @@ import { resources, domain } from '../../../const/Settings';
 
 const envType = domain.getEnvType();
 const consoleUrl = resources.links.consoleUrl;
- 
+
 let locale;
 let localisedData;
 let messages;
@@ -39,6 +39,12 @@ export class Header extends React.Component {
       goToTextVal: ''
     };
   }
+  componentWillReceiveProps(nextProps){
+    if (this.props !== nextProps) {
+    this.setState({prefOpen: false});
+    this.setState({searchOpen:false});
+  }
+}
 
   handleDrawerkeyselect = (event) => {
     if ((event.which || event.keyCode) === 13) {
@@ -284,7 +290,7 @@ export class Header extends React.Component {
             pageId={this.props.currentPageID}
           />
         }
-        
+
 
       </div>
     );
