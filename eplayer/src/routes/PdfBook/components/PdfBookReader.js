@@ -67,7 +67,7 @@ export class PdfBookReader extends Component {
       globalbookid = this.props.book.bookinfo.book.globalbookid;
 
     /* Method for getting the toc details for particular book. */
-    this.props.fetchTocAndViewer(this.props.params.bookId, authorName, title, thumbnail,
+    this.props.fetchTocAndViewer(this.props.location.query.bookid, authorName, title, thumbnail,
       this.props.book.bookinfo.book.bookeditionid, ssoKey, serverDetails,
       this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
     let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
@@ -75,11 +75,11 @@ export class PdfBookReader extends Component {
       courseId = -1;
     }
     /* Method for getting the bookmarks details which is already in book. */
-    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId, false, courseId,
+    this.props.fetchBookmarksUsingReaderApi(this.props.location.query.bookid, false, courseId,
       this.props.book.userInfo.userid, this.props.PdfbookMessages.PageMsg);
     this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid,
-      this.props.params.bookId, true, courseId, authorName);
-    this.props.fetchBasepaths(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
+      this.props.location.query.bookid, true, courseId, authorName);
+    this.props.fetchBasepaths(this.props.location.query.bookid,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
     const firstPage = 'firstPage';
     if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
       this.goToPage(Number(localStorage.getItem('currentPageOrder')));
@@ -156,7 +156,7 @@ export class PdfBookReader extends Component {
     var count = 0 ;
     if (pdfEvent === 'pageChanged') {
       localStorage.setItem('currentPageOrder', this.state.currPageIndex);
-      this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
+      this.props.fetchRegionsInfo(this.props.location.query.bookid,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
           __pdfInstance.displayRegions(this.props.book.regions,this.props.book.bookFeatures);
@@ -170,7 +170,7 @@ export class PdfBookReader extends Component {
               regionsData.push(this.props.book.regions[arr]);
             }
           }
-          this.props.fetchGlossaryItems(this.props.params.bookId,glossaryEntryIDsToFetch,ssoKey,serverDetails).then(() => {
+          this.props.fetchGlossaryItems(this.props.location.query.bookid,glossaryEntryIDsToFetch,ssoKey,serverDetails).then(() => {
             var glossaryData = [];
             for(var i=0;i<this.props.book.glossaryInfoList.length;i++)
             {
@@ -280,7 +280,7 @@ export class PdfBookReader extends Component {
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
         this.props.fetchPageInfo(this.props.book.userInfo.userid,
-        this.props.params.bookId,
+        this.props.location.query.bookid,
         this.props.book.bookinfo.book.bookeditionid,
         pageIndexToLoad,
         totalPagesToHit,
@@ -312,7 +312,7 @@ export class PdfBookReader extends Component {
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== '') {
         this.props.fetchPageInfo(this.props.book.userInfo.userid,
-        this.props.params.bookId,
+        this.props.location.query.bookid,
         this.props.book.bookinfo.book.bookeditionid,
         pageNum,
         totalPagesToHit,
@@ -437,7 +437,7 @@ export class PdfBookReader extends Component {
       courseId = -1;
     }
     this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid),
-      _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
+      _.toString(this.props.location.query.bookid), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder),
       _.toString(courseId), false, this.props.PdfbookMessages.PageMsg);
   }
@@ -516,7 +516,7 @@ export class PdfBookReader extends Component {
     {
         this.props.fetchPagebyPageNumber(this.props.book.userInfo.userid,
         this.props.book.bookinfo.book.roleTypeID,
-        this.props.params.bookId,
+        this.props.location.query.bookid,
         this.props.book.bookinfo.book.bookeditionid,
         pageNo,
         ssoKey,serverDetails)
@@ -880,7 +880,7 @@ handleRegionClick(hotspotID) {
     const isShared = highLightMetadata.isShared;
     const currentPage = find(pages, page => page.pageorder === currentPageId);
     this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid),
-      _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
+      _.toString(this.props.location.query.bookid), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(courseId), isShared, currentHighlight.highlightHash,
       note, selectedText, highLightMetadata.currHighlightColor,
       meta, _.toString(currentPageId)).then((newHighlight) => {
@@ -983,7 +983,7 @@ handleRegionClick(hotspotID) {
     } else {
       viewerClassName = '';
     }
-    const searchUrl = `${serverDetails}/ebook/ipad/searchbookv2?bookid=${this.props.params.bookId}`
+    const searchUrl = `${serverDetails}/ebook/ipad/searchbookv2?bookid=${this.props.location.query.bookid}`
         + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=${this.props.book.bookinfo.book.version}&authkey=${ssoKey}`;
     this.props.book.annTotalData.forEach((annotation) => {
       if(annotation.shared){
@@ -1017,11 +1017,11 @@ handleRegionClick(hotspotID) {
             setCurrentZoomLevel={this.setCurrentZoomLevel}
             store={this.context.store}
             goToPage={this.goToPage}
-            bookId={this.props.params.bookId}
+            bookId={this.props.location.query.bookid}
             globalBookId={this.props.currentbook.globalBookId}
             ssoKey={this.props.currentbook.ssoKey}
             title={this.props.currentbook.title}
-            curbookID={this.props.params.bookId}
+            curbookID={this.props.location.query.bookid}
             isET1="Y"
             disableBackgroundColor="true"
             serverDetails={this.props.currentbook.serverDetails}

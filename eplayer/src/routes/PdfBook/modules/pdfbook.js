@@ -3,7 +3,13 @@
 import axios from 'axios'; /* axios is third party library, used to make ajax request. */
 import Hawk from 'hawk';
 import find from 'lodash/find';
-import { clients } from '../../../components/common/client'; /* Importing the client file for framing the complete url, since baseurls are stored in client file. */
+import { clients } from '../../../components/common/client'; 
+import { resources, domain } from '../../../../const/Settings';
+
+const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
+const etextService = resources.links[security];
+const etextCourseService = resources.links['courseServiceUrl'];
+const envType = domain.getEnvType();/* Importing the client file for framing the complete url, since baseurls are stored in client file. */
 
 
 // ------------------------------------
@@ -883,6 +889,31 @@ export function editHighlightUsingReaderApi(id, note, colour, isShared) {
   };
 }
 
+export function fetchbookDetails(urn, piToken,bookID)
+{
+  const url = `${etextCourseService[envType]}/web/compositeBookShelf`;
+  return dispatch =>
+     axios.get(url, {
+      headers: { 'Content-Type': 'application/json',
+        'X-Authorization': piToken } 
+      }).then((response) => {
+      var bookDetails;
+      if (response.status >= 400) {
+        console.log(`bookshelf error`);
+      } else if (response.data) {
+        var booksArray = response.data.entries;
+           for(var i=0; i<booksArray.length; i++)    
+        {
+          if(booksArray[i].bookId === bookID)
+          {
+            bookDetails = booksArray[i];
+            break;
+          }
+        }
+      }
+      return bookDetails;
+    });
+}
 
 // ------------------------------------
 // Action Handlers for every action type which is used above.

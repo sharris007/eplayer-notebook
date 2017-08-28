@@ -141,7 +141,7 @@ export default class BookshelfPage extends React.Component {
   handleBookClick = (bookId, type) => {
     if ( type === 'et1') {
        /* BrowserHistory used for navigating the next page from current page. */
-      browserHistory.push(`/eplayer/pdfbook/${bookId}`);
+      browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=standalone`);
     } else if( type === 'et2'){
       browserHistory.push(`/eplayer/ETbook/${bookId}`);
     }
