@@ -190,6 +190,7 @@ export class PdfBookReader extends Component {
                 }
               }
             }
+            this.setState({glossaryRegions : regionsData});
             this.setState({popUpCollection : glossaryData});
           });
         }
@@ -466,6 +467,29 @@ export class PdfBookReader extends Component {
     if(this.props.book.regions.length > 0 )
     {
       __pdfInstance.displayRegions(this.props.book.regions,this.props.book.bookFeatures);
+    }
+    var glossaryDataUpdated = [];
+    for(var i=0;i<this.props.book.glossaryInfoList.length;i++)
+    {
+      for(var k=0 ; k < this.state.glossaryRegions.length ; k++)
+      {
+        if((this.props.book.glossaryInfoList[i].glossaryEntryID).trim() == (this.state.glossaryRegions[k].glossaryEntryID).trim())
+        {
+          var glossTerm = {
+            isET1 : 'Y' ,
+            item : document.getElementById(this.state.glossaryRegions[k].regionID),
+            popOverCollection : {
+              popOverDescription : this.props.book.glossaryInfoList[i].glossaryDefinition,
+              popOverTitle : this.props.book.glossaryInfoList[i].glossaryTerm
+            }                
+          };
+          glossaryDataUpdated.push(glossTerm);                
+        }
+      }
+    }
+    if(glossaryDataUpdated.length>0)
+    {
+      new PopUpInfo({'popUpCollection' : glossaryDataUpdated, 'bookId' : 'docViewer_ViewContainer_PageContainer_0'});
     }
   }
 /*Method for removing hotspot content on clicking the close button*/
