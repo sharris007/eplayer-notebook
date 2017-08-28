@@ -52,7 +52,7 @@ export default class BookshelfPage extends React.Component {
         }
       });
     },2000)
-    
+
   }
 
   /* Method for mounting before the page loaded. checking the condition wether the toc data present
@@ -87,16 +87,16 @@ export default class BookshelfPage extends React.Component {
       localStorage.setItem('identityId', this.props.location.query.identityId);
     }
     /* Passing the sessionid. Stroing the SsoKey */
-    if (sessionid === undefined || sessionid === '' || sessionid === null)    
-    {   
-      sessionid = piSession.userId();   
+    if (sessionid === undefined || sessionid === '' || sessionid === null)
+    {
+      sessionid = piSession.userId();
     }
     this.props.storeSsoKey(sessionid);
     // console.log(`sessionid:: ${sessionid}`);
     // Get Eps Auth Token to fetch eps book images
 
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
-     let isSessionLoaded = false; 
+     let isSessionLoaded = false;
      const IntervalCheck = setInterval(()=>{
       if(!isSessionLoaded) {
         const secureToken  = localStorage.getItem('secureToken');
@@ -121,7 +121,7 @@ export default class BookshelfPage extends React.Component {
           isSessionLoaded = true;
           clearInterval(IntervalCheck);
         }
-      }   
+      }
      },200);
    }
   getCookie = (name) => {
@@ -157,7 +157,7 @@ export default class BookshelfPage extends React.Component {
     if(this.props.login.data !== undefined){
       firstName = this.props.login.data.firstName;
       lastName = this.props.login.data.lastName;
-    } 
+    }
     const { books, fetching, fetched, error } = this.props.bookshelf;
     const booksdata = [];
     if (fetched && !isEmpty(books)) {
@@ -172,28 +172,23 @@ export default class BookshelfPage extends React.Component {
         booksArray = books.data.entries;
         courseBookArray = books.data.userCourseSectionEntries || [];
       }
-      if(booksArray.length !== 0 && (firstName === undefined || lastName === undefined))   
-      {   
-        for(var i=0; i<booksArray.length; i++)    
-        {   
-          if(booksArray[i].iseT1)   
+      if(booksArray.length !== 0 && (firstName === undefined || lastName === undefined))
+      {
+        for(var i=0; i<booksArray.length; i++)
+        {
+          if(booksArray[i].iseT1)
           {
            if (booksArray[i].firstName !== undefined && booksArray[i].firstName !== ''
-                  && booksArray[i].firstName !== null  )  
+                  && booksArray[i].firstName !== null  )
             {
-              firstName = booksArray[i].firstName;    
-              lastName = booksArray[i].lastName; 
+              firstName = booksArray[i].firstName;
+              lastName = booksArray[i].lastName;
             }
             // this else block added for temp purpose and will removed once firstname & lastname is available in composite bookshelf response
-            else
-            {
-              firstName = "Amit";    
-              lastName = "Taran"; 
-            }   
-            break;    
-          }   
-        }   
-      } 
+            
+          }
+        }
+      }
       booksArray.forEach((bookData) => {
         const bookRef = bookData;
         if (bookRef.bookId === '3BKZBJB2QB' || bookRef.bookId === '8DJBSW6MHR') {
@@ -257,11 +252,7 @@ export default class BookshelfPage extends React.Component {
       return errorCard('Error', error.message);
     }
     // this block added for temp purpose and will removed once firstname & lastname is available in composite bookshelf response
-    if (firstName === undefined || lastName === undefined)
-    {
-      firstName = "Amit";    
-      lastName = "Taran"; 
-    }
+
     /* Here in return, we are passing firstName and lastName in BookshelfHeader Component and
     we are passing book Object, methods onBookClick, storeBookDetails, storeSsoKey,
     in BookshelfComponent inside @Pearson-incubator  */
