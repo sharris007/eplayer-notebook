@@ -58,7 +58,9 @@ export class Book extends Component {
         sectionId : '',
         piToken : localStorage.getItem('secureToken'),
         pageLoad : false,
-        currentPageId : ''
+        currentPageId : '',
+        operatingSystemCode : navigator.platform,
+        organizationId : ''
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -313,7 +315,8 @@ export class Book extends Component {
               nextPageId : nx,
               timeOnTaskUuid : this.getGUID(),
               contentId : cu,
-              sectionId: this.props.bookdetailsdata.userCourseSectionDetail.section.sectionId
+              sectionId: this.props.bookdetailsdata.userCourseSectionDetail.section.sectionId,
+              organizationId : this.props.bookdetailsdata.userCourseSectionDetail.section.extras.organizationId
             },function(){
                this.setState({pageLoad : true});
                this.setState({ currentPageId : cu });
@@ -330,7 +333,9 @@ export class Book extends Component {
               updatedPageLoadData.activities[0].payload.transactionDt = transactionDt;
               updatedPageLoadData.activities[0].payload.loadDt = transactionDt;
               updatedPageLoadData.activities[0].payload.userAgent = this.state.userAgent;
-              // console.log("updatedPageLoadData12", updatedPageLoadData);
+              updatedPageLoadData.activities[0].payload.operatingSystemCode = this.state.operatingSystemCode;
+              updatedPageLoadData.activities[0].payload.organizationId = this.state.organizationId;
+               // console.log("updatedPageLoadData12", updatedPageLoadData);
 
               loadPageEvent(this.state.piToken, updatedPageLoadData);
 
@@ -346,7 +351,8 @@ export class Book extends Component {
             this.setState({ 
               nextPageId : nx,
               contentId : cu,
-              sectionId: this.props.bookdetailsdata.userCourseSectionDetail.section.sectionId
+              sectionId: this.props.bookdetailsdata.userCourseSectionDetail.section.sectionId,
+              organizationId : this.props.bookdetailsdata.userCourseSectionDetail.section.extras.organizationId
             },function(){
                this.setState({ currentPageId : cu });
                
@@ -359,9 +365,11 @@ export class Book extends Component {
               updatedPageUnLoadData.activities[0].payload.contentId = this.state.contentId;
               updatedPageUnLoadData.activities[0].payload.messageId = messageId;
               updatedPageUnLoadData.activities[0].payload.transactionDt = transactionDt;
-              updatedPageUnLoadData.activities[0].payload.loadDt = transactionDt;
+              updatedPageUnLoadData.activities[0].payload.unloadDt = transactionDt;
               updatedPageUnLoadData.activities[0].payload.userAgent = this.state.userAgent;
-              // console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
+              updatedPageUnLoadData.activities[0].payload.operatingSystemCode = this.state.operatingSystemCode;
+              updatedPageUnLoadData.activities[0].payload.organizationId = this.state.organizationId;
+               // console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
 
               unLoadPageEvent(this.state.piToken, updatedPageUnLoadData);
               if(loadFunCall){
