@@ -126,10 +126,10 @@ class PageViewer extends React.Component {
           else if (this.props.src.annId) {
             let annId= this.props.src.annId;
             setTimeout(()=>{
-              $('html, body').animate({
-                scrollTop: $('span[data-ann-id='+annId+']')[0].offsetTop
+            $('html, body').animate({
+                scrollTop: ($('span[data-ann-id='+annId+']')[0].getBoundingClientRect().top)-60
               }, 20);
-            }, 1200);
+            }, 5400);
           }  
         });
       }
