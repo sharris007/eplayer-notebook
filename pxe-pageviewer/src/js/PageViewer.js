@@ -129,7 +129,7 @@ class PageViewer extends React.Component {
             $('html, body').animate({
                 scrollTop: ($('span[data-ann-id='+annId+']')[0].getBoundingClientRect().top)-60
               }, 20);
-            }, 5400);
+            }, 5200);
           }  
         });
       }
