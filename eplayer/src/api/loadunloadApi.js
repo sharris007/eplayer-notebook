@@ -26,8 +26,8 @@ export const loadPageEvent = (piToken, loadData) => {
   });
 }
 
-export const unLoadPageEvent = (piToken, UnLoadData) => {
-  console.log("UNLOAD$$$$$" , UnLoadData);
+export const unLoadPageEvent = (piToken, unLoadData) => {
+  console.log("UNLOAD$$$$$" , unLoadData);
   const header = {
      'Accept': 'application/json',
     'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export const unLoadPageEvent = (piToken, UnLoadData) => {
       'Content-Type': 'application/json',
       'X-Authorization': piToken
     },
-    body: JSON.stringify(UnLoadData)
+    body: JSON.stringify(unLoadData)
 
   }).then((response) => {
     return response.json();
