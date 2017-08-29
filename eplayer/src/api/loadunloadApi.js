@@ -1,6 +1,8 @@
-import { resources } from '../../const/Settings';
+import { resources, domain } from '../../const/Settings';
 
 const messagingUrl = resources.links.messagingUrl;
+const envType = domain.getEnvType();
+
 export const loadPageEvent = (piToken, loadData) => {
   console.log("load$$$$$" , loadData);
   const header = {
@@ -8,8 +10,7 @@ export const loadPageEvent = (piToken, loadData) => {
     'Content-Type': 'application/json',
     'X-Authorization': piToken
   }
-  //${messagingUrl[envType]}/messaging/activities
-  fetch('https://messaging-publishing-int.dev-prsn.com/messaging/activities', {  
+  fetch(`${messagingUrl[envType]}/messaging/activities`, {  
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -33,7 +34,7 @@ export const unLoadPageEvent = (piToken, UnLoadData) => {
     'X-Authorization': piToken
   }
   //${messagingUrl[envType]}/messaging/activities
-  fetch('https://messaging-publishing-int.dev-prsn.com/messaging/activities', {  
+  fetch(`${messagingUrl[envType]}/messaging/activities`, {  
     method: 'POST',
     headers: {
       'Accept': 'application/json',
