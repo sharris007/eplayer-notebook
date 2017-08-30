@@ -108,7 +108,7 @@ Annotator = (function(_super) {
     this.editor = new Annotator.Editor();
     this.editor.hide().on('hide', this.onEditorHide).on('save', this.onEditorSubmit).addField({
       type: 'textarea',
-      label: locale_data[language]['write_note'],
+      label: locale_data[language]['add_note'],
       load: function(field, annotation) {
         return $(field).find('textarea').val(annotation.text || '');
       },
@@ -472,8 +472,9 @@ Annotator = (function(_super) {
     var iscolorPanel = $(selctionOverlap.startContainer).hasClass('annotator-color-container');
     if (iscolorPanel && isAdderClick == false && $('.annotator-editor .annotator-panel-2 .annotator-listing').css('display') == 'none')
       isAdderClick = true;
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<<", height);
     var position= {
-      top:(height+(!isAdderClick?140:0))
+      top:(height+(!isAdderClick?140:0) + 120)
     }
     this.editor.element.css(position);
     this.editor.load(annotation,this.isShareable);

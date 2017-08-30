@@ -220,12 +220,12 @@
 .annotator-panel-triangle:after {
     border-right-color: #ffffff;
     border-width: 8px;
-    margin-top: -8px;
+    margin-top: -70px;
 }
 .annotator-panel-triangle:before {
     border-right-color: #e0e0e0;
     border-width: 9px;
-    margin-top: -9px;
+    margin-top: -71px;
  }
 
 .annotator-widget .annotator-item,
@@ -360,7 +360,7 @@
   text-align: left;
   color: #8f8f8f;
   outline: none;
-  margin:11px 17px 12px 14px;
+  margin:15px 0px 0px 24px;
   border: none;
   padding: 0px;
   resize: none;
@@ -745,10 +745,8 @@
 
 /* Custom styles */
 .annotator-color-container{	
-  	height: 28px;
-    display: inline-block;
+    display: block;
     margin-left: 13.5px;
-    margin-top: 10px;
 }
 .annotator-color{
 	width: 18px;
@@ -773,7 +771,7 @@
 	background: #FC92CF;
 }
 .annotator-widget {
-  width: 285.8px;
+  width: 223px;
   border-radius: 4px;
   background-color: #ffffff;
   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.12);
@@ -788,6 +786,7 @@
   line-height: 1.38;
   letter-spacing: -0.4px;
   font-family: Open Sans;
+  height: 164px;
 }
 .annotator-editor .annotator-controls{
 	background: #ffffff;
@@ -856,7 +855,7 @@
 }
 .annotator-editor.hide-note form{
 	border-bottom:0px;
-	width: 110px;
+	width: 223px;
 }
 .annotator-editor.hide-note .annotator-color-container{
 	border-bottom:0px;
@@ -1127,4 +1126,70 @@
 }
 .annotator-hl {
 	color: #000000;
+}
+
+.hide {
+	display: none;
+}
+
+.positionAbs {
+	position: absolute;
+}
+
+.positionRel {
+	position: relative;
+}
+/* Panel 1 */
+.annotator-select-outer-circle {
+	width: 18px;
+  	height: 18px;
+  	background-color: #ffffff;
+  	border: solid 1px #c7c7c7;
+  	border-radius: 50%;
+}
+
+.annotator-select-rect {
+	width: 110px;
+  	height: 22px;
+ 	border-radius: 100px;
+}
+
+.annotator-color-select-container {
+	margin: 21px 0px;
+}
+
+.annotator-Rect-Pos {
+    left: 30px;
+}
+
+.annotator-select-inner-circle {
+    width: 10px;
+    height: 10px;
+    background-color: #19a6a4;
+    margin: 3px;
+    border-radius: 50%;
+}
+
+.annotator-pane1-font {
+  font-size: 14px;
+  line-height: 1.57;
+  letter-spacing: -0.3px;
+  text-align: center;
+  color: #000000;
+}
+
+.annotator-pane1-rect-background-green {
+	background-color: #bbf2b6;
+}
+
+.annotator-pane1-rect-background-sepia {
+	background-color: #ffedad;
+}
+
+.annotator-pane1-rect-background-pink {
+	background-color: #fed3ec;
+}
+
+.annotator-panel-1 {
+	height: 130px;
 }

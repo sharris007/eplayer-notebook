@@ -17,7 +17,8 @@ Annotator.Editor = (function(_super) {
     '.annotator-edit-container click':'onEditClick',
     '.annotator-listing textarea keyup':'onNoteChange',
     '.annotator-delete-container click':'onDeleteIconClick',
-    '.annotator-confirm-cancel click':'onCancelClick'
+    '.annotator-confirm-cancel click':'onCancelClick',
+    '.annotator-color-select-container click': 'onAnnotatorColorChange'
   };
 
   Editor.prototype.classes = {
@@ -32,7 +33,34 @@ Annotator.Editor = (function(_super) {
     characters :3000
   }
   var language = window.annotationLocale;
-  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" title="' + locale_data[language]['yellow'] + '" value="#FFD232"/><input type="button" class="annotator-color annotator-green" title="' + locale_data[language]['green'] + '" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" title="' + locale_data[language]['pink'] + '" value="#FC92CF"/></div><div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"></div><div class="annotator-edit-container" title="' + locale_data[language]['edit'] + '"></div></div>'
+  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"> \
+                  <div class="annotator-color-container">\
+                    <div> \
+                      <div class = "annotator-color-select-container" title = "Main ideas" value="#55DF49"> \
+                        <div class = "annotator-select-outer-circle positionAbs"> \
+                          <div class = "annotator-select-inner-circle hide" value="#55DF49"></div> \
+                        </div> \
+                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-green">' +locale_data[language]['mainIdeas']+'</div> \
+                      </div> \
+                      <div class = "annotator-color-select-container" title = "Questions" value="#FFD232"> \
+                        <div class = "annotator-select-outer-circle positionAbs"> \
+                          <div class = "annotator-select-inner-circle hide" value="#FFD232"></div> \
+                        </div> \
+                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-sepia">' +locale_data[language]['questions']+'</div> \
+                      </div> \
+                      <div class = "annotator-color-select-container" title = "Observations" value="#FC92CF"> \
+                        <div class = "annotator-select-outer-circle positionAbs"> \
+                          <div class = "annotator-select-inner-circle hide" value="#FC92CF"></div> \
+                        </div> \
+                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-pink">' +locale_data[language]['observations']+'</div> \
+                      </div> \
+                    </div> \
+                  </div> \
+                  <div class = "annotator-select-container"> \
+                    <div> \
+                      <!-- div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"></div --> \
+                      <!-- div class="annotator-edit-container" title="' + locale_data[language]['edit'] + '"></div --> \
+                    </div> </div> </div>'
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
@@ -66,6 +94,23 @@ Annotator.Editor = (function(_super) {
     this.fields = [];
     this.annotation = {};
   }
+
+  Editor.prototype.onAnnotatorColorChange = function(e) {
+    var title = '';
+    var dom;
+    if(e.target.parentElement.getAttribute('title')) {
+      title = e.target.parentElement.getAttribute('title')
+      dom = e.target.parentElement;
+    } else if(e.target.getAttribute('title')) {
+      title = e.target.getAttribute('title')
+      dom = e.target;
+    }
+    $('.annotator-select-inner-circle').hide()
+    $(dom).find('.annotator-select-inner-circle').show();
+
+    this.onColorChange(dom);
+  }
+  
   Editor.prototype.unShareAnnotation=function() {
      this.annotation.color=this.annotation.lastColor;
      if(this.annotation.color == '#FFD232') { //Yellow
@@ -161,7 +206,7 @@ Annotator.Editor = (function(_super) {
     }    
   }
 
-  Editor.prototype.onColorChange=function(event) {
+  Editor.prototype.onColorChange=function(target) {
     window.getSelection().removeAllRanges();
     this.element.removeClass('hide-note');
     var checkoverlap = $('.annotator-editor').hasClass('overlapingpopup');
@@ -174,9 +219,10 @@ Annotator.Editor = (function(_super) {
       var curAnn =this.currentAnnotation;   
       Object.assign(this.annotation, curAnn);   
     }
-    this.annotation.color=this.annotation.lastColor=event.target.value;
-    $('.annotator-color').removeClass('active');
-    $(event.target).addClass('active');
+    var colorCode = target.getAttribute('value');
+    this.annotation.color=this.annotation.lastColor=colorCode;
+    /*$('.annotator-color').removeClass('active');
+    $(event.target).addClass('active');*/
     if($(this.annotation.highlights).closest('.pxereaderSearchHighlight').length>0) {
        $(this.annotation.highlights).unwrap('.pxereaderSearchHighlight');
        $(this.annotation.highlights).parents().removeClass('pxereaderSearchHighlight');
@@ -184,21 +230,21 @@ Annotator.Editor = (function(_super) {
     }
     var annBgColor = '';
     var noteIconBgColor = '';
-    if(event.target.value == '#FFD232') { //Yellow
+    if(colorCode == '#FFD232') { //Yellow
         annBgColor = 'rgba(248, 230, 0, 0.5)';
         noteIconBgColor = '#FFD232';
-    } else if (event.target.value == '#55DF49') { //Green
+    } else if (colorCode == '#55DF49') { //Green
         annBgColor = 'rgba(143, 218, 60, 0.4)';
         noteIconBgColor = '#55DF49';
-    } else if (event.target.value == '#FC92CF') { //Pink
+    } else if (colorCode == '#FC92CF') { //Pink
         annBgColor = 'rgba(254, 132, 201, 0.5)';
         noteIconBgColor = '#FC92CF';
-    } else if (event.target.value == '#ccf5fd') { //Share(Blue)
+    } else if (colorCode == '#ccf5fd') { //Share(Blue)
         annBgColor = '#ccf5fd';
         noteIconBgColor = '#00a4e0';
     } else { 
-        annBgColor = event.target.value;
-        noteIconBgColor = event.target.value;
+        annBgColor = colorCode;
+        noteIconBgColor = colorCode;
     }
     $(this.annotation.highlights).css('background', annBgColor);
     $(this.annotation.highlights).find('.annotator-handle').css('background-color', noteIconBgColor);
@@ -215,6 +261,7 @@ Annotator.Editor = (function(_super) {
       $('#annotator-field-0').css({'display':'inline-block', 'pointer-events': 'all','opacity': '1'});
       $('.annotator-edit-container').hide();
     }
+    setTimeout(function() { $('#annotator-field-0').focus(); })  // To enable focus on textarea
     // this.publish('save', [this.annotation]);
     // if(isTopAlign)
     //    $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
@@ -252,6 +299,10 @@ Annotator.Editor = (function(_super) {
     }
     $('.annotator-color').removeClass('active');
     $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
+    $('.annotator-select-inner-circle').hide(); // To hide all inner checkboxes
+    if(this.annotation.color) {
+      $('.annotator-select-inner-circle[value="'+this.annotation.color+'"]').show();
+    }
     this.element.find('.annotator-save').addClass(this.classes.focus);
     this.element.find('.annotator-listing .characters-left').remove();
     this.element.find('.annotator-listing').append(panel5);
