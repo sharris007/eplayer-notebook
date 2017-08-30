@@ -80,11 +80,12 @@ export class PdfBookReader extends Component {
     this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid,
       this.props.location.query.bookid, true, courseId, authorName);
     this.props.fetchBasepaths(this.props.location.query.bookid,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
-    const firstPage = 'firstPage';
+
     if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
       this.goToPage(Number(localStorage.getItem('currentPageOrder')));
     } else {
-      this.goToPage(firstPage);
+      //this.goToPage(coverPage);
+      this.loadCoverPage();
     }
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
@@ -95,6 +96,32 @@ export class PdfBookReader extends Component {
     localStorage.removeItem('assertUrls');
     pages = null;
     assertUrls = null;
+  }
+  /*  Method to load the cover page */
+   loadCoverPage = () => {
+    let currentPageIndex = 0;
+    this.goToPage('cover');
+    const config = {
+    // host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
+      host: eT1Contants.FOXIT_HOST_URL,
+    // PDFassetURL: this.props.bookshelf.uPdf,
+    // PDFassetURL: "http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM31206032/ipadpdfs/"+pdfPath,
+      PDFassetURL: `${serverDetails}/ebookassets`
+                + `/ebook${this.props.book.bookinfo.book.globalbookid}${this.props.book.bookinfo.book.pdfCoverArt}`,
+      encpwd: null,
+      zip: false,
+      callbackOnPageChange: this.pdfBookCallback,
+      assertUrl: ''
+    };
+     __pdfInstance.createPDFViewer(config);
+    this.setState({ currPageIndex: currentPageIndex });
+    localStorage.setItem("currentPageOrder",currentPageIndex);
+    localStorage.setItem('isReloaded',true);
+    const data = this.state.data;
+    date.isFirstPage = true;
+    data.isLastPage = false;
+    date.currentPageNo = currentPageIndex;
+    this.setState({data});
   }
   /*  Method for loading the pdfpage for particular book by passing the pageIndex. */
   loadPdfPage = (currentPageIndex) => {
@@ -123,7 +150,6 @@ export class PdfBookReader extends Component {
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
     localStorage.setItem("currentPageOrder",currentPageIndex);
-    localStorage.setItem('isReloaded',true);
     const data = this.state.data;
     if (currentPageIndex === 1) {
       data.isFirstPage = true;
@@ -266,9 +292,7 @@ export class PdfBookReader extends Component {
           pageIndexToLoad = currPageIndex - 1;
         } else if (pageno === 'next') {
           pageIndexToLoad = currPageIndex + 1;
-        } else if (pageno === 'firstPage') {
-          pageIndexToLoad = 1;
-        }
+        } 
       }
       else
       {
@@ -291,8 +315,9 @@ export class PdfBookReader extends Component {
             || this.props.book.bookinfo.pages.length !== 0) {
             pages = this.props.book.bookinfo.pages;
             localStorage.setItem('pages', JSON.stringify(pages));
-          } 
-          this.loadPdfPage(pageIndexToLoad);
+          }
+          if(pageno != 'cover') 
+          {this.loadPdfPage(pageIndexToLoad);}
         });
       }
     }
@@ -398,7 +423,12 @@ export class PdfBookReader extends Component {
     const currPageNumber = this.state.currPageIndex;
     let pageNo;
     if (pageType === 'prev') {
-      pageNo = currPageNumber - 1;
+      if(currPageNumber == 1){
+        pageNo = 0;
+        return pageNo
+      }else{
+        pageNo = currPageNumber - 1;
+      }
     } else if (pageType === 'next') {
       pageNo = currPageNumber + 1;
     } else if (pageType === 'last') {
@@ -1030,6 +1060,7 @@ handleRegionClick(hotspotID) {
             userid={this.props.book.userInfo.userid}
             messages={messages}
             viewerContentCallBack={this.viewerContentCallBack}
+            currentPageIndex={this.state.currPageIndex}
           />
 
           <div className="eT1viewerContent">

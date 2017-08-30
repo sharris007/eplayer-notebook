@@ -1097,7 +1097,8 @@ const ACTION_HANDLERS = {
         author: action.payload.data[0].userBookTOList[0].authorList[0].firstName+' '+
                 action.payload.data[0].userBookTOList[0].authorList[0].lastName,
         thumbnailimg : action.payload.data[0].userBookTOList[0].thumbnailArt,
-        title : action.payload.data[0].userBookTOList[0].title
+        title : action.payload.data[0].userBookTOList[0].title,
+        pdfCoverArt : action.payload.data[0].userBookTOList[0].pdfCoverArt
       }
     }
   }),
