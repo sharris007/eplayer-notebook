@@ -6,7 +6,10 @@ import { addLocaleData } from 'react-intl';
 import { PdfBookReader } from './PdfBookReader';
 import { languages } from '../../../../locale_config/translations/index';
 import languageName from '../../../../locale_config/configureLanguage';
+import { eT1Contants } from '../../../components/common/et1constants';
+import { resources, domain } from '../../../../const/Settings';
 import Cookies from 'universal-cookie';
+const envType = domain.getEnvType();
 /* Defining the variables for localStorage. */
 let identityId;
 let ubd;
@@ -20,8 +23,10 @@ var currentbook = {};
 export class PdfBook extends Component {
   constructor(props){
     super(props);
-    if(this.props.location.query.invoketype === undefined || this.props.location.query.invoketype === ''
-      && this.props.location.query.invoketype === null)
+    if((this.props.location.query.invoketype === undefined || this.props.location.query.invoketype === ''
+      || this.props.location.query.invoketype === null) && (this.props.location.query.sessionid === undefined
+      || this.props.location.query.sessionid === ''
+      || this.props.location.query.sessionid === null))
     {
       this.cookies = new Cookies();
       let appPath             = window.location.origin;
@@ -43,6 +48,7 @@ export class PdfBook extends Component {
 used for before mounting occurs. */
   async componentWillMount() {
   var bookID = this.props.location.query.bookid;
+  var bookData = {};
   if (this.props.location.query.invoketype !== undefined && 
           this.props.location.query.invoketype === 'standalone')
     {
@@ -65,55 +71,79 @@ used for before mounting occurs. */
     }
     else
     {
-      piSession.getToken(function(result, userToken){
-        if(result === 'success'){
-          localStorage.setItem('secureToken',userToken);
-        }
-      }); 
-      var bookData;
-      var booksArray;
-      const secureToken  = localStorage.getItem('secureToken');
-      let urn = 'compositeBookShelf';
-      await this.props.fetchbookDetails(urn, secureToken,this.props.location.query.bookid).then((book) =>{
-        if(book)
+      if (this.props.location.query.sessionid === undefined
+            || this.props.location.query.sessionid === ''
+            || this.props.location.query.sessionid === null)
+      {
+        piSession.getToken(function(result, userToken){
+          if(result === 'success'){
+            localStorage.setItem('secureToken',userToken);
+          }
+        }); 
+        const secureToken  = localStorage.getItem('secureToken');
+        let urn = 'compositeBookShelf';
+        await this.props.fetchbookDetails(urn, secureToken,this.props.location.query.bookid).then((bookDetails) =>{
+          if(bookDetails)
+          {
+            bookData = bookDetails;
+          }
+        });
+      }
+      identityId = bookData.globalUserId ? bookData.globalUserId : this.props.location.query.smsuserid;
+      ubd = bookData.userBookLastModifiedDate ? bookData.userBookLastModifiedDate : this.props.location.query.ubd;
+      ubsd = bookData.userBookScenarioLastModifiedDate ? bookData.userBookScenarioLastModifiedDate : this.props.location.query.ubsd;
+      ssoKey = this.props.location.query.sessionid ? this.props.location.query.sessionid : piSession.userId();
+      serverDetails = bookData.bookServerUrl ? bookData.bookServerUrl : '';
+      roleTypeID = bookData.roleTypeID ? bookData.roleTypeID : this.props.location.query.roletypeid;
+      if(serverDetails == '')
+      {
+        const bookserverno = this.props.location.query.bookserver;
+        var bookserver;
+        if (envType == 'qa' || envType == 'stage')
         {
-          bookData = book;
+          bookserver = 'CERT'+bookserverno;
         }
-      });
-      identityId = bookData.globalUserId;
-      ubd = bookData.userBookLastModifiedDate;
-      ubsd = bookData.userBookScenarioLastModifiedDate;
-      ssoKey = piSession.userId();
-      serverDetails = bookData.bookServerUrl;
-      roleTypeID = bookData.roleTypeID;
-      currentbook.ssoKey = ssoKey;
-      currentbook.authorName = bookData.author;
-      currentbook.thumbnail = bookData.image;
-      currentbook.title = bookData.title;
-      currentbook.globalBookId = bookData.globalBookId;
-      currentbook.globalUserId = bookData.globalUserId;
-      currentbook.bookeditionid = bookData.bookeditionid;
-      currentbook.uPdf = bookData.updfUrl;
-      currentbook.serverDetails = bookData.bookServerUrl;
-      currentbook.bookId = bookData.bookId;
-      currentbook.uid = bookData.userInfoLastModifiedDate;
-      currentbook.ubd = bookData.userBookLastModifiedDate;
-      currentbook.ubsd = bookData.userBookScenarioLastModifiedDate;
-      currentbook.roleTypeID = bookData.roleTypeID;
+        else if(envType == 'prod')
+        {
+          bookserver = 'PROD'+bookserverno;
+        }
+        serverDetails = eT1Contants.ServerUrls[envType][bookserver];
+      }
     }
-        /* Await operator is used to wait for a Promise returned by an async function. */
-       /* Method used for fetching the user details and book details. */
-    await this.props.fetchUserInfo(identityId, bookID, ubd, ubd, ubsd, ssoKey, serverDetails);
+    /* Await operator is used to wait for a Promise returned by an async function. */
+    /* Method used for fetching the user details and book details. */
+    if (this.props.location.query.sessionid === undefined
+            || this.props.location.query.sessionid === ''
+            || this.props.location.query.sessionid === null)
+    {
+      await this.props.fetchUserInfo(identityId, bookID, ubd, ubd, ubsd, ssoKey, serverDetails);
+    }
+    else
+    {
+      this.props.book.userInfo.userid = this.props.location.query.userid;
+    }
     await this.props.fetchBookInfo(bookID, ssoKey,
               this.props.book.userInfo.userid, serverDetails, roleTypeID);
+    currentbook.ssoKey = ssoKey;
+    currentbook.authorName = bookData.author ? bookData.author : this.props.book.bookinfo.book.author;
+    var tempThumbnail = bookData.image ? bookData.image : this.props.book.bookinfo.book.thumbnailimg;
+    if(!tempThumbnail.startsWith("http"))
+    {
+      tempThumbnail = serverDetails+'/ebookassets/'+this.props.book.bookinfo.book.globalbookid+tempThumbnail;
+    }
+    currentbook.thumbnail = tempThumbnail;
+    currentbook.title = bookData.title ? bookData.title : this.props.book.bookinfo.book.title;
+    currentbook.globalBookId = bookData.globalBookId ? bookData.globalBookId : this.props.book.bookinfo.book.globalbookid;
+    currentbook.serverDetails = serverDetails;
     await this.props.fetchBookFeatures(bookID,ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID);
+    
   }
 
  /* Multiple methods we have paased in PdfBookReader inside return, fetchTocViewer fot fetching the value of TOC,
    fetchBookmarksUsingReaderApi for fetching the bookmark details, addBookmarkUsingReaderApi is used for adding the bookmark details,
    and so on as methods names are very specific. */
   render() {
-    if (this.props.book.bookinfo.fetched) {
+    if (this.props.book.bookinfo.fetched && this.props.book.bookFeatures.fetched) {
       langID = this.props.book.bookinfo.book.languageid;
       const locale = languageName(langID);
       const localisedData = locale.split('-')[0];
@@ -133,7 +163,7 @@ used for before mounting occurs. */
           fetchPageInfo={this.props.fetchPageInfo}
           goToPage={this.props.goToPage}
           book={this.props.book}
-          currentbook={currentbook.ssoKey ? currentbook : this.props.currentbook}
+          currentbook={currentbook}
           login={this.props.login}
           params={this.props.params}
           location={this.props.location}

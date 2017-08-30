@@ -39,6 +39,18 @@ export const eT1Contants = {
     IPADAPP : 14,
     CHROMELESS_URL : 15,
     JAZZASSET : 16
+  },
+  ServerUrls : {
+    qa : {
+            CERT1 : 'https://view.cert1.ebookplus.pearsoncmg.com',
+            CERT2 : 'https://view.cert2.ebookplus.pearsoncmg.com',
+            CERT3 : 'https://view.cert3.ebookplus.pearsoncmg.com'
+         },
+    stage : {
+            CERT1 : 'https://view.cert1.ebookplus.pearsoncmg.com',
+            CERT2 : 'https://view.cert2.ebookplus.pearsoncmg.com',
+            CERT3 : 'https://view.cert3.ebookplus.pearsoncmg.com'
+         }
   }
 };
 export default eT1Contants;
