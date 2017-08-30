@@ -348,7 +348,7 @@
 }
 
 .annotator-item textarea{
-  width: 252px;
+  width: 190px;
   height: 22px;
   font-family: Open Sans;
   font-size: 16px;
@@ -1103,7 +1103,7 @@
     height: 70px;
     overflow-y:auto;
     display: none;
-    width: 252px;
+    width: 221px;
     white-space: pre-wrap; /* css-3 */    
     white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
     white-space: -pre-wrap; /* Opera 4-6 */    

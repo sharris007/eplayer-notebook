@@ -60,7 +60,9 @@ Annotator.Editor = (function(_super) {
                     <div> \
                       <!-- div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"></div --> \
                       <!-- div class="annotator-edit-container" title="' + locale_data[language]['edit'] + '"></div --> \
-                    </div> </div> </div>'
+                    </div> \
+                  </div> \
+                </div>'
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
@@ -249,7 +251,7 @@ Annotator.Editor = (function(_super) {
     $(this.annotation.highlights).css('background', annBgColor);
     $(this.annotation.highlights).find('.annotator-handle').css('background-color', noteIconBgColor);
     if (isTopAlign) {
-      var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height();
+      var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height()-20;
       this.element.css({top:topPosition});
     }
     if (this.annotation.shareable) {
