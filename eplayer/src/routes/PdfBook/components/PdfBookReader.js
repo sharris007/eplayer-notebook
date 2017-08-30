@@ -424,7 +424,7 @@ export class PdfBookReader extends Component {
     let pageNo;
     if (pageType === 'prev') {
       if(currPageNumber == 1){
-        pageNo = 0;
+        pageNo = 'Cover';
         return pageNo
       }else{
         pageNo = currPageNumber - 1;
