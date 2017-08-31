@@ -144,7 +144,10 @@ Annotator.Editor = (function(_super) {
 
   Editor.prototype.onNoteContainerClick= function(e) { 
     $("#noteContainer").hide();
-    $('.annotator-panel-2').find('textarea').show()
+    var annotator_editor = $('.annotator-editor')
+    annotator_editor.css({ top : annotator_editor.position().top + 60});
+    $('.annotator-panel-2').find('textarea').show().css({"pointer-events": "all", "opacity": "1"});
+    //$('.annotator-panel-2').find('textarea').focus();
   }
 
   Editor.prototype.onEditColorChange= function(e) { 
