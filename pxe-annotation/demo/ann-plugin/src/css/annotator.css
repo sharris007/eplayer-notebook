@@ -187,8 +187,8 @@
 }
 
 .annotator-invert-y .annotator-widget {
-	bottom: auto;
-	top: 8px;
+	/*bottom: auto;
+	top: 8px;*/
 }
 
 .annotator-widget strong {
@@ -1139,6 +1139,10 @@
 .positionRel {
 	position: relative;
 }
+
+.annotator-editor button {
+	border: none;
+}
 /* Panel 1 */
 .annotator-select-outer-circle {
 	width: 18px;
@@ -1193,3 +1197,41 @@
 .annotator-panel-1 {
 	height: 130px;
 }
+
+/*Edit - Pane1*/
+
+.edit-Note-Panel-1 {
+	display: inline-block;
+}
+
+.annotator-edit-Note-Panel-1-rect {
+	/*margin-top: -40px;
+    margin-left: 86px;*/
+}
+
+.annotator-edit-Note-Panel-1-circle {
+	width: 18px;
+    height: 18px;
+    border-radius: 50%;
+}
+
+.annotator-edit-Note-Panel-1-circle-green {
+	background-color: #55df49
+}
+.annotator-edit-Note-Panel-1-circle-sepia {
+	background-color: #ffd232
+}
+.annotator-edit-Note-Panel-1-circle-pink {
+
+	background-color: #fc92cf
+}
+
+.edit-note-circle {
+	padding: 22px;
+}
+
+.edit-note-rect {
+	padding: 20px;
+}
+
+

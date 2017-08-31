@@ -18,7 +18,10 @@ Annotator.Editor = (function(_super) {
     '.annotator-listing textarea keyup':'onNoteChange',
     '.annotator-delete-container click':'onDeleteIconClick',
     '.annotator-confirm-cancel click':'onCancelClick',
-    '.annotator-color-select-container click': 'onAnnotatorColorChange'
+    '.annotator-color-select-container click': 'onAnnotatorColorChange',
+    '.annotator-edit-Note-Panel-1-rect click' : 'onEditRectClick',
+    '.annotator-edit-Note-Panel-1-circle click' : 'onEditColorChange',
+    '#noteContainer click' : 'onNoteContainerClick'
   };
 
   Editor.prototype.classes = {
@@ -60,6 +63,32 @@ Annotator.Editor = (function(_super) {
                     <div> \
                       <!-- div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"></div --> \
                       <!-- div class="annotator-edit-container" title="' + locale_data[language]['edit'] + '"></div --> \
+                    </div> \
+                  </div> \
+                  <div class = "edit-Note-Panel-1">  <!-- Edit Note Panel-->\
+                    <div> <!-- Edit Note circle-->\
+                      <div class = "edit-note-circle"> \
+                        <button class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" value="#55DF49"> \
+                        </button> \
+                        <button class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" value="#FFD232"> \
+                        </button > \
+                        <button class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" value="#FC92CF"> \
+                        </button > \
+                      </div> \
+                      <div class = "edit-note-rect"> <!-- Edit Note Rectangle-->\
+                        <div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-green annotator-edit-Note-Panel-1-rect" value="#55DF49">' +locale_data[language]['mainIdeas']+'</div> \
+                        </div> \
+                                \
+                        <div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-sepia annotator-edit-Note-Panel-1-rect" value="#FFD232">' +locale_data[language]['questions']+'</div> \
+                        </div> \
+                                \
+                        <div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" value="#FC92CF">' +locale_data[language]['observations']+'</div> \
+                        </div> \
+                      </div> \
+                              \
                     </div> \
                   </div> \
                 </div>'
@@ -111,6 +140,38 @@ Annotator.Editor = (function(_super) {
     $(dom).find('.annotator-select-inner-circle').show();
 
     this.onColorChange(dom);
+  }
+
+  Editor.prototype.onNoteContainerClick= function(e) { 
+    $("#noteContainer").hide();
+    $('.annotator-panel-2').find('textarea').show()
+  }
+
+  Editor.prototype.onEditColorChange= function(e) { 
+    e.preventDefault();
+    var editNoteCircleDom = $(".edit-note-circle");
+    var value = $(e.target).attr('value');
+    editNoteCircleDom.find('.annotator-edit-Note-Panel-1-circle').css({"border": "0px","height": "18px", "width": "18px"});
+    editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"})
+    this.onColorChange(e.target);
+  }
+
+  Editor.prototype.onEditRectClick = function(e) { 
+    var editNoteCircleDom = $(".edit-note-circle");
+    var value = $(e.target).attr('value');
+    editNoteCircleDom.show();
+    editNoteCircleDom.find('.annotator-edit-Note-Panel-1-circle').css({"border": "0px","height": "18px", "width": "18px"}); // reset to default circle
+    editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"}) // highlight the selected circle
+    $(".edit-note-rect").css({"padding" : "0px","margin-top": "-43px","margin-left": "99px"});
+    
+    if(value === "#55DF49") { // Green
+
+    } else if(value ==="#FFD232") { // Sepia
+
+    } else { // pink
+
+    }
+    //$(e.target).attr('value')
   }
   
   Editor.prototype.unShareAnnotation=function() {
@@ -297,13 +358,26 @@ Annotator.Editor = (function(_super) {
     }
     else {
       $('.annotator-share').removeClass('on');
-      $('.annotator-color-container').removeClass('disabled-save'); 
+      /* $('.annotator-color-container').removeClass('disabled-save'); */
     }
-    $('.annotator-color').removeClass('active');
-    $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');
+    /*$('.annotator-color').removeClass('active');
+    $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');*/
     $('.annotator-select-inner-circle').hide(); // To hide all inner checkboxes
-    if(this.annotation.color) {
-      $('.annotator-select-inner-circle[value="'+this.annotation.color+'"]').show();
+    if(this.annotation.color) { // For Edit container
+      $('.annotator-color-select-container').hide(); 
+      $('.edit-Note-Panel-1').show();
+      $('.annotator-panel-1').css({height: "62px", position : "initial"});
+      $('.annotator-editor').css({ top :$('.annotator-editor').position().top - 90 });
+
+      $(".edit-Note-Panel-1 .annotator-select-rect").hide();
+      $(".edit-Note-Panel-1 .edit-note-circle").hide();
+      $('.edit-Note-Panel-1').find("[value=" + this.annotation.color + "]").show();
+      $(".edit-note-rect").css({ "padding": "20px", "margin-top": "0px", "margin-left": "0px"})
+      console.log("this.annotation.color : ", this.annotation.color)
+    } else { // Initial annotation
+      $('.edit-Note-Panel-1').hide();
+      $('.annotator-color-select-container').show();
+      $('.annotator-panel-1').css({height: "130px", position : "relative"});
     }
     this.element.find('.annotator-save').addClass(this.classes.focus);
     this.element.find('.annotator-listing .characters-left').remove();
@@ -378,7 +452,7 @@ Annotator.Editor = (function(_super) {
     else      
       $('.annotator-share-text, .annotator-share').show();
     if (!$('.annotator-item input').length) {
-     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '." id = "mathTitle"/><div class="noteContainer" id = "noteContainer"></div>');
+     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '." id = "mathTitle"/><div class="noteContainer" id = "noteContainer" ></div>');
     }
     $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax')){
