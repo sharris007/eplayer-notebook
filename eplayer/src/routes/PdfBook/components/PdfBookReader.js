@@ -85,7 +85,7 @@ export class PdfBookReader extends Component {
       this.goToPage(Number(localStorage.getItem('currentPageOrder')));
     } else {
       //this.goToPage(coverPage);
-      this.loadCoverPage();
+      this.loadCoverPage('cover');
     }
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
@@ -98,9 +98,11 @@ export class PdfBookReader extends Component {
     assertUrls = null;
   }
   /*  Method to load the cover page */
-   loadCoverPage = () => {
+   loadCoverPage = (pageIndexToLoad) => {
     let currentPageIndex = 0;
-    this.goToPage('cover');
+    if(isNaN(pageIndexToLoad)){
+     this.goToPage(pageIndexToLoad); 
+    }
     const config = {
     // host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
       host: eT1Contants.FOXIT_HOST_URL,
@@ -118,9 +120,9 @@ export class PdfBookReader extends Component {
     localStorage.setItem("currentPageOrder",currentPageIndex);
     localStorage.setItem('isReloaded',true);
     const data = this.state.data;
-    date.isFirstPage = true;
+    data.isFirstPage = true;
     data.isLastPage = false;
-    date.currentPageNo = currentPageIndex;
+    data.currentPageNo = currentPageIndex;
     this.setState({data});
   }
   /*  Method for loading the pdfpage for particular book by passing the pageIndex. */
@@ -151,16 +153,12 @@ export class PdfBookReader extends Component {
     this.setState({ currPageIndex: currentPageIndex });
     localStorage.setItem("currentPageOrder",currentPageIndex);
     const data = this.state.data;
-    if (currentPageIndex === 1) {
-      data.isFirstPage = true;
-    } else {
-      data.isFirstPage = false;
-    }
     if (currentPageIndex === this.getPageCount()) {
       data.isLastPage = true;
     } else {
       data.isLastPage = false;
     }
+    data.isFirstPage = false;
     data.currentPageNo = currentPageIndex;
     this.setState({ data });
     const viewer = this;
@@ -289,14 +287,19 @@ export class PdfBookReader extends Component {
       if(isNaN(pageno))
       {
         if (pageno === 'prev') {
-          pageIndexToLoad = currPageIndex - 1;
+          if(currPageIndex === 1){
+            pageIndexToLoad = 0;
+          }else{
+            pageIndexToLoad = currPageIndex - 1;
+          }
+          
         } else if (pageno === 'next') {
           pageIndexToLoad = currPageIndex + 1;
         } 
       }
       else
       {
-        if (pageno > 0) {
+        if (pageno >=0 ) {
           pageIndexToLoad = pageno;
         }
       }
@@ -316,8 +319,11 @@ export class PdfBookReader extends Component {
             pages = this.props.book.bookinfo.pages;
             localStorage.setItem('pages', JSON.stringify(pages));
           }
-          if(pageno != 'cover') 
+          if(pageno != 'cover' && pageIndexToLoad !== 0) 
           {this.loadPdfPage(pageIndexToLoad);}
+         else if(pageIndexToLoad === 0){
+          this.loadCoverPage(pageIndexToLoad);
+         }
         });
       }
     }
@@ -423,10 +429,11 @@ export class PdfBookReader extends Component {
     const currPageNumber = this.state.currPageIndex;
     let pageNo;
     if (pageType === 'prev') {
-      if(currPageNumber == 1){
-        pageNo = 'Cover';
-        return pageNo
-      }else{
+      if(currPageNumber === 1){
+      pageNo = 'Cover';
+      return pageNo;
+      }else
+      {
         pageNo = currPageNumber - 1;
       }
     } else if (pageType === 'next') {
