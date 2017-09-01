@@ -16,6 +16,8 @@ import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
 import { loadState } from '../../../localStorage';
 import Popup from 'react-popup';
 import { PopUpInfo } from '../../../components/GlossaryPopup/PopUpInfo';
+import {convertHexToRgba} from '../../../components/Utility/Util';
+
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -149,6 +151,8 @@ export class PdfBookReader extends Component {
     __pdfInstance.registerEvent('textSelected', this.createHighlight.bind(this));
     __pdfInstance.registerEvent('highlightClicked', this.handleHighlightClick.bind(this));
     __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
+    __pdfInstance.registerEvent('TransparentRegionHovered', this.handleTransparentRegionHover.bind(this));
+    __pdfInstance.registerEvent('TransparentRegionUnhovered', this.handleTransparentRegionUnhover.bind(this));
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
     localStorage.setItem("currentPageOrder",currentPageIndex);
@@ -575,6 +579,18 @@ export class PdfBookReader extends Component {
       this.goToPage(Number(currentPage.pageorder));
     }
 
+  }
+/*Method to handle mouse hover event for transparent hotsopts*/
+  handleTransparentRegionHover(hotspotID)
+  {
+    var transparentRegion = document.getElementById(hotspotID);
+    transparentRegion.style.background = convertHexToRgba(this.props.book.bookFeatures.hotspotcolor,this.props.book.bookFeatures.regionhotspotalpha);
+  }
+/*Method to handle mouse out event for transparent hotsopts*/
+  handleTransparentRegionUnhover(hotspotID)
+  {
+    var transparentRegion = document.getElementById(hotspotID);
+    transparentRegion.style.background = convertHexToRgba(this.props.book.bookFeatures.hotspotcolor,0);
   }
 /*Method to check hotspot type on the basis of extension*/
   getHotspotType = (regionLink) => {

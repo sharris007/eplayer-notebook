@@ -819,6 +819,18 @@ function getAssetURLForPDFDownload(config,cb){
         _this.triggerEvent("regionClicked",hotspotID);
         return false;
       }
+  /*Method to handle Transparent region on mouse hover*/
+      _this.handleTransparentRegionHover = function(event) {
+        var hotspotID=this.getAttribute("id");
+        _this.triggerEvent("TransparentRegionHovered",hotspotID);
+        return false;
+      }
+  /*Method to handle Transparent region on mouse our*/
+      _this.handleTransparentRegionUnhover = function(event) {
+        var hotspotID=this.getAttribute("id");
+        _this.triggerEvent("TransparentRegionUnhovered",hotspotID);
+        return false;
+      }
 
         var highlightNodes = document.querySelectorAll('.pdfHighlight');
         for(var highlightIndex = 0; highlightIndex < highlightNodes.length; highlightIndex++) {
@@ -830,7 +842,8 @@ function getAssetURLForPDFDownload(config,cb){
           }
       }
 /*Function to get RGBA Color Values from HEX Color Code*/
-      convertHex = (hex,opacity) =>{
+      _this.convertHexToRgba = function(hex,opacity)
+      {
         var r,g,b,a;
         hex = hex.replace('#','');
         r = parseInt(hex.substring(0,2), 16);
@@ -894,17 +907,17 @@ function getAssetURLForPDFDownload(config,cb){
               {
                 if(hotspots[i].transparent == true)
                 {
-                  regionElement.style.background = convertHex(hotspotFeatures.hotspotcolor,0);
-                  regionElement.onmouseover = function(){
-                    regionElement.style.background = convertHex(hotspotFeatures.hotspotcolor,hotspotFeatures.regionhotspotalpha);
+                  regionElement.style.background = convertHexToRgba(hotspotFeatures.hotspotcolor,0);
+                  regionElement.onmouseover = function(event){
+                    _this.triggerEvent("TransparentRegionHovered", event.currentTarget.id);
                   }
                   regionElement.onmouseout = function(){
-                    regionElement.style.background = convertHex(hotspotFeatures.hotspotcolor,0);
+                    _this.triggerEvent("TransparentRegionUnhovered", event.currentTarget.id);
                   }
                 }
                 else
                 {
-                  regionElement.style.background = convertHex(hotspotFeatures.hotspotcolor,hotspotFeatures.regionhotspotalpha);
+                  regionElement.style.background = convertHexToRgba(hotspotFeatures.hotspotcolor,hotspotFeatures.regionhotspotalpha);
                 }
               }
               else

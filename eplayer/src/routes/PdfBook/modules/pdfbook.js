@@ -1185,6 +1185,7 @@ const ACTION_HANDLERS = {
       hastwopageview : action.payload.data[0].bookfeatures.ipadfeatures.hastwopageview,
       hasportraitview : action.payload.data[0].bookfeatures.ipadfeatures.hasportraitview,
       underlinehotspot : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspot,
+      iconhotspotalpha : action.payload.data[0].bookfeatures.ipadfeatures.iconhotspotalpha,
       regionhotspotalpha : action.payload.data[0].bookfeatures.ipadfeatures.regionhotspotalpha,
       underlinehotspotcolor : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspotcolor,
       underlinehotspotthickness : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspotthickness,

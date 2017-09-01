@@ -15,3 +15,22 @@ export function getSiteId(env)
    return eT1Contants.CERT_SITE_ID;
  }
 }
+/*Function to get RGBA Color Values from HEX Color Code*/
+export function convertHexToRgba(hex,opacity)
+{
+	var r,g,b,a;
+	hex = hex.replace('#','');
+	r = parseInt(hex.substring(0,2), 16);
+	g = parseInt(hex.substring(2,4), 16);
+	b = parseInt(hex.substring(4,6), 16);
+	if(opacity == 0)
+	{
+	  a=0;
+	}
+	else
+	{
+	  a= opacity/100;
+	}
+	rgba = 'rgba('+r+','+g+','+b+','+a+')';
+	return rgba;
+}
