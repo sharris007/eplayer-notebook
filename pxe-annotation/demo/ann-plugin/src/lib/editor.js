@@ -95,7 +95,19 @@ Annotator.Editor = (function(_super) {
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
-  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share" title="' + locale_data[language]['share'] + '"></div></div><div class="ann-cancelsave-section"><a class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a><a class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a></div></div></div>';
+  var panel3 ='<div class="annotator-panel-3"> \
+                <div class="annotator-controls"> \
+                  <!--div class="ann-share-section"> \
+                    <label class="annotator-share-text">' + locale_data[language]['share'] + '</label> \
+                      <div class="annotator-share" title="' + locale_data[language]['share'] + '"> \
+                      </div> \
+                  </div --> \
+                  <div class="ann-cancelsave-section"> \
+                    <!-- a class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a --> \
+                    <a class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a> \
+                  </div> \
+                </div> \
+              </div>'; 
 
   var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a><a class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a></div></div></div>';
 
@@ -145,7 +157,7 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.onNoteContainerClick= function(e) { 
     $("#noteContainer").hide();
     var annotator_editor = $('.annotator-editor')
-    annotator_editor.css({ top : annotator_editor.position().top + 60});
+    annotator_editor.css({ top : annotator_editor.position().top + 110});
     $('.annotator-panel-2').find('textarea').show().css({"pointer-events": "all", "opacity": "1"});
     //$('.annotator-panel-2').find('textarea').focus();
   }
