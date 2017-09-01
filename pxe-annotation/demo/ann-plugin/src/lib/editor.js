@@ -103,8 +103,8 @@ Annotator.Editor = (function(_super) {
                       </div> \
                   </div --> \
                   <div class="ann-cancelsave-section"> \
-                    <!-- a class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a --> \
-                    <a class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a> \
+                    <!-- a class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a > \
+                    <a class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a --> \
                   </div> \
                 </div> \
               </div>'; 
@@ -159,7 +159,7 @@ Annotator.Editor = (function(_super) {
     var annotator_editor = $('.annotator-editor')
     annotator_editor.css({ top : annotator_editor.position().top + 110});
     $('.annotator-panel-2').find('textarea').show().css({"pointer-events": "all", "opacity": "1"});
-    //$('.annotator-panel-2').find('textarea').focus();
+    $('.annotator-panel-2').find('textarea').focus();
   }
 
   Editor.prototype.onEditColorChange= function(e) { 
@@ -167,7 +167,10 @@ Annotator.Editor = (function(_super) {
     var editNoteCircleDom = $(".edit-note-circle");
     var value = $(e.target).attr('value');
     editNoteCircleDom.find('.annotator-edit-Note-Panel-1-circle').css({"border": "0px","height": "18px", "width": "18px"});
-    editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"})
+    editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"});
+
+    $('.annotator-edit-Note-Panel-1-rect').hide();
+    $('.edit-note-rect').find(("[value=" + "'" + value + "']")).show();
     this.onColorChange(e.target);
   }
 
@@ -436,6 +439,7 @@ Annotator.Editor = (function(_super) {
         annBgColor = this.annotation.color;
         noteIconBgColor = this.annotation.color;
     }
+    this.annotation.text = $('.annotator-panel-2').find('textarea').val();
     $(this.annotation.highlights).css('background', annBgColor);
     $(this.annotation.highlights).find('.annotator-handle').css('background-color', noteIconBgColor);
     Annotator.Util.preventEventDefault(event);
