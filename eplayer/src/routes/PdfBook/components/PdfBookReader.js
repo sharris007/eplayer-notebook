@@ -596,21 +596,21 @@ export class PdfBookReader extends Component {
   getHotspotType = (regionLink) => {
     var region = '';
     regionLink = regionLink.toLowerCase();
-    if(regionLink.endsWith('.doc') == true || regionLink.endsWith('.xls') == true || regionLink.endsWith('.ppt') == true || 
-       regionLink.endsWith('.pdf') == true || regionLink.endsWith('.docx') == true || regionLink.endsWith('.xlsx') == true || 
-       regionLink.endsWith('.pptx') == true)
+    if(_.endsWith(regionLink,'.doc') == true || _.endsWith(regionLink,'.xls') == true || _.endsWith(regionLink,'.ppt') == true || 
+       _.endsWith(regionLink,'.pdf') == true || _.endsWith(regionLink,'.docx') == true || _.endsWith(regionLink,'.xlsx') == true || 
+       _.endsWith(regionLink,'.pptx') == true)
     {
       region = 'DOCUMENT';
     }
-    else if(regionLink.endsWith('.mp4') == true || regionLink.endsWith('.m4v') == true || regionLink.endsWith('.flv') == true)
+    else if(_.endsWith(regionLink,'.mp4') == true || _.endsWith(regionLink,'.m4v') == true || _.endsWith(regionLink,'.flv') == true)
     {
       region = 'VIDEO';
     }
-    else if(regionLink.endsWith('.mp3') == true)
+    else if(_.endsWith(regionLink,'.mp3') == true)
     {
       region = 'AUDIO';
     }
-    else if(regionLink.endsWith('.jpg') == true || regionLink.endsWith('.jpeg') == true || regionLink.endsWith('.png') == true || regionLink.endsWith('.gif') == true)
+    else if(_.endsWith(regionLink,'.jpg') == true || _.endsWith(regionLink,'.jpeg') == true || _.endsWith(regionLink,'.png') == true || _.endsWith(regionLink,'.gif') == true)
     {
       region = 'IMAGE';
     }
@@ -835,7 +835,7 @@ handleRegionClick(hotspotID) {
             }
             if(regionDetails.hotspotType !== 'PAGENUMBER' || regionDetails.hotspotType !== 'EMAIL' || regionDetails.hotspotType !== 'LTILINK')
             {
-              if(!((regionDetails.linkValue).startsWith("http")) && !((regionDetails.linkValue).startsWith("https")))
+              if(!(_.startsWith(regionDetails.linkValue,"http")) && !(_.startsWith(regionDetails.linkValue,"https")))
                 {
                   if(basepath !== undefined)
                   {

@@ -127,7 +127,7 @@ used for before mounting occurs. */
     currentbook.ssoKey = ssoKey;
     currentbook.authorName = bookData.author ? bookData.author : this.props.book.bookinfo.book.author;
     var tempThumbnail = bookData.image ? bookData.image : this.props.book.bookinfo.book.thumbnailimg;
-    if(!tempThumbnail.startsWith("http"))
+    if(tempThumbnail.indexOf("http") !== 0)
     {
       tempThumbnail = serverDetails+'/ebookassets/'+this.props.book.bookinfo.book.globalbookid+tempThumbnail;
     }

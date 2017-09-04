@@ -3,6 +3,7 @@
 // import axios from 'axios';
 // import { config } from '../../../../config/environments';
 // const ROOT_URL = 'http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/searchbook?bookid=7443104&globalbookid=CM76820710&sortby=1&version=1.0&authkey=31358503403719696212017&outputformat=JSON';
+import fetch from 'isomorphic-fetch';
 
 export const SEARCH = 'SEARCH';
 export const CLEAR_SEARCH_OBJ = 'CLEAR_SEARCH_OBJ';

@@ -994,7 +994,7 @@ function getAssetURLForPDFDownload(config,cb){
                 }
             }
         }
-        linewiseHighlightList.sort((lh1, lh2) => lh1.top - lh2.top);
+        linewiseHighlightList.sort(function(lh1, lh2){return (lh1.top - lh2.top)});
         var parentElement = document.createElement('div');
         parentElement.setAttribute("id", "highlightcornerimages");
         var finaltop = 0;
@@ -1005,7 +1005,7 @@ function getAssetURLForPDFDownload(config,cb){
                 isOverlap = true;
             }
             var highlightList1 = linewiseHighlightList[m].highlightList;
-            highlightList1.sort((lh1, lh2) => lh1.leftpos - lh2.leftpos);
+            highlightList1.sort(function(lh1, lh2){return (lh1.leftpos - lh2.leftpos)});
             for (var n = 0; n < highlightList1.length; n++) {
                 finaltop = finaltop + 32;
                 var highlightColor = highlightList1[n].color;
