@@ -73,7 +73,7 @@ class MoreMenuComponent extends React.Component {
       anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
       targetOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
-      <MenuItem primaryText={this.props.messages !== undefined ? this.props.messages.signOutBtn : 'Sign Out'} />
+      <MenuItem id="signOutButton" primaryText={this.props.messages !== undefined ? this.props.messages.signOutBtn : 'Sign Out'} />
     </IconMenu>
     );
   }

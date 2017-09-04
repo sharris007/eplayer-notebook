@@ -26,7 +26,6 @@ import isExisting from '../support/check/isExisting';
 import isVisible from '../support/check/isVisible';
 import waitFor from '../support/action/waitFor';
 import waitForVisible from '../support/action/waitForVisible';
-import waitForVisibleBookshelf from '../support/action/waitForVisibleBookshelf'
 
 module.exports = function then() {
     this.Then(
@@ -167,11 +166,6 @@ module.exports = function then() {
     this.Then(
         /^I expect that a (alertbox|confirmbox|prompt)( not)* contains the text "([^"]*)?"$/,
         checkModalText
-    );
-
-     this.Then(
-        /^I expect that element "([^"]*)?" will( not)* exist$/,
-        waitForVisibleBookshelf
     );
 
 };

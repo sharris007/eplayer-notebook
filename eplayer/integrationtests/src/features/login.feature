@@ -29,8 +29,8 @@ Scenario: should not let you log in with wrong Username and wrong password
     Then I expect that element ".panel-title.pe-form--error.ng-binding" becomes visible
 
 Scenario: should let you log in with correct Username and correct Password
-    When I set "amit_qa_edu2" to the inputfield "#username"
-    Then I expect that element "#username" contains the text "amit_qa_edu2"
-    When I set "Pa55word" to the inputfield "#password"
+    When I set "et1_qaautomation_edu1" to the inputfield "#username"
+    Then I expect that element "#username" contains the text "et1_qaautomation_edu1"
+    When I set "Pa55word@123" to the inputfield "#password"
     And I click on the button "#mainButton"
     Then I expect that element "#bookshelf" becomes visible 
