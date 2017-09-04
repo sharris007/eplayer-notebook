@@ -911,7 +911,7 @@ function getAssetURLForPDFDownload(config,cb){
                   regionElement.onmouseover = function(event){
                     _this.triggerEvent("TransparentRegionHovered", event.currentTarget.id);
                   }
-                  regionElement.onmouseout = function(){
+                  regionElement.onmouseout = function(event){
                     _this.triggerEvent("TransparentRegionUnhovered", event.currentTarget.id);
                   }
                 }
