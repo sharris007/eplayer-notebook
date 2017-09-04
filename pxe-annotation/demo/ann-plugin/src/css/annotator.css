@@ -402,7 +402,7 @@
 .annotator-filter .annotator-filter-navigation button,
 .annotator-editor .annotator-controls {
 	text-align: right;
-	padding: 3px;
+	/*padding: 3px;*/
 	border-top: solid 1px #e9e9e9;
 	background-color: rgb(212, 212, 212);
 	background-image: -webkit-gradient(
@@ -790,8 +790,8 @@
 }
 .annotator-editor .annotator-controls{
 	background: #ffffff;
-	height: 40px;	
-	line-height: 40px;
+	height: 47px;	
+	/*line-height: 40px;*/
 }
 .annotator-editor a{
 	background: none;
@@ -834,18 +834,24 @@
     line-height: 32px;
     margin-left: 3px;
 }
+
 .annotator-handle {
-	/*display:none;*/
-	visibility: hidden;
-    width: 16px;
-    height: 16px;
-    position: absolute;
-    right: -25px;
-    margin-top:5px;
-    background-color: inherit;
-	background-size: contain;
-	border-radius:2px;
-	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAS1BMVEUAAAD////////////////////////////////////////////9/f39/f39/f39/f3+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7///+44xWBAAAAF3RSTlMADhAgMD9AUF9gcH+AkJ+gv8DP0N/v8Nn9WwcAAAEvSURBVHgB7MGBAAAAAMOg+1MfZNUAAAAAAAAAAAAAAAAAAAAAyHmzdYyFIBAEQRQFVxdRXFdx7n9S3yOazLGD7qkT/LA+e6+H6351XU6uUQb8q870TQBwZgILAByTA+tABSb3DWfEZ8YDLogvL3Aruy8tcJt2nwAY95mRgSvgowJb2NedLyOwH52PCQR8XCDks2y31ZwvI3AdnI8MBHxcIOCjAkfARwWW2L4IgYAvFbA6ngYI+KjA+deemhi4BPZKC8R8eqD3SYG30J4KgS24V1Ig4OMCAZ8Y2LxPDHxH90UFBH1K4Op5eiDo0wFrzEcDFtDHBQI+LhDw8YCxPdUBa3SvVMAF9HGBgI8O7HEfGRjdKxWwgT4uEPBRge0Q5/GB4X0RAZ+gjwZEfTQg6rMvVvUGjosMOxYAAAAASUVORK5CYII=);
+/*display:none;*/
+visibility: hidden;
+   /*width: 16px;
+   height: 16px;*/
+   width: 24px;
+   height: 24px;
+   position: absolute;
+   right: -25px;
+   /*margin-top:5px;*/
+   background-color: inherit;
+background-size: contain;
+/*border-radius:2px;
+background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAS1BMVEUAAAD////////////////////////////////////////////9/f39/f39/f39/f3+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7///+44xWBAAAAF3RSTlMADhAgMD9AUF9gcH+AkJ+gv8DP0N/v8Nn9WwcAAAEvSURBVHgB7MGBAAAAAMOg+1MfZNUAAAAAAAAAAAAAAAAAAAAAyHmzdYyFIBAEQRQFVxdRXFdx7n9S3yOazLGD7qkT/LA+e6+H6351XU6uUQb8q870TQBwZgILAByTA+tABSb3DWfEZ8YDLogvL3Aruy8tcJt2nwAY95mRgSvgowJb2NedLyOwH52PCQR8XCDks2y31ZwvI3AdnI8MBHxcIOCjAkfARwWW2L4IgYAvFbA6ngYI+KjA+deemhi4BPZKC8R8eqD3SYG30J4KgS24V1Ig4OMCAZ8Y2LxPDHxH90UFBH1K4Op5eiDo0wFrzEcDFtDHBQI+LhDw8YCxPdUBa3SvVMAF9HGBgI8O7HEfGRjdKxWwgT4uEPBRge0Q5/GB4X0RAZ+gjwZEfTQg6rMvVvUGjosMOxYAAAAASUVORK5CYII=);*/
+text-align: center;
+padding: 1px;
+cursor: pointer;
 }
 .annotator-save.disabled-save, 
 .annotator-color-container.disabled-save,
@@ -871,8 +877,8 @@
 }
 .annotator-editor .annotator-delete-container{
 	display: inline-block;
-	float: right;
-	margin: 10px;	
+	float: left;
+	margin: 14px 20px;	
 	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAM5JREFUOBFjZMACkjMzQxn+MzQzMjC+QJb+z/BfgoGRoXbu9OmrkcVBbBZ0ARCf6T8jN5DqmD1j2gIQHwZSM7ISgBaA5DAAY2pGdhLQpjhkGbDNQAGsLsIiDlS3iBFmAMi2f///z4fxiaGZGBkTYa5mIkYDMWqwGsTIyHAYhEEG4GKjG47VIKCie1AMUo+LDZKDA1wGwRUQyxg1iHBIDb4wwppp/zMwBkI8A8x1ONjonsVqEMP//3xwhbjYcAUQBvXD6B/j/69olhDkIusBAH5bPy1GYxjbAAAAAElFTkSuQmCC');
 	background-size: contain;
     width: 18px;
@@ -901,9 +907,9 @@
 .show-edit-options .annotator-edit-container, .show-edit-options .annotator-share-text, .show-edit-options .annotator-share{
 	display: none;
 }
-.annotator-controls a {
+/*.annotator-controls a {
 	display: none;
-}
+}*/
 .show-edit-options .annotator-controls a{
 	display: inline;
 }
@@ -998,7 +1004,7 @@
   letter-spacing: -0.3px;
   text-align: left;
   color: #252525;
-  margin-left: 6px;
+  /*margin-left: 6px;*/
 }
 .annotator-confirm-cancel {
   float: right;
@@ -1044,12 +1050,16 @@
 	display: none;
 }
 .ann-confirm-section{
-	width:35%;
+	/*width:35%; */
 	float:left;
+	margin: 13px 10px;
 }
 .ann-canceldelete-section{
-	width: 65%;
-    float: right;
+	/*width: 65%;
+    float: right;*/
+    position: relative;
+    top: 13px;
+    right: 10px;
 }
 .annotator-panel-4{
 	width: 100%;
@@ -1156,10 +1166,12 @@
 	width: 110px;
   	height: 22px;
  	border-radius: 100px;
+ 	cursor: pointer;
 }
 
 .annotator-color-select-container {
 	margin: 21px 0px;
+	cursor: pointer;
 }
 
 .annotator-Rect-Pos {
@@ -1213,6 +1225,7 @@
 	width: 18px;
     height: 18px;
     border-radius: 50%;
+    cursor: pointer;
 }
 
 .annotator-edit-Note-Panel-1-circle-green {

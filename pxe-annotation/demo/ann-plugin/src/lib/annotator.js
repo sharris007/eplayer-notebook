@@ -377,52 +377,51 @@ Annotator = (function(_super) {
       }
     }
   };
+  
   Annotator.prototype.highlightRange = function(normedRange, cssClass) {
-    var hl, node, white, _i, _len, _ref, _results, handle;
-    if (cssClass == null) {
-      cssClass = 'annotator-hl';
-    }
-    if(normedRange.note && normedRange.note.length)
-      cssClass+=" highlight-note";
-    white = /^\s*$/;
-    var annBgColor = '';
-    var noteIconBgColor = '';
-    if(normedRange.color == '#FFD232') { //Yellow
-        annBgColor = 'rgba(248,230,0,0.5)';
-        noteIconBgColor = '#FFD232';
-    } else if (normedRange.color == '#55DF49') { //Green
-        annBgColor = 'rgba(143,218,60,0.4)';
-        noteIconBgColor = '#55DF49';
-    } else if (normedRange.color == '#FC92CF') { //Pink
-        annBgColor = 'rgba(254,132,201,0.5)';
-        noteIconBgColor = '#FC92CF';
-    } else if (normedRange.color == '#ccf5fd') { //Share(Blue)
-        annBgColor = '#ccf5fd';
-        noteIconBgColor = '#00a4e0';
-    } else {
-        annBgColor = normedRange.color;
-        noteIconBgColor = normedRange.color;
-    }
-    hl = $("<span class='" + cssClass + "' style=background:" + annBgColor + "></span>");
-    handle=$("<span class='annotator-handle' style=background-color:" + noteIconBgColor + "></span>");
-    _ref = normedRange.textNodes();
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      node = _ref[_i];
-      if (!white.test(node.nodeValue)) {
-        _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
-        if($(node).closest('.pxereaderSearchHighlight').length > 0) {
-          $(node).parent().find('.annotator-handle').css('background-color', normedRange.color);
-        }
-        handle='';
-      }
-    }
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(normedRange.toRange());
-    this.alignMathMlNote();
-    this.alignNotes();
-    return _results;
-  };
+   var hl, node, white, _i, _len, _ref, _results, handle;
+   if (cssClass == null) {
+    cssClass = 'annotator-hl';
+   }
+   if(normedRange.note && normedRange.note.length)
+    cssClass+=" highlight-note";
+   white = /^\s*$/;
+   var annBgColor = '', noteIconBgColor = '', noteText = '';
+   if(normedRange.color == '#FFD232') { //Yellow
+      annBgColor = noteIconBgColor = 'rgba(248,230,0,0.5)';
+      noteText = 'Q';
+   } else if (normedRange.color == '#55DF49') { //Green
+      annBgColor = noteIconBgColor = 'rgba(143,218,60,0.4)';
+      noteText = 'M';
+   } else if (normedRange.color == '#FC92CF') { //Pink
+      annBgColor = noteIconBgColor = 'rgba(254,132,201,0.5)';
+      noteText = 'O';
+   } else if (normedRange.color == '#ccf5fd') { //Share(Blue)
+      annBgColor = noteIconBgColor = '#ccf5fd';
+      noteText = 'S';
+   } else {
+      annBgColor = noteIconBgColor = normedRange.color;
+   }
+   hl = $("<span class='" + cssClass + "' style=background:" + annBgColor + "></span>");
+   handle=$("<span class='annotator-handle' style=background-color:" + noteIconBgColor + "></span>");
+   _ref = normedRange.textNodes();
+   _results = [];
+   for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+     node = _ref[_i];
+     if (!white.test(node.nodeValue)) {
+       _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
+       if($(node).closest('.pxereaderSearchHighlight').length > 0) {
+         $(node).parent().find('.annotator-handle').text(noteText).css('background-color', normedRange.color);
+       }
+       handle='';
+     }
+   }
+   window.getSelection().removeAllRanges();
+   window.getSelection().addRange(normedRange.toRange());
+   this.alignMathMlNote();
+   this.alignNotes();
+   return _results;
+ };
 
   Annotator.prototype.highlightRanges = function(normedRanges, cssClass) {
     var highlights, r, _i, _len;

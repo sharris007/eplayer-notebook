@@ -97,6 +97,18 @@ Annotator.Editor = (function(_super) {
 
   var panel3 ='<div class="annotator-panel-3"> \
                 <div class="annotator-controls"> \
+                  <div class="annotator-delete-container"> \
+                    <div  title="' + locale_data[language]['delete'] + '"></div> \
+                  </div> \
+                  <div class="ann-cancel-delete-confirm-section hide"> \
+                    <div class="ann-confirm-section"> \
+                      <label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label> \
+                    </div> \
+                    <div class = "ann-canceldelete-section"> \
+                      <a class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a> \
+                      <a class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a> \
+                    </div> \
+                  </div> \
                   <!--div class="ann-share-section"> \
                     <label class="annotator-share-text">' + locale_data[language]['share'] + '</label> \
                       <div class="annotator-share" title="' + locale_data[language]['share'] + '"> \
@@ -150,6 +162,9 @@ Annotator.Editor = (function(_super) {
     }
     $('.annotator-select-inner-circle').hide()
     $(dom).find('.annotator-select-inner-circle').show();
+
+    $('.ann-cancel-delete-confirm-section').hide();
+    $('.annotator-delete-container').show()
 
     this.onColorChange(dom);
   }
@@ -237,8 +252,10 @@ Annotator.Editor = (function(_super) {
     this.element.addClass('hide-note')
     return $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
   }
-  Editor.prototype.onDeleteIconClick=function(event) {  
-    var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'), panel3Sec =  this.element.find('.annotator-panel-3'), panel4Sec = this.element.find('.annotator-panel-4');
+  Editor.prototype.onDeleteIconClick=function(event) { 
+    $(event.target).hide(); 
+    $('.ann-cancel-delete-confirm-section').removeClass('hide').css({"display": "block"});
+    /*var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'), panel3Sec =  this.element.find('.annotator-panel-3'), panel4Sec = this.element.find('.annotator-panel-4');
     if($(panel2Sec).find('textarea').val().trim()) {
         panel1Sec.addClass('hide-popup').after(panel4);
         panel4Sec.addClass('annotator-panel-triangle');
@@ -248,7 +265,7 @@ Annotator.Editor = (function(_super) {
     }
     else {
         this.onDeleteClick(event);
-    }
+    }*/
   }
   Editor.prototype.onCancelClick=function(event) {  
     var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'), panel3Sec =  this.element.find('.annotator-panel-3'), panel4Sec = this.element.find('.annotator-panel-4') ;
@@ -258,6 +275,7 @@ Annotator.Editor = (function(_super) {
     panel4Sec.remove();
     $(panel2Sec).find('textarea').removeAttr('readonly');
   }
+
   Editor.prototype.onEditClick=function(event) {  
     this.element.addClass('show-edit-options');
     $(this.element).find('textarea').show();
@@ -288,48 +306,45 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onColorChange=function(target) {
-    window.getSelection().removeAllRanges();
-    this.element.removeClass('hide-note');
-    var checkoverlap = $('.annotator-editor').hasClass('overlapingpopup');
-    var isTopAlign=(!this.annotation.color)?true:false;
-    if(window.currAnn) {
-       ($('#noteContainer').css('display') == 'block') ? $('.annotator-edit-container').show() : $('.annotator-edit-container').hide();
-       $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [window.currAnn]]);
-    }
-    if (this.annotation._id===undefined && this.currentAnnotation !== null) {     
-      var curAnn =this.currentAnnotation;   
-      Object.assign(this.annotation, curAnn);   
-    }
-    var colorCode = target.getAttribute('value');
-    this.annotation.color=this.annotation.lastColor=colorCode;
-    /*$('.annotator-color').removeClass('active');
-    $(event.target).addClass('active');*/
-    if($(this.annotation.highlights).closest('.pxereaderSearchHighlight').length>0) {
-       $(this.annotation.highlights).unwrap('.pxereaderSearchHighlight');
-       $(this.annotation.highlights).parents().removeClass('pxereaderSearchHighlight');
-       $(this.annotation.highlights).find('.annotator-handle').css('background-color', 'inherit');
-    }
-    var annBgColor = '';
-    var noteIconBgColor = '';
-    if(colorCode == '#FFD232') { //Yellow
-        annBgColor = 'rgba(248, 230, 0, 0.5)';
-        noteIconBgColor = '#FFD232';
-    } else if (colorCode == '#55DF49') { //Green
-        annBgColor = 'rgba(143, 218, 60, 0.4)';
-        noteIconBgColor = '#55DF49';
-    } else if (colorCode == '#FC92CF') { //Pink
-        annBgColor = 'rgba(254, 132, 201, 0.5)';
-        noteIconBgColor = '#FC92CF';
-    } else if (colorCode == '#ccf5fd') { //Share(Blue)
-        annBgColor = '#ccf5fd';
-        noteIconBgColor = '#00a4e0';
-    } else { 
-        annBgColor = colorCode;
-        noteIconBgColor = colorCode;
-    }
-    $(this.annotation.highlights).css('background', annBgColor);
-    $(this.annotation.highlights).find('.annotator-handle').css('background-color', noteIconBgColor);
-    if (isTopAlign) {
+   window.getSelection().removeAllRanges();
+   this.element.removeClass('hide-note');
+   var checkoverlap = $('.annotator-editor').hasClass('overlapingpopup');
+   var isTopAlign=(!this.annotation.color)?true:false;
+   if(window.currAnn) {
+    ($('#noteContainer').css('display') == 'block') ? $('.annotator-edit-container').show() : $('.annotator-edit-container').hide();
+    $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [window.currAnn]]);
+   }
+   if (this.annotation._id===undefined && this.currentAnnotation !== null) {     
+    var curAnn =this.currentAnnotation;   
+    Object.assign(this.annotation, curAnn);   
+   }
+   var colorCode = target.getAttribute('value');
+   this.annotation.color=this.annotation.lastColor=colorCode;
+   /*$('.annotator-color').removeClass('active');
+   $(event.target).addClass('active');*/
+   if($(this.annotation.highlights).closest('.pxereaderSearchHighlight').length>0) {
+    $(this.annotation.highlights).unwrap('.pxereaderSearchHighlight');
+    $(this.annotation.highlights).parents().removeClass('pxereaderSearchHighlight');
+    $(this.annotation.highlights).find('.annotator-handle').css('background-color', 'inherit');
+   }
+   var annBgColor = '', noteIconBgColor = '', noteText = '';
+   if(colorCode == '#FFD232') { //Yellow
+      annBgColor = noteIconBgColor = 'rgba(248, 230, 0, 0.5)';
+      noteText = 'Q';
+   } else if (colorCode == '#55DF49') { //Green
+      annBgColor = noteIconBgColor = 'rgba(143, 218, 60, 0.4)';
+      noteText = 'M';
+   } else if (colorCode == '#FC92CF') { //Pink
+      annBgColor = noteIconBgColor = 'rgba(254, 132, 201, 0.5)';
+      noteText = 'O';
+   } else if (colorCode == '#ccf5fd') { //Share(Blue)
+      annBgColor = noteIconBgColor = '#ccf5fd';
+      noteText = 'S';
+   } else { 
+      annBgColor = noteIconBgColor = colorCode;
+   }
+   $(this.annotation.highlights).css('background', annBgColor);
+   $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);  if (isTopAlign) {
       var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height()-20;
       this.element.css({top:topPosition});
     }
@@ -390,7 +405,10 @@ Annotator.Editor = (function(_super) {
       $(".edit-Note-Panel-1 .annotator-select-rect").hide();
       $(".edit-Note-Panel-1 .edit-note-circle").hide();
       $('.edit-Note-Panel-1').find("[value=" + this.annotation.color + "]").show();
-      $(".edit-note-rect").css({ "padding": "20px", "margin-top": "0px", "margin-left": "0px"})
+      $(".edit-note-rect").css({ "padding": "20px", "margin-top": "0px", "margin-left": "0px"});
+
+      $('.ann-cancel-delete-confirm-section').hide();
+      $('.annotator-delete-container').show()
       console.log("this.annotation.color : ", this.annotation.color)
     } else { // Initial annotation
       $('.edit-Note-Panel-1').hide();
@@ -421,40 +439,40 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.hide = function(event) {
-    var annBgColor = '';
-    var noteIconBgColor = '';
-    if(this.annotation.color == '#FFD232') { //Yellow
-        annBgColor = 'rgba(248, 230, 0, 0.5)';
-        noteIconBgColor = '#FFD232';
-    } else if (this.annotation.color == '#55DF49') { //Green
-        annBgColor = 'rgba(143, 218, 60, 0.4)';
-        noteIconBgColor = '#55DF49';
-    } else if (this.annotation.color == '#FC92CF') { //Pink
-        annBgColor = 'rgba(254, 132, 201, 0.5)';
-        noteIconBgColor = '#FC92CF';
-    } else if (this.annotation.color == '#ccf5fd') { //Share(Blue)
-        annBgColor = '#ccf5fd';
-        noteIconBgColor = '#00a4e0';
-    } else {
-        annBgColor = this.annotation.color;
-        noteIconBgColor = this.annotation.color;
-    }
-    this.annotation.text = $('.annotator-panel-2').find('textarea').val();
-    $(this.annotation.highlights).css('background', annBgColor);
-    $(this.annotation.highlights).find('.annotator-handle').css('background-color', noteIconBgColor);
-    Annotator.Util.preventEventDefault(event);
-    this.element.addClass(this.classes.hide);
-    this.element.addClass('hide-note').removeClass('show-edit-options');
-    $('.annotator-edit-container').show();
-    $('.annotator-panel-1').removeClass('disabled-save');
-    this.onCancelClick();
-    this.element.find('textarea').removeAttr('style');
-    this.element.find('input').removeAttr('style'); 
-    this.currentAnnotation = this.textareaHeight = null;
-    if(this.annotation.color && this.annotation.color.length)
-      this.publish('save', [this.annotation]);
-    return this.publish('hide');
-  };
+   var annBgColor = '', noteIconBgColor = '', noteText = '';
+   if(this.annotation.color == '#FFD232') { //Yellow
+       annBgColor = noteIconBgColor = 'rgba(248, 230, 0, 0.5)';
+       noteText = 'Q';
+   } else if (this.annotation.color == '#55DF49') { //Green
+       annBgColor = noteIconBgColor = 'rgba(143, 218, 60, 0.4)';
+       noteText = 'M';
+   } else if (this.annotation.color == '#FC92CF') { //Pink
+       annBgColor = noteIconBgColor = 'rgba(254, 132, 201, 0.5)';
+       noteText = 'O'
+   } else if (this.annotation.color == '#ccf5fd') { //Share(Blue)
+       annBgColor = noteIconBgColor = '#ccf5fd';
+       noteText = 'S';
+   } else {
+       annBgColor = noteIconBgColor = this.annotation.color;
+   }
+   this.annotation.text = $('.annotator-panel-2').find('textarea').val();
+   var noteVal = $.trim(this.annotation.text);
+   $(this.annotation.highlights).css('background', annBgColor)[(noteVal)?'addClass':'removeClass']('highlight-note');
+   $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);
+   Annotator.Util.preventEventDefault(event);
+   this.element.addClass(this.classes.hide);
+   this.element.addClass('hide-note').removeClass('show-edit-options');
+   $('.annotator-edit-container').show();
+   $('.annotator-panel-1').removeClass('disabled-save');
+   this.onCancelClick();
+   this.element.find('textarea').removeAttr('style');
+   this.element.find('input').removeAttr('style'); 
+   this.currentAnnotation = this.textareaHeight = null;
+   if(this.annotation.color && this.annotation.color.length)
+     this.publish('save', [this.annotation]);
+   return this.publish('hide');
+ };
+ 
   Editor.prototype.hasClass=function(element, className) {
     do {
       if (element.classList && element.classList.contains(className)) {
