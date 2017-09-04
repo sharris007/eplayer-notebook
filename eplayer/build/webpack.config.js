@@ -67,7 +67,8 @@ webpackConfig.plugins = [
   new CopyWebpackPlugin([
       { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' },
       { from: annotationLibPath, to: 'annotation-lib' },
-      { from: webInfPath, to: 'WEB-INF' }/* ,
+      { from: webInfPath, to: 'WEB-INF' },
+      { from: path.join(__dirname,'../public/pxe'), to:'pxe_scripts'}/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ]),
   new webpack.ProvidePlugin({
