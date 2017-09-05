@@ -3,7 +3,7 @@
   import { connect } from 'react-redux';
   import find from 'lodash/find';
   import WidgetManager from '../../../components/widget-integration/widgetManager';
-  import Header from '../../../components/Header';
+  import { HeaderComponent, Drawer} from '@pearson-incubator/vega-core';
   import { pageDetails, customAttributes, pageLoadData, pageUnLoadData } from '../../../../const/Mockdata';
   import './Book.scss';
   import { browserHistory } from 'react-router';
@@ -22,7 +22,10 @@
   import { Wrapper } from 'pxe-wrapper';
   import { PopUpInfo } from '@pearson-incubator/popup-info';
   import RefreshIndicator from 'material-ui/RefreshIndicator';
-  import { resources, domain, typeConstants } from '../../../../const/Settings'
+  import { resources, domain, typeConstants } from '../../../../const/Settings';
+  import Search from '../../../components/search/containers/searchContainer';
+  import Utils from '../../../components/utils';
+
   export class Book extends Component {
     constructor(props) {
       super(props);
@@ -38,9 +41,10 @@
         }
       });
       this.state = {
-        classname: 'headerBar',
+        classname: 'headerBar visible',
         viewerContent: true,
         drawerOpen: false,
+        showViewer: false,
         currentPageDetails: '',
         pageDetails,
         currentPageTitle: '',
@@ -64,7 +68,10 @@
         pageLoad: false,
         currentPageId: '',
         operatingSystemCode: navigator.platform,
-        organizationId: ''
+        organizationId: '',
+        prefOpen: false,
+        searchOpen: false,
+        headerExists: false
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
@@ -158,8 +165,8 @@
         }
 
       }
-      if (typeof nextProps.tocData === "object" && nextProps.tocData && nextProps.tocData.bookDetails && nextProps.tocData.bookDetails.indexId) {
-        this.bookIndexId = nextProps.tocData.bookDetails.indexId;
+      if (typeof nextProps.bookdetailsdata === "object" && nextProps.bookdetailsdata && nextProps.bookdetailsdata.bookDetail && nextProps.bookdetailsdata.bookDetail.metadata && nextProps.bookdetailsdata.bookDetail.metadata.indexId) {
+        this.bookIndexId = nextProps.bookdetailsdata.bookDetail.metadata.indexId;
         this.searchUrl = resources.links.etextSearchUrl[domain.getEnvType()] + '/search?indexId=' + this.bookIndexId + '&q=searchText&s=0&n=' + resources.constants.TextSearchLimit;
       }
       if (nextProps.isGoToPageRecived) {
@@ -565,6 +572,105 @@
         this.onNavChange(currentPage);
       }
     };
+
+    handleDrawerkeyselect = (event) => {
+      if ((event.which || event.keyCode) === 13) {
+        this.setState({ drawerOpen: true });
+      }
+      this.viewerContentCallBack(false);
+    }
+
+    handleDrawer = () => {
+      this.setState({ drawerOpen: true });
+      this.viewerContentCallBack(false);
+    }
+
+    hideDrawer = () => {
+      if (this.state.drawerOpen) {
+        document.getElementsByClassName('drawerIcon')[0].focus();
+      }
+      this.setState({ drawerOpen: false });
+      this.viewerContentCallBack(true);
+    }
+
+    handleBookshelfClick = () => {
+      if (this.props.book.toc.content !== undefined) {
+        this.props.book.toc.content = {list:[]};
+        this.props.book.bookmarks = [];
+        this.props.book.bookinfo = [];
+        this.props.book.annTotalData = [];
+      }
+      if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+        let redirectConsoleUrl   = consoleUrl[envType];
+        window.location.href = redirectConsoleUrl;
+      }else {
+        const langQuery = localStorage.getItem('bookshelfLang');
+        if (langQuery && langQuery !== '?languageid=1') {
+          browserHistory.push(`/eplayer/bookshelf${langQuery}`);
+        } else {
+          browserHistory.push('/eplayer/bookshelf');
+        }
+      }
+      this.setState({ open: false });
+    }
+
+    handleBookshelfKeySelect = (event) => {
+      if ((event.which || event.keyCode) === 13) {
+        browserHistory.push('/');
+        this.setState({ open: false });
+      }
+    }
+
+    handlePreferenceClick = () => {
+      if (this.state.prefOpen === true) {
+        this.setState({ prefOpen: false });
+      } else {
+        this.setState({ prefOpen: true });
+        this.setState({ searchOpen: false });
+      }
+    }
+
+    handlePreferenceKeySelect = (event) => {
+      if ((event.which || event.keyCode) === 13) {
+        this.handlePreferenceClick();
+      }
+    }
+    searchClick = (isopenparam) => {
+      if (this.state.searchOpen === true || isopenparam == 'closesearch') {
+        this.setState({ searchOpen: false });
+      } else {
+        this.setState({ searchOpen: true });
+        this.setState({ prefOpen: false });
+      }
+    }
+    goToTextChange = (e) => {
+      this.setState({ goToTextVal: e.target.value });
+    }
+
+    goToPageClick = () => {
+      this.props.goToPageClick(this.state.goToTextVal);
+    }
+
+    goToPageOnKeyUp = (e) => {
+      if (e.keyCode === 13) {
+        this.setState({ goToTextVal: e.target.value });
+        this.goToPageClick();
+      }
+    }
+
+    searchKeySelect = (event) => {
+      if ((event.which || event.keyCode) === 13) {
+        this.searchClick();
+      }
+      if ((event.which || event.keyCode) === 27) {
+        this.searchClick();
+      }
+    }
+    // Applies the style to the HTML Body content
+    getThemeFromPreference = () => (this.props.preferences.fetched ?
+        this.props.preferences.data :
+        this.defaultPreference
+    );
     render() {
       const callbacks = {};
       const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata } = this.props; // eslint-disable-line react/prop-types
@@ -587,6 +693,38 @@
       }
       const currentBookId = this.props.params.pageId;
       //End of Wrapper PxePlayer
+
+      const bookmarkIconData = {
+        addBookmarkHandler: callbacks.addBookmarkHandler,
+        removeBookmarkHandler: callbacks.removeBookmarkHandler,
+        isCurrentPageBookmarked: callbacks.isCurrentPageBookmarked
+      };
+
+      const bookDetails = {
+        title: '',
+        author: ''
+      };
+      if (this.props.book.tocReceived) {
+        bookDetails.title = this.props.book.toc.content.mainTitle;
+        bookDetails.author = this.props.book.toc.content.author;
+      }
+      const tocCompData = {
+        separateToggleIcon: true,
+        data: this.props.book.toc ? this.props.book.toc : {},
+        depth: 5,
+        childField: 'children',
+        isTocWrapperRequired: false
+      };
+
+      const pages = bootstrapParams.pageDetails.playListURL || [];
+      const bookmarArr = this.props.book.bookmarks ? this.props.book.bookmarks : [];
+      const bookmarkCompData = {
+        bookmarksArr: this.props.book.bookmarks ? Utils.sortBookmarkByPage(bookmarArr, pages): []
+      };
+      const notesCompData = {
+        notes: this.props.book.annotations ? this.props.book.annTotalData : []
+      };
+
       const pxeClient = axios.create({
         baseURL: bootstrapParams.pageDetails.baseUrl,
         timeout: 5000,
@@ -626,7 +764,49 @@
         viewerStyles = { productData.viewerStyles } 
         componentFactory = { { getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } } } 
         clients = { { page: pxeClient } } 
-        metadata = { { environment: 'LOCAL' } }> 
+        metadata = { { environment: 'LOCAL' } }>
+        <div>
+          <div>
+             <div
+                className={`${this.state.classname} ${this.state.headerExists ? 'nav-up' : ''}`}
+                ref={(headerDiv) => { this.headerDOM = headerDiv; }}
+              >
+            <HeaderComponent
+                  bookshelfClick={this.handleBookshelfClick}
+                  drawerClick={this.handleDrawer}
+                  bookmarkIconData={bookmarkIconData}
+                  handlePreferenceClick={this.handlePreferenceClick}
+                  handleDrawerkeyselect={this.handleDrawerkeyselect}
+                  handleBookshelfKeySelect={this.handleBookshelfKeySelect}
+                  searchClick={this.searchClick}
+                  headerTitle={this.state.currentPageTitle}
+                  getPreference={this.getPreference}
+                  updatePreference={this.updatePreference}
+                  locale='en-US'
+                />
+              </div>
+              {
+              this.props.book.tocReceived &&
+                <Drawer
+                  isDocked={false}
+                  drawerWidth={400}
+                  isDraweropen={this.state.drawerOpen}
+                  hideDrawer={this.hideDrawer}
+                  bookDetails={bookDetails}
+                  tocData={tocCompData}
+                  bookmarkData={bookmarkCompData}
+                  notesData={notesCompData}
+                  currentPageId={this.state.currentPageId}
+                  bookCallbacks={callbacks}
+                  intl={this.props.intl}
+                />
+              }
+
+              
+              <div className="searchContainer">
+                {this.state.searchOpen ? <Search locale={this.props.locale} store={this.context.store} goToPage = {(pageId) => this.goToPage(pageId)} indexId = { {'indexId' : this.bookIndexId, 'searchUrl' : this.searchUrl} } searchKeySelect={this.searchKeySelect} listClick={this.searchClick} isET1="Y" /> : <div className="empty" />}
+              </div>
+          </div>
         { playlistReceived ?
           <div>
           <VegaViewPager
@@ -645,7 +825,8 @@
           currentPageId = { bootstrapParams.pageDetails.currentPageURL.id }
           /> 
           </div> : <div></div>
-        } 
+        }
+        </div> 
         </LearningContextProvider>
         );
       }

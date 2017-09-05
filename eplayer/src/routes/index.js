@@ -3,7 +3,6 @@ import { CoreLayout } from '../layouts/CoreLayout/CoreLayout';
 import loginRoute from './Login';
 import piLoginRoute from './Pilogin';
 import bookshelfRoute from './Bookshelf';
-import bookRoute from './Book';
 import eTbookshelfRoute from './ETBookshelf';
 import eTbookRoute from './ETBook';
 import pdfbookRoute from './PdfBook';
@@ -21,7 +20,6 @@ export const createRoutes = store => ({
   childRoutes: [
     loginRoute(store),
     bookshelfRoute(store),
-    bookRoute(store),
     pdfbookRoute(store),
     eTbookshelfRoute(store),
     eTbookRoute(store),
