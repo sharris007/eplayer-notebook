@@ -6,7 +6,7 @@ import CircularProgress from 'material-ui/CircularProgress';/* Import the Circul
 import isEmpty from 'lodash/isEmpty'; /* loadsh is a JavaScript utility library. And isEmpty method is used for Iterating arrays, objects and testing. */
 import Cookies from 'universal-cookie';
 import { addLocaleData } from 'react-intl';
-
+import _ from 'lodash';
 import errorCard from '../../../components/common/errorCard';
 import BookshelfHeader from '../../../components/BookshelfHeader';/* Import the bookshelfHeader for bookshelf. */
 import './Bookshelf.scss'; /* Importing the css file. */
@@ -141,8 +141,13 @@ export default class BookshelfPage extends React.Component {
   handleBookClick = (bookId, type) => {
     if ( type === 'et1') {
        /* BrowserHistory used for navigating the next page from current page. */
+       const bookObj = _.find(this.props.bookshelf.books.data.entries, bookData => bookData.bookId == bookId);
+       if(!bookObj.expired) {
+
       browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=standalone`);
-    } else if( type === 'et2'){
+    }
+
+    }  else if( type === 'et2'){
       browserHistory.push(`/eplayer/ETbook/${bookId}`);
     }
     else if( type === 'course') {
@@ -185,7 +190,7 @@ export default class BookshelfPage extends React.Component {
               lastName = booksArray[i].lastName;
             }
             // this else block added for temp purpose and will removed once firstname & lastname is available in composite bookshelf response
-            
+
           }
         }
       }
@@ -222,7 +227,9 @@ export default class BookshelfPage extends React.Component {
           userInfoLastModifiedDate: bookRef.userInfoLastModifiedDate,
           userBookLastModifiedDate: bookRef.userBookLastModifiedDate,
           userBookScenarioLastModifiedDate: bookRef.userBookScenarioLastModifiedDate,
-          roleTypeID: bookRef.roleTypeID
+          roleTypeID: bookRef.roleTypeID,
+          active: bookRef.active,
+          expired: bookRef.expired
         };
         booksdata.push(book);
       });
