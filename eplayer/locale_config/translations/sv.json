@@ -18,6 +18,7 @@
       "save":"SPARA",
       "confirm":"Bekräfta?",
       "delete":"RADERA",
-      "chactersLeft":"Tecken kvar"
-	}           
+      "chactersLeft":"Tecken kvar",
+			"Welcome":"Välkommen"
+	}
 }

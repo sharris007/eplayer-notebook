@@ -18,6 +18,7 @@
       "save":"SALVAR",
       "confirm":"Confirmar?",
       "delete":"BORRAR",
-      "chactersLeft":"Caracteres disponibles"
-      }           
+      "chactersLeft":"Caracteres disponibles",
+      "Welcome":"ようこそ"
+      }
 }

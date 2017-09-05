@@ -18,6 +18,7 @@
       "save":"保存",
       "confirm":"確認?",
       "delete":"刪除",
-      "chactersLeft":"剩餘字符"     
+      "chactersLeft":"剩餘字符",
+			"Welcome":"歡迎"
     }
-}   
+}

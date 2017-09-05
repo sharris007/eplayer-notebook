@@ -18,6 +18,7 @@
       "save":"保存",
       "confirm":"确认?",
       "delete":"删除",
-      "chactersLeft":"剩余字符"
-	}           
+      "chactersLeft":"剩余字符",
+			"Welcome":"欢迎"
+	}
 }

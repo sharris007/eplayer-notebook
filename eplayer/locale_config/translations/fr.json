@@ -4,7 +4,7 @@
       "myBookshelf": "Ma bibliothèque",
       "contents": "Contenu",
       "bookmarks": "Signets",
-      "notes" : "Remarques", 
+      "notes" : "Remarques",
       "Glossary":"Glossaire",
       "Footnotes": "Notes de bas de page",
       "Username": "Nom d'utilisateur",
@@ -18,7 +18,7 @@
       "save":"ENREGISTRER",
       "confirm":"Confirmer?",
       "delete":"EFFACER",
-      "chactersLeft":"Caractères restants"
-	}           
+      "chactersLeft":"Caractères restants",
+      "Welcome":"Bienvenue"
+	}
 }
-
