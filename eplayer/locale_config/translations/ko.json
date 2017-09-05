@@ -18,6 +18,7 @@
       "save":"구하다",
       "confirm":"확인?",
       "delete":"지우다",
-      "chactersLeft":"등장 인물"
-	}           
+      "chactersLeft":"등장 인물",
+			"Welcome":"환영"
+	}
 }

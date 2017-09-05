@@ -18,6 +18,7 @@
       "save":"KAYIT ETMEK",
       "confirm":"Onaylamak?",
       "delete":"SİL",
-      "chactersLeft":"Karakterler Sola"     
+      "chactersLeft":"Karakterler Sola",
+			"Welcome":"Hoşgeldiniz"     
     }
-}   
+}

@@ -18,6 +18,7 @@
       "save":"ZAPISAĆ",
       "confirm":"Potwierdzać?",
       "delete":"KASOWAĆ",
-      "chactersLeft":"Pozostałe znaki"    
+      "chactersLeft":"Pozostałe znaki",
+			"Welcome":"Witamy"   
     }
-}   
+}

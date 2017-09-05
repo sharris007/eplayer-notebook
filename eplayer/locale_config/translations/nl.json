@@ -18,6 +18,7 @@
       "save":"besparen",
       "confirm":"Bevestigen?",
       "delete":"verwijderen",
-      "chactersLeft":"Tekens links"
-	}           
+      "chactersLeft":"Tekens links",
+			"Welcome":"Welkom"
+	}
 }

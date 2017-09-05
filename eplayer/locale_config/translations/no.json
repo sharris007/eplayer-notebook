@@ -18,6 +18,7 @@
       "save":"LAGRE",
       "confirm":"Bekrefte?",
       "delete":"SLETT",
-      "chactersLeft":"Tegn igjen"
-	}           
+      "chactersLeft":"Tegn igjen",
+			"Welcome":"Velkommen"
+	}
 }

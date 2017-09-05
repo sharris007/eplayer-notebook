@@ -18,6 +18,7 @@
       "save":"SALVE",
       "confirm":"confirme?",
       "delete":"EXCLUIR",
-      "chactersLeft":"Caracteres restantes"
-	}           
+      "chactersLeft":"Caracteres restantes",
+			"Welcome":"Bem vinda"
+	}
 }
