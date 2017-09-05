@@ -110,6 +110,9 @@ used for before mounting occurs. */
         serverDetails = eT1Contants.ServerUrls[envType][bookserver];
       }
     }
+    currentbook.ssoKey = ssoKey;
+    currentbook.thumbnail = tempThumbnail;
+    currentbook.serverDetails = serverDetails;
     /* Await operator is used to wait for a Promise returned by an async function. */
     /* Method used for fetching the user details and book details. */
     if (this.props.location.query.sessionid === undefined
@@ -124,17 +127,14 @@ used for before mounting occurs. */
     }
     await this.props.fetchBookInfo(bookID, ssoKey,
               this.props.book.userInfo.userid, serverDetails, roleTypeID);
-    currentbook.ssoKey = ssoKey;
     currentbook.authorName = bookData.author ? bookData.author : this.props.book.bookinfo.book.author;
     var tempThumbnail = bookData.image ? bookData.image : this.props.book.bookinfo.book.thumbnailimg;
     if(tempThumbnail.indexOf("http") !== 0)
     {
       tempThumbnail = serverDetails+'/ebookassets/'+this.props.book.bookinfo.book.globalbookid+tempThumbnail;
     }
-    currentbook.thumbnail = tempThumbnail;
     currentbook.title = bookData.title ? bookData.title : this.props.book.bookinfo.book.title;
     currentbook.globalBookId = bookData.globalBookId ? bookData.globalBookId : this.props.book.bookinfo.book.globalbookid;
-    currentbook.serverDetails = serverDetails;
     await this.props.fetchBookFeatures(bookID,ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID);
     
   }
