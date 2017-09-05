@@ -867,7 +867,7 @@ function getAssetURLForPDFDownload(config,cb){
         if(hotspots.length>0)
         {
           var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
-          var regionType,mySpan,icon,iconArt,regionElement;
+          var regionType,mySpan,icon,iconArt,regionElement,iconDiv;
           var widthScale,heightScale;
           const pageWidth = $("#docViewer_ViewContainer_BG_0").width();
           const pageHeight = $("#docViewer_ViewContainer_BG_0").height();
@@ -898,11 +898,14 @@ function getAssetURLForPDFDownload(config,cb){
               }
               regionElement=document.createElement('div');
               regionElement.setAttribute('id',hotspots[i].regionID);
+              regionElement.setAttribute('name',hotspots[i].name);
               regionElement.style.left= (hotspots[i].x * widthScale)  + 'px';
               regionElement.style.top= (hotspots[i].y * heightScale) + 'px';
               regionElement.style.width=(hotspots[i].width * widthScale) + 'px';
               regionElement.style.height=(hotspots[i].height * heightScale) + 'px';
-              regionElement.setAttribute('name',hotspots[i].name);
+
+              iconDiv=document.createElement('div');
+
               if (regionType == 1)
               {
                 if(hotspots[i].transparent == true)
@@ -922,10 +925,16 @@ function getAssetURLForPDFDownload(config,cb){
               }
               else
               {
-                regionElement.style.backgroundImage = 'url('+iconArt+')';
+                iconDiv.style.width=(hotspots[i].width * widthScale) + 'px';
+                iconDiv.style.height=(hotspots[i].height * heightScale) + 'px';
+                iconDiv.style.left= (hotspots[i].x * widthScale)  + 'px';
+                iconDiv.style.top= (hotspots[i].y * heightScale) + 'px';
+                iconDiv.style.backgroundImage = 'url('+iconArt+')';
+                iconDiv.style.opacity = hotspotFeatures.iconhotspotalpha/100;
+                iconDiv.style.backgroundSize = 'cover';
               }
-              regionElement.style.backgroundSize = 'cover';
               regionElement.className='hotspot';
+              iconDiv.style.position='absolute';
               tooltip = document.createElement('span')
               tooltip.className='tooltiptext';
               tooltip.innerHTML = hotspots[i].name;
@@ -936,6 +945,7 @@ function getAssetURLForPDFDownload(config,cb){
                  }
               }
               regionElement.appendChild(tooltip);
+              parentPageElement.appendChild(iconDiv);
               parentPageElement.appendChild(regionElement);
             }
         }
