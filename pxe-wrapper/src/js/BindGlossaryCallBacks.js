@@ -15,8 +15,8 @@ export class BindGlossaryCallBacks {
     }
 
     bindGlossaryCallBacks(props) {
-      console.clear();
-      const bookDiv = document.getElementById(props.bookDiv);
+      // console.clear();
+      const bookDiv = props.node.contentDocument.body;
       this.glossaryDoms = [];
       this.glossaryUrlCollection = [];
       this.glossaryurlIndex = 0;
@@ -38,7 +38,7 @@ export class BindGlossaryCallBacks {
       if (this.glossaryUrlCollection.length > 0) {  
         this.triggerGlossaryService(this.glossaryUrlCollection[this.glossaryurlIndex]);
       } else {
-        new BindMoreInfoCallBacks({'glossaryCollection':this.glossaryCollection, 'bookDiv' : props.bookDiv});
+        new BindMoreInfoCallBacks({'glossaryCollection':this.glossaryCollection, 'node' : props.node});
       }
     }
 
@@ -59,7 +59,7 @@ export class BindGlossaryCallBacks {
       } else {
         console.log('Working : - ', 'this.glossaryurlIndex :- ', this.glossaryurlIndex, this.glossaryUrlCollection[this.glossaryurlIndex]);
         this.glossaryCollection = [];
-        const bookDiv = document.getElementById(this.props.bookDiv);
+        const bookDiv = this.props.node.contentDocument.body;
         this.props.divGlossaryRef.innerHTML = text;
         GlossaryPopUpClasses.forEach((classes) => {
           const bookDivQuerySelectorClasses = bookDiv.querySelectorAll(classes);
@@ -103,7 +103,7 @@ export class BindGlossaryCallBacks {
             }
           }
         });
-        new BindMoreInfoCallBacks({'glossaryCollection':this.glossaryCollection, 'bookDiv' : this.props.bookDiv});
+        new BindMoreInfoCallBacks({'glossaryCollection':this.glossaryCollection, 'node' : this.props.node});
       }
     }
 }

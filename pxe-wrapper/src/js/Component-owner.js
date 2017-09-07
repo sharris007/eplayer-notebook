@@ -50,7 +50,7 @@ class ComponentOwner extends React.Component {
         'popUpCollection':popUpCollection
       });
     }
-    this.Wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv'});
+    this.Wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv', node:this.bookViewerRef.frame});
     this.Wrapper.bindPopUpCallBacks();    
   }
 
@@ -58,10 +58,10 @@ class ComponentOwner extends React.Component {
     return (
         <div> 
         <div id = "bookDiv">
-          {this.state.bookHTML ? <BookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} /> : ''}
+          {this.state.bookHTML ? <BookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} basePath={this.props.bookUrl} ref={(e)=>{this.bookViewerRef=e;}} /> : ''}
         </div>  
         <div>     
-          <div>{(this.state.popUpCollection.length > 0) ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = "bookDiv"/> : ''}</div>
+          <div>{(this.state.popUpCollection.length > 0) ? <PopUpInfo popUpCollection = {this.state.popUpCollection} bookId = "bookDiv" node={this.props.node}/> : ''}</div>
           <div id= "divGlossary" ref = {(dom) => { this.divGlossaryRef = dom }} style = {{ display: 'none' }}> {renderHTML(this.state.glossaryResponse)} </div>
         </div>  
         </div>

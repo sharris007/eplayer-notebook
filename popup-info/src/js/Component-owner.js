@@ -36,7 +36,7 @@ class ComponentOwner extends React.Component {
 
 
   componentDidMount() {
-    if (this.props.isFromComponent) {
+    if (this.props.isFromComponent && !this.props.isPxeContent) {
       let base = {}; 
       base = document.createElement('base');
       base.href = this.props.bookUrl;
@@ -53,14 +53,15 @@ class ComponentOwner extends React.Component {
     window.renderCustomPopUp = function(obj) {
       that.setState({renderCustomPopUp : true, popUpCollection : obj.popUpCollection })
     }
-    new PopupCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv', 'ParagraphNumeroUno': this.props.ParagraphNumeroUno});
+    new PopupCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv', 'ParagraphNumeroUno': this.props.ParagraphNumeroUno, node:this.bookViewerRef.frame, isPxeContent:this.props.isPxeContent });
   }
 
   render() {    
     return (
         <div> 
         <div id = "bookDiv">
-          {this.state.bookHTML ? <BookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} /> : ''}
+          {this.state.bookHTML ? <BookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} basePath={this.props.bookUrl} ref={(e)=>{this.bookViewerRef=e;}} 
+            isPxeContent={this.props.isPxeContent}/> : ''}
         </div>  
         <div>     
           <div>{(this.state.renderCustomPopUp) ? <CustomPopUp divGlossaryRef = {this.divGlossaryRef} bookId = "bookDiv" ParagraphNumeroUno = {this.props.ParagraphNumeroUno} popUpCollection = {this.state.popUpCollection} /> : (this.state.isBookLoaded ? <PopUpInfo /> :  '')}</div>
