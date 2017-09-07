@@ -151,8 +151,8 @@ export class PdfBookReader extends Component {
     __pdfInstance.registerEvent('textSelected', this.createHighlight.bind(this));
     __pdfInstance.registerEvent('highlightClicked', this.handleHighlightClick.bind(this));
     __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
-    __pdfInstance.registerEvent('TransparentRegionHovered', this.handleTransparentRegionHover.bind(this));
-    __pdfInstance.registerEvent('TransparentRegionUnhovered', this.handleTransparentRegionUnhover.bind(this));
+    __pdfInstance.registerEvent('RegionHovered', this.handleTransparentRegionHover.bind(this));
+    __pdfInstance.registerEvent('RegionUnhovered', this.handleTransparentRegionUnhover.bind(this));
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
     localStorage.setItem("currentPageOrder",currentPageIndex);
@@ -582,13 +582,39 @@ export class PdfBookReader extends Component {
   handleTransparentRegionHover(hotspotID)
   {
     var transparentRegion = document.getElementById(hotspotID);
-    transparentRegion.style.background = convertHexToRgba(this.props.book.bookFeatures.hotspotcolor,this.props.book.bookFeatures.regionhotspotalpha);
+    if(this.props.book.bookFeatures.isunderlinehotspot == true && transparentRegion.transparent !== true)
+    {
+      transparentRegion.style.borderBottomColor = this.props.book.bookFeatures.underlinehotppothovercolor;
+    }
+    else if(this.props.book.bookFeatures.isunderlinehotspot == true && transparentRegion.transparent == true)
+    {
+      transparentRegion.style.borderBottomColor = this.props.book.bookFeatures.underlinehotppothovercolor;;
+      transparentRegion.style.borderBottomWidth = this.props.book.bookFeatures.underlinehotspotthickness + 'px';
+      transparentRegion.style.borderBottomStyle = 'solid';  
+    }
+    else
+    {
+      transparentRegion.style.background = convertHexToRgba(this.props.book.bookFeatures.hotspotcolor,this.props.book.bookFeatures.regionhotspotalpha);
+    } 
   }
 /*Method to handle mouse out event for transparent hotsopts*/
   handleTransparentRegionUnhover(hotspotID)
   {
     var transparentRegion = document.getElementById(hotspotID);
-    transparentRegion.style.background = convertHexToRgba(this.props.book.bookFeatures.hotspotcolor,0);
+    if(this.props.book.bookFeatures.isunderlinehotspot == true && transparentRegion.transparent !== true)
+    {
+      transparentRegion.style.borderBottomColor = this.props.book.bookFeatures.underlinehotspotcolor;
+    }
+    else if(this.props.book.bookFeatures.isunderlinehotspot == true && transparentRegion.transparent == true)
+    {
+      transparentRegion.style.borderBottomColor = convertHexToRgba(this.props.book.bookFeatures.underlinehotspotcolor,0);
+      transparentRegion.style.borderBottomWidth = 0 + 'px';
+      transparentRegion.style.borderBottomStyle = 'none';  
+    }
+    else
+    {
+      transparentRegion.style.background = convertHexToRgba(this.props.book.bookFeatures.hotspotcolor,0);
+    }
   }
 /*Method to check hotspot type on the basis of extension*/
   getHotspotType = (regionLink) => {

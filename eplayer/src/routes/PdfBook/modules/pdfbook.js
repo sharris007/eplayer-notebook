@@ -643,7 +643,7 @@ export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, rol
     // payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON',
   return {
     type: 'RECEIVE_BOOK_FEATURES',
-    payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON'),
+    payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeaturesv2?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON'),
     timeout: 20000
   };
 }
@@ -1174,22 +1174,13 @@ const ACTION_HANDLERS = {
     bookFeatures: {
       fetching: false,
       fetched: true,
-      hasnotesmanager : action.payload.data[0].bookfeatures.ipadfeatures.hasnotesmanager,
-      hasglossarybutton : action.payload.data[0].bookfeatures.ipadfeatures.hasglossarybutton,
-      hascoursemanagement : action.payload.data[0].bookfeatures.ipadfeatures.hascoursemanagement,
-      hassearchbutton : action.payload.data[0].bookfeatures.ipadfeatures.hassearchbutton,
-      hasshowlinksbutton : action.payload.data[0].bookfeatures.ipadfeatures.hasshowlinksbutton,
-      hasshowmyprofile : action.payload.data[0].bookfeatures.ipadfeatures.hasshowmyprofile,
-      hotspotcolor : action.payload.data[0].bookfeatures.ipadfeatures.hotspotcolor,
-      hasaudiosyncbutton : action.payload.data[0].bookfeatures.ipadfeatures.hasaudiosyncbutton,
-      hastwopageview : action.payload.data[0].bookfeatures.ipadfeatures.hastwopageview,
-      hasportraitview : action.payload.data[0].bookfeatures.ipadfeatures.hasportraitview,
-      underlinehotspot : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspot,
-      iconhotspotalpha : action.payload.data[0].bookfeatures.ipadfeatures.iconhotspotalpha,
-      regionhotspotalpha : action.payload.data[0].bookfeatures.ipadfeatures.regionhotspotalpha,
-      underlinehotspotcolor : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspotcolor,
-      underlinehotspotthickness : action.payload.data[0].bookfeatures.ipadfeatures.underlinehotspotthickness,
-      hasmultipleaudioflow : action.payload.data[0].bookfeatures.ipadfeatures.hasmultipleaudioflow      
+      hotspotcolor : action.payload.data[0].ipadFeaturesTO.hotSpotColor,
+      isunderlinehotspot : action.payload.data[0].generalFeaturesTO.isUnderLineHotspot,
+      iconhotspotalpha : action.payload.data[0].ipadFeaturesTO.iconHotSpotAlpha,
+      regionhotspotalpha : action.payload.data[0].ipadFeaturesTO.regionHotSpotAlpha,
+      underlinehotspotcolor : action.payload.data[0].ipadFeaturesTO.underLineHotSpotColor,
+      underlinehotspotthickness : action.payload.data[0].ipadFeaturesTO.underLineHotSpotThickness,
+      underlinehotppothovercolor : action.payload.data[0].ipadFeaturesTO.underLineHotSpotHoverColor  
     }
   }),
   [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({

@@ -822,13 +822,13 @@ function getAssetURLForPDFDownload(config,cb){
   /*Method to handle Transparent region on mouse hover*/
       _this.handleTransparentRegionHover = function(event) {
         var hotspotID=this.getAttribute("id");
-        _this.triggerEvent("TransparentRegionHovered",hotspotID);
+        _this.triggerEvent("RegionHovered",hotspotID);
         return false;
       }
   /*Method to handle Transparent region on mouse our*/
       _this.handleTransparentRegionUnhover = function(event) {
         var hotspotID=this.getAttribute("id");
-        _this.triggerEvent("TransparentRegionUnhovered",hotspotID);
+        _this.triggerEvent("RegionUnhovered",hotspotID);
         return false;
       }
 
@@ -908,19 +908,31 @@ function getAssetURLForPDFDownload(config,cb){
 
               if (regionType == 1)
               {
-                if(hotspots[i].transparent == true)
+                if(hotspots[i].transparent == true || hotspotFeatures.isunderlinehotspot == true)
                 {
                   regionElement.style.background = convertHexToRgba(hotspotFeatures.hotspotcolor,0);
                   regionElement.onmouseover = function(event){
-                    _this.triggerEvent("TransparentRegionHovered", event.currentTarget.id);
+                    _this.triggerEvent("RegionHovered", event.currentTarget.id);
                   }
                   regionElement.onmouseout = function(event){
-                    _this.triggerEvent("TransparentRegionUnhovered", event.currentTarget.id);
+                    _this.triggerEvent("RegionUnhovered", event.currentTarget.id);
                   }
                 }
                 else
                 {
                   regionElement.style.background = convertHexToRgba(hotspotFeatures.hotspotcolor,hotspotFeatures.regionhotspotalpha);
+                }
+
+                if(hotspotFeatures.isunderlinehotspot == true && hotspots[i].transparent !== true)
+                {
+                  regionElement.style.borderBottomColor = hotspotFeatures.underlinehotspotcolor;
+                  regionElement.style.borderBottomWidth = hotspotFeatures.underlinehotspotthickness + 'px';
+                  regionElement.style.borderBottomStyle = 'solid';             
+                }
+                else if(hotspotFeatures.isunderlinehotspot == true && hotspots[i].transparent == true)
+                {
+                  regionElement.style.borderBottomColor = convertHexToRgba(hotspotFeatures.underlinehotspotcolor,0);
+                  regionElement.transparent = true;
                 }
               }
               else
