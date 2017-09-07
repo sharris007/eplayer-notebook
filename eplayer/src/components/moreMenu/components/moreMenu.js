@@ -9,6 +9,7 @@ import reducer from '../modules/moreMenuReducers';
 import { injectReducer } from '../../../store/reducers';
 import Cookies from 'universal-cookie';
 import { resources, domain } from '../../../../const/Settings';
+const queryString = require('query-string');
 
 const envType = domain.getEnvType();
 const consoleUrl = resources.links.consoleUrl;
@@ -20,7 +21,7 @@ class MoreMenuComponent extends React.Component {
   delete_cookie = (name) => {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
-  handleClick = () => {
+    handleClick = () => {
     const langQuery = localStorage.getItem('bookshelfLang');
     let i = localStorage.length;
     while (i--) {
@@ -44,12 +45,19 @@ class MoreMenuComponent extends React.Component {
         let redirectCourseUrl   = consoleUrl[envType];
         piSession.login(redirectCourseUrl);
     }else{
+        const parsed = queryString.parse(window.location.search);
         if (langQuery && langQuery !== '?languageid=1') {
-          piSession.logout();
+          if(parsed.directlogin == 'true' || parsed.invoketype == 'standalone')
+          {
+            piSession.logout();
+          }
           localStorage.removeItem('secureToken');
           browserHistory.push(`/eplayer/login${langQuery}`);
         } else {
-          piSession.logout();
+          if(parsed.directlogin == 'true' || parsed.invoketype == 'standalone')
+          {
+            piSession.logout();
+          }
           localStorage.removeItem('secureToken');
           let appPath             = window.location.origin;
           let redirectCourseUrl   = appPath+'/eplayer/bookshelf';

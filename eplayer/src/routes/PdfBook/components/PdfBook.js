@@ -8,6 +8,7 @@ import { languages } from '../../../../locale_config/translations/index';
 import languageName from '../../../../locale_config/configureLanguage';
 import { eT1Contants } from '../../../components/common/et1constants';
 import { resources, domain } from '../../../../const/Settings';
+import { getmd5 } from '../../../components/Utility/Util';
 import Cookies from 'universal-cookie';
 const envType = domain.getEnvType();
 /* Defining the variables for localStorage. */
@@ -30,7 +31,7 @@ export class PdfBook extends Component {
     {
       this.cookies = new Cookies();
       let appPath             = window.location.origin;
-      let redirectBookUrl   = appPath+'/eplayer/pdfbook?bookid='+this.props.location.query.bookid;
+      let redirectBookUrl   = appPath+'/eplayer/pdfbook?bookid='+this.props.location.query.bookid+'&directlogin=true';
       redirectBookUrl       = decodeURIComponent(redirectBookUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       setTimeout(()=>{
         piSession.getToken((result, userToken) => {
@@ -71,6 +72,24 @@ used for before mounting occurs. */
     }
     else
     {
+      if (this.props.location.query.invoketype != undefined &&    
+        this.props.location.query.invoketype == 'lms')    
+      {   
+        var querystr = window.location.search.substring(1);   
+        var serverhsid = this.props.location.query.hsid;    
+        querystr = querystr.replace("&hsid="+serverhsid,"");    
+        var clienthsid = getmd5(querystr+eT1Contants.MD5_SECRET_KEY);   
+        if(clienthsid == serverhsid)    
+        {   
+          console.log("hsid match success. Continue to launch the title")   
+        }   
+        else    
+        {   
+          console.log("hsid match failure. Show the error page")    
+        }   
+        // Todo: Check the user session is valid or not then launch the title   
+      }   
+      
       if (this.props.location.query.sessionid === undefined
             || this.props.location.query.sessionid === ''
             || this.props.location.query.sessionid === null)
@@ -111,7 +130,6 @@ used for before mounting occurs. */
       }
     }
     currentbook.ssoKey = ssoKey;
-    currentbook.thumbnail = tempThumbnail;
     currentbook.serverDetails = serverDetails;
     /* Await operator is used to wait for a Promise returned by an async function. */
     /* Method used for fetching the user details and book details. */
@@ -133,8 +151,26 @@ used for before mounting occurs. */
     {
       tempThumbnail = serverDetails+'/ebookassets/'+this.props.book.bookinfo.book.globalbookid+tempThumbnail;
     }
+    currentbook.thumbnail = tempThumbnail;
     currentbook.title = bookData.title ? bookData.title : this.props.book.bookinfo.book.title;
     currentbook.globalBookId = bookData.globalBookId ? bookData.globalBookId : this.props.book.bookinfo.book.globalbookid;
+    currentbook.platform = this.props.location.query.platform ?   
+                           this.props.location.query.platform : undefined;    
+    currentbook.languageid = this.props.location.query.languageid ?   
+                             this.props.location.query.languageid : undefined;    
+    if(this.props.location.query.scenario)    
+    {   
+      if(this.props.location.query.scenario == 1)   
+      {   
+        currentbook.pageNoTolaunch = this.props.location.query.pagenumber;    
+      }   
+      else if(this.props.location.query.scenario == 6)    
+      {   
+        currentbook.startpage = this.props.location.query.startpage;    
+        currentbook.endpage = this.props.location.query.endpage;    
+      }   
+      currentbook.scenario = this.props.location.query.scenario;    
+    }
     await this.props.fetchBookFeatures(bookID,ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID);
     
   }

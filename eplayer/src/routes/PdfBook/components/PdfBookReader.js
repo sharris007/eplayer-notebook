@@ -83,7 +83,21 @@ export class PdfBookReader extends Component {
       this.props.location.query.bookid, true, courseId, authorName);
     this.props.fetchBasepaths(this.props.location.query.bookid,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
 
-    if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
+    if (this.props.currentbook.scenario == 1 && this.props.currentbook.pageNoTolaunch)
+    {
+      this.goToPageNumber(this.props.currentbook.pageNoTolaunch);
+    }
+    else if (this.props.currentbook.scenario == 6)
+    {
+      this.props.fetchPagebyPageNumber(this.props.book.userInfo.userid,
+        this.props.book.bookinfo.book.roleTypeID,
+        this.props.location.query.bookid,
+        this.props.book.bookinfo.book.bookeditionid,
+        this.props.currentbook.endpage,
+        ssoKey,serverDetails);
+      this.goToPageNumber(this.props.currentbook.startpage);
+    }
+    else if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
       this.goToPage(Number(localStorage.getItem('currentPageOrder')));
     } else {
       //this.goToPage(coverPage);
@@ -157,12 +171,22 @@ export class PdfBookReader extends Component {
     this.setState({ currPageIndex: currentPageIndex });
     localStorage.setItem("currentPageOrder",currentPageIndex);
     const data = this.state.data;
-    if (currentPageIndex === this.getPageCount()) {
+    var startpage = find(pages,page => page.pagenumber == this.props.currentbook.startpage);
+    var endpage = find(pages,page => page.pagenumber == this.props.currentbook.endpage);
+    if (currentPageIndex === 1 || (startpage != undefined && startpage.pageorder == currentPageIndex)) {
+      data.isFirstPage = true;
+    } else {
+      data.isFirstPage = false;
+    }
+    if (currentPageIndex === this.getPageCount() || (endpage != undefined && endpage.pageorder == currentPageIndex)) {
       data.isLastPage = true;
     } else {
       data.isLastPage = false;
     }
-    data.isFirstPage = false;
+    if(this.props.currentbook.scenario != 6)
+    {
+      data.isFirstPage = false;
+    }
     data.currentPageNo = currentPageIndex;
     this.setState({ data });
     const viewer = this;
@@ -278,11 +302,8 @@ export class PdfBookReader extends Component {
     // If we are navigating to current page then do nothing
     if (pageno !== currPageIndex)
     {
-      __pdfInstance.removeExistingHighlightCornerImages();
-      this.setState({ drawerOpen: false });
-      this.setState({ pageLoaded: false });
-      this.setState({ regionData: null});
-      this.setState({ popUpCollection: []});
+      var startpage = find(pages,page => page.pagenumber == this.props.currentbook.startpage);
+      var endpage = find(pages,page => page.pagenumber == this.props.currentbook.endpage);
       // pageIndexToLoad initialized with 1 to avoid loading invalid pages
       let pageIndexToLoad = 1;
       // pageno can be page navigation type like 'prev','next' or exact page order to navigate
@@ -294,17 +315,27 @@ export class PdfBookReader extends Component {
           }else{
             pageIndexToLoad = currPageIndex - 1;
           }
-          
         } else if (pageno === 'next') {
           pageIndexToLoad = currPageIndex + 1;
         } 
       }
       else
       {
-        if (pageno >=0 ) {
+        if (pageno >= 0) {
           pageIndexToLoad = pageno;
         }
       }
+      if (startpage != undefined && endpage != undefined &&
+                  (startpage.pageorder > pageIndexToLoad || endpage.pageorder < pageIndexToLoad))
+      {
+        this.setState({ drawerOpen: false });
+        return; 
+      }
+      __pdfInstance.removeExistingHighlightCornerImages();
+      this.setState({ drawerOpen: false });
+      this.setState({ pageLoaded: false });
+      this.setState({ regionData: null});
+      this.setState({ popUpCollection: []});
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
@@ -323,7 +354,7 @@ export class PdfBookReader extends Component {
           }
           if(pageno != 'cover' && pageIndexToLoad !== 0) 
           {this.loadPdfPage(pageIndexToLoad);}
-         else if(pageIndexToLoad === 0){
+          else if(pageIndexToLoad === 0){
           this.loadCoverPage(pageIndexToLoad);
          }
         });
@@ -1108,6 +1139,7 @@ handleRegionClick(hotspotID) {
             messages={messages}
             viewerContentCallBack={this.viewerContentCallBack}
             currentPageIndex={this.state.currPageIndex}
+            currentScenario = {this.props.currentbook.scenario}
           />
 
           <div className="eT1viewerContent">

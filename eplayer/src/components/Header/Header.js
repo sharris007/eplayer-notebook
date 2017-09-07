@@ -227,6 +227,8 @@ export class Header extends React.Component {
                   <Icon name="chevron-back-18" />
                 </span>
               </div>
+              {this.props.currentScenario == 6 ? 
+                <div className="empty"/> :
               <span
                 className="drawerIcon icon-white"
                 style={style.drawerIcon}
@@ -237,7 +239,7 @@ export class Header extends React.Component {
               >
                 <Icon name="hamburger-light-18" />
               </span>
-
+            }
             </div>
           }
           iconElementRight={

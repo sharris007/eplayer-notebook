@@ -1,5 +1,6 @@
 // This file contains commonly used methods .
 import {eT1Contants} from '../common/et1constants'
+var md5 = require('js-md5');
 export function getSiteId(env)
 {
  if (env === 'qa' || env === 'dev' )
@@ -33,4 +34,16 @@ export function convertHexToRgba(hex,opacity)
 	}
 	rgba = 'rgba('+r+','+g+','+b+','+a+')';
 	return rgba;
+}
+// Function to generate md5 
+export function getmd5(hash)
+{
+  if (hash !== undefined && hash !== null && hash !== '')
+  {
+  	return md5.hex(hash);
+  }
+  else
+  {
+  	return '';
+  }
 }
