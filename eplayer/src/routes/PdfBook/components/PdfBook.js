@@ -160,11 +160,12 @@ used for before mounting occurs. */
                              this.props.location.query.languageid : undefined;    
     if(this.props.location.query.scenario)    
     {   
-      if(this.props.location.query.scenario == 1)   
+      if(this.props.location.query.scenario == 1 || this.props.location.query.scenario == 3
+            || this.props.location.query.scenario == 11)   
       {   
         currentbook.pageNoTolaunch = this.props.location.query.pagenumber;    
       }   
-      else if(this.props.location.query.scenario == 6)    
+      else if(this.props.location.query.scenario == 6 || this.props.location.query.scenario == 88)    
       {   
         currentbook.startpage = this.props.location.query.startpage;    
         currentbook.endpage = this.props.location.query.endpage;    

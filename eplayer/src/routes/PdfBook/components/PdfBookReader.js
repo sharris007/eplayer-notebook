@@ -83,11 +83,13 @@ export class PdfBookReader extends Component {
       this.props.location.query.bookid, true, courseId, authorName);
     this.props.fetchBasepaths(this.props.location.query.bookid,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
 
-    if (this.props.currentbook.scenario == 1 && this.props.currentbook.pageNoTolaunch)
+    if ((this.props.currentbook.scenario == 1 || this.props.currentbook.scenario == 3
+            || this.props.currentbook.scenario == 11)
+     && this.props.currentbook.pageNoTolaunch)
     {
       this.goToPageNumber(this.props.currentbook.pageNoTolaunch);
     }
-    else if (this.props.currentbook.scenario == 6)
+    else if (this.props.currentbook.scenario == 6 || this.props.currentbook.scenario == 88)
     {
       this.props.fetchPagebyPageNumber(this.props.book.userInfo.userid,
         this.props.book.bookinfo.book.roleTypeID,
@@ -183,7 +185,7 @@ export class PdfBookReader extends Component {
     } else {
       data.isLastPage = false;
     }
-    if(this.props.currentbook.scenario != 6)
+    if(this.props.currentbook.scenario != 6 && this.props.currentbook.scenario != 88)
     {
       data.isFirstPage = false;
     }
@@ -580,9 +582,8 @@ export class PdfBookReader extends Component {
 }
 /*Method to navigate to a particular book page number based on bookPageNumber*/
   goToPageNumber = (pageNo) => {
-    var totalPagesToHit = this.getPageOrdersToGetPageDetails(pageNo);
     var currentPage = find(pages,page => page.pagenumber == pageNo)
-    if(currentPage == undefined && totalPagesToHit !== '')
+    if(currentPage == undefined)
     {
         this.props.fetchPagebyPageNumber(this.props.book.userInfo.userid,
         this.props.book.bookinfo.book.roleTypeID,
