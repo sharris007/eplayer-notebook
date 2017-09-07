@@ -207,7 +207,7 @@
 .annotator-panel-triangle {
     position: relative;
 }
-.annotator-panel-triangle:after,.annotator-panel-triangle:before {
+.annotator-panel-triangle:after,.annotator-panel-triangle:before,.annotator-panel-triangle1:after,.annotator-panel-triangle1:before {
     right: 100%;
     top: 47%;
     border: solid transparent;
@@ -227,6 +227,18 @@
     border-width: 9px;
     margin-top: -71px;
  }
+
+ .annotator-panel-triangle1:before {
+    border-right-color: #e0e0e0;
+    border-width: 9px;
+    margin-top: -121px;
+ }
+
+ .annotator-panel-triangle1:after {
+    border-right-color: #ffffff;
+    border-width: 8px;
+    margin-top: -120px;
+}
 
 .annotator-widget .annotator-item,
 .annotator-editor .annotator-item input,

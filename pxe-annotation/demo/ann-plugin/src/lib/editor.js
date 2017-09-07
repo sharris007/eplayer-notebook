@@ -97,8 +97,7 @@ Annotator.Editor = (function(_super) {
 
   var panel3 ='<div class="annotator-panel-3"> \
                 <div class="annotator-controls"> \
-                  <div class="annotator-delete-container"> \
-                    <div  title="' + locale_data[language]['delete'] + '"></div> \
+                  <div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"> \
                   </div> \
                   <div class="ann-cancel-delete-confirm-section hide"> \
                     <div class="ann-confirm-section"> \
@@ -175,6 +174,7 @@ Annotator.Editor = (function(_super) {
     annotator_editor.css({ top : annotator_editor.position().top + 110});
     $('.annotator-panel-2').find('textarea').show().css({"pointer-events": "all", "opacity": "1"});
     $('.annotator-panel-2').find('textarea').focus();
+    $(".annotator-panel-triangle").addClass("annotator-panel-triangle1").removeClass("annotator-panel-triangle");
   }
 
   Editor.prototype.onEditColorChange= function(e) { 
@@ -273,6 +273,8 @@ Annotator.Editor = (function(_super) {
     panel2Sec.removeClass('overlay');
     panel3Sec.removeClass('overlay');
     panel4Sec.remove();
+    $(".ann-cancel-delete-confirm-section").hide();
+    $(".annotator-delete-container").show();
     $(panel2Sec).find('textarea').removeAttr('readonly');
   }
 
@@ -427,7 +429,7 @@ Annotator.Editor = (function(_super) {
     }
     this.element.find(":input:first").focus();
     this.setupDraggables();
-    if(this.element.find('textarea').val().length > 0) {
+    if(this.element.find('textarea').val().length > 0 || this.annotation.color) {
       $(this.element).find('#noteContainer').html(linkifyStr(this.element.find('textarea').val()));
       $(this.element.find('textarea')).hide();
       $(this.element).find('#noteContainer').show();
@@ -435,6 +437,7 @@ Annotator.Editor = (function(_super) {
       $(this.element.find('textarea')).show();
       $(this.element).find('#noteContainer').hide();
     }
+    $(".annotator-panel-triangle1").addClass("annotator-panel-triangle").removeClass("annotator-panel-triangle1");
     return this.publish('show');
   };
 
@@ -457,7 +460,7 @@ Annotator.Editor = (function(_super) {
    }
    this.annotation.text = $('.annotator-panel-2').find('textarea').val();
    var noteVal = $.trim(this.annotation.text);
-   $(this.annotation.highlights).css('background', annBgColor)[(noteVal)?'addClass':'removeClass']('highlight-note');
+   $(this.annotation.highlights).css('background', annBgColor)['addClass']('highlight-note');
    $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);
    Annotator.Util.preventEventDefault(event);
    this.element.addClass(this.classes.hide);
@@ -472,7 +475,7 @@ Annotator.Editor = (function(_super) {
      this.publish('save', [this.annotation]);
    return this.publish('hide');
  };
- 
+
   Editor.prototype.hasClass=function(element, className) {
     do {
       if (element.classList && element.classList.contains(className)) {

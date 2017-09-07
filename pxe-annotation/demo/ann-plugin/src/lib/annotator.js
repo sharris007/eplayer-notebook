@@ -480,7 +480,7 @@ Annotator = (function(_super) {
         top:(height+(!isAdderClick?140:0) + 120) // 120 staic is for align the panel-1 triangle to for inital popup
       }
     }
-    console.log("position : ", position);
+    
     this.editor.element.css(position);
     this.editor.load(annotation,this.isShareable);
     this.publish('annotationEditorShown', [this.editor, annotation]);
