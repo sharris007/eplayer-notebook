@@ -93,6 +93,20 @@ export const resources = {
       qa           :"https://messaging-publishing-int.dev-prsn.com",
       stage        :"https://messaging-publishing.stg-prsn.com",
       prod         :"https://messaging-publishing.prd-prsn.com",
+    },
+    zeppelinUrl : {
+      local        :"https://zeppelin-qa.dev-openclass.com/products",
+      dev          :"https://zeppelin-qa.dev-openclass.com/products",
+      qa           :"https://zeppelin-qa.dev-openclass.com/products",
+      stage        :"https://zeppelin.stg-openclass.com/products",
+      prod         :"https://product-transaction.openclass.com/products",
+    },
+    idcUrl : {
+      local        :"https://idc-web-ar.dev-prsn.com",
+      dev          :"https://idc-web-ar-qa.dev-prsn.com",
+      qa           :"https://idc-web-ar-qa.dev-prsn.com",
+      stage        :"https://idc-web-ar.stg-prsn.com",
+      prod         :"https://idc-web-ar.stg-prsn.com",
     }
   }
 };

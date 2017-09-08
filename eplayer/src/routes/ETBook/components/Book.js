@@ -571,6 +571,7 @@ export class Book extends Component {
     //End of Wrapper PxePlayer
     return (
       <div>
+      {playlistReceived ?
         <Header  locale='en-US'
           classname={this.state.classname}
           pageTitle = {this.state.currentPageTitle}
@@ -588,7 +589,7 @@ export class Book extends Component {
           goToPageClick = {this.goToPageClick}
           currentPageID = {currentBookId}
         />
-           
+          :''} 
           <div className={this.state.viewerContent ? 'viewerContent' : 'fixedviewerContent viewerContent'}>
             {!playlistReceived ? <RefreshIndicator size={50} left={650} top={200} status="loading" /> :''}
             {playlistReceived ? <PxePlayer bootstrapParams={bootstrapParams}  applnCallback={this.onPageChange}/> : ''}
