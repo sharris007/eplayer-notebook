@@ -168,6 +168,9 @@
       if (typeof nextProps.bookdetailsdata === "object" && nextProps.bookdetailsdata && nextProps.bookdetailsdata.bookDetail && nextProps.bookdetailsdata.bookDetail.metadata && nextProps.bookdetailsdata.bookDetail.metadata.indexId) {
         this.bookIndexId = nextProps.bookdetailsdata.bookDetail.metadata.indexId;
         this.searchUrl = resources.links.etextSearchUrl[domain.getEnvType()] + '/search?indexId=' + this.bookIndexId + '&q=searchText&s=0&n=' + resources.constants.TextSearchLimit;
+      } else if (typeof nextProps.bookdetailsdata === "object" && nextProps.bookdetailsdata && nextProps.bookdetailsdata.userCourseSectionDetail && nextProps.bookdetailsdata.userCourseSectionDetail.indexId) {
+        this.bookIndexId = nextProps.bookdetailsdata.userCourseSectionDetail.indexId;
+        this.searchUrl = resources.links.etextSearchUrl[domain.getEnvType()] + '/search?indexId=' + this.bookIndexId + '&q=searchText&s=0&n=' + resources.constants.TextSearchLimit;
       }
       if (nextProps.isGoToPageRecived) {
         if (nextProps.gotoPageObj.page && nextProps.gotoPageObj.page.href) {
@@ -764,7 +767,7 @@
         viewerStyles = { productData.viewerStyles } 
         componentFactory = { { getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } } } 
         clients = { { page: pxeClient } } 
-        metadata = { { environment: 'LOCAL' } }>
+        metadata = { { environment: 'LOCAL', 'pxeUserPreference':{'bgColor':bootstrapParams.pageDetails.bgColor, 'pageFontSize':bootstrapParams.pageDetails.pageFontSize}}}>
         <div>
           <div>
              <div
