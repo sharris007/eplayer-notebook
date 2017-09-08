@@ -68,12 +68,12 @@ Annotator.Editor = (function(_super) {
                   <div class = "edit-Note-Panel-1">  <!-- Edit Note Panel-->\
                     <div> <!-- Edit Note circle-->\
                       <div class = "edit-note-circle"> \
-                        <button class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" value="#55DF49"> \
-                        </button> \
-                        <button class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" value="#FFD232"> \
-                        </button > \
-                        <button class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" value="#FC92CF"> \
-                        </button > \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" value="#55DF49"> \
+                        </div> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" value="#FFD232"> \
+                        </div > \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" value="#FC92CF"> \
+                        </div > \
                       </div> \
                       <div class = "edit-note-rect"> <!-- Edit Note Rectangle-->\
                         <div> \

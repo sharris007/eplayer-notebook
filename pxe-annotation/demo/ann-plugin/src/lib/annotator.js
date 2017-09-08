@@ -403,7 +403,7 @@ Annotator = (function(_super) {
       annBgColor = noteIconBgColor = normedRange.color;
    }
    hl = $("<span class='" + cssClass + "' style=background:" + annBgColor + "></span>");
-   handle=$("<span class='annotator-handle' style=background-color:" + noteIconBgColor + "></span>");
+   handle=$("<span class='annotator-handle' style=background-color:" + noteIconBgColor + ">" + noteText +"</span>");
    _ref = normedRange.textNodes();
    _results = [];
    for (_i = 0, _len = _ref.length; _i < _len; _i++) {

@@ -1238,6 +1238,7 @@ cursor: pointer;
     height: 18px;
     border-radius: 50%;
     cursor: pointer;
+    display: inline-block !important;
 }
 
 .annotator-edit-Note-Panel-1-circle-green {

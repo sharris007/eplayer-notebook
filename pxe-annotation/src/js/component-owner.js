@@ -39,7 +39,7 @@ class ComponentOwner extends React.Component {
       <div>
         <Annotation contentId={contentId} annotationData={annotationData} 
                     shareableAnnotations={shareableAnnotations} annotationEventHandler={annotationEventHandler} 
-                    currentPageDetails={currentPageDetails} annAttributes={annAttributes}/>
+                    currentPageDetails={currentPageDetails} annAttributes={annAttributes} isComponent = {true}/>
       </div>
     );
   };  
