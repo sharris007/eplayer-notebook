@@ -51,7 +51,7 @@ function init() {
           'endOffset': 775
         }
       ],
-      color:"#FFD232",
+      color:'#FFD232',
       lastColor:'#55DF49',
       shareable:true,
       'quote': 'sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum se',
@@ -75,7 +75,7 @@ function init() {
           'endOffset': 117
         }
       ],
-      color:"#FC92CF",
+      color:'#FC92CF',
       lastColor:'#55DF49',
       shareable:true,
       'quote': 'sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum se',
