@@ -256,11 +256,11 @@ export class PdfBookReader extends Component {
     if (pdfEvent === 'pageLoaded') {
           // this.loadAssetUrl();
       setTimeout(this.displayHighlight, 1000);
-      if (this.state.executed === false) {
+      /*if (this.state.executed === false) {
         const totalPagesToHit = this.getPageOrdersToGetAssertUrl(this.state.currPageIndex);
         this.props.loadAssertUrl(totalPagesToHit, this.openFile, this.storeAssertUrl, pages);
         this.setState({ executed: true });
-      }
+      }*/
     }
   }
   storeAssertUrl = () => {
