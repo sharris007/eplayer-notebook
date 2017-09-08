@@ -458,7 +458,8 @@ Annotator.Editor = (function(_super) {
    } else {
        annBgColor = noteIconBgColor = this.annotation.color;
    }
-   this.annotation.text = $('.annotator-panel-2').find('textarea').val();
+   var text = $('.annotator-panel-2').find('textarea').val();
+   this.annotation.text = text ? text : " ";
    var noteVal = $.trim(this.annotation.text);
    $(this.annotation.highlights).css('background', annBgColor)['addClass']('highlight-note');
    $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);

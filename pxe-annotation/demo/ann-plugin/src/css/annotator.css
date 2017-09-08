@@ -848,22 +848,27 @@
 }
 
 .annotator-handle {
-/*display:none;*/
-visibility: hidden;
-   /*width: 16px;
-   height: 16px;*/
-   width: 24px;
-   height: 24px;
-   position: absolute;
-   right: -25px;
-   /*margin-top:5px;*/
-   background-color: inherit;
-background-size: contain;
-/*border-radius:2px;
-background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAS1BMVEUAAAD////////////////////////////////////////////9/f39/f39/f39/f3+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7///+44xWBAAAAF3RSTlMADhAgMD9AUF9gcH+AkJ+gv8DP0N/v8Nn9WwcAAAEvSURBVHgB7MGBAAAAAMOg+1MfZNUAAAAAAAAAAAAAAAAAAAAAyHmzdYyFIBAEQRQFVxdRXFdx7n9S3yOazLGD7qkT/LA+e6+H6351XU6uUQb8q870TQBwZgILAByTA+tABSb3DWfEZ8YDLogvL3Aruy8tcJt2nwAY95mRgSvgowJb2NedLyOwH52PCQR8XCDks2y31ZwvI3AdnI8MBHxcIOCjAkfARwWW2L4IgYAvFbA6ngYI+KjA+deemhi4BPZKC8R8eqD3SYG30J4KgS24V1Ig4OMCAZ8Y2LxPDHxH90UFBH1K4Op5eiDo0wFrzEcDFtDHBQI+LhDw8YCxPdUBa3SvVMAF9HGBgI8O7HEfGRjdKxWwgT4uEPBRge0Q5/GB4X0RAZ+gjwZEfTQg6rMvVvUGjosMOxYAAAAASUVORK5CYII=);*/
-text-align: center;
-padding: 1px;
-cursor: pointer;
+	/*display:none;*/
+	visibility: hidden;
+    /*width: 16px;
+    height: 16px;*/
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    right: -25px;
+    /*margin-top:5px;*/
+    background-color: inherit;
+    background-size: contain;
+	/*border-radius:2px;
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAS1BMVEUAAAD////////////////////////////////////////////9/f39/f39/f39/f3+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7///+44xWBAAAAF3RSTlMADhAgMD9AUF9gcH+AkJ+gv8DP0N/v8Nn9WwcAAAEvSURBVHgB7MGBAAAAAMOg+1MfZNUAAAAAAAAAAAAAAAAAAAAAyHmzdYyFIBAEQRQFVxdRXFdx7n9S3yOazLGD7qkT/LA+e6+H6351XU6uUQb8q870TQBwZgILAByTA+tABSb3DWfEZ8YDLogvL3Aruy8tcJt2nwAY95mRgSvgowJb2NedLyOwH52PCQR8XCDks2y31ZwvI3AdnI8MBHxcIOCjAkfARwWW2L4IgYAvFbA6ngYI+KjA+deemhi4BPZKC8R8eqD3SYG30J4KgS24V1Ig4OMCAZ8Y2LxPDHxH90UFBH1K4Op5eiDo0wFrzEcDFtDHBQI+LhDw8YCxPdUBa3SvVMAF9HGBgI8O7HEfGRjdKxWwgT4uEPBRge0Q5/GB4X0RAZ+gjwZEfTQg6rMvVvUGjosMOxYAAAAASUVORK5CYII=);*/
+    text-align: center;
+    padding: 1px;
+    cursor: pointer;
+    font-weight: normal;
+    font-size: 13px;
+    letter-spacing: -0.4px;
+    text-align: center;
+    color: #000000;
 }
 .annotator-save.disabled-save, 
 .annotator-color-container.disabled-save,
