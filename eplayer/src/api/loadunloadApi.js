@@ -1,6 +1,8 @@
-import { resources } from '../../const/Settings';
+import { resources, domain } from '../../const/Settings';
 
 const messagingUrl = resources.links.messagingUrl;
+const envType = domain.getEnvType();
+
 export const loadPageEvent = (piToken, loadData) => {
   console.log("load$$$$$" , loadData);
   const header = {
@@ -8,8 +10,7 @@ export const loadPageEvent = (piToken, loadData) => {
     'Content-Type': 'application/json',
     'X-Authorization': piToken
   }
-  //${messagingUrl[envType]}/messaging/activities
-  fetch('https://messaging-publishing-int.dev-prsn.com/messaging/activities', {  
+  fetch(`${messagingUrl[envType]}/messaging/activities`, {  
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -25,22 +26,22 @@ export const loadPageEvent = (piToken, loadData) => {
   });
 }
 
-export const unLoadPageEvent = (piToken, UnLoadData) => {
-  console.log("UNLOAD$$$$$" , UnLoadData);
+export const unLoadPageEvent = (piToken, unLoadData) => {
+  console.log("UNLOAD$$$$$" , unLoadData);
   const header = {
      'Accept': 'application/json',
     'Content-Type': 'application/json',
     'X-Authorization': piToken
   }
   //${messagingUrl[envType]}/messaging/activities
-  fetch('https://messaging-publishing-int.dev-prsn.com/messaging/activities', {  
+  fetch(`${messagingUrl[envType]}/messaging/activities`, {  
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'X-Authorization': piToken
     },
-    body: JSON.stringify(UnLoadData)
+    body: JSON.stringify(unLoadData)
 
   }).then((response) => {
     return response.json();

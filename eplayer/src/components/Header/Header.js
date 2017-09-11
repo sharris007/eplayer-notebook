@@ -18,7 +18,7 @@ import { resources, domain } from '../../../const/Settings';
 
 const envType = domain.getEnvType();
 const consoleUrl = resources.links.consoleUrl;
- 
+
 let locale;
 let localisedData;
 let messages;
@@ -39,7 +39,12 @@ export class Header extends React.Component {
       goToTextVal: ''
     };
   }
-
+   componentWillReceiveProps(nextProps){
+     if (this.props.currentPageIndex !== nextProps.currentPageIndex) {
+     this.setState({prefOpen: false});
+     this.setState({searchOpen:false});
+   }
+ }
   handleDrawerkeyselect = (event) => {
     if ((event.which || event.keyCode) === 13) {
       this.setState({ drawerOpen: true });
@@ -237,9 +242,12 @@ export class Header extends React.Component {
           }
           iconElementRight={
             <div>
+            {this.props.currentPageIndex == 0 ?
+              <div className="empty"/> :
               <div className="bookmarkIcon" role="button" tabIndex="0">
                 <BookmarkIconComponent data={bookmarkIconData} locale="en"/>
               </div>
+            }
               <div
                 className="icon-white prefIcon"
                 style={style.prefIcon}
@@ -284,7 +292,7 @@ export class Header extends React.Component {
             pageId={this.props.currentPageID}
           />
         }
-        
+
 
       </div>
     );

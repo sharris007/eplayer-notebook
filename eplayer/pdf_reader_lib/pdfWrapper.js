@@ -829,6 +829,24 @@ function getAssetURLForPDFDownload(config,cb){
             document.querySelector('.pdfHighlight#' + Id).parentNode.removeChild(node);
           }
       }
+/*Function to get RGBA Color Values from HEX Color Code*/
+      convertHex = (hex,opacity) =>{
+        var r,g,b,a;
+        hex = hex.replace('#','');
+        r = parseInt(hex.substring(0,2), 16);
+        g = parseInt(hex.substring(2,4), 16);
+        b = parseInt(hex.substring(4,6), 16);
+        if(opacity == 0)
+        {
+          a=0;
+        }
+        else
+        {
+          a= opacity/100;
+        }
+        rgba = 'rgba('+r+','+g+','+b+','+a+')';
+        return rgba;
+      }
 /*Function to render regions/hotspots on the page*/
       displayRegions = function(hotspots,hotspotFeatures) {
        try
@@ -874,8 +892,20 @@ function getAssetURLForPDFDownload(config,cb){
               regionElement.setAttribute('name',hotspots[i].name);
               if (regionType == 1)
               {
-                regionElement.style.background = hotspotFeatures.hotspotcolor;
-                regionElement.style.opacity = hotspotFeatures.regionhotspotalpha / 100;
+                if(hotspots[i].transparent == true)
+                {
+                  regionElement.style.background = convertHex(hotspotFeatures.hotspotcolor,0);
+                  regionElement.onmouseover = function(){
+                    regionElement.style.background = convertHex(hotspotFeatures.hotspotcolor,hotspotFeatures.regionhotspotalpha);
+                  }
+                  regionElement.onmouseout = function(){
+                    regionElement.style.background = convertHex(hotspotFeatures.hotspotcolor,0);
+                  }
+                }
+                else
+                {
+                  regionElement.style.background = convertHex(hotspotFeatures.hotspotcolor,hotspotFeatures.regionhotspotalpha);
+                }
               }
               else
               {
@@ -892,7 +922,6 @@ function getAssetURLForPDFDownload(config,cb){
                  _this.triggerEvent("regionClicked", event.currentTarget.id);                                  
                  }
               }
-
               regionElement.appendChild(tooltip);
               parentPageElement.appendChild(regionElement);
             }

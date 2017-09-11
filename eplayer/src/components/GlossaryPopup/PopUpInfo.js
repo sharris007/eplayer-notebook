@@ -44,6 +44,7 @@ export class PopUpInfo extends Component {
           position: function(box) {
             if(props.isET1 == 'Y' || props.isET1 == 'y')
             {
+              var element = document.getElementById(props.item.id);
               var popUpElement=document.getElementsByClassName('mm-popup')[0];
               const bookIdRect = bookId.getBoundingClientRect();
               const elementIdRect = element.getBoundingClientRect();

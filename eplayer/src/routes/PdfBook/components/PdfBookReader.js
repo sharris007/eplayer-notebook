@@ -67,7 +67,7 @@ export class PdfBookReader extends Component {
       globalbookid = this.props.book.bookinfo.book.globalbookid;
 
     /* Method for getting the toc details for particular book. */
-    this.props.fetchTocAndViewer(this.props.params.bookId, authorName, title, thumbnail,
+    this.props.fetchTocAndViewer(this.props.location.query.bookid, authorName, title, thumbnail,
       this.props.book.bookinfo.book.bookeditionid, ssoKey, serverDetails,
       this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
     let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
@@ -75,16 +75,17 @@ export class PdfBookReader extends Component {
       courseId = -1;
     }
     /* Method for getting the bookmarks details which is already in book. */
-    this.props.fetchBookmarksUsingReaderApi(this.props.params.bookId, true, courseId,
+    this.props.fetchBookmarksUsingReaderApi(this.props.location.query.bookid, false, courseId,
       this.props.book.userInfo.userid, this.props.PdfbookMessages.PageMsg);
     this.props.fetchHighlightUsingReaderApi(this.props.book.userInfo.userid,
-      this.props.params.bookId, true, courseId, authorName);
-    this.props.fetchBasepaths(this.props.params.bookId,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
-    const firstPage = 'firstPage';
+      this.props.location.query.bookid, true, courseId, authorName);
+    this.props.fetchBasepaths(this.props.location.query.bookid,ssoKey,this.props.book.userInfo.userid,serverDetails,this.props.book.bookinfo.book.roleTypeID);
+
     if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
       this.goToPage(Number(localStorage.getItem('currentPageOrder')));
     } else {
-      this.goToPage(firstPage);
+      //this.goToPage(coverPage);
+      this.loadCoverPage('cover');
     }
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
@@ -95,6 +96,34 @@ export class PdfBookReader extends Component {
     localStorage.removeItem('assertUrls');
     pages = null;
     assertUrls = null;
+  }
+  /*  Method to load the cover page */
+   loadCoverPage = (pageIndexToLoad) => {
+    let currentPageIndex = 0;
+    if(isNaN(pageIndexToLoad)){
+     this.goToPage(pageIndexToLoad); 
+    }
+    const config = {
+    // host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
+      host: eT1Contants.FOXIT_HOST_URL,
+    // PDFassetURL: this.props.bookshelf.uPdf,
+    // PDFassetURL: "http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM31206032/ipadpdfs/"+pdfPath,
+      PDFassetURL: `${serverDetails}/ebookassets`
+                + `/ebook${this.props.book.bookinfo.book.globalbookid}${this.props.book.bookinfo.book.pdfCoverArt}`,
+      encpwd: null,
+      zip: false,
+      callbackOnPageChange: this.pdfBookCallback,
+      assertUrl: ''
+    };
+     __pdfInstance.createPDFViewer(config);
+    this.setState({ currPageIndex: currentPageIndex });
+    localStorage.setItem("currentPageOrder",currentPageIndex);
+    localStorage.setItem('isReloaded',true);
+    const data = this.state.data;
+    data.isFirstPage = true;
+    data.isLastPage = false;
+    data.currentPageNo = currentPageIndex;
+    this.setState({data});
   }
   /*  Method for loading the pdfpage for particular book by passing the pageIndex. */
   loadPdfPage = (currentPageIndex) => {
@@ -123,18 +152,13 @@ export class PdfBookReader extends Component {
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
     localStorage.setItem("currentPageOrder",currentPageIndex);
-    localStorage.setItem('isReloaded',true);
     const data = this.state.data;
-    if (currentPageIndex === 1) {
-      data.isFirstPage = true;
-    } else {
-      data.isFirstPage = false;
-    }
     if (currentPageIndex === this.getPageCount()) {
       data.isLastPage = true;
     } else {
       data.isLastPage = false;
     }
+    data.isFirstPage = false;
     data.currentPageNo = currentPageIndex;
     this.setState({ data });
     const viewer = this;
@@ -156,7 +180,7 @@ export class PdfBookReader extends Component {
     var count = 0 ;
     if (pdfEvent === 'pageChanged') {
       localStorage.setItem('currentPageOrder', this.state.currPageIndex);
-      this.props.fetchRegionsInfo(this.props.params.bookId,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
+      this.props.fetchRegionsInfo(this.props.location.query.bookid,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
           __pdfInstance.displayRegions(this.props.book.regions,this.props.book.bookFeatures);
@@ -170,7 +194,7 @@ export class PdfBookReader extends Component {
               regionsData.push(this.props.book.regions[arr]);
             }
           }
-          this.props.fetchGlossaryItems(this.props.params.bookId,glossaryEntryIDsToFetch,ssoKey,serverDetails).then(() => {
+          this.props.fetchGlossaryItems(this.props.location.query.bookid,glossaryEntryIDsToFetch,ssoKey,serverDetails).then(() => {
             var glossaryData = [];
             for(var i=0;i<this.props.book.glossaryInfoList.length;i++)
             {
@@ -190,6 +214,7 @@ export class PdfBookReader extends Component {
                 }
               }
             }
+            this.setState({glossaryRegions : regionsData});
             this.setState({popUpCollection : glossaryData});
           });
         }
@@ -262,16 +287,19 @@ export class PdfBookReader extends Component {
       if(isNaN(pageno))
       {
         if (pageno === 'prev') {
-          pageIndexToLoad = currPageIndex - 1;
+          if(currPageIndex === 1){
+            pageIndexToLoad = 0;
+          }else{
+            pageIndexToLoad = currPageIndex - 1;
+          }
+          
         } else if (pageno === 'next') {
           pageIndexToLoad = currPageIndex + 1;
-        } else if (pageno === 'firstPage') {
-          pageIndexToLoad = 1;
-        }
+        } 
       }
       else
       {
-        if (pageno > 0) {
+        if (pageno >=0 ) {
           pageIndexToLoad = pageno;
         }
       }
@@ -279,7 +307,7 @@ export class PdfBookReader extends Component {
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
         this.props.fetchPageInfo(this.props.book.userInfo.userid,
-        this.props.params.bookId,
+        this.props.location.query.bookid,
         this.props.book.bookinfo.book.bookeditionid,
         pageIndexToLoad,
         totalPagesToHit,
@@ -290,8 +318,12 @@ export class PdfBookReader extends Component {
             || this.props.book.bookinfo.pages.length !== 0) {
             pages = this.props.book.bookinfo.pages;
             localStorage.setItem('pages', JSON.stringify(pages));
-          } 
-          this.loadPdfPage(pageIndexToLoad);
+          }
+          if(pageno != 'cover' && pageIndexToLoad !== 0) 
+          {this.loadPdfPage(pageIndexToLoad);}
+         else if(pageIndexToLoad === 0){
+          this.loadCoverPage(pageIndexToLoad);
+         }
         });
       }
     }
@@ -311,7 +343,7 @@ export class PdfBookReader extends Component {
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== '') {
         this.props.fetchPageInfo(this.props.book.userInfo.userid,
-        this.props.params.bookId,
+        this.props.location.query.bookid,
         this.props.book.bookinfo.book.bookeditionid,
         pageNum,
         totalPagesToHit,
@@ -397,7 +429,13 @@ export class PdfBookReader extends Component {
     const currPageNumber = this.state.currPageIndex;
     let pageNo;
     if (pageType === 'prev') {
-      pageNo = currPageNumber - 1;
+      if(currPageNumber === 1){
+      pageNo = 'Cover';
+      return pageNo;
+      }else
+      {
+        pageNo = currPageNumber - 1;
+      }
     } else if (pageType === 'next') {
       pageNo = currPageNumber + 1;
     } else if (pageType === 'last') {
@@ -436,9 +474,9 @@ export class PdfBookReader extends Component {
       courseId = -1;
     }
     this.props.addBookmarkUsingReaderApi(_.toString(this.props.book.userInfo.userid),
-      _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
+      _.toString(this.props.location.query.bookid), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder),
-      _.toString(courseId), true, this.props.PdfbookMessages.PageMsg);
+      _.toString(courseId), false, this.props.PdfbookMessages.PageMsg);
   }
   /* created removeBookmarkHandler method for removing bookmark for selected Page, after clicking on bookmark button. */
   removeBookmarkHandler = (bookmarkId) => {
@@ -467,6 +505,29 @@ export class PdfBookReader extends Component {
     {
       __pdfInstance.displayRegions(this.props.book.regions,this.props.book.bookFeatures);
     }
+    var glossaryDataUpdated = [];
+    for(var i=0;i<this.props.book.glossaryInfoList.length;i++)
+    {
+      for(var k=0 ; k < this.state.glossaryRegions.length ; k++)
+      {
+        if((this.props.book.glossaryInfoList[i].glossaryEntryID).trim() == (this.state.glossaryRegions[k].glossaryEntryID).trim())
+        {
+          var glossTerm = {
+            isET1 : 'Y' ,
+            item : document.getElementById(this.state.glossaryRegions[k].regionID),
+            popOverCollection : {
+              popOverDescription : this.props.book.glossaryInfoList[i].glossaryDefinition,
+              popOverTitle : this.props.book.glossaryInfoList[i].glossaryTerm
+            }                
+          };
+          glossaryDataUpdated.push(glossTerm);                
+        }
+      }
+    }
+    if(glossaryDataUpdated.length>0)
+    {
+      new PopUpInfo({'popUpCollection' : glossaryDataUpdated, 'bookId' : 'docViewer_ViewContainer_PageContainer_0'});
+    }
   }
 /*Method for removing hotspot content on clicking the close button*/
   onHotspotClose() {
@@ -492,7 +553,7 @@ export class PdfBookReader extends Component {
     {
         this.props.fetchPagebyPageNumber(this.props.book.userInfo.userid,
         this.props.book.bookinfo.book.roleTypeID,
-        this.props.params.bookId,
+        this.props.location.query.bookid,
         this.props.book.bookinfo.book.bookeditionid,
         pageNo,
         ssoKey,serverDetails)
@@ -515,29 +576,61 @@ export class PdfBookReader extends Component {
     }
 
   }
-/*Method to render the clicked region component.*/
-
+/*Method to check hotspot type on the basis of extension*/
+  getHotspotType = (regionLink) => {
+    var region = '';
+    regionLink = regionLink.toLowerCase();
+    if(regionLink.endsWith('.doc') == true || regionLink.endsWith('.xls') == true || regionLink.endsWith('.ppt') == true || 
+       regionLink.endsWith('.pdf') == true || regionLink.endsWith('.docx') == true || regionLink.endsWith('.xlsx') == true || 
+       regionLink.endsWith('.pptx') == true)
+    {
+      region = 'DOCUMENT';
+    }
+    else if(regionLink.endsWith('.mp4') == true || regionLink.endsWith('.m4v') == true || regionLink.endsWith('.flv') == true)
+    {
+      region = 'VIDEO';
+    }
+    else if(regionLink.endsWith('.mp3') == true)
+    {
+      region = 'AUDIO';
+    }
+    else if(regionLink.endsWith('.jpg') == true || regionLink.endsWith('.jpeg') == true || regionLink.endsWith('.png') == true || regionLink.endsWith('.gif') == true)
+    {
+      region = 'IMAGE';
+    }
+    else
+    {
+      region = 'URL';
+    }
+    return region;
+  }
+  /*Method to render the clicked region component.*/
   renderHotspot = (hotspotDetails) => {
     var regionComponent = " ";
     var hotspotData,source;
-    switch(hotspotDetails.regionTypeID) {
-      case eT1Contants.RegionType.AUDIO:
-                source=hotspotDetails.linkValue;
-                hotspotData = {
-                  audioSrc :source,
-                  audioTitle :hotspotDetails.name
-                };
-                regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
-                break;
-      case eT1Contants.RegionType.CROSS_REFERENCE:
-      case eT1Contants.RegionType.INDEX_LINK:
-      case eT1Contants.RegionType.TOC_LINK:
-               this.goToPageNumber(hotspotDetails.linkValue);
+    switch(hotspotDetails.hotspotType) {
+      case 'AUDIO':
+                  source=hotspotDetails.linkValue;
+                  hotspotData = {
+                    audioSrc :source,
+                    audioTitle :hotspotDetails.name
+                  };
+                  regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
+                  break;
+      case 'PAGENUMBER':
+                 this.goToPageNumber(hotspotDetails.linkValue);
+                 break;
+      case 'EMAIL':
+                var email = "mailto:" + hotspotDetails.linkValue
+                var iframe = document.createElement("iframe");
+                iframe.src = email;
+                iframe.style = "display:none;";
+                document.body.appendChild(iframe);
+                setTimeout(function(){
+                  document.body.removeChild(iframe);
+                }, 1000); 
                break;
-      case eT1Contants.RegionType.EMAIL:
-               var loc=document.location;
-               break;
-      case eT1Contants.RegionType.IMAGE:
+      case 'IMAGE':
                source=hotspotDetails.linkValue;
                hotspotData = {
                  alt : hotspotDetails.name,
@@ -549,35 +642,25 @@ export class PdfBookReader extends Component {
                };
                regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
                break;
-      case eT1Contants.RegionType.VIDEO:
+      case 'VIDEO':
                source=hotspotDetails.linkValue;
                hotspotData = {
                 title : hotspotDetails.name,
                 src : source,
-                caption : 'Video is here',
+                caption : hotspotDetails.description,
                 id : hotspotDetails.regionID,
                 thumbnail : {
                   src : null,
                },
-            /*   "transcript": [
-               {
-                 "id": "urn:pearson:text:0166E52D-5ABA-4341-999F-C3ACE48CF27B",
-                 "lang": "en",
-                 "type": "transcript",
-                 "src": "//mediaplayer.pearsoncmg.com/assets/_pmd.true/hZjJpMwtrENDO2_Y_4PVRSAt5J1rTQTm?mimeType=vtt&lang=en"
-               }],*/
                alt : hotspotDetails.name,
                };
                regionComponent = <VideoPlayerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
                break;
-      case eT1Contants.RegionType.POWERPOINT:
-      case eT1Contants.RegionType.EXCEL:
-      case eT1Contants.RegionType.WORD_DOC:
-      case eT1Contants.RegionType.PDF:
+      case 'DOCUMENT':
                source=hotspotDetails.linkValue;
                window.open(source,"_blank");
                break;
-      case eT1Contants.RegionType.URL:
+      case 'URL':
                source=hotspotDetails.linkValue;
                hotspotData = {
                  title : hotspotDetails.name,
@@ -585,8 +668,7 @@ export class PdfBookReader extends Component {
                };
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={(this.onHotspotClose)} />;
                break;
-      case eT1Contants.RegionType.LTILINK:
-               var role = this.props.book.bookinfo.book.roleTypeID;
+      case 'LTILINK':
                if (this.props.book.bookinfo.book.activeCourseID === undefined || this.props.book.bookinfo.book.activeCourseID === '' || this.props.book.bookinfo.book.activeCourseID === null)
                {
                 var courseId = -1;
@@ -595,10 +677,8 @@ export class PdfBookReader extends Component {
                {
                 var courseId = this.props.book.bookinfo.book.activeCourseID;
                }
-               var userId = this.props.book.userInfo.userid;
-               var ltiLink = hotspotDetails.linkValue;
                /*Framing Complete LTI URl*/
-               var link = serverDetails + 'ebook/toolLaunch.do?json=' + ltiLink + '&contextid' + courseId + '&role' + role + '&userlogin' + userId ;
+               var link = serverDetails + 'ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid' + courseId + '&role' + this.props.book.bookinfo.book.roleTypeID + '&userlogin' + this.props.book.userInfo.userid ;
                /*Converting URL into https*/
                var ltiUrl = this.createHttps(link);
                window.open(ltiUrl,"_blank");
@@ -608,9 +688,9 @@ export class PdfBookReader extends Component {
     };
     return regionComponent;
   }
-
 /*Method to handle the action to be performed when a region is clicked.*/
 handleRegionClick(hotspotID) {
+  var regionDetails,basepath;
     if(this.state.regionData)
     {
       this.setState({regionData : null});
@@ -622,69 +702,140 @@ handleRegionClick(hotspotID) {
       {
           if(hotspotID == this.props.book.regions[i].regionID)
           {
-            var regionDetails = this.props.book.regions[i];
-            if(regionDetails.regionTypeID == eT1Contants.RegionType.AUDIO || regionDetails.regionTypeID == eT1Contants.RegionType.IMAGE || regionDetails.regionTypeID == eT1Contants.RegionType.URL
-                || regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL
-                || regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC)
+            regionDetails = this.props.book.regions[i];
+            regionDetails.hotspotType = '';
+            if(regionDetails.linkTypeID !== eT1Contants.LinkType.PAGE_NUMBER || regionDetails.linkTypeID !== eT1Contants.LinkType.EMAIL 
+              || regionDetails.linkTypeID !== eT1Contants.LinkType.LTILINK)
             {
-              regionDetails.linkValue=this.createHttps(regionDetails.linkValue);
-              if(this.props.book.basepaths !== null)
+              regionDetails.linkValue = this.createHttps(regionDetails.linkValue);
+            }
+            if(regionDetails.linkTypeID == eT1Contants.LinkType.IMAGE)
+            {
+              regionDetails.hotspotType = 'IMAGE';
+              if(this.props.book.basepaths.imagepath !== null && this.props.book.basepaths.imagepath !== "" && this.props.book.basepaths.imagepath !== undefined)
               {
-                var basepath;
-                if(regionDetails.linkTypeID == eT1Contants.LinkType.IMAGE && this.props.book.basepaths.imagepath !== null && this.props.book.basepaths.imagepath !== "")
-                {
-                  basepath=this.createHttps(this.props.book.basepaths.imagepath);
-                }
-                else if(regionDetails.linkTypeID == eT1Contants.LinkType.FLV && this.props.book.basepaths.flvpath !== null && this.props.book.basepaths.flvpath !== "")
-                {
-                  basepath=this.createHttps(this.props.book.basepaths.flvpath);                
-                }
-                else if(regionDetails.linkTypeID == eT1Contants.LinkType.MP3 ||  regionDetails.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
-                {
-                  if(this.props.book.basepaths.mp3path !== null && this.props.book.basepaths.mp3path !== "")
-                  {
-                    basepath=this.createHttps(this.props.book.basepaths.mp3path);                
-                  }
-                }
-                else if(regionDetails.linkTypeID == eT1Contants.LinkType.SWF && this.props.book.basepaths.swfassetpath !== null && this.props.book.basepaths.flvpath !== "")
-                {
-                  basepath=this.createHttps(this.props.book.basepaths.swfassetpath);                
-                }
-                else if(regionDetails.linkTypeID == eT1Contants.LinkType.URL && this.props.book.basepaths.urlpath !== null && this.props.book.basepaths.urlpath !== "")
-                {
-                  basepath=this.createHttps(this.props.book.basepaths.urlpath);                
-                }
-                else if(regionDetails.linkTypeID == eT1Contants.LinkType.VIRTUAL_LEARNING_ASSET && this.props.book.basepaths.virtuallearningassetpath !== null && this.props.book.basepaths.virtuallearningassetpath !== "")
-                {
-                  basepath=this.createHttps(this.props.book.basepaths.virtuallearningassetpath);                
-                }
-                else if(regionDetails.linkTypeID == eT1Contants.LinkType.H264 && this.props.book.basepaths.h264path !== null && this.props.book.basepaths.h264path !== "")
-                {
-                  basepath=this.createHttps(this.props.book.basepaths.h264path);                
-                }
-                else if(regionDetails.linkTypeID == eT1Contants.LinkType.CHROMELESS_URL && this.props.book.basepaths.chromelessurlpath !== null && this.props.book.basepaths.chromelessurlpath !== "")
-                {
-                  basepath=this.createHttps(this.props.book.basepaths.chromelessurlpath);                
-                }
-                if(!((regionDetails.linkValue).startsWith("http")) && basepath !== undefined)
-                {
-                  regionDetails.linkValue = basepath + regionDetails.linkValue;
-                }              
+                basepath = this.createHttps(this.props.book.basepaths.imagepath);
               }
-
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.FLV)
+            {
+              regionDetails.hotspotType = 'VIDEO';
+              if(this.props.book.basepaths.flvpath !== null && this.props.book.basepaths.flvpath !== "" && this.props.book.basepaths.flvpath !== undefined)
+              {
+                basepath = this.createHttps(this.props.book.basepaths.flvpath);
+              }
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.MP3 || regionDetails.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
+            {
+              regionDetails.hotspotType = 'AUDIO';
+              if(this.props.book.basepaths.mp3path !== null && this.props.book.basepaths.mp3path !== "" && this.props.book.basepaths.mp3path !== undefined)
+              {
+                basepath = this.createHttps(this.props.book.basepaths.mp3path);
+              }
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.PAGE_NUMBER)
+            {
+              regionDetails.hotspotType = 'PAGENUMBER';
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.EMAIL)
+            {
+              regionDetails.hotspotType = 'EMAIL';
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.LTILINK)
+            {
+              regionDetails.hotspotType = 'LTILINK';
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.H264)
+            {
+              regionDetails.hotspotType = 'VIDEO';
+              if(this.props.book.basepaths.h264path !== null && this.props.book.basepaths.h264path !== "" && this.props.book.basepaths.h264path !== undefined)
+              {
+                basepath = this.createHttps(this.props.book.basepaths.h264path);
+              }
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.URL)
+            {
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.AUDIO)
+              {
+                regionDetails.hotspotType = 'AUDIO';
+              }
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.IMAGE)
+              {
+                regionDetails.hotspotType = 'IMAGE';
+              }
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.MEDIA || regionDetails.regionTypeID == eT1Contants.RegionType.URL)
+              {
+                regionDetails.hotspotType = this.getHotspotType(regionDetails.linkValue);
+              }
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || 
+                regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT)
+              {
+                regionDetails.hotspotType = 'DOCUMENT';
+              }
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO)
+              {
+                regionDetails.hotspotType = 'VIDEO';
+              }              
+              if(this.props.book.basepaths.urlpath !== null && this.props.book.basepaths.urlpath !== "" && this.props.book.basepaths.urlpath !== undefined)
+              {
+                basepath = this.createHttps(this.props.book.basepaths.urlpath);
+              }
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.VIRTUAL_LEARNING_ASSET)
+            {
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.AUDIO)
+              {
+                regionDetails.hotspotType = 'AUDIO';
+              }
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.IMAGE)
+              {
+                regionDetails.hotspotType = 'IMAGE';
+              }
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.MEDIA || regionDetails.regionTypeID == eT1Contants.RegionType.URL)
+              {
+                regionDetails.hotspotType = this.getHotspotType(regionDetails.linkValue);
+              }
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || 
+                regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT)
+              {
+                regionDetails.hotspotType = 'DOCUMENT';
+              }
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO)
+              {
+                regionDetails.hotspotType = 'VIDEO';
+              }              
+              if(this.props.book.basepaths.virtuallearningassetpath !== null && this.props.book.basepaths.virtuallearningassetpath !== "" && this.props.book.basepaths.virtuallearningassetpath !== undefined)
+              {
+                basepath = this.createHttps(this.props.book.basepaths.virtuallearningassetpath);
+              }
+            }
+            else if(regionDetails.linkTypeID == eT1Contants.LinkType.CHROMELESS_URL)
+            {
+              regionDetails.hotspotType = this.getHotspotType(regionDetails.linkValue);  
+              if(this.props.book.basepaths.chromelessurlpath !== null && this.props.book.basepaths.chromelessurlpath !== "" && this.props.book.basepaths.chromelessurlpath !== undefined)
+              {
+                basepath = this.createHttps(this.props.book.basepaths.chromelessurlpath);
+              }
+            }
+            if(regionDetails.hotspotType !== 'PAGENUMBER' || regionDetails.hotspotType !== 'EMAIL' || regionDetails.hotspotType !== 'LTILINK')
+            {
+              if(!((regionDetails.linkValue).startsWith("http")) && !((regionDetails.linkValue).startsWith("https")))
+                {
+                  if(basepath !== undefined)
+                  {
+                    regionDetails.linkValue = basepath + regionDetails.linkValue;
+                  }
+                } 
             }
             /*Checking if the clicked region is tocLink,indexLink,crossrefernce,ltiLink,word,powerpoint,excel or pdfdocument */
-            if (regionDetails.regionTypeID == eT1Contants.RegionType.CROSS_REFERENCE || regionDetails.regionTypeID == eT1Contants.RegionType.INDEX_LINK
-              || regionDetails.regionTypeID == eT1Contants.RegionType.TOC_LINK || regionDetails.regionTypeID == eT1Contants.RegionType.PDF
-              || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT || regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL
-              || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || regionDetails.regionTypeID == eT1Contants.RegionType.LTILINK)
-            {
-              this.renderHotspot(regionDetails);
-            }
-            else
+            if(regionDetails.hotspotType == 'IMAGE' || regionDetails.hotspotType == 'VIDEO' || regionDetails.hotspotType == 'AUDIO' || regionDetails.hotspotType == 'URL')
             {
               /*Updating the state to rerender the page with Aquila JS Component*/
               this.setState({regionData : regionDetails});
+            }
+            else
+            {
+              this.renderHotspot(regionDetails);              
             }
             break;
           }
@@ -743,7 +894,7 @@ handleRegionClick(hotspotID) {
       currentHighlight.pageIndex = highlightData1.pageInformation.pageNumber;
       pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
         this.saveHighlight.bind(this), this.editHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
-        (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID);
+        (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID, this.props.book.bookinfo.book.activeCourseID);
     }
   }
 /* Method created for displaying the selected highLights. */
@@ -766,7 +917,7 @@ handleRegionClick(hotspotID) {
     const isShared = highLightMetadata.isShared;
     const currentPage = find(pages, page => page.pageorder === currentPageId);
     this.props.saveHighlightUsingReaderApi(_.toString(this.props.book.userInfo.userid),
-      _.toString(this.props.params.bookId), _.toString(currentPage.pageid),
+      _.toString(this.props.location.query.bookid), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(courseId), isShared, currentHighlight.highlightHash,
       note, selectedText, highLightMetadata.currHighlightColor,
       meta, _.toString(currentPageId)).then((newHighlight) => {
@@ -802,7 +953,7 @@ handleRegionClick(hotspotID) {
     highlightClicked.color = highlightClicked.originalColor;
     pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
       this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_0',
-      (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID,cornerFoldedImageTop);
+      (languages.translations[this.props.locale]), this.props.book.bookinfo.book.roleTypeID,cornerFoldedImageTop, this.props.book.bookinfo.book.activeCourseID);
   }
 
   /* Method for displaying the Highlight already stored. */
@@ -821,8 +972,8 @@ handleRegionClick(hotspotID) {
         }
         if (_.toString(annotation.meta.roletypeid) === _.toString(this.props.book.bookinfo.book.roleTypeID)) {
           highlightList.push(annotation);
-        } else if (this.props.book.bookinfo.book.roleTypeID === 2
-          && annotation.meta.roletypeid === 3 && annotation.shared) {
+        } else if (this.props.book.bookinfo.book.roleTypeID == 2
+          && annotation.meta.roletypeid == 3 && annotation.shared) {
           highlightList.push(annotation);
         }
       }
@@ -869,7 +1020,7 @@ handleRegionClick(hotspotID) {
     } else {
       viewerClassName = '';
     }
-    const searchUrl = `${serverDetails}/ebook/ipad/searchbookv2?bookid=${this.props.params.bookId}`
+    const searchUrl = `${serverDetails}/ebook/ipad/searchbookv2?bookid=${this.props.location.query.bookid}`
         + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=${this.props.book.bookinfo.book.version}&authkey=${ssoKey}`;
     this.props.book.annTotalData.forEach((annotation) => {
       if(annotation.shared){
@@ -903,11 +1054,11 @@ handleRegionClick(hotspotID) {
             setCurrentZoomLevel={this.setCurrentZoomLevel}
             store={this.context.store}
             goToPage={this.goToPage}
-            bookId={this.props.params.bookId}
+            bookId={this.props.location.query.bookid}
             globalBookId={this.props.currentbook.globalBookId}
             ssoKey={this.props.currentbook.ssoKey}
             title={this.props.currentbook.title}
-            curbookID={this.props.params.bookId}
+            curbookID={this.props.location.query.bookid}
             isET1="Y"
             disableBackgroundColor="true"
             serverDetails={this.props.currentbook.serverDetails}
@@ -916,6 +1067,7 @@ handleRegionClick(hotspotID) {
             userid={this.props.book.userInfo.userid}
             messages={messages}
             viewerContentCallBack={this.viewerContentCallBack}
+            currentPageIndex={this.state.currPageIndex}
           />
 
           <div className="eT1viewerContent">
