@@ -878,7 +878,8 @@ function getAssetURLForPDFDownload(config,cb){
           for(var i=0;i<hotspots.length;i++)
             {
               try{
-              $('#'+hotspots[i].regionID).remove();
+              $('#'+ 'region' + hotspots[i].regionID).remove();
+              $('#'+ 'icon' + hotspots[i].regionID).remove();
               }
               catch(e){
               }                 
@@ -897,7 +898,7 @@ function getAssetURLForPDFDownload(config,cb){
                   }
               }
               regionElement=document.createElement('div');
-              regionElement.setAttribute('id',hotspots[i].regionID);
+              regionElement.setAttribute('id','region' + hotspots[i].regionID);
               regionElement.setAttribute('name',hotspots[i].name);
               regionElement.style.left= (hotspots[i].x * widthScale)  + 'px';
               regionElement.style.top= (hotspots[i].y * heightScale) + 'px';
@@ -937,6 +938,8 @@ function getAssetURLForPDFDownload(config,cb){
               }
               else
               {
+                iconDiv.setAttribute('id','icon' + hotspots[i].regionID);
+                iconDiv.setAttribute('name','icon' + hotspots[i].name);
                 iconDiv.style.width=(hotspots[i].width * widthScale) + 'px';
                 iconDiv.style.height=(hotspots[i].height * heightScale) + 'px';
                 iconDiv.style.left= (hotspots[i].x * widthScale)  + 'px';

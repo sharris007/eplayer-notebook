@@ -232,7 +232,7 @@ export class PdfBookReader extends Component {
                 {
                   var glossTerm = {
                     isET1 : 'Y' ,
-                    item : document.getElementById(regionsData[k].regionID),
+                    item : document.getElementById('region' + regionsData[k].regionID),
                     popOverCollection : {
                       popOverDescription : this.props.book.glossaryInfoList[i].glossaryDefinition,
                       popOverTitle : this.props.book.glossaryInfoList[i].glossaryTerm
@@ -549,7 +549,7 @@ export class PdfBookReader extends Component {
         {
           var glossTerm = {
             isET1 : 'Y' ,
-            item : document.getElementById(this.state.glossaryRegions[k].regionID),
+            item : document.getElementById('region' + this.state.glossaryRegions[k].regionID),
             popOverCollection : {
               popOverDescription : this.props.book.glossaryInfoList[i].glossaryDefinition,
               popOverTitle : this.props.book.glossaryInfoList[i].glossaryTerm
@@ -772,7 +772,7 @@ handleRegionClick(hotspotID) {
     {
       for(var i=0; i < this.props.book.regions.length ; i++)
       {
-          if(hotspotID == this.props.book.regions[i].regionID)
+          if(hotspotID == ('region' + this.props.book.regions[i].regionID))
           {
             regionDetails = this.props.book.regions[i];
             regionDetails.hotspotType = '';
