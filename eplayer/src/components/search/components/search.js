@@ -9,7 +9,7 @@ export class Search extends React.Component {
 
   componentWillMount() {
     injectReducer(this.props.store, { key: 'search', reducer });
-    this.props.clearSearchResults();    
+    //this.props.clearSearchResults();    
   }
 
   render() {

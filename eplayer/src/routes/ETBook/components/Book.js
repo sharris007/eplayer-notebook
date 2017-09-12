@@ -567,6 +567,11 @@
     }
 
     onPageRequest = (page) => {
+      const pageDetails=this.state.pageDetails;
+      if(pageDetails.searchText && pageDetails.searchText.length) {
+        pageDetails.searchText=[];
+        this.setState({ pageDetails });
+      }
       this.onNavChange(page);
     };
     onPageLoad = (pageId) => {
@@ -628,8 +633,7 @@
       if (this.state.prefOpen === true) {
         this.setState({ prefOpen: false });
       } else {
-        this.setState({ prefOpen: true });
-        this.setState({ searchOpen: false });
+        this.setState({ prefOpen: true, searchOpen: false});
       }
     }
 
@@ -642,8 +646,7 @@
       if (this.state.searchOpen === true || isopenparam == 'closesearch') {
         this.setState({ searchOpen: false });
       } else {
-        this.setState({ searchOpen: true });
-        this.setState({ prefOpen: false });
+        this.setState({ searchOpen: true, prefOpen: false });
       }
     }
     goToTextChange = (e) => {
@@ -767,7 +770,7 @@
         viewerStyles = { productData.viewerStyles } 
         componentFactory = { { getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } } } 
         clients = { { page: pxeClient } } 
-        metadata = { { environment: 'LOCAL', 'pxeUserPreference':{'bgColor':bootstrapParams.pageDetails.bgColor, 'pageFontSize':bootstrapParams.pageDetails.pageFontSize}}}>
+        metadata = { { environment: 'LOCAL', 'pxeUserPreference':{'bgColor':bootstrapParams.pageDetails.bgColor, 'pageFontSize':bootstrapParams.pageDetails.pageFontSize}, 'searchText': bootstrapParams.pageDetails.searchText}}>
         <div>
           <div>
              <div
@@ -817,7 +820,7 @@
           pagePlayList = { bootstrapParams.pageDetails.playListURL }
           currentPageId = { bootstrapParams.pageDetails.currentPageURL.id }
           onPageRequest = {
-            () => {}
+            () => {}   
           }
           onPageLoad = { this.onPageLoad }
           key = { bootstrapParams.pageDetails.currentPageURL.id }
