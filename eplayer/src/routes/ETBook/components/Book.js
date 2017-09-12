@@ -567,7 +567,7 @@
     }
 
     onPageRequest = (page) => {
-      const pageDetails=this.state.pageDetails;
+      const pageDetails={...this.state.pageDetails};
       if(pageDetails.searchText && pageDetails.searchText.length) {
         pageDetails.searchText=[];
         this.setState({ pageDetails });
