@@ -1,14 +1,14 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
+ *
  *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
- *  * 
+ *  *
  *  * NOTICE:  All information contained herein is, and remains
  *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
  *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
  *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
+ *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 /* global localStorage*/
@@ -52,12 +52,13 @@ export class Header extends React.Component {
       goToTextVal: ''
     };
   }
-   componentWillReceiveProps(nextProps){
-     if (this.props.currentPageIndex !== nextProps.currentPageIndex) {
-     this.setState({prefOpen: false});
-     this.setState({searchOpen:false});
-   }
- }
+  componentWillReceiveProps(nextProps){
+  $('h1,.moreIcon,.bookmarkIcon,.drawerIcon,#frame,.navigation').on('click', () => {
+    this.setState({prefOpen : false})
+    this.setState({searchOpen : false})
+ })
+
+}
   handleDrawerkeyselect = (event) => {
     if ((event.which || event.keyCode) === 13) {
       this.setState({ drawerOpen: true });
@@ -240,7 +241,7 @@ export class Header extends React.Component {
                   <Icon name="chevron-back-18" />
                 </span>
               </div>
-              {this.props.currentScenario == 6 ? 
+              {this.props.currentScenario == 6 ?
                 <div className="empty"/> :
               <span
                 className="drawerIcon icon-white"
