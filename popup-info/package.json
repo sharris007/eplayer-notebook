@@ -1,6 +1,6 @@
 {
   "name": "@pearson-incubator/popup-info",
-  "version": "1.1.25",
+  "version": "2.0.0",
   "description": "",
   "main": "./main.js",
   "scripts": {

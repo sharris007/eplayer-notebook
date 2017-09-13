@@ -28,7 +28,7 @@ class PopUpInfo extends Component {
 
   framePopOver = (index, event) => {
     event.preventDefault();
-    if (event.target.getAttribute('class').indexOf('annotator-hl') > -1 || event.target.classList.contains('annotator-handle')) {
+    if (event.currentTarget.getAttribute('class').indexOf('annotator-hl') > -1 || event.currentTarget.classList.contains('annotator-handle')) {
       return false;
     }
     const props = this.props.popUpCollection[index];
@@ -44,7 +44,7 @@ class PopUpInfo extends Component {
           noOverlay: true,
           position: function(box) {
             //const elementIdRect = element.getBoundingClientRect();
-            const pseudoClassProperties = window.getComputedStyle(event.target, ':after');
+            const pseudoClassProperties = window.getComputedStyle(event.currentTarget, ':after');
             let elementOffsetWidth = element.offsetWidth/2;
             const isWordBroken = element.offsetHeight > 25 ? true : false;
             if (isWordBroken) {
@@ -62,12 +62,12 @@ class PopUpInfo extends Component {
                 box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top - document.getElementsByClassName('mm-popup__box')[0].clientHeight - 15) + 'px';
                 box.style.left = (element.getBoundingClientRect().left-185+(elementOffsetWidth)) + 'px';
               } else if (node.children[0].clientWidth - element.getBoundingClientRect().right < 350) {
-                box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top + element.clientHeight + 15) + 'px';
+                box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top + element.offsetHeight + 15) + 'px';
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
                 box.style.left = (element.getBoundingClientRect().left - 350 +  elementOffsetWidth) + 'px';
               } 
               else {
-                box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top + element.clientHeight + 15) + 'px';
+                box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top + element.offsetHeight + 15) + 'px';
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign'); 
                 box.style.left = (element.getBoundingClientRect().left - 50 +  elementOffsetWidth) + 'px';
               }
@@ -81,7 +81,7 @@ class PopUpInfo extends Component {
           }
         });
       });
-      Popup.plugins.popover(event.target);
+      Popup.plugins.popover(event.currentTarget);
       if (props.popOverCollection.popOverDescription) {
         this.checkValidURL(props.popOverCollection.popOverDescription);
       }
