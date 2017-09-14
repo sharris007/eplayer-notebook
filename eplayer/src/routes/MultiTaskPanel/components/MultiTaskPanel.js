@@ -1,7 +1,7 @@
   /* eslint-disable */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { PxePlayer } from 'pxe-player'; 
+// import { PxePlayer } from 'pxe-player'; 
 
 export class MultiTaskPanel extends Component {
   constructor(props) {
@@ -103,7 +103,7 @@ export class MultiTaskPanel extends Component {
 }
 
   return(
-   <PxePlayer bootstrapParams={this.props.bootstrapParams} applnCallback={bootstrapParams.applnCallback}/>
+   ''
     )
   }
 }
