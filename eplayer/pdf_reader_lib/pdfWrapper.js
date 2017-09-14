@@ -869,10 +869,10 @@ function getAssetURLForPDFDownload(config,cb){
           var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
           var regionType,mySpan,icon,iconArt,regionElement,iconDiv;
           var widthScale,heightScale;
-          const pageWidth = $("#docViewer_ViewContainer_BG_0").width();
-          const pageHeight = $("#docViewer_ViewContainer_BG_0").height();
-          const originalPdfWidth = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageWidth();
-          const originalPdfHeight = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageHeight();
+          var pageWidth = $("#docViewer_ViewContainer_BG_0").width();
+          var pageHeight = $("#docViewer_ViewContainer_BG_0").height();
+          var originalPdfWidth = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageWidth();
+          var originalPdfHeight = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageHeight();
           widthScale = pageWidth / originalPdfWidth;
           heightScale = pageHeight / originalPdfHeight;
           for(var i=0;i<hotspots.length;i++)

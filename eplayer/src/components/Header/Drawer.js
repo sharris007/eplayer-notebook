@@ -57,6 +57,13 @@ class DrawerComponent extends React.Component {
       this.drawerListFocus();
     }
   }
+  componentWillReceiveProps(nextProps) {
+    if(this.props.isOpen != nextProps.isOpen){
+      if(!nextProps.isOpen){
+      this.setState({slideIndex : 0});
+      }
+    }
+  }
 
   drawerListFocus = () => {
     if (this.state.slideIndex === 0) {

@@ -82,9 +82,10 @@ const searchActions = {
           // console.log(`SearchBook info error: ${response.statusText}`);
         } else if (response.length) {
           response.forEach((jsonData) => {
-            const searchResults = jsonData.searchTextList;
-            searchResults.forEach((result, i) => {
-              const resultObj = {
+            if(jsonData.status !== null){
+                const searchResults = jsonData.searchTextList;
+               searchResults.forEach((result, i) => {
+               const resultObj = {
 
               };
               resultObj.id = i;
@@ -94,6 +95,7 @@ const searchActions = {
               resultObj.contentPreview = result.bestTextSnippet;
               searchState.searchResult.results.push(resultObj);
             });
+            }
           });
         }
         dispatch({ type: 'SEARCH', searchState });

@@ -269,7 +269,7 @@ function setCurrentHighlight(highLightData)
 function saveHighlight()
 {
    var noteText = '';
-   const highLightMetadata = {
+   var highLightMetadata = {
       currHighlightColor:currHighlightColor,
       currHighlightColorCode:currHighlightColorCode,
       noteText:noteText,
@@ -279,7 +279,7 @@ function saveHighlight()
 }
 function onSaveClick(isColorIconClkd)
 {
-    const highLightMetadata = {
+    var highLightMetadata = {
 
     };
     var noteText;
@@ -379,7 +379,7 @@ function onNoteChange(event) {
   var childHighlightElement = parentHighlightElement[0].children[lastChildElementindex];*/
   var childHighlightElement = parentHighlightElement[0].children[0];
   var notesMessages=NotesMessages;
-  const coord = {
+  var coord = {
     left:childHighlightElement.offsetLeft,
     top:childHighlightElement.offsetTop,
     width:childHighlightElement.offsetWidth,
