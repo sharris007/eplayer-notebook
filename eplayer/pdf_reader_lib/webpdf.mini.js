@@ -466,10 +466,11 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             }
         }), this.bind = function() {
             return f.mobile ? void c() : ($(document).keyup(function(a) {
-                if (27 == a.keyCode) {
+                //Commented to resolve ETEXT-3916
+                /*if (27 == a.keyCode) {
                     var b = h.getToolHandlerByName(e.Tools.TOOL_NAME_HAND);
                     h.setCurToolHandler(b)
-                }
+                }*/
             }), $(document).bind("mouseup", function(a) {
                 i && d.trigger("mouseup")
             }), d.off("mousedown").on("mousedown", function(a) {
