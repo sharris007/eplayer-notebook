@@ -1209,7 +1209,7 @@ function getAssetURLForPDFDownload(config,cb){
           //_this.saveHighlight((pageIndex + 1), serializedHighlight, hId);
         }
 
-        WebPDF.ViewerInstance.getCurToolHandler().getTextSelectTool().clearSelection();
+        //WebPDF.ViewerInstance.getCurToolHandler().getTextSelectTool().clearSelection();
         try{
         document.querySelector('.docViewer').click();  
       }catch(e){}
