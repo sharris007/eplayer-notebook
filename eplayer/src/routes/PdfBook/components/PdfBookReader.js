@@ -1141,6 +1141,7 @@ handleRegionClick(hotspotID) {
             viewerContentCallBack={this.viewerContentCallBack}
             currentPageIndex={this.state.currPageIndex}
             currentScenario = {this.props.currentbook.scenario}
+            globaluserid = {this.props.currentbook.globaluserid}
           />
 
           <div className="eT1viewerContent">

@@ -17,6 +17,8 @@
 // import { config } from '../../../../config/environments';
 // const ROOT_URL = 'http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/searchbook?bookid=7443104&globalbookid=CM76820710&sortby=1&version=1.0&authkey=31358503403719696212017&outputformat=JSON';
 import fetch from 'isomorphic-fetch';
+import { eT1Contants } from '../../common/et1constants';
+import { getmd5 } from '../../Utility/Util';
 
 export const SEARCH = 'SEARCH';
 export const CLEAR_SEARCH_OBJ = 'CLEAR_SEARCH_OBJ';
@@ -54,8 +56,15 @@ const searchActions = {
         results: []
       }
     };
-
-    return dispatch => fetch(paramList.searchUrl.replace('searchText', searchText))
+    var searchServiceURL = paramList.searchUrl.replace('searchText', searchText);
+    if(searchServiceURL.indexOf('/ebook/ipad/searchbookv2') !== -1)
+    {
+      // tempurl is starts with http to create hash key for matching with server
+      var tempurl = searchServiceURL.replace("https","http");
+      var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+      searchServiceURL = ''+searchServiceURL+'&hsid='+hsid;
+    }
+    return dispatch => fetch(searchServiceURL)
       .then(response => response.json())
       .then((response) => {
         if (response && response.hits && response.wordHits.length > 0 && searchText.length >= 4) {

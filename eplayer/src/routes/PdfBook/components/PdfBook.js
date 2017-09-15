@@ -22,6 +22,7 @@ import languageName from '../../../../locale_config/configureLanguage';
 import { eT1Contants } from '../../../components/common/et1constants';
 import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
+import { browserHistory } from 'react-router'; 
 import Cookies from 'universal-cookie';
 const envType = domain.getEnvType();
 /* Defining the variables for localStorage. */
@@ -32,15 +33,17 @@ let ssoKey;
 let serverDetails;
 let langID;
 let roleTypeID;
-var currentbook = {};
+var currentbook;
 /* Creating PdfBook component. */
 export class PdfBook extends Component {
   constructor(props){
     super(props);
-    if((this.props.location.query.invoketype === undefined || this.props.location.query.invoketype === ''
-      || this.props.location.query.invoketype === null) && (this.props.location.query.sessionid === undefined
+    if((this.props.location.query.sessionid === undefined
       || this.props.location.query.sessionid === ''
-      || this.props.location.query.sessionid === null))
+      || this.props.location.query.sessionid === null) &&
+      (this.props.location.query.invoketype === undefined
+      || this.props.location.query.invoketype === ''
+      || this.props.location.query.invoketype === null))
     {
       this.cookies = new Cookies();
       let appPath             = window.location.origin;
@@ -61,6 +64,7 @@ export class PdfBook extends Component {
 /* Async keyword used for independent calling the method, componentWillMount is lifecycle method,
 used for before mounting occurs. */
   async componentWillMount() {
+  currentbook = {};
   var bookID = this.props.location.query.bookid;
   var bookData = {};
   if (this.props.location.query.invoketype !== undefined && 
@@ -91,16 +95,42 @@ used for before mounting occurs. */
         var querystr = window.location.search.substring(1);   
         var serverhsid = this.props.location.query.hsid;    
         querystr = querystr.replace("&hsid="+serverhsid,"");    
-        var clienthsid = getmd5(querystr+eT1Contants.MD5_SECRET_KEY);   
+        var clienthsid = getmd5(querystr+eT1Contants.DEEPLINK_MD5_SECRET_KEY);   
         if(clienthsid == serverhsid)    
         {   
           console.log("hsid match success. Continue to launch the title")   
         }   
         else    
         {   
-          console.log("hsid match failure. Show the error page")    
-        }   
-        // Todo: Check the user session is valid or not then launch the title   
+          console.log("hsid match failure. Show the error page")  
+          browserHistory.push('/eplayer/login');
+        }  
+        if(this.props.location.query.bookserver !== undefined)
+        {
+          const bookserverno = this.props.location.query.bookserver;
+          var bookserver;
+          if (envType == 'qa' || envType == 'stage')
+          {
+            bookserver = 'CERT'+bookserverno;
+          }
+          else if(envType == 'prod')
+          {
+            bookserver = 'PROD'+bookserverno;
+          }
+          serverDetails = eT1Contants.ServerUrls[envType][bookserver];
+        } 
+        // Todo: Check the user session is valid or not then launch the title 
+        const isAuthkeyValid = await this.props.validateAuthkey(this.props.location.query.userid,
+                this.props.location.query.sessionid,serverDetails);
+        if(isAuthkeyValid)
+        {
+           console.log("authkey match success. Continue to launch the title")   
+        }
+        else
+        {
+          console.log("authkey match failure. Show the error page")  
+          browserHistory.push('/eplayer/login');
+        }
       }   
       
       if (this.props.location.query.sessionid === undefined
@@ -125,9 +155,9 @@ used for before mounting occurs. */
       ubd = bookData.userBookLastModifiedDate ? bookData.userBookLastModifiedDate : this.props.location.query.ubd;
       ubsd = bookData.userBookScenarioLastModifiedDate ? bookData.userBookScenarioLastModifiedDate : this.props.location.query.ubsd;
       ssoKey = this.props.location.query.sessionid ? this.props.location.query.sessionid : piSession.userId();
-      serverDetails = bookData.bookServerUrl ? bookData.bookServerUrl : '';
+      serverDetails = bookData.bookServerUrl ? bookData.bookServerUrl : serverDetails;
       roleTypeID = bookData.roleTypeID ? bookData.roleTypeID : this.props.location.query.roletypeid;
-      if(serverDetails == '')
+    /*  if(serverDetails == '')
       {
         const bookserverno = this.props.location.query.bookserver;
         var bookserver;
@@ -140,7 +170,7 @@ used for before mounting occurs. */
           bookserver = 'PROD'+bookserverno;
         }
         serverDetails = eT1Contants.ServerUrls[envType][bookserver];
-      }
+      }*/
     }
     currentbook.ssoKey = ssoKey;
     currentbook.serverDetails = serverDetails;
@@ -158,6 +188,7 @@ used for before mounting occurs. */
     }
     await this.props.fetchBookInfo(bookID, ssoKey,
               this.props.book.userInfo.userid, serverDetails, roleTypeID);
+    currentbook.globaluserid = identityId;
     currentbook.authorName = bookData.author ? bookData.author : this.props.book.bookinfo.book.author;
     var tempThumbnail = bookData.image ? bookData.image : this.props.book.bookinfo.book.thumbnailimg;
     if(tempThumbnail.indexOf("http") !== 0)

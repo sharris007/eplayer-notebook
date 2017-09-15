@@ -15,7 +15,8 @@ export const eT1Contants = {
   FOXIT_HOST_URL: 'https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/',
   CERT_SITE_ID: '11444',
   PROD_SITE_ID: '15102',
-  MD5_SECRET_KEY: 'reactbanana',
+  MD5_SECRET_KEY: 'ipadsecuretext',
+  DEEPLINK_MD5_SECRET_KEY:'reactbanana',
   RegionType : {
     AUDIO : 1,
     CROSS_REFERENCE : 2,

@@ -23,9 +23,13 @@ const moreMenuActions = {
   },
 
   logoutUserSession(userid, sessionKey, serverDetails) {
+    var serviceurl = `${serverDetails}/ebook/ipad/logout?values=userid::${userid}::sessionid::${sessionKey}::scenario::1::authservice::sso::authkey::${sessionKey}&outputformat=JSON`;
+    // tempurl is starts with http to create hash key for matching with server
+    var tempurl = serviceurl.replace("https","http");
+    var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
     return {
       type: 'LOGOUT_USER_SESSION',
-      payload: axios.get(`${serverDetails}/ebook/ipad/logout?values=userid::${userid}::sessionid::${sessionKey}::scenario::1::authservice::sso::authkey::${sessionKey}&outputformat=JSON`) // eslint-disable-line
+      payload: axios.get(`${serviceurl}&authkey=${sessionid}&hsid=${hsid}`) // eslint-disable-line
     };
   }
 

@@ -28,6 +28,8 @@ import languageName from '../../../../locale_config/configureLanguage';
 import { languages } from '../../../../locale_config/translations/index';
 
 import { resources, domain } from '../../../../const/Settings';
+import { getmd5 } from '../../../components/Utility/Util';
+import { eT1Contants } from '../../../components/common/et1constants';
 
 const envType = domain.getEnvType();
 let languageid;
@@ -52,20 +54,22 @@ export default class BookshelfPage extends React.Component {
     super(props);
     document.title = 'Bookshelf';
     this.cookies = new Cookies();
-    let appPath             = window.location.origin;
-    let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
-    redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
-    setTimeout(()=>{
-      piSession.getToken((result, userToken) => {
-      if (result === piSession.Success) {
-        localStorage.setItem('secureToken',userToken);
-      }
-      else if(result === 'unknown' || result === 'notoken' ){
-           piSession.login(redirectCourseUrl, 10);
+    if(this.props.location.query.bookshelftype !== 'et1')
+    {
+      let appPath             = window.location.origin;
+      let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
+      redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
+      setTimeout(()=>{
+        piSession.getToken((result, userToken) => {
+        if (result === piSession.Success) {
+          localStorage.setItem('secureToken',userToken);
         }
-      });
-    },2000)
-
+        else if(result === 'unknown' || result === 'notoken' ){
+             piSession.login(redirectCourseUrl, 10);
+          }
+        });
+      },2000)
+   }
   }
 
   /* Method for mounting before the page loaded. checking the condition wether the toc data present
@@ -94,10 +98,10 @@ export default class BookshelfPage extends React.Component {
     }
     // Added eT1StandaloneBkshf flag based flow to use eT1 getuserbookshelf
     // service if paperApi login or bookshelf service is down or some other related issues.
-    if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
-      sessionid = this.props.location.query.sessionid;
-      piToken = this.props.location.query.piToken;
-      localStorage.setItem('identityId', this.props.location.query.identityId);
+    if (this.props.location.query.bookshelftype === 'et1') {
+      sessionid = this.props.location.query.authkey;
+      piToken = 'getuserbookshelf';
+      localStorage.setItem('identityId', this.props.location.query.globaluserid);
     }
     /* Passing the sessionid. Stroing the SsoKey */
     if (sessionid === undefined || sessionid === '' || sessionid === null)
@@ -113,20 +117,22 @@ export default class BookshelfPage extends React.Component {
      const IntervalCheck = setInterval(()=>{
       if(!isSessionLoaded) {
         const secureToken  = localStorage.getItem('secureToken');
-        if(secureToken) {
+        if(secureToken || this.props.location.query.bookshelftype === 'et1') {
           const cdnToken = this.cookies.get('etext-cdn-token');
           if(!cdnToken){
              this.props.getAuthToken(secureToken);
            }
           //let urn = `bookShelf?key=${sessionid}&bookShelfMode=BOTH`;
           let urn = 'compositeBookShelf';
-          if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') {
-            urn = 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
-                + `siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&smsuserid=${this.props.location.query.identityId}`;
+          if (this.props.location.query.bookshelftype === 'et1') {
+            // This bookshelf temp mentioned as constant
+            urn = 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbookshelf?'
+                + `siteid=11444&smsuserid=${this.props.location.query.globaluserid}`;
+            var hsid = getmd5('siteid=11444'+'printbanana');
+            urn = ''+urn+'&hsid='+hsid;
           }
           // const secureToken = this.cookies.get('secureToken');
-          if (this.props.location.query.eT1StandaloneBkshf === 'Y'
-                || this.props.location.query.eT1StandaloneBkshf === 'y') {
+          if (this.props.location.query.bookshelftype === 'et1') {
             this.props.fetch(urn, piToken);
           } else {
             this.props.fetch(urn, secureToken);
@@ -154,7 +160,16 @@ export default class BookshelfPage extends React.Component {
   handleBookClick = (bookId, type) => {
     if ( type === 'et1') {
        /* BrowserHistory used for navigating the next page from current page. */
-       const bookObj = _.find(this.props.bookshelf.books.data.entries, bookData => bookData.bookId == bookId);
+       var entries;
+       if (this.props.location.query.bookshelftype === 'et1')
+       {
+          entries = this.props.bookshelf.books.data[0].entries;
+       }
+       else
+       {
+          entries = this.props.bookshelf.books.data.entries;
+       }
+       const bookObj = _.find(entries, bookData => bookData.bookId == bookId);
        if(!bookObj.expired) {
 
       browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=standalone`);
@@ -184,7 +199,7 @@ export default class BookshelfPage extends React.Component {
       let courseBookArray = [];
       /* Assigning list of books into booksArray from eT1 bookshelf response
       if eT1StandaloneBkshf query param value is 'Y' or 'y'*/
-      if (this.props.location.query.eT1StandaloneBkshf === 'Y' || this.props.location.query.eT1StandaloneBkshf === 'y') { // eslint-disable-line
+      if (this.props.location.query.bookshelftype === 'et1') { // eslint-disable-line
         booksArray = books.data[0].entries;
       } else {
         booksArray = books.data.entries;

@@ -94,7 +94,17 @@ export class Header extends React.Component {
       if (langQuery && langQuery !== '?languageid=1') {
         browserHistory.push(`/eplayer/bookshelf${langQuery}`);
       } else {
-        browserHistory.push('/eplayer/bookshelf');
+        var bookshelfRoute = '/eplayer/bookshelf';
+        piSession.getToken((result, userToken) => {
+        if (result === piSession.Success) {
+          
+        }
+        else if(result === 'unknown' || result === 'notoken' ){
+          bookshelfRoute = '/eplayer/bookshelf?bookshelftype=et1&authkey='+this.props.ssoKey+'&globaluserid='+this.props.globaluserid;
+         }
+         browserHistory.push(bookshelfRoute);
+        });
+        
       }
     }
     this.setState({ open: false });

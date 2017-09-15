@@ -26,7 +26,7 @@ const envType = domain.getEnvType();
 
 export const fetch = (urn, piToken) => {
    
-  if (piToken !== 'dummypiToken') {
+  if (piToken !== 'getuserbookshelf') {
     const url = `${etextCourseService[envType]}/web/compositeBookShelf`;
     return {
       type: 'BOOKS',
