@@ -7,3 +7,4 @@ coverage
 /.project
 /.DS_Store
 package-lock.json
+public
