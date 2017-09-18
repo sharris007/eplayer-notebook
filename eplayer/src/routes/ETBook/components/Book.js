@@ -13,13 +13,13 @@
   import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
   import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
-  import { PxePlayer } from 'pxe-player';
+  // import { PxePlayer } from 'pxe-player';
   import { VegaViewPager } from '@pearson-incubator/vega-viewer';
   import { Navigation } from '@pearson-incubator/aquila-js-core';
   import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
   import axios from 'axios';
-  import { Annotation } from 'pxe-annotation';
-  import { Wrapper } from 'pxe-wrapper';
+  // import { Annotation } from 'pxe-annotation';
+  // import { Wrapper } from 'pxe-wrapper';
   import { PopUpInfo } from '@pearson-incubator/popup-info';
   import RefreshIndicator from 'material-ui/RefreshIndicator';
   import { resources, domain, typeConstants } from '../../../../const/Settings';
@@ -141,7 +141,7 @@
         pageDetails.pageFontSize = parseInt(getStorageObj.split("/")[0]);
         pageDetails.bgColor = getStorageObj.split("/")[1];
       } else {
-        pageDetails.pageFontSize = '50%';
+        pageDetails.pageFontSize = '56%';
         pageDetails.bgColor = 'White';
       }
       this.setState({ pageDetails: pageDetails });
@@ -756,8 +756,8 @@
             }
           }
         },
-        viewerScript: `${window.location.origin}/pxe_scripts/bundle.js`,
-        viewerStyles: `${window.location.origin}/pxe_scripts/style.css`,
+        viewerScript: `${window.location.origin}/eplayer/pxe_scripts/bundle.js`,
+        viewerStyles: `${window.location.origin}/eplayer/pxe_scripts/style.css`,
       };
       const locale = bootstrapParams.pageDetails.locale ? bootstrapParams.pageDetails.locale : 'en';
       return ( 

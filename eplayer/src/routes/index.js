@@ -7,7 +7,6 @@ import eTbookshelfRoute from './ETBookshelf';
 import eTbookRoute from './ETBook';
 import pdfbookRoute from './PdfBook';
 import print from './Print';
-import multiTaskPanel from './MultiTaskPanel';
 import course from './Course';
 
 /*  Note: Instead of using JSX, we recommend using react-router
@@ -24,7 +23,6 @@ export const createRoutes = store => ({
     eTbookshelfRoute(store),
     eTbookRoute(store),
     print(store),
-    multiTaskPanel(store),
     course(store),
     piLoginRoute(store)
   ]

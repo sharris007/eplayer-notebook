@@ -119,15 +119,7 @@ webpackConfig.module.loaders = [{
 }, {
   test: /\.(js|jsx)$/,
   include: [
-    path.join(__dirname, '../node_modules/pxe-player'),
-    path.join(__dirname, '../node_modules/pxe-pageviewer'),
-    path.join(__dirname, '../node_modules/pxe-glossary-popup'),
-    path.join(__dirname, '../node_modules/pxe-moreinfo-popup'),
-    path.join(__dirname, '../node_modules/pxe-annotation'),
-    path.join(__dirname, '../node_modules/@pearson-incubator'),
-    path.join(__dirname, '../node_modules/search'),
-    path.join(__dirname, '../node_modules/popup-info'),
-    path.join(__dirname, '../node_modules/pxe-wrapper')
+    path.join(__dirname, '../node_modules/@pearson-incubator')
   ],
   loader: 'babel',
   query: config.compiler_babel
