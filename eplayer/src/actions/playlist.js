@@ -110,29 +110,31 @@ export const getBookTocCallService  = data => dispatch =>
 
 export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseDetails(data)
    .then(response => response.json())
-   .then((response) => {
-     
-     dispatch(getBookDetails(response));
-     const baseUrl      = response.userCourseSectionDetail.baseUrl;
-     tocUrl       = getTocUrlOnResp(response.userCourseSectionDetail.toc);
-     bookDetails  = response.userCourseSectionDetail;
-     piToken      = data.piToken;
-     bookId       = bookDetails.section.sectionId;
-     const bookDetailsSection = bookDetails.section;
-     const passportDetails = response.passportPermissionDetail;
-     const url = window.location.href;
-     const n = url.search('prdType');
-     let prdType  ='';
+   .then((response) => {    
+      dispatch(getBookDetails(response));
+      const baseUrl      = response.userCourseSectionDetail.baseUrl;
+      tocUrl             = getTocUrlOnResp(response.userCourseSectionDetail.toc);
+      bookDetails        = response.userCourseSectionDetail;
+      piToken            = data.piToken;
+      bookId                = bookDetails.section.sectionId;
+
+      const passportDetails = response.passportPermissionDetail;
+      const url = window.location.href;
+      const n = url.search('prdType');
+      let prdType  ='';
       if (n > 0) {
         const urlSplit = url.split('prdType=');
         prdType = urlSplit[1];
       }  
-      if(bookDetails.authgrouptype=='student' && passportDetails && !passportDetails.access){
+      let studentCheck     = resources.constants.zeppelinEnabled; 
+      let instructorCheck  = resources.constants.idcDashboardEnabled; 
+      if(studentCheck && bookDetails.authgrouptype=='student' && passportDetails && !passportDetails.access){
         redirectToZeppelin(bookDetails,passportDetails);
         return false;
       }
-      else if(bookDetails.authgrouptype=='instructor' && !prdType ){
-        const prodType='PXE', courseId=bookId;
+      else if(instructorCheck && bookDetails.authgrouptype=='instructor' && !prdType ){
+        const productType = bookDetails.section.extras.metadata.productModel;
+        const prodType=productType, courseId=bookId;
         redirectToIDCDashboard(prodType,courseId);
         return false;
       }
@@ -144,10 +146,14 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
         dispatch(getPlaylistCompleteDetails(response))
       });
    }
-);
+
+)
+
 function redirectToIDCDashboard(prodType,courseId){
-  const redirectIdcURL = resources.links.idcUrl[domain.getEnvType()]+'/idc?product_type='+prodType+'&courseId='+courseId;
-  window.location = redirectIdcURL;
+  const idcBaseurl = resources.links.idcUrl[domain.getEnvType()]+'/idc?';
+  const IdcRelativeURL = 'product_type='+prodType+'&courseId='+courseId
+  const redirectIdcURL = idcBaseurl+ IdcRelativeURL;
+  window.open(redirectIdcURL,'_self');
 } 
 
 function redirectToZeppelin(bookDetails,passportDetails){
@@ -158,7 +164,6 @@ function redirectToZeppelin(bookDetails,passportDetails){
           appAccess     : passportDetails.access,
           launchUrl     : bookDetails.section.extras.metadata.launchUrl
     }
-    
     const productId     = userAccess.productId ,
           institutionId = userAccess.institutionId ,
           courseAccess  = userAccess.appAccess,

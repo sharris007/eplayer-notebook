@@ -17,7 +17,9 @@ export const resources = {
     builds         : '2.0',
     TextSearchLimit: 100,
     PiTokenRefreshTimeout:1800,
-    secureApi      : true
+    secureApi      : true,
+    idcDashboardEnabled : true,
+    zeppelinEnabled     : true
   },
   links: {
     legalNotice    : 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
