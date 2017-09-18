@@ -39,6 +39,7 @@ export const pageDetails = {
   playListURL: '',
   currentPageURL: '',
   bgColor: 'White',
+  isAnnotationHide: false,
   endPoints: {
     services: pxeServiceUrl,
     search: 'https://content-service.dev-prsn.com/csg',

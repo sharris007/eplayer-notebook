@@ -150,9 +150,11 @@
         let getStorageObj = localStorage.getItem('bookId' + this.props.params.bookId);
         pageDetails.pageFontSize = parseInt(getStorageObj.split("/")[0]);
         pageDetails.bgColor = getStorageObj.split("/")[1];
+        pageDetails.isAnnotationHide = (getStorageObj.split("/")[2] == 'true')? true : false;
       } else {
         pageDetails.pageFontSize = '56%';
         pageDetails.bgColor = 'White';
+        pageDetails.isAnnotationHide = false;
       }
       this.setState({ pageDetails: pageDetails });
     }
@@ -544,7 +546,9 @@
           theme: getpageDetails.bgColor,
           fontSize: pageDetails.pageFontSize,
           orientation: 'horizontal',
-          zoom: '0'
+          zoom: '0',
+          isAnnotationHide: getpageDetails.isAnnotationHide,
+          enableShowHide: false
         }
       };
       const promiseVal = Promise.resolve(prefData);
@@ -555,9 +559,10 @@
       let pageDetails = this.state.pageDetails;
       let getStorageObj = localStorage.getItem('bookId' + this.props.params.bookId);
 
-      getStorageObj = pref.fontSize + "/" + pref.theme;
+      getStorageObj = pref.fontSize + "/" + pref.theme + "/" + pref.isAnnotationHide;
       pageDetails.pageFontSize = pref.fontSize;
       pageDetails.bgColor = pref.theme;
+      pageDetails.isAnnotationHide = pref.isAnnotationHide;
       localStorage.setItem('bookId' + this.props.params.bookId, getStorageObj);
       this.setState({ pageDetails: pageDetails });
     }
@@ -782,7 +787,8 @@
           environment: 'LOCAL', 
           pxeUserPreference:{
             bgColor:bootstrapParams.pageDetails.bgColor, 
-            pageFontSize:bootstrapParams.pageDetails.pageFontSize
+            pageFontSize:bootstrapParams.pageDetails.pageFontSize,
+      isAnnotationHide: bootstrapParams.pageDetails.isAnnotationHide
           }, 
           searchText: bootstrapParams.pageDetails.searchText
         }
