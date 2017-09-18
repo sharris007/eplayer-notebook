@@ -13,6 +13,7 @@ Scenario: Availability of Lables, Links & Buttons on Login page
     Then I expect that element "#help-in-form.pe-icon--btn.toggle-help-icon.ng-scope" does exist
     Then I expect that element ".logo" becomes visible
     Then I expect that element "a#forgotUsernameOrPasswordLink.ng-binding" becomes visible
+    Then I expect that element ".pe-title.pe-title--small" becomes visible
     Then I expect that element "button*=Create" becomes visible
     Then I expect that element ".copyright" becomes visible
 
@@ -34,19 +35,28 @@ Examples:
 | span*=Privacy | h1*=Privacy |
 | span*=Terms | h1*=Pearson |
 
-Scenario: Should not let you log in with blank Username and password
-    When I click on the button "#mainButton"
-    Then I expect that element "div.ng-binding.ng-scope" becomes visible
-
-Scenario Outline: Failed Login for incorrect username or password
+Scenario Outline: Should not let you log in with blank Username and password
     When I set "<username1>" to the inputfield "#username"
     And I set "<password1>" to the inputfield "#password"
     And I click on the button "#mainButton"
-    Then I expect that element ".panel-title.pe-form--error.ng-binding" becomes visible
+    Then I expect that element ".ng-binding.ng-scope" becomes visible
 Examples:
 | username1 | password1 |
+| et1_qaautomation_edu1 |  |
+|  |  Pa55word@123 |
+|  |  |
+
+
+Scenario Outline: Failed Login for incorrect username or password
+    When I set "<username2>" to the inputfield "#username"
+    And I set "<password2>" to the inputfield "#password"
+    And I click on the button "#mainButton"
+    Then I expect that element ".panel-title.pe-form--error.ng-binding" becomes visible
+Examples:
+| username2 | password2 |
 | et1_qaautomation_edu1 |  Pa55word111 |
 | xxxxxx |  Pa55word@123 |
+| xxxxxx | Pa55word111 |
 
 Scenario: Should let you log in with correct Username and correct Password
     When I set "et1_qaautomation_edu1" to the inputfield "#username"
