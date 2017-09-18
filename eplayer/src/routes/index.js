@@ -23,6 +23,7 @@ import pdfbookRoute from './PdfBook';
 import print from './Print';
 import multiTaskPanel from './MultiTaskPanel';
 import course from './Course';
+import errorRoute from './Error';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -41,7 +42,8 @@ export const createRoutes = store => ({
     print(store),
     multiTaskPanel(store),
     course(store),
-    piLoginRoute(store)
+    piLoginRoute(store),
+    errorRoute(store)
   ]
 });
 

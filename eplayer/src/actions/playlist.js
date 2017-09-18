@@ -14,6 +14,10 @@
 /* global $ */
 import PlaylistApi from '../api/playlistApi';
 import { resources , domain , typeConstants } from '../../const/Settings';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import { browserHistory } from 'react-router';
 // GET Book Details
 export const getPlaylistCompleteDetails = json => ({
   type: typeConstants.GET_PLAYLIST,
@@ -111,12 +115,18 @@ export const getBookTocCallService  = data => dispatch =>
 export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseDetails(data)
    .then(response => response.json())
    .then((response) => {    
+      console.log("response----",response.status);
+      if(response.status>=400){
+         browserHistory.push('/eplayer/error/'+response.status);
+         return false;
+      }
+     
       dispatch(getBookDetails(response));
       const baseUrl      = response.userCourseSectionDetail.baseUrl;
       tocUrl             = getTocUrlOnResp(response.userCourseSectionDetail.toc);
       bookDetails        = response.userCourseSectionDetail;
       piToken            = data.piToken;
-      bookId                = bookDetails.section.sectionId;
+      bookId             = bookDetails.section.sectionId;
 
       const passportDetails = response.passportPermissionDetail;
       const url = window.location.href;
