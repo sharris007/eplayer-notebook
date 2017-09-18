@@ -548,7 +548,7 @@
           orientation: 'horizontal',
           zoom: '0',
           isAnnotationHide: getpageDetails.isAnnotationHide,
-          enableShowHide: false
+          enableShowHide: true
         }
       };
       const promiseVal = Promise.resolve(prefData);
