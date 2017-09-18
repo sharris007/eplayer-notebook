@@ -139,7 +139,7 @@
       //PLA pageunload Event
       if (this.props.bookdetailsdata.userCourseSectionDetail !== undefined) {
         const unloadPageNxtpageId = this.getNxtPageId(this.state.currentPageId);
-        this.UnloadFu(this.state.currentPageId, unloadPageNxtpageId, '', '', false);
+        this.mapUnloadData(this.state.currentPageId, unloadPageNxtpageId, '', '', false);
       }
       delete this.state.pageDetails.searchText;
       this.setState({ pageDetails: this.state.pageDetails, asynCallLoaded: false });
@@ -275,19 +275,6 @@
         // this.props.dispatch(getAnnCallService(this.state.urlParams));
       });
 
-      //PLA Events Functions
-      if (this.props.bookdetailsdata.userCourseSectionDetail !== undefined) {
-        let getnextPageId = '';
-        if (!this.state.pageLoad) {
-          getnextPageId = this.getNxtPageId(data.id);
-          this.loadFu(data.id, getnextPageId);
-        } else {
-          getnextPageId = this.getNxtPageId(this.state.currentPageId);
-          this.UnloadFu(this.state.currentPageId, getnextPageId, data.id, this.getNxtPageId(data.id), true);
-          //getnextPageId = this.getNxtPageId(data.id);
-          //this.loadFu(data.id, getnextPageId);
-        }
-      }
     };
 
     onPageChange = (type, data) => {
@@ -342,7 +329,7 @@
       }
     }
 
-    loadFu = (cu, nx) => {
+    mapLoadData = (cu, nx) => {
       const timeOnTaskUuid = this.getGUID();
       this.setState({
         nextPageId: nx,
@@ -375,7 +362,7 @@
       });
     }
 
-    UnloadFu = (cu, nx, loadPageid, loadNxtPageId, loadFunCall) => {
+    mapUnloadData = (cu, nx, loadPageid, loadNxtPageId, loadFunCall) => {
       let updatedPageUnLoadData = this.state.pageUnLoadData;
       if (this.state.pageLoadData.activities[0].payload.timeOnTaskUuid === this.state.timeOnTaskUuid) {
         updatedPageUnLoadData.activities[0].payload.timeOnTaskUuid = this.state.pageLoadData.activities[0].payload.timeOnTaskUuid;
@@ -406,7 +393,7 @@
 
         unLoadPageEvent(this.state.piToken, updatedPageUnLoadData);
         if (loadFunCall) {
-          this.loadFu(loadPageid, loadNxtPageId);
+          this.mapLoadData(loadPageid, loadNxtPageId);
         }
 
       });
@@ -593,6 +580,16 @@
       const currentPage = find(this.state.pageDetails.playListURL, page => page.id === pageId);
       if (currentPage) {
         this.onNavChange(currentPage);
+        if (this.props.bookdetailsdata.userCourseSectionDetail !== undefined) {
+          let getnextPageId = '';
+          if (!this.state.pageLoad) {
+            getnextPageId = this.getNxtPageId(this.state.urlParams.id);
+            this.mapLoadData(this.state.urlParams.id, getnextPageId);
+          } else {
+            getnextPageId = this.getNxtPageId(this.state.currentPageId);
+            this.mapUnloadData(this.state.currentPageId, getnextPageId, this.state.urlParams.id, this.getNxtPageId(this.state.urlParams.id), true);
+          }
+        }
       }
     };
 
