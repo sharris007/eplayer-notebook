@@ -23,7 +23,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { resources , domain , typeConstants } from '../../../../const/Settings';
 
 // import LoginHeader from '../../../components/LoginHeader'; /* Adding the LoginHeader for login page header.*/
-import './ErrorPage.css'; /* Adding the login css. */
 // import reducer from '../modules/loginReducer';/* Injecting the reducers for login. */
 
 class ErrorPage extends React.Component {
