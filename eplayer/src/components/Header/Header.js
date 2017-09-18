@@ -240,6 +240,8 @@ export class Header extends React.Component {
           iconElementLeft={
             <div>
               <div className="back_rec">
+              {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hasbookshelflink ?
+                <div className="empty"/> :
                 <span
                   className="icon-white "
                   style={style.bookshelfIcon}
@@ -250,8 +252,9 @@ export class Header extends React.Component {
                 >
                   <Icon name="chevron-back-18" />
                 </span>
+              }
               </div>
-              {this.props.currentScenario == 6 ?
+              {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hasdrawerbutton ?
                 <div className="empty"/> :
               <span
                 className="drawerIcon icon-white"
@@ -268,12 +271,14 @@ export class Header extends React.Component {
           }
           iconElementRight={
             <div>
-            {this.props.currentPageIndex == 0 ?
+            {this.props.currentPageIndex == 0 || (this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hasbookmarkpagebutton) ?
               <div className="empty"/> :
               <div className="bookmarkIcon" role="button" tabIndex="0">
                 <BookmarkIconComponent data={bookmarkIconData} locale="en"/>
               </div>
             }
+            {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.haszoominbutton && !this.props.bookData.bookFeatures.haszoomoutbutton ?
+              <div className="empty"/> :
               <div
                 className="icon-white prefIcon"
                 style={style.prefIcon}
@@ -284,10 +289,12 @@ export class Header extends React.Component {
               >
                 <Icon name="font-setting-24" />
               </div>
+            }
               {this.props.isET1 ? <div className="preferences-container-eT1">{this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} disableBackgroundColor={this.props.disableBackgroundColor} /></div> : <div className="empty" />} </div>
        : <div className="preferences-container">{this.state.prefOpen ? <div className="content"><PreferencesComponent fetch={this.props.getPreference} preferenceUpdate={this.props.updatePreference}
          disableBackgroundColor={false} locale="en" /></div> : <div className="empty" />} </div>}
-
+         {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hassearchbutton ?
+              <div className="empty"/> :
               <div
                 className="icon-white searchIcon"
                 style={style.searchIcon}
@@ -298,6 +305,7 @@ export class Header extends React.Component {
               >
                 <Icon name="search-lg-18" />
               </div>
+            }
               <div className="searchContainer">
                 {this.state.searchOpen ? <Search locale={locale} store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={pageId => this.goToPage(pageId)} indexId={this.props.indexId} listClick={this.props.listClick} isET1="Y" /> : <div className="empty" />}
               </div>

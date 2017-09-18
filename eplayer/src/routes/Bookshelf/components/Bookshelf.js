@@ -161,18 +161,21 @@ export default class BookshelfPage extends React.Component {
     if ( type === 'et1') {
        /* BrowserHistory used for navigating the next page from current page. */
        var entries;
+       var ispilogin;
        if (this.props.location.query.bookshelftype === 'et1')
        {
           entries = this.props.bookshelf.books.data[0].entries;
+          ispilogin = "N";
        }
        else
        {
           entries = this.props.bookshelf.books.data.entries;
+          ispilogin = "Y";
        }
        const bookObj = _.find(entries, bookData => bookData.bookId == bookId);
        if(!bookObj.expired) {
 
-      browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=standalone`);
+      browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=standalone&ispilogin=${ispilogin}`);
     }
 
     }  else if( type === 'et2'){

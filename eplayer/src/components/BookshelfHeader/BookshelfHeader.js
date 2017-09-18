@@ -16,6 +16,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
+const queryString = require('query-string');
 
 import Icon from '../Icon';
 import './BookshelfHeader.scss';
@@ -70,16 +71,25 @@ export class BookshelfHeader extends React.Component {
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
+    const parsedQueryStrings = queryString.parse(window.location.search);
     if (langQuery && langQuery !== '?languageid=1') {
       browserHistory.push(`/eplayer/login${langQuery}`);
     } else {
-      piSession.logout();
-      let appPath             = window.location.origin;
-      let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
-      redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
-      localStorage.removeItem('secureToken');
-      piSession.login(redirectCourseUrl);
-      //browserHistory.push('/eplayer/login');
+      if(parsedQueryStrings.bookshelftype === "et1")
+      {
+        localStorage.removeItem('secureToken');
+        browserHistory.push('/eplayer/login');
+      }
+      else
+      {
+        piSession.logout();
+        let appPath             = window.location.origin;
+        let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
+        redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
+        localStorage.removeItem('secureToken');
+        piSession.login(redirectCourseUrl);
+        //browserHistory.push('/eplayer/login');
+      }
     }
     // this.props.logout();
   }

@@ -164,8 +164,11 @@ export class PdfBookReader extends Component {
       callbackOnPageChange: this.pdfBookCallback,
       assertUrl
     };
-    __pdfInstance.registerEvent('textSelected', this.createHighlight.bind(this));
-    __pdfInstance.registerEvent('highlightClicked', this.handleHighlightClick.bind(this));
+    if(this.props.book.bookFeatures.hashighlightingtoolbutton)
+    {
+      __pdfInstance.registerEvent('textSelected', this.createHighlight.bind(this));
+      __pdfInstance.registerEvent('highlightClicked', this.handleHighlightClick.bind(this));
+    }
     __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
     __pdfInstance.registerEvent('RegionHovered', this.handleTransparentRegionHover.bind(this));
     __pdfInstance.registerEvent('RegionUnhovered', this.handleTransparentRegionUnhover.bind(this));

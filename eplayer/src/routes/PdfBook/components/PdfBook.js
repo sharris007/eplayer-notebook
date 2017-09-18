@@ -216,7 +216,12 @@ used for before mounting occurs. */
       }   
       currentbook.scenario = this.props.location.query.scenario;    
     }
-    await this.props.fetchBookFeatures(bookID,ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID);
+    if((this.props.location.query.invoketype !== undefined && 
+          this.props.location.query.invoketype === 'standalone') || currentbook.scenario == undefined)
+    {
+      currentbook.scenario = 1;
+    }
+    await this.props.fetchBookFeatures(bookID,ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
     
   }
 

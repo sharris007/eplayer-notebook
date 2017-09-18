@@ -58,24 +58,40 @@ class MoreMenuComponent extends React.Component {
         let redirectCourseUrl   = consoleUrl[envType];
         piSession.login(redirectCourseUrl);
     }else{
-        const parsed = queryString.parse(window.location.search);
+        const parsedQueryStrings = queryString.parse(window.location.search);
         if (langQuery && langQuery !== '?languageid=1') {
-          if(parsed.directlogin == 'true' || parsed.invoketype == 'standalone')
+          if(parsedQueryStrings.ispilogin === "N" || parsedQueryStrings.invoketype == 'lms')
           {
-            piSession.logout();
+            localStorage.removeItem('secureToken');
+            browserHistory.push('/eplayer/login');
           }
-          localStorage.removeItem('secureToken');
-          browserHistory.push(`/eplayer/login${langQuery}`);
+          else
+          {
+            if(parsedQueryStrings.directlogin == 'true' || parsedQueryStrings.invoketype == 'standalone')
+            {
+              piSession.logout();
+            }
+            localStorage.removeItem('secureToken');
+            browserHistory.push(`/eplayer/login${langQuery}`);
+          }
         } else {
-          if(parsed.directlogin == 'true' || parsed.invoketype == 'standalone')
+          if(parsedQueryStrings.ispilogin === "N" || parsedQueryStrings.invoketype == 'lms')
           {
-            piSession.logout();
+            localStorage.removeItem('secureToken');
+            browserHistory.push('/eplayer/login');
           }
-          localStorage.removeItem('secureToken');
-          let appPath             = window.location.origin;
-          let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
-          piSession.login(redirectCourseUrl);
-          //browserHistory.push('/eplayer/login');
+          else
+          {
+            if(parsedQueryStrings.directlogin == 'true' || parsedQueryStrings.invoketype == 'standalone')
+            {
+              piSession.logout();
+            }
+            localStorage.removeItem('secureToken');
+            let appPath             = window.location.origin;
+            let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
+            piSession.login(redirectCourseUrl);
+            //browserHistory.push('/eplayer/login');
+          }
         }
     }
     this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails); // eslint-disable-line

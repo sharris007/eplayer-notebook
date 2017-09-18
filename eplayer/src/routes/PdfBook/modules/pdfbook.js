@@ -1236,11 +1236,23 @@ const ACTION_HANDLERS = {
       fetched: true,
       hotspotcolor : action.payload.data[0].ipadFeaturesTO.hotSpotColor,
       isunderlinehotspot : action.payload.data[0].generalFeaturesTO.isUnderLineHotspot,
+      hassearchbutton : action.payload.data[0].generalFeaturesTO.hasSearchButton,
+      hasnotesmanager : action.payload.data[0].generalFeaturesTO.hasNotesManager,
       iconhotspotalpha : action.payload.data[0].ipadFeaturesTO.iconHotSpotAlpha,
       regionhotspotalpha : action.payload.data[0].ipadFeaturesTO.regionHotSpotAlpha,
       underlinehotspotcolor : action.payload.data[0].ipadFeaturesTO.underLineHotSpotColor,
       underlinehotspotthickness : action.payload.data[0].ipadFeaturesTO.underLineHotSpotThickness,
-      underlinehotppothovercolor : action.payload.data[0].ipadFeaturesTO.underLineHotSpotHoverColor  
+      underlinehotppothovercolor : action.payload.data[0].ipadFeaturesTO.underLineHotSpotHoverColor,
+      hasbookshelflink: action.payload.data[0].headerFeaturesTO.hasBookshelfLink,
+      haslogoutlink: action.payload.data[0].headerFeaturesTO.hasLogoutLink,
+      hasprevnavpagebutton: action.payload.data[0].toolBarFeaturesTO.hasPreviousNavigatePageButton,
+      hasnextnavpagebutton: action.payload.data[0].toolBarFeaturesTO.hasNextNavigatePageButton,
+      haszoomoutbutton: action.payload.data[0].toolBarFeaturesTO.hasZoomOutButton,
+      haszoominbutton: action.payload.data[0].toolBarFeaturesTO.hasZoomInButton,
+      hashighlightingtoolbutton: action.payload.data[0].toolBarFeaturesTO.hasHighlightingToolButton,
+      hasnotetoolbutton: action.payload.data[0].toolBarFeaturesTO.hasNoteToolButton,
+      hasbookmarkpagebutton: action.payload.data[0].toolBarFeaturesTO.hasBookMarkPageButton,
+      hasdrawerbutton: action.payload.data[0].toolBarFeaturesTO.hasLeftAccordion  
     }
   }),
   [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({
