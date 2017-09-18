@@ -766,14 +766,16 @@
             }
           }
         },
-        viewerScript: `${window.location.origin}/eplayer/pxe_scripts/bundle.js`,
-        viewerStyles: `${window.location.origin}/eplayer/pxe_scripts/style.css`,
-        scriptsToReplace: [
-          {
-            old: 'https://revel-content.openclass.com/content/amc/amc-bootstrap.js',
-            new: `${window.location.origin}/eplayer/bxix_scripts/brix.js`
-          }
-        ],
+        pxeOptions:{
+          script: `${window.location.origin}/eplayer/pxe_scripts/bundle.js`,
+          style: `${window.location.origin}/eplayer/pxe_scripts/style.css`,
+          scriptsToReplace: [
+            {
+              old: 'https://revel-content.openclass.com/content/amc/amc-bootstrap.js',
+              new: `${window.location.origin}/eplayer/bxix_scripts/brix.js`
+            }
+          ]
+        },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
           brixCss: `${window.location.origin}/eplayer/bxix_scripts/brix.css`,
@@ -791,12 +793,11 @@
         contextId = "ddddd"
         contentType = { productData.product.toUpperCase() } 
         contentStatus = { productData.contentStatus } 
-        providers = { productData.providers } 
-        viewerScript = { productData.viewerScript } 
-        viewerStyles = { productData.viewerStyles } 
+        providers = { productData.providers }
         componentFactory = { { getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } } } 
         clients = { { page: pxeClient } } 
-        metadata = {productData.metaData}>
+        metadata = {productData.metaData}
+        pxeOptions={productData.pxeOptions}>
         <div>
           <div>
              <div
