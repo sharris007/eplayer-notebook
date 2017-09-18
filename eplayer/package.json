@@ -131,6 +131,7 @@
     "normalize.css": "^4.1.1",
     "postcss-loader": "^0.13.0",
     "prop-types": "^15.5.10",
+    "pxe-annotation":"*",
     "query-string": "^5.0.0",
     "raw-loader": "^0.5.1",
     "react": "^15.4.0",
