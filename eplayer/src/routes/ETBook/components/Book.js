@@ -13,6 +13,7 @@
  *******************************************************************************/
   /* eslint-disable */
   import React, { Component } from 'react';
+  import ReactDOM from 'react-dom';
   import { connect } from 'react-redux';
   import find from 'lodash/find';
   import WidgetManager from '../../../components/widget-integration/widgetManager';
@@ -748,6 +749,18 @@
         timeout: 5000,
         headers: {}
       });
+      const annotationClient =  axios.create({
+        baseURL: `${bootstrapParams.pageDetails.endPoints.services}/context/${this.state.urlParams.context}/annotations`,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Identity-Id': this.state.urlParams.user
+          },
+        data: {
+          context: '1TKA10OC8T7',
+          user:'ffffffff56b90bd7e4b0f8eeaa4655d4'
+        }
+      });
       const productData = {
         product: 'PXE',
         uuid: '',
@@ -776,7 +789,10 @@
               old: 'https://revel-content.openclass.com/content/amc/amc-bootstrap.js',
               new: `${window.location.origin}/eplayer/bxix_scripts/brix.js`
             }
-          ]
+          ],
+          scriptsToAdd:[`${window.location.origin}/annotation-lib/jquery.min.js`,
+          `${window.location.origin}/annotation-lib/annotator.js`],
+          stylesToAdd:[`${window.location.origin}/annotation-lib/annotator.css`]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
@@ -798,7 +814,7 @@
         contentStatus = { productData.contentStatus } 
         providers = { productData.providers }
         componentFactory = { { getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } } } 
-        clients = { { page: pxeClient } } 
+        clients = { { page: pxeClient , annotation: annotationClient} } 
         metadata = {productData.metaData}
         pxeOptions={productData.pxeOptions}>
         <div>

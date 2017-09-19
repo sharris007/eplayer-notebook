@@ -22,7 +22,7 @@ const path = require('path');
 // const Promise = require('es6-promise').Promise;
 // const jquery = require('jquery');
 
-const annotationLibPath = path.join(__dirname, '../node_modules/pxe-annotation/demo/ann-plugin/output');
+const annotationLibPath = path.join(__dirname, '../node_modules/@pearson-incubator/pxe-annotation/demo/ann-plugin/output');
 const webInfPath = path.join(__dirname, '../WEB-INF');
 
 const paths = config.utils_paths;
@@ -81,7 +81,7 @@ webpackConfig.plugins = [
       { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' },
       { from: annotationLibPath, to: 'annotation-lib' },
       { from: webInfPath, to: 'WEB-INF' },
-      { from: path.join(__dirname, '../public/pxe'), to: 'pxe_scripts' },
+      { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/public/pxe'), to: 'pxe_scripts' },
       { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/demo/assets/js'), to: 'bxix_scripts' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ]),

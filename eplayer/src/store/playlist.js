@@ -24,6 +24,10 @@ export default (state = initalData, action) => {
     case 'GET_PLAYLIST': {
       if (action.data.content[0].playOrder === 0) {
         action.data.content.splice(0, 1);
+        action.data.content.forEach((list) => {
+          const item = list;
+          item.type = 'page';
+        });
       }
       return {
         ...state,
