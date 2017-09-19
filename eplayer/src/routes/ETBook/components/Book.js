@@ -768,8 +768,8 @@
            annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
         }
         else {
-          annJsPath = 'annotation-lib/annotator.js';
-          annCssPath = 'annotation-lib/annotator.css';
+          annJsPath = 'eplayer/annotation-lib/annotator.js';
+          annCssPath = 'eplayer/annotation-lib/annotator.css';
         }
         productData = {
         product: 'PXE',
