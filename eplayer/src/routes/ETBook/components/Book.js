@@ -790,8 +790,8 @@
               new: `${window.location.origin}/eplayer/bxix_scripts/brix.js`
             }
           ],
-          scriptsToAdd:[`${window.location.origin}/annotation-lib/jquery.min.js`,
-          `${window.location.origin}/annotation-lib/annotator.js`],
+          scriptsToAdd:[`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
+          `${window.location.origin}/eplayer/annotation-lib/annotator.js`],
           stylesToAdd:[`${window.location.origin}/annotation-lib/annotator.css`]
         },
         metaData: {
