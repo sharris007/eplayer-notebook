@@ -692,6 +692,7 @@
     );
     render() {
       const callbacks = {};
+      let annJsPath,annCssPath,productData;
       const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata } = this.props; // eslint-disable-line react/prop-types
       // const annData  = annotationData.rows;
       this.props.book.annTotalData = annotationTotalData;
@@ -757,11 +758,20 @@
           'Identity-Id': this.state.urlParams.user
           },
         data: {
-          context: '1TKA10OC8T7',
-          user:'ffffffff56b90bd7e4b0f8eeaa4655d4'
+          context: this.state.urlParams.context,
+          user: this.state.urlParams.user
         }
       });
-      const productData = {
+      if (playlistReceived && bookdetailsdata) {
+        if (bookdetailsdata.roles[0] === 'Educator') {
+           annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
+           annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
+        }
+        else {
+          annJsPath = 'annotation-lib/annotator.js';
+          annCssPath = 'annotation-lib/annotator.css';
+        }
+        productData = {
         product: 'PXE',
         uuid: '',
         contentStatus: 'published',
@@ -791,8 +801,8 @@
             }
           ],
           scriptsToAdd:[`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
-          `${window.location.origin}/eplayer/annotation-lib/annotator.js`],
-          stylesToAdd:[`${window.location.origin}/annotation-lib/annotator.css`]
+          `${window.location.origin}/${annJsPath}`],
+          stylesToAdd:[`${window.location.origin}/${annCssPath}`]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
@@ -801,13 +811,16 @@
           pxeUserPreference:{
             bgColor:bootstrapParams.pageDetails.bgColor, 
             pageFontSize:bootstrapParams.pageDetails.pageFontSize,
-      isAnnotationHide: bootstrapParams.pageDetails.isAnnotationHide
+            isAnnotationHide: bootstrapParams.pageDetails.isAnnotationHide
           }, 
           searchText: bootstrapParams.pageDetails.searchText
         }
       };
+      }
       const locale = bootstrapParams.pageDetails.locale ? bootstrapParams.pageDetails.locale : 'en';
       return ( 
+        <div>
+        { playlistReceived && 
         <LearningContextProvider 
         contextId = "ddddd"
         contentType = { productData.product.toUpperCase() } 
@@ -866,9 +879,10 @@
           pagePlayList = { bootstrapParams.pageDetails.playListURL }
           currentPageId = { bootstrapParams.pageDetails.currentPageURL.id }
           onPageRequest = {
-            () => {}   
+            () => {}  
           }
           onPageLoad = { this.onPageLoad }
+          applnCallback = { this.onPageChange } 
           key = { bootstrapParams.pageDetails.currentPageURL.id }
           /> 
           <Navigation
@@ -879,7 +893,7 @@
           </div> : <div></div>
         }
         </div> 
-        </LearningContextProvider>
+        </LearningContextProvider> } </div>
         );
       }
     }
