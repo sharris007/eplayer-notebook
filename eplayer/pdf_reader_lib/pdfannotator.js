@@ -183,6 +183,9 @@ function alignPopup()
    var formWidth = $(".annotator-widget").width();
    var pdfPageTop = $("#docViewer_ViewContainer_BG_0").offset().top;
    var pdfPageheight = $("#docViewer_ViewContainer_BG_0").height();
+   var pdfPageWidth = $("#docViewer_ViewContainer_BG_0").width();
+   var containerWidth = $("#docViewer_ViewContainer").width();
+   var scrollBarWidth = $(".fwrJspVerticalBar").width();
    pdfPageheight = pdfPageheight + pdfPageTop;
    if((formTop+formHeight)>pdfPageheight)
    {
@@ -191,6 +194,17 @@ function alignPopup()
     $(".annotator-widget").width(formWidth);
     $(".annotator-widget").height(formHeight);
    }
+   if((1.5*formWidth + pdfPageWidth) >= containerWidth){
+    if($(".annotator-handle").length > 0){
+      $(".annotator-widget").offset({left: $(".annotator-handle").offset().left - formWidth});
+    }else{
+      $(".annotator-widget").offset({left: $(".fwrJspPane").width() - formWidth});
+    }
+  }else{
+     if($(".annotator-handle").length > 0){
+      $(".annotator-widget").offset({left: $(".annotator-handle").offset().left + $(".annotator-handle").width()});
+    }
+  }
 }
 
 function onDeleteClick()
@@ -392,7 +406,7 @@ function onNoteChange(event) {
 
   }
    //coord.left = coord.left + (coord.width * 1.5);
-   var pageLeft = $("#docViewer_ViewContainer").offset().left;
+    var pageLeft = $("#docViewer_ViewContainer").offset().left;
    var pageWidth = $("#docViewer_ViewContainer").width();
    coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
    //coord.top = coord.top + (coord.height * 1.5);

@@ -50,7 +50,8 @@ export class PdfBookReader extends Component {
       assertUrlList: [],
       totalPagesToHit: '',
       executed: false,
-      popUpCollection : []
+      popUpCollection : [],
+      currZoomLevel: 1
     };
     this.nodesToUnMount = [];
     /* Adding the eventListener on the attribute and attaching the method.
@@ -211,6 +212,7 @@ export class PdfBookReader extends Component {
      // this.setState({currPageIndex : currentPageIndex});
     if (pdfEvent === 'pageChanged') {
       localStorage.setItem('currentPageOrder', this.state.currPageIndex);
+      __pdfInstance.setCurrentZoomLevel(this.state.currZoomLevel);
       this.props.fetchRegionsInfo(this.props.location.query.bookid,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
         if(this.props.book.regions.length > 0 )
         {
@@ -566,6 +568,7 @@ export class PdfBookReader extends Component {
     {
       new PopUpInfo({'popUpCollection' : glossaryDataUpdated, 'bookId' : 'docViewer_ViewContainer_PageContainer_0'});
     }
+    this.setState({currZoomLevel : level});
   }
 /*Method for removing hotspot content on clicking the close button*/
   onHotspotClose() {

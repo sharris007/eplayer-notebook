@@ -1038,15 +1038,16 @@ function getAssetURLForPDFDownload(config,cb){
                 childElement.classList.add('annotator-handle');
                 childElement.setAttribute("id",highlightList1[n].id+"_cornerimg");
                 var hId = highlightList1[n].id;
-                var pageLeft = $("#docViewer_ViewContainer").offset().left;
-                var pageWidth = $("#docViewer_ViewContainer").width();
+                var pageLeft = $("#docViewer_ViewContainer_BG_0").offset().left;
+                var pageWidth = $("#docViewer_ViewContainer_BG_0").width();
+                var pageHeight = $("#docViewer_ViewContainer_BG_0").height();
                 var parentHighlightElement = $('#' + hId);
                 var childHighlightElement = parentHighlightElement[0].children[0];
                 if (!isOverlap) {
                     finaltop = childHighlightElement.offsetTop;
                     isOverlap = true;
                 }
-                var finalleft = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287 + 32);
+                var finalleft = 0.9*pageWidth;
                 childElement.style.left = finalleft + "px";
                 childElement.style.top = (finaltop - 5) + "px";
                 childElement.style.position = "absolute";
