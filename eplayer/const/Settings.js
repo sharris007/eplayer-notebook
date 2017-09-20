@@ -102,13 +102,6 @@ export const resources = {
       stage        :"https://etext-stg.pearson.com",
       prod         :"https://etext.pearson.com",
     },
-    messagingUrl : {
-      local        :"https://messaging-publishing.dev-prsn.com",
-      dev          :"https://messaging-publishing.dev-prsn.com",
-      qa           :"https://messaging-publishing-int.dev-prsn.com",
-      stage        :"https://messaging-publishing.stg-prsn.com",
-      prod         :"https://messaging-publishing.prd-prsn.com",
-    },
     zeppelinUrl : {
       local        :"https://zeppelin-qa.dev-openclass.com/products",
       dev          :"https://zeppelin-qa.dev-openclass.com/products",

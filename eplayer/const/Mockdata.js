@@ -1,7 +1,7 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  *   
- *  *  Copyright Â© 2017 Pearson Education, Inc.
+ *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
  *  * 
  *  * NOTICE:  All information contained herein is, and remains
@@ -23,7 +23,7 @@ export const pageDetails = {
   showPageNo: true,
   orientation: 'horizontal',
   theme: 'black',
-  pageFontSize: '50%',
+  pageFontSize: '56%',
   pageZoom: '',
   enableGoToPage: false,
   includeMathMLLib: true,
@@ -39,6 +39,7 @@ export const pageDetails = {
   playListURL: '',
   currentPageURL: '',
   bgColor: 'White',
+  isAnnotationHide: false,
   endPoints: {
     services: pxeServiceUrl,
     search: 'https://content-service.dev-prsn.com/csg',
@@ -61,83 +62,83 @@ export const customAttributes = {
 };
 
 export const pageLoadData = {
-       "originatingSystemCode": "ETEXT",
-       "activities": [{
-               "messageTypeCode": "UserLoadsContent",
-               "messageVersion": "1.0.0",
-               "namespace": "common",
-               "payload": {
-            "environmentCode":"Dev",
-            "messageTypeCode":"UserLoadsContent",
-            "originatingSystemCode":"eText",
-            "namespaceCode":"Common",
-            "messageVersion":"1.0.0",
-            "transactionDt":"",
-            "messageTransferType":"LiveStream",
-            "messageId":"",
-            "appId":"ETEXT",
-            "accessedUsingAppId":"WebApp",    
-            "appActivityAreaCode":"Learning",        
-            "personId":"",
-            "personIdType":"PI",    
-            "personRoleCode":"Instructor",
-            "organizationId":"",
-            "organizationIdType":"Organization", 
-            "courseId":"",
-            "courseIdType":"Instructor",     
-            "courseSectionId":"",
-            "courseSectionIdType":"PI",    
-            "timeCategorization": "Learning",
-            "contentId":"",  
-            "contentIdType":"ETEXT",
-            "timeOnTaskUuid":"",    
-            "loadDt":"",
-            "datetimeSourceCode":"Client",
-            "pageUserNavigatedToUrn":"",
-            "userAgent":"",
-            "deviceType":"Desktop",
-            "operatingSystemCode":""
+  originatingSystemCode: 'ETEXT',
+  activities: [{
+         'messageTypeCode': 'UserLoadsContent',
+         messageVersion: '1.0.0',
+         namespace: 'common',
+         'payload': {
+                 'environmentCode': 'Dev',
+                 messageTypeCode: 'UserLoadsContent',
+                 'originatingSystemCode': 'eText',
+                 'namespaceCode': 'Common',
+                 'messageVersion': '1.0.0',
+                 transactionDt: '',
+                 messageTransferType: 'LiveStream',
+                 messageId: '',
+                 'appId': 'ETEXT',
+                 accessedUsingAppId: 'WebApp',
+                 'appActivityAreaCode': 'Learning',
+                 'personId': '',
+                 'personIdType': 'PI',
+                 'personRoleCode': 'Instructor',
+                 'organizationId': '',
+                 organizationIdType: 'Organization',
+                 courseId: '',
+                 courseIdType: 'Instructor',
+                 courseSectionId: '',
+                 'courseSectionIdType': 'PI',
+                 'timeCategorization': 'Learning',
+                 contentId: '',
+                 'contentIdType': 'ETEXT',
+                 timeOnTaskUuid: '',
+                 loadDt: '',
+                 datetimeSourceCode: 'Client',
+                 pageUserNavigatedToUrn: '',
+                 'userAgent': '',
+                 'deviceType': 'Desktop',
+                 'operatingSystemCode': ''
                }
        }]
-}
+};
 
 export const pageUnLoadData = {
-       "originatingSystemCode": "ETEXT",
-       "activities": [{
-               "messageTypeCode": "UserUnloadsContent",
-               "messageVersion": "1.0.0",
-               "namespace": "common",
-               "payload": {
-            "environmentCode":"Dev",
-            "messageTypeCode":"UserUnloadsContent",
-            "originatingSystemCode":"eText",
-            "namespaceCode":"Common",
-            "messageVersion":"1.0.0",
-            "transactionDt":"",
-            "messageTransferType":"LiveStream",
-            "messageId":"",
-            "appId":"ETEXT",
-            "accessedUsingAppId":"WebApp",    
-            "appActivityAreaCode":"Learning",        
-            "personId":"",
-            "personIdType":"PI",    
-            "personRoleCode":"Instructor",
-            "organizationId":"",
-            "organizationIdType":"Organization", 
-            "courseId":"",
-            "courseIdType":"Instructor",     
-            "courseSectionId":"",
-            "courseSectionIdType":"PI",    
-            "timeCategorization": "Learning",
-            "contentId":"",  
-            "contentIdType":"ETEXT",
-            "timeOnTaskUuid":"",    
-            "unloadDt":"",
-            "datetimeSourceCode":"Client",
-            "pageUserNavigatedToUrn":"",
-            "userAgent":"",
-            "deviceType":"Desktop",
-            "operatingSystemCode":""
+  originatingSystemCode: 'ETEXT',
+  activities: [{
+         'messageTypeCode': 'UserUnloadsContent',
+         'messageVersion': '1.0.0',
+         namespace: 'common',
+         'payload': {
+                 'environmentCode': 'Dev',
+                 'messageTypeCode': 'UserUnloadsContent',
+                 originatingSystemCode: 'eText',
+                 namespaceCode: 'Common',
+                 'messageVersion': '1.0.0',
+                 'transactionDt': '',
+                 messageTransferType: 'LiveStream',
+                 'messageId': '',
+                 appId: 'ETEXT',
+                 'accessedUsingAppId': 'WebApp',
+                 appActivityAreaCode: 'Learning',
+                 'personId': '',
+                 personIdType: 'PI',
+                 'personRoleCode': 'Instructor',
+                 'organizationId': '',
+                 organizationIdType: 'Organization',
+                 'courseId': '',
+                 courseIdType: 'Instructor',
+                 'courseSectionId': '',
+                 courseSectionIdType: 'PI',
+                 timeCategorization: 'Learning',
+                 contentId: '',
+                 contentIdType: 'ETEXT',
+                 timeOnTaskUuid: '',
+                 unloadDt: '',
+                 datetimeSourceCode: 'Client',
+                 pageUserNavigatedToUrn: '',
+                 'userAgent': '',
+                 deviceType: 'Desktop',
+                 'operatingSystemCode': ''
                }
        }]
-}
+};

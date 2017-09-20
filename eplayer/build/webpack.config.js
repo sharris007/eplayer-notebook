@@ -1,14 +1,14 @@
-/*******************************************************************************
+/** *****************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
+ *
  *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
- *  * 
+ *  *
  *  * NOTICE:  All information contained herein is, and remains
  *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
  *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
  *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
+ *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 const webpack = require('webpack');
@@ -22,8 +22,8 @@ const path = require('path');
 // const Promise = require('es6-promise').Promise;
 // const jquery = require('jquery');
 
-const annotationLibPath = path.join(__dirname, '../node_modules/pxe-annotation/demo/ann-plugin/output');
-const webInfPath        = path.join(__dirname, '../WEB-INF');
+const annotationLibPath = path.join(__dirname, '../node_modules/@pearson-incubator/pxe-annotation/demo/ann-plugin/output');
+const webInfPath = path.join(__dirname, '../WEB-INF');
 
 const paths = config.utils_paths;
 const __DEV__ = config.globals.__DEV__;
@@ -80,7 +80,9 @@ webpackConfig.plugins = [
   new CopyWebpackPlugin([
       { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' },
       { from: annotationLibPath, to: 'annotation-lib' },
-      { from: webInfPath, to: 'WEB-INF' }/* ,
+      { from: webInfPath, to: 'WEB-INF' },
+      { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/public/pxe'), to: 'pxe_scripts' },
+      { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/demo/assets/js'), to: 'bxix_scripts' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ]),
   new webpack.ProvidePlugin({
@@ -131,15 +133,7 @@ webpackConfig.module.loaders = [{
 }, {
   test: /\.(js|jsx)$/,
   include: [
-    path.join(__dirname, '../node_modules/pxe-player'),
-    path.join(__dirname, '../node_modules/pxe-pageviewer'),
-    path.join(__dirname, '../node_modules/pxe-glossary-popup'),
-    path.join(__dirname, '../node_modules/pxe-moreinfo-popup'),
-    path.join(__dirname, '../node_modules/pxe-annotation'),
-    path.join(__dirname, '../node_modules/@pearson-incubator'),
-    path.join(__dirname, '../node_modules/search'),
-    path.join(__dirname, '../node_modules/popup-info'),
-    path.join(__dirname, '../node_modules/pxe-wrapper')
+    path.join(__dirname, '../node_modules/@pearson-incubator')
   ],
   loader: 'babel',
   query: config.compiler_babel

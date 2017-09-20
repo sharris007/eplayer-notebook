@@ -14,7 +14,7 @@
 const initalData = {
   data: [],
   bookdetailsdata: [],
-  tocdata: {bookDetails:{},content:{list:[]}},
+  tocdata: { bookDetails: {}, content: { list: [] } },
   playlistReceived: false,
   tocReceived: false,
   bookDetailsRecived: false
@@ -22,6 +22,13 @@ const initalData = {
 export default (state = initalData, action) => {
   switch (action.type) {
     case 'GET_PLAYLIST': {
+      if (action.data.content[0].playOrder === 0) {
+        action.data.content.splice(0, 1);
+        action.data.content.forEach((list) => {
+          const item = list;
+          item.type = 'page';
+        });
+      }
       return {
         ...state,
         data: action.data,
