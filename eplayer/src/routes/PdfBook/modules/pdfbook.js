@@ -675,9 +675,9 @@ export function fetchBasepaths(bookid, sessionKey, userid, bookServerURL, roleTy
   };
 }
  /* Created Action creator for getting book features. */
-export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, roleTypeID) {
+export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, roleTypeID,scenarioId) {
     // payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON',
-  var serviceurl = ''+bookServerURL+'/ebook/ipad/getbookfeaturesv2?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON';
+  var serviceurl = ''+bookServerURL+'/ebook/ipad/getbookfeaturesv2?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&scenario=' + scenarioId + '&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
