@@ -3,7 +3,7 @@ import {BindMoreInfoCallBacks} from './BindMoreInfoCallBacks';
 
 export class PopupCallBacks {
     constructor(props) {
-      console.clear();
+      // console.clear();
       new BindGlossaryCallBacks(props);
       new BindMoreInfoCallBacks(props);
     }    

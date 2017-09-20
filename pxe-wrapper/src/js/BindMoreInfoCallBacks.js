@@ -11,7 +11,7 @@ export class BindMoreInfoCallBacks {
     }
 
     bindMoreInfoCallBacks(props) {
-      const bookDiv = document.getElementById(props.bookDiv);
+      const bookDiv =  props.node.contentDocument;
       MoreInfoPopUpClasses.forEach((classes) => {
         //bookDiv.querySelectorAll(classes).forEach((item) => {
         const bookDivQuerySelectorClasses = bookDiv.querySelectorAll(classes);
@@ -22,7 +22,7 @@ export class BindMoreInfoCallBacks {
           switch (classes) {
           case '.lc_ec_aside' : {
             hrefId =  moreInfoIconDOM.href ? moreInfoIconDOM.href.split('#')[1] : bookDivQuerySelectorClasses[i].href.split('#')[1];
-            popOverCollection.popOverTitle = document.getElementById(hrefId).getElementsByTagName('h2')[0].innerHTML;
+            popOverCollection.popOverTitle = bookDiv.getElementById(hrefId).getElementsByTagName('h2')[0].innerHTML;
             break;
           }
           case 'a.noteref.noteref_footnote' : {
@@ -43,7 +43,7 @@ export class BindMoreInfoCallBacks {
           }           
           }
           if (hrefId) {
-            popOverCollection.popOverDescription = document.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML;
+            popOverCollection.popOverDescription = bookDiv.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML;
           } else {
             popOverCollection.popOverDescription = moreInfoIconDOM.children[0].innerHTML;
           }

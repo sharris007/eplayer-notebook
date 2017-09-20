@@ -11,7 +11,7 @@ export class BindGlossaryCallBacks {
     }
 
     bindGlossaryCallBacks(props) {
-      const bookDiv = document.getElementById(props.bookDiv);
+      const bookDiv = props.isPxeContent ? props.node.contentDocument.body : document.getElementById(props.bookDiv);
       let glossaryurl = '';
       GlossaryPopUpClasses.some((classes) => {
         if (bookDiv.querySelectorAll(classes).length > 0 ) {
@@ -60,7 +60,7 @@ export class BindGlossaryCallBacks {
             window.renderCustomPopUp({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv, ParagraphNumeroUno : props.ParagraphNumeroUno});
             /*new CustomPopUp({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv, ParagraphNumeroUno : props.ParagraphNumeroUno});*/
           } else {
-            new PopUpInfo({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv});
+            new PopUpInfo({'popUpCollection' : this.popUpCollection, 'bookId' : props.bookDiv, node:props.node});
           }
           
         }).catch((err) => {
