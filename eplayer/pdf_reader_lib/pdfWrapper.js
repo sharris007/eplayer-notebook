@@ -1022,25 +1022,31 @@ function getAssetURLForPDFDownload(config,cb){
         linewiseHighlightList.sort(function(lh1, lh2){return (lh1.top - lh2.top)});
         var parentElement = document.createElement('div');
         parentElement.setAttribute("id", "highlightcornerimages");
+        var heightScale, widthScale;
+        var pageWidth = $("#docViewer_ViewContainer_BG_0").width();
+        var pageHeight = $("#docViewer_ViewContainer_BG_0").height();
+        var originalPdfWidth = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageWidth();
+        var originalPdfHeight = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageHeight();
+        widthScale = pageWidth / originalPdfWidth;
+        heightScale = pageHeight / originalPdfHeight;
         var finaltop = 0;
+        var lineDiff = 22*heightScale;
         var isOverlap;
         for (var m = 0; m < linewiseHighlightList.length; m++) {
             isOverlap = false;
-            if ((finaltop + 32) > linewiseHighlightList[m].top) {
+            if ((finaltop + lineDiff) > linewiseHighlightList[m].top) {
                 isOverlap = true;
             }
             var highlightList1 = linewiseHighlightList[m].highlightList;
             highlightList1.sort(function(lh1, lh2){return (lh1.leftpos - lh2.leftpos)});
             for (var n = 0; n < highlightList1.length; n++) {
-                finaltop = finaltop + 32;
+                finaltop = finaltop + lineDiff;
                 var highlightColor = highlightList1[n].color;
                 var childElement = document.createElement('span');
                 childElement.classList.add('annotator-handle');
                 childElement.setAttribute("id",highlightList1[n].id+"_cornerimg");
                 var hId = highlightList1[n].id;
                 var pageLeft = $("#docViewer_ViewContainer_BG_0").offset().left;
-                var pageWidth = $("#docViewer_ViewContainer_BG_0").width();
-                var pageHeight = $("#docViewer_ViewContainer_BG_0").height();
                 var parentHighlightElement = $('#' + hId);
                 var childHighlightElement = parentHighlightElement[0].children[0];
                 if (!isOverlap) {
@@ -1053,6 +1059,8 @@ function getAssetURLForPDFDownload(config,cb){
                 childElement.style.position = "absolute";
                 childElement.style.backgroundColor = highlightColor;
                 childElement.style.visibility = "visible";
+                childElement.style.height = 12*heightScale + "px";
+                childElement.style.width = 12*widthScale + "px";
                 _this.setClickEvent(childElement, hId, (finaltop + 5));
                 parentElement.appendChild(childElement);
             }

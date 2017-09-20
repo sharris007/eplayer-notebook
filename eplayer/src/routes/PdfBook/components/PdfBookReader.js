@@ -539,7 +539,13 @@ export class PdfBookReader extends Component {
   };
   /* Method for setting the zoom level selected by user, using passing the selected value. */
   setCurrentZoomLevel = (level) => {
-    __pdfInstance.setCurrentZoomLevel(level);
+    let currZoomLevel = this.state.currZoomLevel;
+    if(level == 0){
+      currZoomLevel = 0.25;
+    }else{
+      currZoomLevel = level;
+    }
+    __pdfInstance.setCurrentZoomLevel(currZoomLevel);
     this.displayHighlight();
     if(this.props.book.regions.length > 0 )
     {
@@ -568,7 +574,7 @@ export class PdfBookReader extends Component {
     {
       new PopUpInfo({'popUpCollection' : glossaryDataUpdated, 'bookId' : 'docViewer_ViewContainer_PageContainer_0'});
     }
-    this.setState({currZoomLevel : level});
+    this.setState({currZoomLevel : currZoomLevel});
   }
 /*Method for removing hotspot content on clicking the close button*/
   onHotspotClose() {
