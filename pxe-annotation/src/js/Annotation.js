@@ -53,6 +53,9 @@ class Annotation extends Component {
 
   annotationEventHandler() {
     const annotation = $('.' + this.props.contentId).annotator();
+    if (this.props.isComponent) {
+      $('.' + this.props.contentId).annotator().annotator('loadAnnotations', this.props.annotationData);
+    }
     // annotation.data('annotator').on('beforeAnnotationCreated', this.annotationEvent.bind(null, 'beforeAnnotationCreated'));
     // annotation.data('annotator').on('annotationCreated', this.annotationEvent.bind(null, 'annotationCreated'));
     // annotation.data('annotator').on('beforeAnnotationUpdated', this.annotationEvent.bind(null, 'beforeAnnotationUpdated'));
