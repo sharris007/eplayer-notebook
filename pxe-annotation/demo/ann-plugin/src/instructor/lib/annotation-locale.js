@@ -9,14 +9,11 @@ var locale_data = {
 	"yellow":"Yellow",
 	"share":"Share",
 	"print":"Print",
-	"add_note":"Add a note...",
+	"write_note":"Write a note.",
 	"confirm":"Confirm",
 	"addtitle":"Add a title",
 	"charleft":"characters left",
-	"close":"Close",
-	"mainIdeas" : "Main ideas",
-	"questions" : "Questions",
-	"observations" : "Observations"
+	"close":"Close"
   },
   "fr" : {
 	"delete":"Supprimer",
