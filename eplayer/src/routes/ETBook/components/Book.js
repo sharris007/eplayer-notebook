@@ -763,7 +763,8 @@
         }
       });
       if (playlistReceived && bookdetailsdata) {
-        if (bookdetailsdata.roles[0] === 'Educator') {
+        const userType = ( bookdetailsdata.roles === undefined ) ? bookdetailsdata.userCourseSectionDetail.authgrouptype : bookdetailsdata.roles[0];
+        if (userType === ('Educator' || 'Instructor')) {
            annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
            annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
         }
