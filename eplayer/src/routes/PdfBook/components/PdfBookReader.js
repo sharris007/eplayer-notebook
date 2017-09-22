@@ -986,7 +986,7 @@ handleRegionClick(hotspotID) {
     const currentPageId = this.state.currPageIndex;
     let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
     if (courseId === undefined || courseId === '' || courseId === null) {
-      courseId = 0;
+      courseId = -1;
     }
     const note = highLightMetadata.noteText;
     const meta = {

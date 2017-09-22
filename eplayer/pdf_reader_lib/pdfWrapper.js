@@ -1046,21 +1046,23 @@ function getAssetURLForPDFDownload(config,cb){
                 childElement.classList.add('annotator-handle');
                 childElement.setAttribute("id",highlightList1[n].id+"_cornerimg");
                 var hId = highlightList1[n].id;
-                var pageLeft = $("#docViewer_ViewContainer_BG_0").offset().left;
+                var pageLeft = $("#docViewer_ViewContainer").offset().left;
+                var conatinerWidth = $("#docViewer_ViewContainer").width();
                 var parentHighlightElement = $('#' + hId);
                 var childHighlightElement = parentHighlightElement[0].children[0];
                 if (!isOverlap) {
                     finaltop = childHighlightElement.offsetTop;
                     isOverlap = true;
                 }
-                var finalleft = 0.9*pageWidth;
+                var finalleft = (pageLeft + conatinerWidth) - ($(".fwr-page").offset().left + 287 + 32);
+                //var finalleft = 0.9*pageWidth;
                 childElement.style.left = finalleft + "px";
                 childElement.style.top = (finaltop - 5) + "px";
                 childElement.style.position = "absolute";
                 childElement.style.backgroundColor = highlightColor;
                 childElement.style.visibility = "visible";
-                childElement.style.height = 12*heightScale + "px";
-                childElement.style.width = 12*widthScale + "px";
+                childElement.style.height = 15*heightScale + "px";
+                childElement.style.width = 15*widthScale + "px";
                 _this.setClickEvent(childElement, hId, (finaltop + 5));
                 parentElement.appendChild(childElement);
             }

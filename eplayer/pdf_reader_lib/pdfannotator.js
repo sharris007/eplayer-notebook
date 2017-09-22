@@ -183,9 +183,10 @@ function alignPopup()
    var formWidth = $(".annotator-widget").width();
    var pdfPageTop = $("#docViewer_ViewContainer_BG_0").offset().top;
    var pdfPageheight = $("#docViewer_ViewContainer_BG_0").height();
-   var pdfPageWidth = $("#docViewer_ViewContainer_BG_0").width();
+   //Reverting changes made for ETEXT-3966
+  /* var pdfPageWidth = $("#docViewer_ViewContainer_BG_0").width();
    var containerWidth = $("#docViewer_ViewContainer").width();
-   var scrollBarWidth = $(".fwrJspVerticalBar").width();
+   var scrollBarWidth = $(".fwrJspVerticalBar").width();*/
    pdfPageheight = pdfPageheight + pdfPageTop;
    if((formTop+formHeight)>pdfPageheight)
    {
@@ -194,7 +195,8 @@ function alignPopup()
     $(".annotator-widget").width(formWidth);
     $(".annotator-widget").height(formHeight);
    }
-   if((1.5*formWidth + pdfPageWidth) >= containerWidth){
+   //Reverting changes made for ETEXT-3966
+   /*if((1.5*formWidth + pdfPageWidth) >= containerWidth){
     if($(".annotator-handle").length > 0){
       $(".annotator-widget").offset({left: $(".annotator-handle").offset().left - formWidth});
     }else{
@@ -204,7 +206,7 @@ function alignPopup()
      if($(".annotator-handle").length > 0){
       $(".annotator-widget").offset({left: $(".annotator-handle").offset().left + $(".annotator-handle").width()});
     }
-  }
+  }*/
 }
 
 function onDeleteClick()
