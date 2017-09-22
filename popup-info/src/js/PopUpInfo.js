@@ -49,7 +49,7 @@ class PopUpInfo extends Component {
             const isWordBroken = element.offsetHeight > 25 ? true : false;
             if (isWordBroken) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign');
-              box.style.top = (element.getBoundingClientRect().top + window.scrollY + element.offsetHeight + 12) + 'px';
+              box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top + element.offsetHeight + 15) + 'px';
               box.style.left = (element.getBoundingClientRect().left) + 'px';
             } 
             else {
