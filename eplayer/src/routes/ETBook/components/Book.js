@@ -100,6 +100,7 @@
     }
     componentWillMount = () => {
       let isSessionLoaded = false;
+      let self = this;
       const IntervalCheck = setInterval(() => {
         // deeper code
         if (!isSessionLoaded) {
@@ -110,6 +111,8 @@
             piSession.getToken(function(result, userToken) {
               if (result === piSession['Success']) {
                 localStorage.setItem('secureToken', userToken);
+                const piUserId = piSession.userId();
+                self.state.urlParams.user = piUserId;
                 clearInterval(IntervalCheck);
               }
             });
@@ -120,8 +123,6 @@
             piToken: getSecureToken,
             bookId: this.props.params.bookId
           }
-          const piUserId = piSession.userId();
-          this.state.urlParams.user = piUserId;
           if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
             bookDetailsData.courseId = this.props.params.bookId;
             this.props.dispatch(getCourseCallService(bookDetailsData));
