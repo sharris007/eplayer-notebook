@@ -3019,7 +3019,7 @@ Annotator = (function(_super) {
                   noteOneBoundaries.bottom < noteTwoBoundaries.top || 
                   noteOneBoundaries.top > noteTwoBoundaries.bottom);
         if(overlapped && $(noteOne).css('visibility')==='visible' && $(noteTwo).css('visibility')==='visible'){
-          noteTwo.style.marginTop=parseInt($(noteTwo).css('margin-top'))+26 + 'px';
+          noteTwo.style.marginTop=parseInt($(noteTwo).css('margin-top'))+30 + 'px';
         }
       }
     }
@@ -3056,11 +3056,13 @@ Annotator = (function(_super) {
    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
      node = _ref[_i];
      if (!white.test(node.nodeValue)) {
-       _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
-       if($(node).closest('.pxereaderSearchHighlight').length > 0) {
-         $(node).parent().find('.annotator-handle').text(noteText).css('background-color', normedRange.color);
-       }
-       handle='';
+      if(!$(node).closest('.annotator-handle').length) {
+         _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
+         if($(node).closest('.pxereaderSearchHighlight').length > 0) {
+           $(node).parent().find('.annotator-handle').text(noteText).css('background-color', normedRange.color);
+         }
+         handle='';
+      }
      }
    }
    window.getSelection().removeAllRanges();
