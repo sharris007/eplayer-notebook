@@ -3112,8 +3112,11 @@ Annotator = (function(_super) {
     }
     else
       height = location.top+39;
-    var selctionOverlap = window.getSelection().getRangeAt(0);
-    var iscolorPanel = $(selctionOverlap.startContainer).hasClass('annotator-color-container');
+    var selctionOverlap = '';
+    if(window.getSelection().rangeCount > 0) {
+      selctionOverlap = window.getSelection().getRangeAt(0);
+    }
+    var iscolorPanel = selctionOverlap ? $(selctionOverlap.startContainer).hasClass('annotator-color-container') : '';
     if (iscolorPanel && isAdderClick == false && $('.annotator-editor .annotator-panel-2 .annotator-listing').css('display') == 'none')
       isAdderClick = true;
     var position= {
