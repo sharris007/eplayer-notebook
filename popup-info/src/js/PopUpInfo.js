@@ -12,7 +12,6 @@ class PopUpInfo extends Component {
     };
     this.popUpArray = [];
     if (props.node) {
-      this.iframeTopPosition = props.node.getBoundingClientRect();
       if (props && props.popUpCollection && props.popUpCollection.length > 0) {
         this.props = props;
         this.props.popUpCollection.forEach((popUpProps, i) => {
@@ -28,12 +27,14 @@ class PopUpInfo extends Component {
 
   framePopOver = (index, event) => {
     event.preventDefault();
-    if (event.target.getAttribute('class').indexOf('annotator-hl') > -1 || event.target.classList.contains('annotator-handle')) {
+    if (event.currentTarget.getAttribute('class').indexOf('annotator-hl') > -1 || event.currentTarget.classList.contains('annotator-handle')) {
       return false;
     }
     const props = this.props.popUpCollection[index];
     const node = this.props.node.contentDocument.body;
-    const iframeTopPosition = this.iframeTopPosition;
+    const iframePosition = document.getElementById(this.props.node.id).offsetTop;
+    /*console.log("iframePosition ", iframePosition);
+    console.log("document.getElementById( 'contentIframe' ) ", document.getElementById( 'contentIframe' ).offsetTop)*/
     if (props.popOverCollection) {
       const bookDivHeight = node.clientHeight + 'px';
       document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
@@ -49,7 +50,7 @@ class PopUpInfo extends Component {
             const isWordBroken = element.offsetHeight > 25 ? true : false;
             if (isWordBroken) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign');
-              box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top + element.offsetHeight + 15) + 'px';
+              box.style.top = (element.getBoundingClientRect().top + iframePosition + element.offsetHeight + 15) + 'px';
               box.style.left = (element.getBoundingClientRect().left) + 'px';
             } 
             else {
@@ -59,15 +60,15 @@ class PopUpInfo extends Component {
               //if (window.innerHeight - element.getBoundingClientRect().top < 135) {
               if (element.getBoundingClientRect().top - window.scrollY > 500) {
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpTopAlign');
-                box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top - document.getElementsByClassName('mm-popup__box')[0].clientHeight - 15) + 'px';
+                box.style.top = (element.getBoundingClientRect().top + iframePosition - document.getElementsByClassName('mm-popup__box')[0].clientHeight - 15) + 'px';
                 box.style.left = (element.getBoundingClientRect().left-185+(elementOffsetWidth)) + 'px';
               } else if (node.children[0].clientWidth - element.getBoundingClientRect().right < 350) {
-                box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top + element.offsetHeight + 15) + 'px';
+                box.style.top = (element.getBoundingClientRect().top + iframePosition + element.offsetHeight + 15) + 'px';
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
                 box.style.left = (element.getBoundingClientRect().left - 350 +  elementOffsetWidth) + 'px';
               } 
               else {
-                box.style.top = (element.getBoundingClientRect().top + iframeTopPosition.top + element.offsetHeight + 15) + 'px';
+                box.style.top = (element.getBoundingClientRect().top + iframePosition + element.offsetHeight + 15) + 'px';
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign'); 
                 box.style.left = (element.getBoundingClientRect().left - 50 +  elementOffsetWidth) + 'px';
               }
