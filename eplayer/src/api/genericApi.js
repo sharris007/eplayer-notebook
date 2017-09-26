@@ -169,4 +169,27 @@ export const getPiUserProfile = data =>fetch(`${etextService[envType]}/nextext/g
     Accept: 'application/json',
     'X-Authorization': data.piToken
   }
-})
+});
+
+//getPreferencedata
+export const getPreferencedata = data => fetch(`${etextService[envType]}/nextext/users/${data.userId}/preferences/?bookId=${data.bookId}`, {
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Identity-Id': data.userId,
+    'X-Authorization': data.piToken
+  }
+});
+
+//postPreferencedata
+export const postPreferencedata = data => fetch(`${etextService[envType]}/nextext/users/${data.userId}/preferences/?bookId=${data.bookId}`, { // eslint-disable-line no-undef
+  method: 'POST',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'Identity-Id': data.userId,
+    'X-Authorization': data.piToken
+  },
+  body: JSON.stringify(data.preferenceObj)
+});

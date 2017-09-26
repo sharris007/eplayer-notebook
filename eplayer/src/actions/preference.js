@@ -11,33 +11,31 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-import { combineReducers } from 'redux';
-import locationReducer from './location';
-import annotationReducer from './annotation';
-import playlistReducer from './playlist';
-import bookmarkReducer from './bookmark';
-import gotopageReducer from './gotopage';
-import multitaskpanelReducer from './multitaskpanel';
-import preferenceReducer from './preference';
-
-export const makeRootReducer = asyncReducers =>
-   combineReducers({
-     location: locationReducer,
-     annotationReducer,
-     playlistReducer,
-     bookmarkReducer,
-     gotopageReducer,
-     multitaskpanelReducer,
-     preferenceReducer,
-     ...asyncReducers
-   })
-;
+import PreferenceApi from '../api/preferenceApi';
+import { typeConstants } from '../../const/Settings';
 
 
-export const injectReducer = (store, { key, reducer }) => {
-  const myStore = store;
-  myStore.asyncReducers[key] = reducer;
-  myStore.replaceReducer(makeRootReducer(store.asyncReducers));
-};
 
-export default makeRootReducer;
+// GET call for preferences
+export const getPreferenceData = json => ({
+  type: typeConstants.GET_PREFERENCE,
+  preferenceData: json
+});
+
+export const getPreferenceCallService = filterData => dispatch => PreferenceApi.doGetPreference(filterData)
+    .then(response => response.json())
+    .then((json) => {
+      dispatch(getPreferenceData(json));
+    });
+
+ // POST call preferences
+export const postPreferenceData = json => ({
+  type: typeConstants.POST_PREFERENCE,
+  preferenceData: json
+});
+
+export const postPreferenceCallService = data => dispatch => PreferenceApi.doPostPreference(data)
+   .then(response => response.json())
+   .then((json) => {
+     dispatch(postPreferenceData(json));
+   });
