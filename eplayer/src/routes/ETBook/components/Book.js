@@ -98,7 +98,7 @@
         const userId = piSession.userId();
         this.state.urlParams.user = userId;
       }
-
+      this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
     }
     componentWillMount = () => {
       let isSessionLoaded = false;
@@ -731,7 +731,16 @@
       scriptSrc += pearsonMathjax;
       return scriptSrc;
     };
-
+    closeHeaderPopups = (e) => {
+      const eleSearch = $(e.target).closest('searchIconBtn');
+      const elepref = $(e.target).closest('prefIconBtn');
+      if (eleSearch.length === 0 && elepref.length === 0) {
+        this.setState({searchOpen: false, prefOpen: false});
+      }
+    };
+    onPageClick = () => {
+      this.setState({searchOpen: false, prefOpen: false});
+    };
     render() {
       const callbacks = {};
       let annJsPath,annCssPath,productData;
@@ -868,7 +877,7 @@
         classname: this.state.classname,
         chapterTitle: this.state.currentPageTitle,
         pageTitle: this.state.currentPageTitle,
-        isChapterOpener: ''
+        isChapterOpener: true
       };
       const hideIcons = {
         backNav: false,
@@ -880,7 +889,7 @@
         moreIcon: true
       };
       return ( 
-        <div>
+        <div onClick={this.closeHeaderPopups}>
         { playlistReceived && 
         <LearningContextProvider 
         contextId = "ddddd"
@@ -950,6 +959,7 @@
             () => {}  
           }
           onPageLoad = { this.onPageLoad }
+          onPageClick = { this.onPageClick }
           applnCallback = { this.onPageChange } 
           annSearchId = { bootstrapParams.pageDetails.annId }
           key = { bootstrapParams.pageDetails.currentPageURL.id }
