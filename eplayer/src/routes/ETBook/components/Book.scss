@@ -37,3 +37,28 @@ $cont-padding-bottom: 85px;
     height: 42px;
     cursor: pointer;
 }
+.preferences-container {
+    width: 300px;
+    position: fixed;
+    z-index: 10001;
+    top: 33px;
+    right: 10%;
+    .PrefernceTriangleUp{
+      border-bottom: 20px solid #f2f2f2;
+      &.fixHeader {
+        border-bottom: 20px solid #f2f2f2;
+      }
+    }
+  }
+  .searchContainer {
+    position: fixed;
+    z-index: 10001;
+    top: 33px;
+    right: 10%;
+    .triangle-up {
+      border-bottom: 20px solid #f2f2f2;
+      &.fixHeader {
+        border-bottom: 20px solid #f2f2f2;
+      }
+    }
+  }

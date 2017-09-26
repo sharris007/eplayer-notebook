@@ -11,33 +11,25 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-import { combineReducers } from 'redux';
-import locationReducer from './location';
-import annotationReducer from './annotation';
-import playlistReducer from './playlist';
-import bookmarkReducer from './bookmark';
-import gotopageReducer from './gotopage';
-import multitaskpanelReducer from './multitaskpanel';
-import preferenceReducer from './preference';
-
-export const makeRootReducer = asyncReducers =>
-   combineReducers({
-     location: locationReducer,
-     annotationReducer,
-     playlistReducer,
-     bookmarkReducer,
-     gotopageReducer,
-     multitaskpanelReducer,
-     preferenceReducer,
-     ...asyncReducers
-   })
-;
-
-
-export const injectReducer = (store, { key, reducer }) => {
-  const myStore = store;
-  myStore.asyncReducers[key] = reducer;
-  myStore.replaceReducer(makeRootReducer(store.asyncReducers));
+const initialPreferenceData = {
+  preferenceObj: {}
 };
 
-export default makeRootReducer;
+export default (state = initialPreferenceData, action) => {
+  switch (action.type) {
+    case 'GET_PREFERENCE': {
+      return {
+        ...state,
+        preferenceObj: action.preferenceData
+      }
+    }
+    case 'POST_PREFERENCE': {
+      return {
+        ...state,
+        preferenceObj: action.preferenceData
+      }
+    }
+    default :
+      return state;
+  }
+};

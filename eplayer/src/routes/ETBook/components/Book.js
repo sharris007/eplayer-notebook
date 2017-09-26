@@ -17,6 +17,7 @@
   import { connect } from 'react-redux';
   import find from 'lodash/find';
   import WidgetManager from '../../../components/widget-integration/widgetManager';
+  import { PreferencesComponent } from '@pearson-incubator/preferences';
   import { HeaderComponent, Drawer} from '@pearson-incubator/vega-core';
   import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
   import './Book.scss';
@@ -24,6 +25,7 @@
   import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
   import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService } from '../../../actions/playlist';
   import { getGotoPageCall } from '../../../actions/gotopage';
+  import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
   import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
   import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
@@ -130,6 +132,12 @@
             this.props.dispatch(getBookPlayListCallService(bookDetailsData));
           }
         }
+        const getPreferenceData = {
+          userId: this.state.urlParams.user,
+          bookId: this.state.urlParams.context,
+          piToken: localStorage.getItem('secureToken')
+        }
+        this.props.dispatch(getPreferenceCallService(getPreferenceData));
       }, 200)
     }
     componentWillUnmount() {
@@ -145,20 +153,6 @@
       }
       delete this.state.pageDetails.searchText;
       this.setState({ pageDetails: this.state.pageDetails, asynCallLoaded: false });
-    }
-    componentDidMount() {
-      let pageDetails = this.state.pageDetails;
-      if (localStorage.getItem('bookId' + this.props.params.bookId)) {
-        let getStorageObj = localStorage.getItem('bookId' + this.props.params.bookId);
-        pageDetails.pageFontSize = parseInt(getStorageObj.split("/")[0]);
-        pageDetails.bgColor = getStorageObj.split("/")[1];
-        pageDetails.isAnnotationHide = (getStorageObj.split("/")[2] == 'true')? true : false;
-      } else {
-        pageDetails.pageFontSize = '56%';
-        pageDetails.bgColor = 'White';
-        pageDetails.isAnnotationHide = false;
-      }
-      this.setState({ pageDetails: pageDetails });
     }
     parseDom = () => {
       WidgetManager.loadComponents(this.nodesToUnMount, this.context);
@@ -211,6 +205,14 @@
             isGoToPageRecived: false
           });
         }
+      }
+      if(nextProps.getPreferenceData && (this.props.getPreferenceData !== nextProps.getPreferenceData)) {
+        let pageDetails = this.state.pageDetails;
+        const preferenceData = nextProps.getPreferenceData;
+        pageDetails.pageFontSize = preferenceData.fontSize;
+        pageDetails.bgColor = preferenceData.theme;
+        pageDetails.isAnnotationHide = (preferenceData.isAnnotationHide == 'true' || preferenceData.isAnnotationHide == true) ? true : false;
+        this.setState({ pageDetails: pageDetails });
       }
     }
     navChanged = () => {
@@ -532,14 +534,15 @@
     }
 
     getPreference = () => {
-      let getpageDetails = this.state.pageDetails;
+      let getPreferenceDetails = this.props.getPreferenceData;
+      const prefTheme = getPreferenceDetails.theme, prefFont = getPreferenceDetails.fontSize, isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false;
       const prefData = {
         'value': {
-          theme: getpageDetails.bgColor,
-          fontSize: pageDetails.pageFontSize,
+          theme: prefTheme,
+          fontSize: prefFont,
           orientation: 'horizontal',
           zoom: '0',
-          isAnnotationHide: getpageDetails.isAnnotationHide,
+          isAnnotationHide: isAnnHide,
           enableShowHide: true
         }
       };
@@ -549,13 +552,22 @@
 
     updatePreference = (pref) => {
       let pageDetails = this.state.pageDetails;
-      let getStorageObj = localStorage.getItem('bookId' + this.props.params.bookId);
-
-      getStorageObj = pref.fontSize + "/" + pref.theme + "/" + pref.isAnnotationHide;
+      const annHide   = pref.isAnnotationHide ? true : false;
+      const getStorageObj = {
+        fontSize : pref.fontSize,
+        theme : pref.theme,
+        isAnnotationHide: annHide
+      }
+      const postPreferenceData = {
+        userId : this.state.urlParams.user,
+        bookId: this.state.urlParams.context,
+        piToken : localStorage.getItem('secureToken'),
+        preferenceObj : getStorageObj
+      } 
+      this.props.dispatch(postPreferenceCallService(postPreferenceData));
       pageDetails.pageFontSize = pref.fontSize;
       pageDetails.bgColor = pref.theme;
-      pageDetails.isAnnotationHide = pref.isAnnotationHide;
-      localStorage.setItem('bookId' + this.props.params.bookId, getStorageObj);
+      pageDetails.isAnnotationHide = annHide;
       this.setState({ pageDetails: pageDetails });
     }
 
@@ -851,6 +863,22 @@
       };
       }
       const locale = bootstrapParams.pageDetails.locale ? bootstrapParams.pageDetails.locale : 'en';
+      const headerTitleData = {
+        params: this.props.params,
+        classname: this.state.classname,
+        chapterTitle: this.state.currentPageTitle,
+        pageTitle: this.state.currentPageTitle,
+        isChapterOpener: ''
+      };
+      const hideIcons = {
+        backNav: false,
+        hamburger: false,
+        bookmark: false,
+        pref: false,
+        search: false,
+        audio: false,
+        moreIcon: true
+      };
       return ( 
         <div>
         { playlistReceived && 
@@ -865,24 +893,19 @@
         pxeOptions={productData.pxeOptions}>
         <div>
           <div>
-             <div
-                className={`${this.state.classname} ${this.state.headerExists ? 'nav-up' : ''}`}
-                ref={(headerDiv) => { this.headerDOM = headerDiv; }}
-              >
-            <HeaderComponent
-                  bookshelfClick={this.handleBookshelfClick}
-                  drawerClick={this.handleDrawer}
-                  bookmarkIconData={bookmarkIconData}
-                  handlePreferenceClick={this.handlePreferenceClick}
-                  handleDrawerkeyselect={this.handleDrawerkeyselect}
-                  handleBookshelfKeySelect={this.handleBookshelfKeySelect}
-                  searchClick={this.searchClick}
-                  headerTitle={this.state.currentPageTitle}
-                  getPreference={this.getPreference}
-                  updatePreference={this.updatePreference}
-                  locale='en-US'
-                />
-              </div>
+              <HeaderComponent
+              bookshelfClick={this.handleBookshelfClick}
+              drawerClick={this.handleDrawer}
+              bookmarkIconData={bookmarkIconData}
+              handlePreferenceClick={this.handlePreferenceClick}
+              handleDrawerkeyselect={this.handleDrawerkeyselect}
+              searchClick={this.searchClick}
+              locale={locale}
+              headerTitleData={headerTitleData}
+              hideIcons={hideIcons}
+              prefOpen={this.state.prefOpen}
+              searchOpen={this.state.searchOpen}
+              />
               {
               this.props.book.tocReceived &&
                 <Drawer
@@ -903,6 +926,18 @@
               
               <div className="searchContainer">
                 {this.state.searchOpen ? <Search locale={this.props.locale} store={this.context.store} goToPage = {(pageId) => this.goToPage(pageId)} indexId = { {'indexId' : this.bookIndexId, 'searchUrl' : this.searchUrl} } searchKeySelect={this.searchKeySelect} listClick={this.searchClick} isET1="Y" /> : <div className="empty" />}
+              </div>
+              <div className="preferences-container" >
+                {this.state.prefOpen ?
+                  <div className="content">
+                    <PreferencesComponent
+                      fetch={this.getPreference}
+                      preferenceUpdate={this.updatePreference}
+                      disableBackgroundColor={false}
+                      locale={locale}
+                    />
+                  </div> :
+                  <div className="empty" />}
               </div>
           </div>
         { playlistReceived ?
@@ -967,6 +1002,7 @@
         gotoPageObj: state.gotopageReducer.gotoPageObj,
         isGoToPageRecived: state.gotopageReducer.isGoToPageRecived,
         bookdetailsdata: state.playlistReducer.bookdetailsdata,
+        getPreferenceData: state.preferenceReducer.preferenceObj
       }
     }; // eslint-disable-line max-len
     Book = connect(mapStateToProps)(Book); // eslint-disable-line no-class-assign
