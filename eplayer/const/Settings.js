@@ -18,8 +18,8 @@ export const resources = {
     TextSearchLimit: 100,
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
-    idcDashboardEnabled : true,
-    zeppelinEnabled     : true
+    idcDashboardEnabled : false,
+    zeppelinEnabled     : false
   },
   links: {
     legalNotice    : 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
