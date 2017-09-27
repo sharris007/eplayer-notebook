@@ -527,7 +527,11 @@
 
     getPreference = () => {
       let getPreferenceDetails = this.props.getPreferenceData;
-      const prefTheme = (getPreferenceDetails.theme)? getPreferenceDetails.theme : 'White', prefFont = (getPreferenceDetails.fontSize) ? getPreferenceDetails.fontSize : '50', isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false;
+      const prefTheme = (getPreferenceDetails.theme)? getPreferenceDetails.theme : 'White', prefFont = (getPreferenceDetails.fontSize) ? getPreferenceDetails.fontSize : '50';
+      let  isAnnHide = true;
+      if(getPreferenceDetails.isAnnotationHide) {
+        isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false
+      }
       const prefData = {
         'value': {
           theme: prefTheme,
@@ -601,7 +605,11 @@
         }
       }
       let getPreferenceDetails = this.props.getPreferenceData;
-      const prefTheme = getPreferenceDetails.theme, prefFont = getPreferenceDetails.fontSize, isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false;
+      const prefTheme = getPreferenceDetails.theme, prefFont = getPreferenceDetails.fontSize;
+      let  isAnnHide = true;
+      if(getPreferenceDetails.isAnnotationHide) {
+        isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false
+      }
       let pageDetails = this.state.pageDetails;
       pageDetails.pageFontSize = prefFont;
       pageDetails.bgColor = prefTheme;
@@ -623,8 +631,7 @@
 
     hideDrawer = () => {
       if (this.state.drawerOpen) {
-        //document.getElementsByClassName('drawerIcon')[0].focus();
-        document.getElementsByTagName('button')[1].focus();
+        document.getElementsByClassName('drawerIconBtn')[0].focus();
       }
       this.setState({ drawerOpen: false });
       this.viewerContentCallBack(true);

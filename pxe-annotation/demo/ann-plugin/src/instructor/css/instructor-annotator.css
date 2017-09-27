@@ -1130,5 +1130,6 @@
 }
 
 .hideAnnotation .annotator-hl {
-	background-color: #ffffff !important;
+	background-color: inherit !important;
+	color: inherit !important;
 }
