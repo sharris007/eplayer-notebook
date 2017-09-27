@@ -22,7 +22,7 @@ debug('Creating default configuration.')
 // Default Configuration
 // ========================================================
 var envHostDetails = {
-  "development":'localhost',
+  "development":'etext-dev.pearson.com',
   "production" : ip.address()
 }
 var environementCheck = process.env.NODE_ENV || 'development';
@@ -45,7 +45,7 @@ const config = {
   // ----------------------------------
   server_host : serverHost,
   // server_host : 'localhost', // use string 'localhost' to prevent exposure on local network
-  server_port : process.env.PORT || 3000,
+  server_port : process.env.PORT || 3001,
 
   // ----------------------------------
   // Compiler Configuration

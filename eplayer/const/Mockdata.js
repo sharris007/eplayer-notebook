@@ -142,3 +142,25 @@ export const pageUnLoadData = {
                }
        }]
 };
+
+  // CDN from CDNJS Domain
+export const mathJaxVersions = {
+  '2.4':'//cdnjs.cloudflare.com/ajax/libs/mathjax/2.4.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.5':'//cdnjs.cloudflare.com/ajax/libs/mathjax/2.5.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.5.1':'//cdnjs.cloudflare.com/ajax/libs/mathjax/2.5.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.5.2':'//cdnjs.cloudflare.com/ajax/libs/mathjax/2.5.2/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.5.3':'//cdnjs.cloudflare.com/ajax/libs/mathjax/2.5.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.6':'//cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.6.1':'//cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+};
+
+ //Fallback to Mathjax CDN
+export const mathJaxCdnVersions = {
+  '2.4':'//cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.5':'//cdn.mathjax.org/mathjax/2.5-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.5.1':'//cdn.mathjax.org/mathjax/2.5-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.5.2':'//cdn.mathjax.org/mathjax/2.5-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.5.3':'//cdn.mathjax.org/mathjax/2.5-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.6':'//cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML',
+  '2.6.1':'//cdn.mathjax.org/mathjax/2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
+};

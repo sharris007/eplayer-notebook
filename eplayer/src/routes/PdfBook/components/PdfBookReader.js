@@ -688,6 +688,18 @@ export class PdfBookReader extends Component {
     }
     return region;
   }
+  onHotspotThumbnailClick()
+  {
+    try
+    {
+      $('.preview-image').hide();
+      $('.poster-play-icon').hide();
+      $('.thumb-nail').hide();
+      $('.aquila-audio-player').hide();
+    }
+    catch(e){
+    }
+  }
   /*Method to render the clicked region component.*/
   renderHotspot = (hotspotDetails) => {
     var regionComponent = " ";
@@ -706,14 +718,8 @@ export class PdfBookReader extends Component {
                  break;
       case 'EMAIL':
                 var email = "mailto:" + hotspotDetails.linkValue
-                var iframe = document.createElement("iframe");
-                iframe.src = email;
-                iframe.style = "display:none;";
-                document.body.appendChild(iframe);
-                setTimeout(function(){
-                  document.body.removeChild(iframe);
-                }, 1000); 
-               break;
+                parent.location = email;
+                break;
       case 'IMAGE':
                source=hotspotDetails.linkValue;
                hotspotData = {
@@ -724,7 +730,7 @@ export class PdfBookReader extends Component {
                  title : hotspotDetails.name,
                  items : hotspotDetails
                };
-               regionComponent = <ImageViewerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
+               regionComponent = <ImageViewerPreview data={hotspotData}/>;
                break;
       case 'VIDEO':
                source=hotspotDetails.linkValue;
@@ -738,7 +744,7 @@ export class PdfBookReader extends Component {
                },
                alt : hotspotDetails.name,
                };
-               regionComponent = <VideoPlayerPreview data={hotspotData} onClose={(this.onHotspotClose)}/>;
+               regionComponent = <VideoPlayerPreview data={hotspotData}/>;
                break;
       case 'DOCUMENT':
                source=hotspotDetails.linkValue;
@@ -750,7 +756,7 @@ export class PdfBookReader extends Component {
                  title : hotspotDetails.name,
                  src : source
                };
-               regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={(this.onHotspotClose)} />;
+               regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={this.onHotspotClose}/>;
                break;
       case 'LTILINK':
                if (this.props.book.bookinfo.book.activeCourseID === undefined || this.props.book.bookinfo.book.activeCourseID === '' || this.props.book.bookinfo.book.activeCourseID === null)
@@ -778,7 +784,7 @@ handleRegionClick(hotspotID) {
     if(this.state.regionData)
     {
       this.setState({regionData : null});
-      this.onHotspotClose();
+      // this.onHotspotClose();
     }
     if(this.props.book.regions.length > 0 )
     {
@@ -916,10 +922,45 @@ handleRegionClick(hotspotID) {
             {
               /*Updating the state to rerender the page with Aquila JS Component*/
               this.setState({regionData : regionDetails});
+              var thumbnailElement;
+              if(regionDetails.hotspotType == 'IMAGE')
+              {
+                try
+                {
+                  thumbnailElement = document.getElementsByClassName('preview-image');
+                }
+                catch(e){
+                }
+              }
+              else if(regionDetails.hotspotType == 'VIDEO')
+              {
+                try
+                {
+                  thumbnailElement = document.getElementsByClassName('poster-play-icon');
+                  var videoTitleElement = document.getElementsByClassName('thumb-nail');
+                  videoTitleElement[0].addEventListener('click',this.onHotspotThumbnailClick);
+                }
+                catch(e){
+                }
+              }
+              else if(regionDetails.hotspotType == 'AUDIO' && regionDetails.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
+              {
+                try
+                {
+                  thumbnailElement = document.getElementsByClassName('play-pause');
+                  $( "#play-pause" ).draggable();
+                }
+                catch(e){
+                }
+              }
+              if(thumbnailElement !== undefined && thumbnailElement.length > 0)
+              {
+                thumbnailElement[0].addEventListener('click',this.onHotspotThumbnailClick);
+              }                        
             }
             else
             {
-              this.renderHotspot(regionDetails);              
+              this.renderHotspot(regionDetails);    
             }
             break;
           }

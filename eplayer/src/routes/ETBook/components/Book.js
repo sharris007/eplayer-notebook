@@ -19,7 +19,7 @@
   import WidgetManager from '../../../components/widget-integration/widgetManager';
   import { PreferencesComponent } from '@pearson-incubator/preferences';
   import { HeaderComponent, Drawer} from '@pearson-incubator/vega-core';
-  import { pageDetails, customAttributes, pageLoadData, pageUnLoadData } from '../../../../const/Mockdata';
+  import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
   import './Book.scss';
   import { browserHistory } from 'react-router';
   import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
@@ -706,6 +706,31 @@
         this.props.preferences.data :
         this.defaultPreference
     );
+
+    //Method to retrieve the cdn path of required version
+    retrieveMathjax = (v, flag) => {
+      const existingVersions = (flag === true) ? mathJaxCdnVersions : mathJaxVersions;
+      let cdnUrl;
+      if (v === undefined) {
+        cdnUrl = existingVersions['2.6.1'];
+      } else {
+        cdnUrl = existingVersions[v];
+        try { 
+          if (cdnUrl === '') {throw 'Invalid mathjax version';};
+        }
+        catch (err) {
+          console.log('Error in Loading Mathjax: ', cdnUrl);
+        }
+      }
+      return cdnUrl;
+    };
+  
+    loadMathjax =()=>{
+      const pearsonMathjax = this.retrieveMathjax('2.6.1');
+      let scriptSrc = (window.location.href.indexOf('https://') > -1) ? 'https:' : 'http:';
+      scriptSrc += pearsonMathjax;
+      return scriptSrc;
+    };
     closeHeaderPopups = (e) => {
       const eleSearch       = $(e.target).closest('.searchIconBtn');
       const elepref         = $(e.target).closest('.prefIconBtn');
@@ -795,6 +820,7 @@
         }
       });
       if (playlistReceived && bookdetailsdata) {
+        const getMathjaxJs = this.loadMathjax();
         const userType = ( bookdetailsdata.roles === undefined ) ? bookdetailsdata.userCourseSectionDetail.authgrouptype : bookdetailsdata.roles[0];
         if (userType.toLowerCase() === 'educator' || userType.toLowerCase() === 'instructor') {
            annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
@@ -834,7 +860,8 @@
             }
           ],
           scriptsToAdd:[`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
-          `${window.location.origin}/${annJsPath}`],
+          `${window.location.origin}/${annJsPath}`,
+          getMathjaxJs],
           stylesToAdd:[`${window.location.origin}/${annCssPath}`]
         },
         metaData: {
