@@ -527,7 +527,7 @@
 
     getPreference = () => {
       let getPreferenceDetails = this.props.getPreferenceData;
-      const prefTheme = getPreferenceDetails.theme, prefFont = getPreferenceDetails.fontSize, isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false;
+      const prefTheme = (getPreferenceDetails.theme)? getPreferenceDetails.theme : 'White', prefFont = (getPreferenceDetails.fontSize) ? getPreferenceDetails.fontSize : '50', isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false;
       const prefData = {
         'value': {
           theme: prefTheme,
