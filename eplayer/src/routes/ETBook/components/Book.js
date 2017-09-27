@@ -206,14 +206,6 @@
           });
         }
       }
-      if(nextProps.getPreferenceData && (this.props.getPreferenceData !== nextProps.getPreferenceData)) {
-        let pageDetails = this.state.pageDetails;
-        const preferenceData = nextProps.getPreferenceData;
-        pageDetails.pageFontSize = preferenceData.fontSize;
-        pageDetails.bgColor = preferenceData.theme;
-        pageDetails.isAnnotationHide = (preferenceData.isAnnotationHide == 'true' || preferenceData.isAnnotationHide == true) ? true : false;
-        this.setState({ pageDetails: pageDetails });
-      }
     }
     navChanged = () => {
       WidgetManager.navChanged(this.nodesToUnMount);
@@ -608,6 +600,13 @@
           }
         }
       }
+      let getPreferenceDetails = this.props.getPreferenceData;
+      const prefTheme = getPreferenceDetails.theme, prefFont = getPreferenceDetails.fontSize, isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false;
+      let pageDetails = this.state.pageDetails;
+      pageDetails.pageFontSize = prefFont;
+      pageDetails.bgColor = prefTheme;
+      pageDetails.isAnnotationHide = isAnnHide;
+      this.setState({ pageDetails: pageDetails });
     };
 
     handleDrawerkeyselect = (event) => {
