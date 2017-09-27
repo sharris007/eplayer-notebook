@@ -34,6 +34,7 @@ const karmaConfig = {
     [`${config.dir_test}/test-bundler.js`]: ['webpack']
   },
   browsers: ['PhantomJS'],
+  browserNoActivityTimeout: 100000,
   webpack: {
     devtool: 'cheap-module-source-map',
     resolve: Object.assign({}, webpackConfig.resolve, {
