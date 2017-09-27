@@ -101,7 +101,7 @@
     "@pearson-incubator/search": "^0.1.33",
     "@pearson-incubator/toc": "^0.1.54",
     "@pearson-incubator/vega-core": "0.0.43",
-    "@pearson-incubator/vega-viewer": "0.0.46",
+    "@pearson-incubator/vega-viewer": "*",
     "@pearson-incubator/viewer": "^0.1.32",
     "axios": "^0.15.3",
     "babel-loader": "^6.2.5",
