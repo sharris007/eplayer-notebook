@@ -49,16 +49,26 @@ export class Header extends React.Component {
       drawerOpen: false,
       prefOpen: false,
       searchOpen: false,
-      goToTextVal: ''
+      goToTextVal: '',
+      loadingFirstTime: true
     };
   }
-  componentWillReceiveProps(nextProps){
-  $('h1,.moreIcon,.bookmarkIcon,.drawerIcon,#frame,.navigation').on('click', () => {
-    this.setState({prefOpen : false})
-    this.setState({searchOpen : false})
- })
+  componentDidUpdate(){
+    if(this.state.loadingFirstTime === true){
+      if( $('.navigation').length){
+        $('#frame,.navigation,.moreIcon,h1').on('click', () => {
+          this.setState({prefOpen : false})
+          this.setState({searchOpen : false})
+        })
+        $('#frame,.navigation').on('mousedown', () => {
+          this.setState({prefOpen : false})
+          this.setState({searchOpen : false})
+        })
+        this.setState({loadingFirstTime : false})
+      }
+    }
+  }
 
-}
   handleDrawerkeyselect = (event) => {
     if ((event.which || event.keyCode) === 13) {
       this.setState({ drawerOpen: true });
@@ -68,6 +78,8 @@ export class Header extends React.Component {
 
   handleDrawer = () => {
     this.setState({ drawerOpen: true });
+    this.setState({prefOpen : false})
+    this.setState({searchOpen : false})
     this.props.viewerContentCallBack(false);
   }
 
@@ -97,14 +109,14 @@ export class Header extends React.Component {
         var bookshelfRoute = '/eplayer/bookshelf';
         piSession.getToken((result, userToken) => {
         if (result === piSession.Success) {
-          
+
         }
         else if(result === 'unknown' || result === 'notoken' ){
           bookshelfRoute = '/eplayer/bookshelf?bookshelftype=et1&authkey='+this.props.ssoKey+'&globaluserid='+this.props.globaluserid;
          }
          browserHistory.push(bookshelfRoute);
         });
-        
+
       }
     }
     this.setState({ open: false });
@@ -167,6 +179,12 @@ export class Header extends React.Component {
     this.props.goToPage(pageId);
     this.setState({ searchOpen: false });
   }
+
+  handleHeaderClick = () => {
+    this.setState({prefOpen : false})
+    this.setState({searchOpen : false})
+  }
+
 
   render() {
     const style = {
@@ -250,6 +268,7 @@ export class Header extends React.Component {
                   role="button"
                   tabIndex="0"
                 >
+                  <span className = "tooltiptext"> Bookshelf </span>
                   <Icon name="chevron-back-18" />
                 </span>
               }
@@ -264,6 +283,7 @@ export class Header extends React.Component {
                 role="button"
                 tabIndex="0"
               >
+                <span className = "tooltiptext"> Drawer </span>
                 <Icon name="hamburger-light-18" />
               </span>
             }
@@ -273,7 +293,8 @@ export class Header extends React.Component {
             <div>
             {this.props.currentPageIndex == 0 || (this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hasbookmarkpagebutton) ?
               <div className="empty"/> :
-              <div className="bookmarkIcon" role="button" tabIndex="0">
+              <div className="bookmarkIcon" onClick={this.handleHeaderClick} role="button" tabIndex="0">
+              <span className = "tooltiptext"> Bookmark </span>
                 <BookmarkIconComponent data={bookmarkIconData} locale="en"/>
               </div>
             }
@@ -287,6 +308,7 @@ export class Header extends React.Component {
                 role="button"
                 tabIndex="0"
               >
+                <span className = "tooltiptext"> Zoom </span>
                 <Icon name="font-setting-24" />
               </div>
             }
@@ -303,13 +325,15 @@ export class Header extends React.Component {
                 onClick={this.searchClick}
                 onKeyDown={this.searchKeySelect}
               >
+                <span className = "tooltiptext"> Search </span>
                 <Icon name="search-lg-18" />
               </div>
             }
               <div className="searchContainer">
                 {this.state.searchOpen ? <Search locale={locale} store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={pageId => this.goToPage(pageId)} indexId={this.props.indexId} listClick={this.props.listClick} isET1="Y" /> : <div className="empty" />}
               </div>
-              <div className="moreIcon">
+              <div className="moreIcon" onClick={this.handleMoreMenuClick}>
+              <span className = "tooltiptext"> LogOut </span>
                 <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages} />
               </div>
             </div>}

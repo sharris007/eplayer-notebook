@@ -1,14 +1,14 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
- *  *  Copyright © 2017 Pearson Education, Inc.
+ *
+ *  *  Copyright ï¿½ 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
- *  * 
+ *  *
  *  * NOTICE:  All information contained herein is, and remains
  *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
  *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
  *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
+ *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 //header
@@ -42,6 +42,53 @@ $headerPadding: 15px 55px;
     -ms-transition: $property $duration;
     -o-transition: $property $duration;
     transition: $property $duration;
+}
+.tooltiptext {
+  visibility: hidden;
+  width: auto;
+  background-color: #F2E9BD;
+  color: black;
+  text-align: center;
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  top: 30%;
+  font-size: 13px;
+  font-family: inherit;
+  margin-left: -1.1%;
+  margin-top: 2.2%;
+}
+.back_rec:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  font-size: 14px;
+}
+.drawerIcon:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  font-size: 14px;
+  margin-left: -0.1%;
+}
+.bookmarkIcon:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+.prefIcon:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  font-size: 13.5px;
+  margin-left: -0.1%;
+}
+.searchIcon:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  font-size: 14px;
+}
+.moreIcon:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  font-size: 12px;
 }
 
 .route--active {
