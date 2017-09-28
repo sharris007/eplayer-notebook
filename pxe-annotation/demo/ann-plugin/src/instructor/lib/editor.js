@@ -307,6 +307,8 @@ Annotator.Editor = (function(_super) {
     this.currentAnnotation = this.textareaHeight = null;
     if(this.annotation.color && this.annotation.color.length)
       this.publish('save', [this.annotation]);
+    if(this.annotation.highlights)
+      $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
     return this.publish('hide');
   };
   Editor.prototype.hasClass=function(element, className) {
