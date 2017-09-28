@@ -182,6 +182,7 @@ export default class BookshelfPage extends React.Component {
       browserHistory.push(`/eplayer/ETbook/${bookId}`);
     }
     else if( type === 'course') {
+      localStorage.setItem('sourceUrl', window.location.origin);
       browserHistory.push(`/eplayer/Course/${bookId}`);
     }
   }
