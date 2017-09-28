@@ -921,11 +921,13 @@
 	width: auto;
     height: 39px;
     float: left;
+    pointer-events: all;
 }
 .ann-cancelsave-section{
 	width: auto;
     height: 39px; 
     float: right;
+    pointer-events: all;
 }
 .annotator-share-text{
   width: 31px;
@@ -1132,4 +1134,8 @@
 .hideAnnotation .annotator-hl {
 	background-color: inherit !important;
 	color: inherit !important;
+}
+
+.annotator-panel-3 {
+pointer-events: none;
 }

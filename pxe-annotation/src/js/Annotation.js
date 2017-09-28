@@ -65,7 +65,7 @@ class Annotation extends Component {
    let newContent = "$('body').on('mousedown', this.onDocumentClick);$('body').keyup(this.onDocumentClick);";
    let method = newContent+" function onDocumentClick(e) {if ((e.keyCode === 27 ||!$(e.target).closest('.annotator-editor').length) && !$('.annotator-editor').hasClass('annotator-hide')) {$('body').data('annotator').editor.hide();}if ($(e.target).closest('.annotator-panel-1').length) {return false;}}";
    method = method + "function annIframeEvent(eventType_f, data_f, viewer_f){console.log('Event Triggered',eventType_f);var obj={eventType:eventType_f,data:data_f,viewer:viewer_f};parent.postMessage(JSON.stringify(obj),'*')};";
-   newContent = method+"if(!annotation) {var annotation = $('body').annotator();} else {annotation=$('body').annotator();} annotation.data('annotator').on('annotationDeleted', annIframeEvent.bind(null, 'annotationDeleted'));annotation.data('annotator').on('annotationEditorSubmit', annIframeEvent.bind(null, 'annotationEditorSubmit'));";
+   newContent = method+"if(!annotation) {var annotation = $('body').annotator();} else {annotation=$('body').annotator();} annotation.data('annotator').on('annotationDeleted', annIframeEvent.bind(null, 'annotationDeleted'));annotation.data('annotator').on('annotationEditorSubmit', annIframeEvent.bind(null, 'annotationEditorSubmit'));annotation.data('annotator').on('annotationsLoaded', annIframeEvent.bind(null, 'annotationsLoaded'));";
    var newScript = document.createElement('script');
    newScript.innerText = newContent;
    this.doc.head.append(newScript);
