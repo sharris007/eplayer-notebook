@@ -167,6 +167,19 @@ function redirectToIDCDashboard(prodType,courseId){
 } 
 
 function redirectToZeppelin(bookDetails,passportDetails){
+  let successOriginUrl,errOriginUrl;
+   if(window.location.pathname.indexOf('/eplayer/Course/')>-1)
+    {
+      // originUrl  = resources.links.authDomainUrl[domain.getEnvType()];
+      successOriginUrl  = window.location.href;
+      errOriginUrl= window.location.origin+'/eplayer';
+      
+    }
+    else
+    {
+    successOriginUrl  = userAccess.launchUrl;
+    errOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    }
     let userAccess = {
           userType      : bookDetails.authgrouptype,
           institutionId : bookDetails.section.extras.organizationId,
@@ -177,9 +190,9 @@ function redirectToZeppelin(bookDetails,passportDetails){
     const productId     = userAccess.productId ,
           institutionId = userAccess.institutionId ,
           courseAccess  = userAccess.appAccess,
-          failureUrl    = encodeURIComponent(resources.links.consoleUrl[domain.getEnvType()]),
-          cancelUrl     = encodeURIComponent(resources.links.consoleUrl[domain.getEnvType()]),
-          successUrl    = encodeURIComponent(userAccess.launchUrl),
+          successUrl    = encodeURIComponent(successOriginUrl),
+          failureUrl    = encodeURIComponent(errOriginUrl),          
+          cancelUrl     = encodeURIComponent(errOriginUrl),    
           zeppelinAccessBassUrl  = resources.links.zeppelinUrl[domain.getEnvType()],
           zeppelinRelativeurl =productId+'?institutionId='+institutionId+
           '&failureUrl='+failureUrl+'&cancelUrl='+cancelUrl+'&successUrl='+successUrl;
