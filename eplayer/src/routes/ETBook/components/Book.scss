@@ -37,28 +37,31 @@ $cont-padding-bottom: 85px;
     height: 42px;
     cursor: pointer;
 }
+.headerBar {
+    padding: 0px 55px !important;
+}
 .preferences-container {
-    width: 300px;
-    position: fixed;
-    z-index: 10001;
-    top: 33px;
-    right: 10%;
+    width: 300px !important;
+    position: fixed !important;
+    z-index: 10001 !important;
+    top: 33px !important;
+    right: 10% !important;
     .PrefernceTriangleUp{
-      border-bottom: 20px solid #f2f2f2;
+      border-bottom: 20px solid #f2f2f2 !important;
       &.fixHeader {
-        border-bottom: 20px solid #f2f2f2;
+        border-bottom: 20px solid #f2f2f2 !important;
       }
     }
   }
-  .searchContainer {
-    position: fixed;
-    z-index: 10001;
-    top: 33px;
-    right: 10%;
-    .triangle-up {
-      border-bottom: 20px solid #f2f2f2;
-      &.fixHeader {
-        border-bottom: 20px solid #f2f2f2;
-      }
+.searchContainer {
+  position: fixed !important;
+  z-index: 10001 !important;
+  top: 33px !important;
+  right: 10% !important;
+  .triangle-up {
+    border-bottom: 20px solid #f2f2f2 !important;
+    &.fixHeader {
+      border-bottom: 20px solid #f2f2f2 !important;
     }
   }
+}
