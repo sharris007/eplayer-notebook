@@ -611,8 +611,8 @@
         isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false
       }
       let pageDetails = this.state.pageDetails;
-      pageDetails.pageFontSize = prefFont;
-      pageDetails.bgColor = prefTheme;
+      pageDetails.pageFontSize = prefFont ? prefFont : pageDetails.pageFontSize ;
+      pageDetails.bgColor = prefTheme ? prefTheme : pageDetails.bgColor;;
       pageDetails.isAnnotationHide = isAnnHide;
       this.setState({ pageDetails: pageDetails });
     };
