@@ -527,7 +527,7 @@
 
     getPreference = () => {
       let getPreferenceDetails = this.props.getPreferenceData;
-      const prefTheme = (getPreferenceDetails.theme)? getPreferenceDetails.theme : 'White', prefFont = (getPreferenceDetails.fontSize) ? getPreferenceDetails.fontSize : '50';
+      const prefTheme = (getPreferenceDetails.theme)? getPreferenceDetails.theme : 'White', prefFont = (getPreferenceDetails.fontSize) ? getPreferenceDetails.fontSize : '56';
       let  isAnnHide = true;
       if(getPreferenceDetails.isAnnotationHide) {
         isAnnHide = (getPreferenceDetails.isAnnotationHide == 'true') ? true : false
