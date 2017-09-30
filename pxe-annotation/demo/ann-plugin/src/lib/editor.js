@@ -300,9 +300,7 @@ Annotator.Editor = (function(_super) {
     var temp = selectors.height();
     this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight;
     if(temp!==this.textareaHeight) {
-      selectors.height(this.textareaHeight);
-      this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight; 
-      var topPosition=(this.element.position().top) + (this.textareaHeight-temp);
+      var topPosition = $('.annotator-editor').css('top');
       this.element.css({top:topPosition});
     }    
   }

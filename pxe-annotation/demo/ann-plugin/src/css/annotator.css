@@ -1089,7 +1089,7 @@
   padding: 5px;
 }
 .characters-left {
-  width: 250px;
+  width: auto;
   height: 19px;
   font-family: Open Sans;
   font-size: 14px;
@@ -1130,10 +1130,10 @@
     padding: 20px;
     /*font-family: sans-serif;*/
     font-size: 16px;
-    height: 70px;
+    height: 164px;
     overflow-y:auto;
     display: none;
-    width: 221px;
+    width: auto;
     white-space: pre-wrap; /* css-3 */    
     white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
     white-space: -pre-wrap; /* Opera 4-6 */    
