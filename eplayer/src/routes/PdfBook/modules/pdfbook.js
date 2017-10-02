@@ -446,21 +446,17 @@ export function fetchBookInfo(bookid, sessionKey, userid, bookServerURL, roleTyp
   }
 
    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-  //var serviceurl = `${bookServerURL}/ebook/ipad/getuserbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&authkey=${sessionKey}&outputformat=JSON`;
+  var serviceurl = `${bookServerURL}/ebook/ipad/getuserbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&authkey=${sessionKey}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
-  /*var tempurl = serviceurl.replace("https","http");
+  var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return {
     type: 'RECEIVEBOOKINFO',
     payload: axios.get(`${serviceurl}&hsid=${hsid}`),
     timeout: 20000
-  };*/
-  
-  //Added by Amit Taran on 9/28 for testing purpose
-  var serviceurl = `https://login.cert.pearsoncmg.com/sso/SSOServlet2?cmd=login&okurl=https://www.pearson.com/us/&errurl=https://www.google.com/&loginurl=https://www.yahoo.com/&siteid=11444&isCourseAware=N&loginname=et1_demo_edu1&password=f4bfa58f16ce06bff66049a275d6ede6&encPassword=Y`;
-  window.location.replace(serviceurl);
-  
+  };
 }
+
 /* Created Action creator for getting page details by page number */
 export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
   pageNo, sessionKey,bookServerURL) {
