@@ -361,6 +361,12 @@ Annotator.Editor = (function(_super) {
       this.unShareAnnotation();
     }*/
     this.annotation.quote=$('.annotator-item input').val();
+    var noteVal = $('#annotator-field-0').val();
+    if (this.annotation.shareable) {
+      if(!noteVal) {
+        this.unShareAnnotation();
+      }
+    }
     _ref = this.fields;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       field = _ref[_i];
