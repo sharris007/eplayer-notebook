@@ -54,6 +54,7 @@ export default class BookshelfPage extends React.Component {
     super(props);
     document.title = 'Bookshelf';
     this.cookies = new Cookies();
+    this.piTokenFlag = false;
     if(this.props.location.query.invoketype !== 'et1')
     {
       let appPath             = window.location.origin;
@@ -63,8 +64,10 @@ export default class BookshelfPage extends React.Component {
         piSession.getToken((result, userToken) => {
         if (result === piSession.Success) {
           localStorage.setItem('secureToken',userToken);
+           this.piTokenFlag = true;
         }
         else if(result === 'unknown' || result === 'notoken' ){
+             this.piTokenFlag = true;
              piSession.login(redirectCourseUrl, 10);
           }
         });
@@ -114,7 +117,7 @@ export default class BookshelfPage extends React.Component {
     /* Adding sessionid for creating url for Bookshelf. Dispatcing the action. */
      let isSessionLoaded = false;
      const IntervalCheck = setInterval(()=>{
-      if(!isSessionLoaded) {
+      if(!isSessionLoaded && this.piTokenFlag) {
         const secureToken  = localStorage.getItem('secureToken');
         if(secureToken || this.props.location.query.invoketype === 'et1') {
           const cdnToken = this.cookies.get('etext-cdn-token');
