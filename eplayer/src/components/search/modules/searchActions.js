@@ -57,7 +57,7 @@ const searchActions = {
       }
     };
     var searchServiceURL = paramList.searchUrl.replace('searchText', searchText);
-    if(searchServiceURL.indexOf('/ebook/ipad/searchbookv2') !== -1)
+    if(searchServiceURL.indexOf('/ebook/pdfplayer/searchbook') !== -1)
     {
       // tempurl is starts with http to create hash key for matching with server
       var tempurl = searchServiceURL.replace("https","http");

@@ -112,7 +112,7 @@ export class Header extends React.Component {
 
         }
         else if(result === 'unknown' || result === 'notoken' ){
-          bookshelfRoute = '/eplayer/bookshelf?bookshelftype=et1&authkey='+this.props.ssoKey+'&globaluserid='+this.props.globaluserid;
+          bookshelfRoute = '/eplayer/bookshelf?invoketype=et1&globaluserid='+this.props.globaluserid;
          }
          browserHistory.push(bookshelfRoute);
         });

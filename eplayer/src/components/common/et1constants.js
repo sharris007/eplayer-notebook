@@ -17,6 +17,7 @@ export const eT1Contants = {
   PROD_SITE_ID: '15102',
   MD5_SECRET_KEY: 'ipadsecuretext',
   DEEPLINK_MD5_SECRET_KEY:'reactbanana',
+  BOOKSHELF_MD5_SECRET_KEY:'printbanana',
   RegionType : {
     AUDIO : 1,
     CROSS_REFERENCE : 2,
@@ -55,6 +56,13 @@ export const eT1Contants = {
     CHROMELESS_URL : 15,
     JAZZASSET : 16
   },
+  SCENARIOS : {
+    S1 : 1,
+    S3 : 3,
+    S6 : 6,
+    S11 : 11,
+    S88 : 88
+  },
   ServerUrls : {
     qa : {
             CERT1 : 'https://view.cert1.ebookplus.pearsoncmg.com',
@@ -66,6 +74,16 @@ export const eT1Contants = {
             CERT2 : 'https://view.cert2.ebookplus.pearsoncmg.com',
             CERT3 : 'https://view.cert3.ebookplus.pearsoncmg.com'
          }
+  },
+  BookshelfBaseUrls :{
+    DEV : 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com',
+    CERT : 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com',
+    PROD : 'https://sms.bookshelf.ebookplus.pearsoncmg.com'
+  },
+  SMSBaseUrls : {
+    CERT : 'https://login.cert.pearsoncmg.com/sso/SSOServlet2',
+    PROD : 'https://login.pearsoncmg.com/sso/SSOServlet2'
   }
+
 };
 export default eT1Contants;

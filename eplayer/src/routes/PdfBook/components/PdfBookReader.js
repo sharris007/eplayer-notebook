@@ -1145,7 +1145,7 @@ handleRegionClick(hotspotID) {
     } else {
       viewerClassName = '';
     }
-    const searchUrl = `${serverDetails}/ebook/ipad/searchbookv2?bookid=${this.props.location.query.bookid}`
+    const searchUrl = `${serverDetails}/ebook/pdfplayer/searchbook?bookid=${this.props.location.query.bookid}`
         + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=${this.props.book.bookinfo.book.version}&authkey=${ssoKey}`;
     this.props.book.annTotalData.forEach((annotation) => {
       if(annotation.shared){

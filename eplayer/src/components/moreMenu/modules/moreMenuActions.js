@@ -13,6 +13,8 @@
  *******************************************************************************/
 import axios from 'axios';
 import { clients } from '../../common/client';
+import { getmd5 } from '../../Utility/Util';
+import { eT1Contants } from '../../common/et1constants';
 
 const moreMenuActions = {
   logout() {
@@ -23,13 +25,13 @@ const moreMenuActions = {
   },
 
   logoutUserSession(userid, sessionKey, serverDetails) {
-    var serviceurl = `${serverDetails}/ebook/ipad/logout?values=userid::${userid}::sessionid::${sessionKey}::scenario::1::authservice::sso::authkey::${sessionKey}&outputformat=JSON`;
+    var serviceurl = `${serverDetails}/ebook/pdfplayer/logout?values=userid::${userid}::sessionid::${sessionKey}::scenario::1::authservice::sso::authkey::${sessionKey}&outputformat=JSON`;
     // tempurl is starts with http to create hash key for matching with server
     var tempurl = serviceurl.replace("https","http");
     var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
     return {
       type: 'LOGOUT_USER_SESSION',
-      payload: axios.get(`${serviceurl}&authkey=${sessionid}&hsid=${hsid}`) // eslint-disable-line
+      payload: axios.get(`${serviceurl}&authkey=${sessionKey}&hsid=${hsid}`) // eslint-disable-line
     };
   }
 

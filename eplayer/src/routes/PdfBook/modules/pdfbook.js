@@ -61,6 +61,7 @@ export const RECEIVE_GLOSSARY_TERM= 'RECEIVE_GLOSSARY_TERM';
 export const RECEIVE_BASEPATH_PENDING= 'RECEIVE_BASEPATH_PENDING';
 export const RECEIVE_BASEPATH_FULFILLED= 'RECEIVE_BASEPATH_FULFILLED';
 export const RECEIVE_BASEPATH_REJECTED= 'RECEIVE_BASEPATH_REJECTED';
+export const UPDATE_AUTH_KEY= 'UPDATE_AUTH_KEY';
 
 export const POST = 'POST';
 export const PUT = 'PUT';
@@ -372,7 +373,7 @@ export function fetchTocAndViewer(bookId, authorName, title,
   return (dispatch) => {
     dispatch(request('toc'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-    var serviceurl = `${bookServerURL}/ebook/ipad/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
+    var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
     // tempurl is starts with http to create hash key for matching with server
     var tempurl = serviceurl.replace("https","http");
     var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -438,15 +439,27 @@ export function goToPage(pageId) {
   };
 }
 
+export function updateAuthKey(ssoKey)
+{
+  return (dispatch) => {
+    dispatch({ type: UPDATE_AUTH_KEY, ssoKey });
+  };
+}
+
 /* Created Action creator for fetching all book detail. */
-export function fetchBookInfo(bookid, sessionKey, userid, bookServerURL, roleTypeId) {
+export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeId, authkey) {
   let roleTypeID = roleTypeId;
   if (roleTypeID === undefined || roleTypeID === null || roleTypeID === '') {
     roleTypeID = 2;
   }
+  /*let piToken = pitoken
+  if(piToken === '' || piToken === null || piToken === undefined)
+  {
+    piToken = 'NA';
+  }*/
 
    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-  var serviceurl = `${bookServerURL}/ebook/ipad/getuserbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&authkey=${sessionKey}&outputformat=JSON`;
+  var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenario}&authkey=${authkey}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -456,7 +469,6 @@ export function fetchBookInfo(bookid, sessionKey, userid, bookServerURL, roleTyp
     timeout: 20000
   };
 }
-
 /* Created Action creator for getting page details by page number */
 export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
   pageNo, sessionKey,bookServerURL) {
@@ -465,7 +477,7 @@ export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
       pages: []
     }
   };
-  var serviceurl = `${bookServerURL}/ebook/ipad/getpagebybookpagenumber?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&bookpagenumbers=${pageNo}&authkey=${sessionKey}&outputformat=JSON`;
+  var serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagebybookpagenumber?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&bookpagenumbers=${pageNo}&authkey=${sessionKey}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -510,7 +522,7 @@ export function fetchPageInfo(userid, bookid, bookeditionid,
       pages: []
     }
   };
-  var serviceurl = `${bookServerURL}/ebook/ipad/getpagebypageorder?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&listval=${totalPagesToHit}&authkey=${sessionKey}&outputformat=JSON`;
+  var serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagebypageorder?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&listval=${totalPagesToHit}&authkey=${sessionKey}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -557,7 +569,7 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
   };
   return (dispatch) => {
     dispatch(request('regions'));
-    var serviceurl = ''+bookServerURL+'/ebook/ipad/getregionbypageorderv2?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON';
+    var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getregionbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON';
     // tempurl is starts with http to create hash key for matching with server
     var tempurl = serviceurl.replace("https","http");
     var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -636,7 +648,7 @@ export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerU
       glossaryInfoList : [],
     }
   };
-  var serviceurl = ''+bookServerURL+'/ebook/ipad/getglossaryv2?bookid='+bookid+'&glossaryentryid='+glossaryentryid+'&authkey='+sessionKey+'&outputformat=JSON';
+  var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getglossary?bookid='+bookid+'&glossaryentryid='+glossaryentryid+'&authkey='+sessionKey+'&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -665,7 +677,7 @@ export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerU
 }
  /* Created Action creator for getting basepath of relative regions/hotspots. */
 export function fetchBasepaths(bookid, sessionKey, userid, bookServerURL, roleTypeID) {
-  var serviceurl = ''+bookServerURL+'/ebook/ipad/launchbook?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON';
+  var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/launchbook?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -678,7 +690,7 @@ export function fetchBasepaths(bookid, sessionKey, userid, bookServerURL, roleTy
  /* Created Action creator for getting book features. */
 export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, roleTypeID,scenarioId) {
     // payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON',
-  var serviceurl = ''+bookServerURL+'/ebook/ipad/getbookfeaturesv2?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&scenario=' + scenarioId + '&outputformat=JSON';
+  var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&scenario=' + scenarioId + '&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -971,9 +983,43 @@ export function validateAuthkey(userid,authkey,bookServerURL)
       }
       else if(response.data)
       {
+
         return response.data[0].authkeyValid;
       }
     });
+}
+
+export function validateUser(userid,scenario,invoketype,bookid,roletypeid,piToken,bookServerURL)
+{
+  var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/validateuser?values=bookid::' + bookid + '::scenario::' +  scenario + '::invoketype::'
+                        +invoketype+'::userid::'+userid+'::roletypeid::'+roletypeid+'&key='+piToken+'&outputformat=JSON';
+  // tempurl is starts with http to create hash key for matching with server
+  var tempurl = serviceurl.replace("https","http");
+  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  return dispatch => 
+    axios.get(''+serviceurl+'&hsid='+hsid).then((response) => {
+      if (response.status >= 400) {
+        console.log(`validateuser service error`);
+      }
+      else if(response.data)
+      {
+        const ssoKey = response.data[0].authKey;
+        return dispatch({ type: UPDATE_AUTH_KEY, ssoKey });
+      }
+    });
+}
+
+export function getlocaluserID(bookServerURL,globaluserid,type)
+{
+  var serviceurl = ''+bookServerURL+'/ebook/ipad/getlocaluserid?globaluserid=' + globaluserid + '&type=' +  type + '&outputformat=JSON';
+  // tempurl is starts with http to create hash key for matching with server
+  var tempurl = serviceurl.replace("https","http");
+  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  return {
+    type: 'RECEIVE_USER_INFO',
+    payload: axios.get(`${serviceurl}&hsid=${hsid}`),
+    timeout: 20000
+  };
 }
 
 // ------------------------------------
@@ -1159,7 +1205,8 @@ const ACTION_HANDLERS = {
                 action.payload.data[0].userBookTOList[0].authorList[0].lastName,
         thumbnailimg : action.payload.data[0].userBookTOList[0].thumbnailArt,
         title : action.payload.data[0].userBookTOList[0].title,
-        pdfCoverArt : action.payload.data[0].userBookTOList[0].pdfCoverArt
+        pdfCoverArt : action.payload.data[0].userBookTOList[0].pdfCoverArt,
+        ssoKey: action.payload.data[0].userBookTOList[0].sessionID
       }
     }
   }),
@@ -1168,6 +1215,12 @@ const ACTION_HANDLERS = {
     bookinfo: {
       fetching: false,
       fetched: false
+    }
+  }),
+  [UPDATE_AUTH_KEY]: (state, action) => ({
+    ...state,
+    sessionInfo : {
+      ssoKey: action.ssoKey
     }
   }),
   [RECEIVE_PAGE_INFO]: (state, action) => ({
@@ -1190,7 +1243,7 @@ const ACTION_HANDLERS = {
     userInfo: {
       fetching: false,
       fetched: true,
-      userid: action.payload.data[0].userid
+      userid: action.payload.data[0]['userinfo localuserid']
     }
   }),
   [RECEIVE_USER_INFO_REJECTED]: state => ({
@@ -1340,6 +1393,9 @@ const initialState = {
     fetching: false,
     fetched: false,
     userid: ''
+  },
+  sessionInfo: {
+    ssoKey:''
   }
 };
 

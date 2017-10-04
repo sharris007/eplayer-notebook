@@ -22,6 +22,7 @@ import pdfbookRoute from './PdfBook';
 import print from './Print';
 import course from './Course';
 import errorRoute from './Error';
+import validateUserRoute from './ValidateUser';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -39,7 +40,8 @@ export const createRoutes = store => ({
     print(store),
     course(store),
     piLoginRoute(store),
-    errorRoute(store)
+    errorRoute(store),
+    validateUserRoute(store)
   ]
 });
 

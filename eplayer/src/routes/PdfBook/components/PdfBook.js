@@ -38,16 +38,12 @@ var currentbook;
 export class PdfBook extends Component {
   constructor(props){
     super(props);
-    if((this.props.location.query.sessionid === undefined
-      || this.props.location.query.sessionid === ''
-      || this.props.location.query.sessionid === null) &&
-      (this.props.location.query.invoketype === undefined
-      || this.props.location.query.invoketype === ''
-      || this.props.location.query.invoketype === null))
+    const cookies = new Cookies();
+    if(this.props.location.query.invoketype !== undefined && 
+              this.props.location.query.invoketype === 'pi')
     {
-      this.cookies = new Cookies();
       let appPath             = window.location.origin;
-      let redirectBookUrl   = appPath+'/eplayer/pdfbook?bookid='+this.props.location.query.bookid+'&directlogin=true';
+      let redirectBookUrl   = appPath+'/eplayer/pdfbook?bookid='+this.props.location.query.bookid+'&invoketype=pi';
       redirectBookUrl       = decodeURIComponent(redirectBookUrl).replace(/\s/g, "+").replace(/%20/g, "+");
       setTimeout(()=>{
         piSession.getToken((result, userToken) => {
@@ -60,6 +56,16 @@ export class PdfBook extends Component {
         });
       },2000)
     }
+    else if(this.props.location.query.invoketype !== undefined && 
+              this.props.location.query.invoketype === 'et1')
+    {
+      // Validating ReactPlayerCookie cookie
+      const cookieValue = cookies.get('ReactPlayerCookie');
+      if(cookieValue != 'ReactPlayerCookie')
+      {
+        browserHistory.push('/eplayer/login');
+      }
+    }
   }
 /* Async keyword used for independent calling the method, componentWillMount is lifecycle method,
 used for before mounting occurs. */
@@ -67,34 +73,68 @@ used for before mounting occurs. */
   currentbook = {};
   var bookID = this.props.location.query.bookid;
   var bookData = {};
-  if (this.props.location.query.invoketype !== undefined && 
-          this.props.location.query.invoketype === 'standalone')
+  if ((this.props.location.query.invoketype !== undefined && 
+          this.props.location.query.invoketype === 'pi') || (this.props.currentbook.globalUserId !== undefined && this.props.location.query.invoketype !== undefined && 
+          this.props.location.query.invoketype === 'et1'))
     {
-      if(this.props.login.data !== undefined)
+      if(this.props.currentbook !== undefined)
       {
-          identityId = this.props.login.data.identityId;
-                   
-      }else{
-          identityId = localStorage.getItem('identityId');
+        if(this.props.login.data !== undefined)
+        {
+            identityId = this.props.login.data.identityId;
+                     
+        }else{
+            identityId = localStorage.getItem('identityId');
+        }
+        if(identityId === undefined || identityId === '' || identityId === null)
+        {
+          identityId = this.props.currentbook.globalUserId;
+        }
+        ubd = this.props.currentbook.ubd;
+        ubsd = this.props.currentbook.ubsd;
+        // ssoKey = this.props.currentbook.ssoKey;
+        serverDetails = this.props.currentbook.serverDetails;
+        roleTypeID = this.props.currentbook.roleTypeID;
       }
-      if(identityId === undefined || identityId === '' || identityId === null)
+      else
       {
-        identityId = this.props.currentbook.globalUserId;
+        piSession.getToken(function(result, userToken){
+          if(result === 'success'){
+            localStorage.setItem('secureToken',userToken);
+          }
+        }); 
+        const secureToken  = localStorage.getItem('secureToken');
+        let urn = 'compositeBookShelf';
+        await this.props.fetchbookDetails(urn, secureToken,this.props.location.query.bookid).then((bookDetails) =>{
+          if(bookDetails)
+          {
+            bookData = bookDetails;
+          }
+        });
+        identityId = bookData.globalUserId;
+        ubd = bookData.userBookLastModifiedDate;
+        ubsd = bookData.userBookScenarioLastModifiedDate;
+        serverDetails = bookData.bookServerUrl;
+        roleTypeID = bookData.roleTypeID;
       }
-      ubd = this.props.currentbook.ubd;
-      ubsd = this.props.currentbook.ubsd;
-      ssoKey = this.props.currentbook.ssoKey;
-      serverDetails = this.props.currentbook.serverDetails;
-      roleTypeID = this.props.currentbook.roleTypeID;
     }
-    else
-    {
-      if (this.props.location.query.invoketype != undefined &&    
-        this.props.location.query.invoketype == 'lms')    
-      {   
-        var querystr = window.location.search.substring(1);   
-        var serverhsid = this.props.location.query.hsid;    
-        querystr = querystr.replace("&hsid="+serverhsid,"");    
+    else if (this.props.location.query.invoketype != undefined &&    
+        this.props.location.query.invoketype == 'et1')    
+      { 
+        const islocal = this.props.location.query.islocal;
+        const ispxedev = this.props.location.query.ispxedev; 
+        var querystr = window.location.search.substring(1);
+        var serverhsid = this.props.location.query.hsid; 
+          // For testing purpose we added islocal & ispxedev fields. Should be removed once testing is done
+        if(islocal !== undefined && islocal !== '' && islocal !== null)
+        {
+          querystr = querystr.replace("&islocal=Y","");
+        }
+        if(ispxedev !== undefined && ispxedev !== '' && ispxedev !== null)
+        {
+          querystr = querystr.replace("&ispxedev=Y","");
+        }   
+        querystr = querystr.replace("&hsid="+serverhsid,"");  
         var clienthsid = getmd5(querystr+eT1Contants.DEEPLINK_MD5_SECRET_KEY);   
         if(clienthsid == serverhsid)    
         {   
@@ -119,75 +159,62 @@ used for before mounting occurs. */
           }
           serverDetails = eT1Contants.ServerUrls[envType][bookserver];
         } 
-        // Todo: Check the user session is valid or not then launch the title 
-        const isAuthkeyValid = await this.props.validateAuthkey(this.props.location.query.userid,
-                this.props.location.query.sessionid,serverDetails);
-        if(isAuthkeyValid)
-        {
-           console.log("authkey match success. Continue to launch the title")   
-        }
-        else
-        {
-          console.log("authkey match failure. Show the error page")  
-          browserHistory.push('/eplayer/login');
-        }
-      }   
-      
-      if (this.props.location.query.sessionid === undefined
-            || this.props.location.query.sessionid === ''
-            || this.props.location.query.sessionid === null)
-      {
-        piSession.getToken(function(result, userToken){
-          if(result === 'success'){
-            localStorage.setItem('secureToken',userToken);
-          }
-        }); 
-        const secureToken  = localStorage.getItem('secureToken');
-        let urn = 'compositeBookShelf';
-        await this.props.fetchbookDetails(urn, secureToken,this.props.location.query.bookid).then((bookDetails) =>{
-          if(bookDetails)
-          {
-            bookData = bookDetails;
-          }
-        });
+        identityId = this.props.location.query.smsuserid;
+        ubd = this.props.location.query.ubd;
+        ubsd = this.props.location.query.ubsd;
+        roleTypeID = this.props.location.query.roletypeid;
       }
-      identityId = bookData.globalUserId ? bookData.globalUserId : this.props.location.query.smsuserid;
-      ubd = bookData.userBookLastModifiedDate ? bookData.userBookLastModifiedDate : this.props.location.query.ubd;
-      ubsd = bookData.userBookScenarioLastModifiedDate ? bookData.userBookScenarioLastModifiedDate : this.props.location.query.ubsd;
-      ssoKey = this.props.location.query.sessionid ? this.props.location.query.sessionid : piSession.userId();
-      serverDetails = bookData.bookServerUrl ? bookData.bookServerUrl : serverDetails;
-      roleTypeID = bookData.roleTypeID ? bookData.roleTypeID : this.props.location.query.roletypeid;
-    /*  if(serverDetails == '')
-      {
-        const bookserverno = this.props.location.query.bookserver;
-        var bookserver;
-        if (envType == 'qa' || envType == 'stage')
-        {
-          bookserver = 'CERT'+bookserverno;
-        }
-        else if(envType == 'prod')
-        {
-          bookserver = 'PROD'+bookserverno;
-        }
-        serverDetails = eT1Contants.ServerUrls[envType][bookserver];
-      }*/
-    }
-    currentbook.ssoKey = ssoKey;
     currentbook.serverDetails = serverDetails;
     /* Await operator is used to wait for a Promise returned by an async function. */
     /* Method used for fetching the user details and book details. */
-    if (this.props.location.query.sessionid === undefined
-            || this.props.location.query.sessionid === ''
-            || this.props.location.query.sessionid === null)
+    if (this.props.location.query.invoketype !== undefined && 
+          this.props.location.query.invoketype === 'pi' && this.props.location.query.userid === undefined)
     {
-      await this.props.fetchUserInfo(identityId, bookID, ubd, ubd, ubsd, ssoKey, serverDetails);
+      // await this.props.fetchUserInfo(identityId, bookID, ubd, ubd, ubsd, ssoKey, serverDetails);
+      await this.props.getlocaluserID(serverDetails,identityId,'sms');
     }
     else
     {
       this.props.book.userInfo.userid = this.props.location.query.userid;
     }
-    await this.props.fetchBookInfo(bookID, ssoKey,
-              this.props.book.userInfo.userid, serverDetails, roleTypeID);
+    if(this.props.location.query.scenario)    
+    {   
+      if(this.props.location.query.scenario == eT1Contants.SCENARIOS.S1 || this.props.location.query.scenario == eT1Contants.SCENARIOS.S3
+            || this.props.location.query.scenario == eT1Contants.SCENARIOS.S11)   
+      {   
+        currentbook.pageNoTolaunch = this.props.location.query.pagenumber;    
+      }   
+      else if(this.props.location.query.scenario == eT1Contants.SCENARIOS.S6 || this.props.location.query.scenario == eT1Contants.SCENARIOS.S88)    
+      {  
+        currentbook.startpage = this.props.location.query.startpage;    
+        currentbook.endpage = this.props.location.query.endpage;    
+      }   
+      currentbook.scenario = this.props.location.query.scenario;    
+    }
+    if((this.props.location.query.invoketype !== undefined && 
+          this.props.location.query.invoketype === 'pi') || currentbook.scenario == undefined)
+    {
+      currentbook.scenario = eT1Contants.SCENARIOS.S1;
+    }
+    var authkey;
+    if(this.props.location.query.invoketype && this.props.location.query.invoketype === 'pi')
+    {
+        const piToken  = localStorage.getItem('secureToken');
+        await this.props.validateUser(this.props.book.userInfo.userid,currentbook.scenario,this.props.location.query.invoketype,
+                  bookID,roleTypeID,piToken,serverDetails);
+        authkey = this.props.book.sessionInfo.ssoKey;
+    }
+    else
+    {
+      authkey = this.props.location.query.sessionid;
+    }
+    this.props.updateAuthKey(authkey);
+    await this.props.fetchBookInfo(bookID, currentbook.scenario,
+              this.props.book.userInfo.userid, serverDetails, roleTypeID,authkey);
+    if(!this.props.book.bookinfo.fetched)
+    {
+      browserHistory.push('/eplayer/login');
+    }
     currentbook.globaluserid = identityId;
     currentbook.authorName = bookData.author ? bookData.author : this.props.book.bookinfo.book.author;
     var tempThumbnail = bookData.image ? bookData.image : this.props.book.bookinfo.book.thumbnailimg;
@@ -202,26 +229,8 @@ used for before mounting occurs. */
                            this.props.location.query.platform : undefined;    
     currentbook.languageid = this.props.location.query.languageid ?   
                              this.props.location.query.languageid : undefined;    
-    if(this.props.location.query.scenario)    
-    {   
-      if(this.props.location.query.scenario == 1 || this.props.location.query.scenario == 3
-            || this.props.location.query.scenario == 11)   
-      {   
-        currentbook.pageNoTolaunch = this.props.location.query.pagenumber;    
-      }   
-      else if(this.props.location.query.scenario == 6 || this.props.location.query.scenario == 88)    
-      {   
-        currentbook.startpage = this.props.location.query.startpage;    
-        currentbook.endpage = this.props.location.query.endpage;    
-      }   
-      currentbook.scenario = this.props.location.query.scenario;    
-    }
-    if((this.props.location.query.invoketype !== undefined && 
-          this.props.location.query.invoketype === 'standalone') || currentbook.scenario == undefined)
-    {
-      currentbook.scenario = 1;
-    }
-    await this.props.fetchBookFeatures(bookID,ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
+    currentbook.ssoKey = authkey;
+    await this.props.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
     
   }
 

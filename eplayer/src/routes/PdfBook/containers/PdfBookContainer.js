@@ -15,7 +15,7 @@ import { connect } from 'react-redux';/* Importing react-redux library for conne
 import { fetchBookmarksUsingReaderApi, addBookmarkUsingReaderApi, removeBookmarkUsingReaderApi,
          fetchTocAndViewer, goToPage, fetchBookInfo, fetchPageInfo, fetchUserInfo,
          fetchHighlightUsingReaderApi, saveHighlightUsingReaderApi, removeHighlightUsingReaderApi,
-         loadAssertUrl, editHighlightUsingReaderApi, fetchRegionsInfo, fetchUserIcons,fetchPagebyPageNumber, fetchBookFeatures, fetchGlossaryItems, fetchBasepaths, fetchbookDetails, validateAuthkey } from '../modules/pdfbook';/* Importing the action creator from reducer to container. */
+         loadAssertUrl, editHighlightUsingReaderApi, fetchRegionsInfo, fetchUserIcons,fetchPagebyPageNumber, fetchBookFeatures, fetchGlossaryItems, fetchBasepaths, fetchbookDetails, validateAuthkey, getlocaluserID, validateUser, updateAuthKey} from '../modules/pdfbook';/* Importing the action creator from reducer to container. */
 import { loadState } from '../../../localStorage'; 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -51,7 +51,10 @@ const mapDispatchToProps = {
   fetchGlossaryItems,
   fetchBasepaths,
   fetchbookDetails,
-  validateAuthkey
+  validateAuthkey,
+  getlocaluserID,
+  validateUser,
+  updateAuthKey
 };
 
 /* Method used for connecting and accessing the state data in component via props. */

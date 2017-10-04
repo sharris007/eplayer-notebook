@@ -16,6 +16,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
+import Cookies from 'universal-cookie';
 const queryString = require('query-string');
 
 import Icon from '../Icon';
@@ -55,6 +56,7 @@ export class BookshelfHeader extends React.Component {
   };
   onClick = () => {
     const langQuery = localStorage.getItem('bookshelfLang');
+    const cookies = new Cookies();
     let i = localStorage.length;
     while (i--) {
       const key = localStorage.key(i);
@@ -75,8 +77,9 @@ export class BookshelfHeader extends React.Component {
     if (langQuery && langQuery !== '?languageid=1') {
       browserHistory.push(`/eplayer/login${langQuery}`);
     } else {
-      if(parsedQueryStrings.bookshelftype === "et1")
+      if(parsedQueryStrings.invoketype === "et1")
       {
+        cookies.remove('ReactPlayerCookie',{ path: '/' });
         localStorage.removeItem('secureToken');
         browserHistory.push('/eplayer/login');
       }

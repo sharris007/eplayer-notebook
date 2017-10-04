@@ -36,6 +36,7 @@ class MoreMenuComponent extends React.Component {
   }
     handleClick = () => {
     const langQuery = localStorage.getItem('bookshelfLang');
+    const cookies = new Cookies();
     let i = localStorage.length;
     while (i--) {
       const key = localStorage.key(i);
@@ -60,14 +61,15 @@ class MoreMenuComponent extends React.Component {
     }else{
         const parsedQueryStrings = queryString.parse(window.location.search);
         if (langQuery && langQuery !== '?languageid=1') {
-          if(parsedQueryStrings.ispilogin === "N" || parsedQueryStrings.invoketype == 'lms')
+          if( parsedQueryStrings.invoketype == 'et1')
           {
+            cookies.remove('ReactPlayerCookie',{ path: '/' });
             localStorage.removeItem('secureToken');
             browserHistory.push('/eplayer/login');
           }
           else
           {
-            if(parsedQueryStrings.directlogin == 'true' || parsedQueryStrings.invoketype == 'standalone')
+            if(parsedQueryStrings.invoketype == 'pi')
             {
               piSession.logout();
             }
@@ -75,14 +77,15 @@ class MoreMenuComponent extends React.Component {
             browserHistory.push(`/eplayer/login${langQuery}`);
           }
         } else {
-          if(parsedQueryStrings.ispilogin === "N" || parsedQueryStrings.invoketype == 'lms')
+          if (parsedQueryStrings.invoketype == 'et1')
           {
+            cookies.remove('ReactPlayerCookie',{ path: '/' });
             localStorage.removeItem('secureToken');
             browserHistory.push('/eplayer/login');
           }
           else
           {
-            if(parsedQueryStrings.directlogin == 'true' || parsedQueryStrings.invoketype == 'standalone')
+            if(parsedQueryStrings.invoketype == 'pi')
             {
               piSession.logout();
             }
