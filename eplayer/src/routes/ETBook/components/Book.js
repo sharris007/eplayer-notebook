@@ -352,8 +352,8 @@
         updatedPageLoadData.activities[0].payload.operatingSystemCode = this.state.operatingSystemCode;
         updatedPageLoadData.activities[0].payload.organizationId = this.state.organizationId;
         // console.log("updatedPageLoadData12", updatedPageLoadData);
-
-        loadPageEvent(this.state.piToken, updatedPageLoadData);
+        const getSecureToken= localStorage.getItem('secureToken');
+        loadPageEvent(getSecureToken, updatedPageLoadData);
 
       });
     }
@@ -386,8 +386,8 @@
         updatedPageUnLoadData.activities[0].payload.operatingSystemCode = this.state.operatingSystemCode;
         updatedPageUnLoadData.activities[0].payload.organizationId = this.state.organizationId;
         // console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
-
-        unLoadPageEvent(this.state.piToken, updatedPageUnLoadData);
+        const getSecureToken= localStorage.getItem('secureToken');
+        unLoadPageEvent(getSecureToken, updatedPageUnLoadData);
         if (loadFunCall) {
           this.mapLoadData(loadPageid, loadNxtPageId);
         }
