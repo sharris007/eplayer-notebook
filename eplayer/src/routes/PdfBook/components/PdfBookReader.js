@@ -1195,6 +1195,7 @@ handleRegionClick(hotspotID) {
             currentPageIndex={this.state.currPageIndex}
             currentScenario = {this.props.currentbook.scenario}
             globaluserid = {this.props.currentbook.globaluserid}
+            invoketype ={this.props.location.query.invoketype}
           />
 
           <div className="eT1viewerContent">

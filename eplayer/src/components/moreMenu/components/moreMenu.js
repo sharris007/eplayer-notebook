@@ -71,7 +71,13 @@ class MoreMenuComponent extends React.Component {
           {
             if(parsedQueryStrings.invoketype == 'pi')
             {
-              piSession.logout();
+              try{
+                piSession.logout();
+              }
+              catch(e)
+              {
+
+              }
             }
             localStorage.removeItem('secureToken');
             browserHistory.push(`/eplayer/login${langQuery}`);
@@ -87,7 +93,13 @@ class MoreMenuComponent extends React.Component {
           {
             if(parsedQueryStrings.invoketype == 'pi')
             {
-              piSession.logout();
+              try{
+                piSession.logout();
+              }
+              catch(e)
+              {
+
+              }
             }
             localStorage.removeItem('secureToken');
             let appPath             = window.location.origin;

@@ -83,6 +83,29 @@ export const eT1Contants = {
   SMSBaseUrls : {
     CERT : 'https://login.cert.pearsoncmg.com/sso/SSOServlet2',
     PROD : 'https://login.pearsoncmg.com/sso/SSOServlet2'
+  },
+  SITE_IDs : {
+    qa : {
+      S1 : '11444',
+      S3 : '7171',
+      S6 : '10063',
+      S11 : '11442',
+      S88 : '11442'
+    },
+    stage : {
+      S1 : '11444',
+      S3 : '7171',
+      S6 : '10063',
+      S11 : '11442',
+      S88 : '11442'
+    },
+    prod : {
+      S1 : '15102',
+      S3 : '9688',
+      S6 : '10402',
+      S11 : '15107',
+      S88 : '15107'
+    }
   }
 
 };

@@ -22,7 +22,11 @@ export class Search extends React.Component {
 
   componentWillMount() {
     injectReducer(this.props.store, { key: 'search', reducer });
-    //this.props.clearSearchResults();    
+    if(this.props.isET1 === 'Y')
+    {
+      this.props.clearSearchResults();
+    }
+        
   }
 
   render() {

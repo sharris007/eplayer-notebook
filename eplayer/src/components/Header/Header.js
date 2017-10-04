@@ -258,7 +258,7 @@ export class Header extends React.Component {
           iconElementLeft={
             <div>
               <div className="back_rec">
-              {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hasbookshelflink ?
+              {this.props.isET1 === 'Y' && (!this.props.bookData.bookFeatures.hasbookshelflink || this.props.invoketype === 'et1') ?
                 <div className="empty"/> :
                 <span
                   className="icon-white "

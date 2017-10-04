@@ -137,10 +137,10 @@ export default class BookshelfPage extends React.Component {
             {
               baseBookshelfUrl = eT1Contants.BookshelfBaseUrls['PROD'];
             }
-            // Todo: scenario based siteid has to be fetched
+            var siteid = eT1Contants.SITE_IDs[envType].S1;
             urn = baseBookshelfUrl
-                + `/ebook/ipad/getuserbookshelf?siteid=11444&smsuserid=${this.props.location.query.globaluserid}`;
-            var hsid = getmd5('siteid=11444'+eT1Contants.BOOKSHELF_MD5_SECRET_KEY);
+                + `/ebook/ipad/getuserbookshelf?siteid=${siteid}&smsuserid=${this.props.location.query.globaluserid}`;
+            var hsid = getmd5('siteid='+siteid+''+eT1Contants.BOOKSHELF_MD5_SECRET_KEY);
             urn = ''+urn+'&hsid='+hsid;
           }
           // const secureToken = this.cookies.get('secureToken');

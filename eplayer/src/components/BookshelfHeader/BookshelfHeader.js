@@ -85,7 +85,12 @@ export class BookshelfHeader extends React.Component {
       }
       else
       {
-        piSession.logout();
+        try
+        {
+          piSession.logout();
+        }
+        catch(e)
+        {}
         let appPath             = window.location.origin;
         let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
         redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
