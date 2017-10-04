@@ -151,7 +151,9 @@
 	        }
 			okurl = serverDetails+'/ebook/pdfplayer/validateuser?'+okurlValuesParam;
 			var serviceurl;
-			serviceurl = smsbaseurl+'?cmd=chk_login&okurl='+okurl+'&errurl=https://www.google.com&loginurl=https://www.google.com&siteid=11444&isCourseAware=N';
+			var siteid = eT1Contants.SITE_IDs[envType]['S'+scenario];
+			// Proper errurl & loginurl has to be configured 
+			serviceurl = smsbaseurl+'?cmd=chk_login&okurl='+okurl+'&errurl=https://www.google.com&loginurl=https://www.google.com&siteid='+siteid+'&isCourseAware=N';
 			cookies.set('ReactPlayerCookie', 'ReactPlayerCookie', { path: '/' });
 			window.location.replace(serviceurl);
  	}
