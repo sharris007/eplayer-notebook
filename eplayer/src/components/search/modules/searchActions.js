@@ -100,7 +100,14 @@ const searchActions = {
               resultObj.id = i;
               resultObj.urn = result.pageOrder;
               resultObj.title = result.chapterName;
-              resultObj.pageNo = result.bookPageNumber;
+              if(result.chapterName == undefined)
+              {
+                resultObj.pageNo = 'Page ' + result.bookPageNumber;  
+              }
+              else
+              {
+                resultObj.pageNo = result.bookPageNumber;
+              }
               resultObj.contentPreview = result.bestTextSnippet;
               searchState.searchResult.results.push(resultObj);
             });
