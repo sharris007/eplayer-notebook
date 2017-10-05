@@ -217,6 +217,12 @@
     position: absolute;
     pointer-events: none;
 }
+.annotator-panel-triangle.oldAnnotation:before {
+	top: 30%;
+}
+.annotator-panel-triangle.oldAnnotation:after {
+	margin-top: -116px;
+}
 .annotator-panel-triangle:after {
     border-right-color: #ffffff;
     border-width: 8px;
@@ -379,6 +385,9 @@
   min-height: 22px;
   pointer-events:none;
   opacity:0.3;
+}
+.annotator-item textarea::placeholder {
+  color: #c7c7c7;
 }
 .annotator-editor .annotator-item:first-child textarea {
 	min-height: 22px;
@@ -795,7 +804,7 @@
   line-height: 1.38;
   letter-spacing: -0.4px;
   font-family: Open Sans;
-  height: 164px;
+  height: 130px;
 }
 .annotator-editor .annotator-controls{
 	background: #ffffff;
@@ -1062,6 +1071,9 @@
   cursor: pointer;
   text-transform: uppercase;
 }
+.annotator-confirm-delete:hover, .annotator-confirm-cancel:hover {
+  color: #047a9c;
+}
 .overlay{
 	pointer-events:none;
 	opacity:0.5;
@@ -1127,10 +1139,10 @@
 .noteContainer {
     /*top: 20px;*/
     position: relative;
-    padding: 20px;
+    margin:15px 20px 15px 24px;
     /*font-family: sans-serif;*/
     font-size: 16px;
-    height: 164px;
+    height: 130px;
     overflow-y:auto;
     display: none;
     width: auto;
