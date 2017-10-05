@@ -4001,7 +4001,7 @@ Annotator.Editor = (function(_super) {
   };
 
   Editor.prototype.hide = function(event) {
-   var annBgColor = '', noteIconBgColor = '', noteText = '';
+   var annBgColor = '', noteIconBgColor = '', noteText = '', _i;
    if(this.annotation.color == '#FFD232') { //Yellow
        annBgColor = 'rgba(255,210,50,0.4)';
        noteIconBgColor = '#ffedad';
@@ -4021,6 +4021,13 @@ Annotator.Editor = (function(_super) {
    var text = $('.annotator-panel-2').find('textarea').val();
    this.annotation.text = text ? text : " ";
    var noteVal = $.trim(this.annotation.text);
+   var currentSelection = $(this.annotation.highlights); 
+    for(_i=0; _i<currentSelection.length; _i++) {
+      if($(currentSelection[_i]).find('.annotator-handle').length>0)
+        break;
+    }
+    if(_i == currentSelection.length)
+      $(currentSelection[0]).prepend("<span class='annotator-handle'></span>");
    $(this.annotation.highlights).css('background', annBgColor)['addClass']('highlight-note');
    $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);
    Annotator.Util.preventEventDefault(event);
