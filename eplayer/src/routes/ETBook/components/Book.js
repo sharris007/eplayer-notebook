@@ -255,10 +255,13 @@
       parameters.uri = encodeURIComponent(data.href),
       data.uri = data.href;
       data.label = data.title;
+      const pageDetails = { ...this.state.pageDetails };
+      pageDetails.annId = null;
       this.setState({
         currentPageDetails: data,
         currentPageTitle: data.title,
-        urlParams: parameters
+        urlParams: parameters,
+        pageDetails: pageDetails
       }, function() {
         // eslint-disable-next-line
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
