@@ -16,6 +16,7 @@
 import axios from 'axios'; /* axios is third party library, used to make ajax request. */
 import Hawk from 'hawk';
 import find from 'lodash/find';
+import { browserHistory } from 'react-router';
 import { clients } from '../../../components/common/client'; 
 import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
@@ -447,7 +448,7 @@ export function updateAuthKey(ssoKey)
 }
 
 /* Created Action creator for fetching all book detail. */
-export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeId, authkey) {
+export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeId, uid, ubd, ubsd, globaluserid, authkey) {
   let roleTypeID = roleTypeId;
   if (roleTypeID === undefined || roleTypeID === null || roleTypeID === '') {
     roleTypeID = 2;
@@ -459,7 +460,7 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
   }*/
 
    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-  var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenario}&authkey=${authkey}&outputformat=JSON`;
+  var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenario}&userinfolastmodifieddate=${uid}&userbooklastmodifieddate=${ubd}&userbookscenariolastmodifieddate=${ubsd}&globaluserid=${globaluserid}&authkey=${authkey}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);

@@ -24,14 +24,14 @@ const moreMenuActions = {
     };
   },
 
-  logoutUserSession(userid, sessionKey, serverDetails) {
-    var serviceurl = `${serverDetails}/ebook/pdfplayer/logout?values=userid::${userid}::sessionid::${sessionKey}::scenario::1::authservice::sso::authkey::${sessionKey}&outputformat=JSON`;
+  logoutUserSession(userid, sessionKey, scenario, serverDetails) {
+    var serviceurl = `${serverDetails}/ebook/pdfplayer/logout?values=userid::${userid}::sessionid::${sessionKey}::scenario::${scenario}::authservice::sso::authkey::${sessionKey}&authkey=${sessionKey}`;
     // tempurl is starts with http to create hash key for matching with server
     var tempurl = serviceurl.replace("https","http");
     var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
     return {
       type: 'LOGOUT_USER_SESSION',
-      payload: axios.get(`${serviceurl}&authkey=${sessionKey}&hsid=${hsid}`) // eslint-disable-line
+      payload: axios.get(`${serviceurl}&hsid=${hsid}`) // eslint-disable-line
     };
   }
 

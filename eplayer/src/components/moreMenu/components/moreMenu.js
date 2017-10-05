@@ -65,7 +65,7 @@ class MoreMenuComponent extends React.Component {
           {
             cookies.remove('ReactPlayerCookie',{ path: '/' });
             localStorage.removeItem('secureToken');
-            browserHistory.push('/eplayer/login');
+            browserHistory.push('/eplayer/');
           }
           else
           {
@@ -80,14 +80,14 @@ class MoreMenuComponent extends React.Component {
               }
             }
             localStorage.removeItem('secureToken');
-            browserHistory.push(`/eplayer/login${langQuery}`);
+            browserHistory.push(`/eplayer/${langQuery}`);
           }
         } else {
           if (parsedQueryStrings.invoketype == 'et1')
           {
             cookies.remove('ReactPlayerCookie',{ path: '/' });
             localStorage.removeItem('secureToken');
-            browserHistory.push('/eplayer/login');
+            browserHistory.push('/eplayer/');
           }
           else
           {
@@ -109,7 +109,7 @@ class MoreMenuComponent extends React.Component {
           }
         }
     }
-    this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.serverDetails); // eslint-disable-line
+    this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.sceanrio, this.props.serverDetails); // eslint-disable-line
   }
   render() {
     const style = {

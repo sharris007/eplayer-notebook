@@ -334,7 +334,7 @@ export class Header extends React.Component {
               </div>
               <div className="moreIcon" onClick={this.handleMoreMenuClick}>
               <span className = "tooltiptext"> LogOut </span>
-                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages} />
+                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} sceanrio={this.props.currentScenario} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages} />
               </div>
             </div>}
         />

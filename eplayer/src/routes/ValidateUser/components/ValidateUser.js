@@ -22,31 +22,12 @@
 
  class ValidateUser extends React.Component {
  	componentDidMount() {
+ 		try{
  			const cookies = new Cookies();
 	 		var querystr = window.location.search.substring(1);   
 	        var serverhsid = this.props.location.query.hsid;   
 	        const islocal = this.props.location.query.islocal;
  			const ispxedev = this.props.location.query.ispxedev; 
-	        // For testing purpose we added islocal & ispxedev fields. Should be removed once testing is done
-	        if(islocal !== undefined && islocal !== '' && islocal !== null)
-			{
-				querystr = querystr.replace("&islocal=Y","");
-			}
-			if(ispxedev !== undefined && ispxedev !== '' && ispxedev !== null)
-			{
-				querystr = querystr.replace("&ispxedev=Y","");
-			}   
-			querystr = querystr.replace("&hsid="+serverhsid,"");  
-	        var clienthsid = getmd5(querystr+eT1Contants.DEEPLINK_MD5_SECRET_KEY);   
-	        if(clienthsid == serverhsid)    
-	        {   
-	          console.log("hsid match success. Continue to launch the title")   
-	        }   
-	        else    
-	        {   
-	          console.log("hsid match failure. Show the error page")  
-	          browserHistory.push('/eplayer/login');
-	        }  
  			var okurl = '';
  			var okurlValuesParam = 'values=';
  			var serverDetails;
@@ -65,6 +46,26 @@
  			const endpage = this.props.location.query.endpage;
  			const xValue = this.props.location.query.x;
  			const yValue = this.props.location.query.y;
+	        // For testing purpose we added islocal & ispxedev fields. Should be removed once testing is done
+	        if(islocal !== undefined && islocal !== '' && islocal !== null)
+			{
+				querystr = querystr.replace("&islocal=Y","");
+			}
+			if(ispxedev !== undefined && ispxedev !== '' && ispxedev !== null)
+			{
+				querystr = querystr.replace("&ispxedev=Y","");
+			}   
+			querystr = querystr.replace("&hsid="+serverhsid,"");  
+	        var clienthsid = getmd5(querystr+eT1Contants.DEEPLINK_MD5_SECRET_KEY);   
+	        if(clienthsid == serverhsid)    
+	        {   
+	          console.log("hsid match success. Continue to launch the title")   
+	        }   
+	        else    
+	        {   
+	          console.log("hsid match failure. Show the error page")  
+	          browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
+	        }  
 			if(bookid !== undefined && bookid !== '' && bookid !== null)
 			{
 				okurlValuesParam = okurlValuesParam+'bookid::'+bookid;
@@ -153,9 +154,17 @@
 			var serviceurl;
 			var siteid = eT1Contants.SITE_IDs[envType]['S'+scenario];
 			// Proper errurl & loginurl has to be configured 
-			serviceurl = smsbaseurl+'?cmd=chk_login&okurl='+okurl+'&errurl=https://www.google.com&loginurl=https://www.google.com&siteid='+siteid+'&isCourseAware=N';
+			var errurl = window.location.origin+"/eplayer/pdfbookerror?errorcode=1";
+			var loginurl = window.location.origin+"/eplayer/";
+			serviceurl = smsbaseurl+'?cmd=chk_login&okurl='+okurl+'&errurl='+errurl+'&loginurl='+loginurl+'&siteid='+siteid+'&isCourseAware=N';
 			cookies.set('ReactPlayerCookie', 'ReactPlayerCookie', { path: '/' });
 			window.location.replace(serviceurl);
+		}
+		catch(e)
+		{
+			console.log("Something went wrong while validateuser with sms session. Redirecting to error page.")
+			browserHistory.push('/eplayer/pdfbookerror?errorcode=1');
+		}
  	}
  	render()
  	{

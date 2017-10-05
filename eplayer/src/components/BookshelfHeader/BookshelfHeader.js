@@ -81,7 +81,7 @@ export class BookshelfHeader extends React.Component {
       {
         cookies.remove('ReactPlayerCookie',{ path: '/' });
         localStorage.removeItem('secureToken');
-        browserHistory.push('/eplayer/login');
+        browserHistory.push('/eplayer/');
       }
       else
       {

@@ -27,6 +27,7 @@ import Cookies from 'universal-cookie';
 const envType = domain.getEnvType();
 /* Defining the variables for localStorage. */
 let identityId;
+let uid;
 let ubd;
 let ubsd;
 let ssoKey;
@@ -90,6 +91,7 @@ used for before mounting occurs. */
         {
           identityId = this.props.currentbook.globalUserId;
         }
+        uid = this.props.currentbook.uid;
         ubd = this.props.currentbook.ubd;
         ubsd = this.props.currentbook.ubsd;
         // ssoKey = this.props.currentbook.ssoKey;
@@ -112,6 +114,7 @@ used for before mounting occurs. */
           }
         });
         identityId = bookData.globalUserId;
+        uid = bookData.userInfoLastModifiedDate;
         ubd = bookData.userBookLastModifiedDate;
         ubsd = bookData.userBookScenarioLastModifiedDate;
         serverDetails = bookData.bookServerUrl;
@@ -143,7 +146,7 @@ used for before mounting occurs. */
         else    
         {   
           console.log("hsid match failure. Show the error page")  
-          browserHistory.push('/eplayer/login');
+          browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
         }  
         if(this.props.location.query.bookserver !== undefined)
         {
@@ -160,6 +163,7 @@ used for before mounting occurs. */
           serverDetails = eT1Contants.ServerUrls[envType][bookserver];
         } 
         identityId = this.props.location.query.smsuserid;
+        uid = this.props.location.query.uid;
         ubd = this.props.location.query.ubd;
         ubsd = this.props.location.query.ubsd;
         roleTypeID = this.props.location.query.roletypeid;
@@ -210,7 +214,7 @@ used for before mounting occurs. */
     }
     this.props.updateAuthKey(authkey);
     await this.props.fetchBookInfo(bookID, currentbook.scenario,
-              this.props.book.userInfo.userid, serverDetails, roleTypeID,authkey);
+              this.props.book.userInfo.userid, serverDetails, roleTypeID,uid,ubd,ubsd,identityId,authkey);
     if(!this.props.book.bookinfo.fetched)
     {
       browserHistory.push('/eplayer/login');
