@@ -350,15 +350,7 @@ Annotator = (function(_super) {
     }
   };
   Annotator.prototype.alignMathMlNote =function(){
-    $('.MathJax .annotator-handle').each(function(){
-        var bookContainerWidth=$('#book-container').width();
-      var annLeft=$(this).offset().left;
-      var bookContainerLeft=$('#book-container').offset().left;
-      if(annLeft<(bookContainerLeft+bookContainerWidth+9)){
-        var rightAlign=(bookContainerWidth-(annLeft-(bookContainerWidth-bookContainerLeft)))+15;
-        $(this).css('right',-rightAlign +'px');
-      }
-    });
+    
   };
   Annotator.prototype.alignNotes = function() {
     var notes=document.getElementsByClassName('annotator-handle');
@@ -389,13 +381,14 @@ Annotator = (function(_super) {
    white = /^\s*$/;
    var annBgColor = '', noteIconBgColor = '', noteText = '';
    if(normedRange.color == '#FFD232') { //Yellow
-      annBgColor = noteIconBgColor = 'rgba(248,230,0,0.5)';
+      annBgColor = 'rgba(255,210,50,0.4)';
+      noteIconBgColor = '#ffedad';
       noteText = 'Q';
    } else if (normedRange.color == '#55DF49') { //Green
-      annBgColor = noteIconBgColor = 'rgba(143,218,60,0.4)';
+      annBgColor = noteIconBgColor = '#bbf2b6';
       noteText = 'M';
    } else if (normedRange.color == '#FC92CF') { //Pink
-      annBgColor = noteIconBgColor = 'rgba(254,132,201,0.5)';
+      annBgColor = noteIconBgColor = '#fed3ec';
       noteText = 'O';
    } else if (normedRange.color == '#ccf5fd') { //Share(Blue)
       annBgColor = noteIconBgColor = '#ccf5fd';
@@ -469,19 +462,13 @@ Annotator = (function(_super) {
       height = $(annElement).offset().top+noteIconHght;
     }
     else
-      height = location.top+39;
-    var selctionOverlap = window.getSelection().getRangeAt(0);
+      height = location.top + 30;
+    var selctionOverlap = window.getSelection().getRangeAt(0), position;
     var iscolorPanel = $(selctionOverlap.startContainer).hasClass('annotator-color-container');
     if (iscolorPanel && isAdderClick == false && $('.annotator-editor .annotator-panel-2 .annotator-listing').css('display') == 'none')
       isAdderClick = true;
-    if(annId) {
-      var position= {
-        top: ((height+(!isAdderClick?140:0) + 100)) 
-      }
-    } else {
-      var position= {
-        top:(height+(!isAdderClick?140:0) + 120) // 120 staic is for align the panel-1 triangle to for inital popup
-      }
+    position = {
+      top: height
     }
     
     this.editor.element.css(position);

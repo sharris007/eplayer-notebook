@@ -2996,15 +2996,7 @@ Annotator = (function(_super) {
     }
   };
   Annotator.prototype.alignMathMlNote =function(){
-    $('.MathJax .annotator-handle').each(function(){
-        var bookContainerWidth=$('#book-container').width();
-      var annLeft=$(this).offset().left;
-      var bookContainerLeft=$('#book-container').offset().left;
-      if(annLeft<(bookContainerLeft+bookContainerWidth+9)){
-        var rightAlign=(bookContainerWidth-(annLeft-(bookContainerWidth-bookContainerLeft)))+15;
-        $(this).css('right',-rightAlign +'px');
-      }
-    });
+    
   };
   Annotator.prototype.alignNotes = function() {
     var notes=document.getElementsByClassName('annotator-handle');
@@ -3035,13 +3027,14 @@ Annotator = (function(_super) {
    white = /^\s*$/;
    var annBgColor = '', noteIconBgColor = '', noteText = '';
    if(normedRange.color == '#FFD232') { //Yellow
-      annBgColor = noteIconBgColor = 'rgba(248,230,0,0.5)';
+      annBgColor = 'rgba(255,210,50,0.4)';
+      noteIconBgColor = '#ffedad';
       noteText = 'Q';
    } else if (normedRange.color == '#55DF49') { //Green
-      annBgColor = noteIconBgColor = 'rgba(143,218,60,0.4)';
+      annBgColor = noteIconBgColor = '#bbf2b6';
       noteText = 'M';
    } else if (normedRange.color == '#FC92CF') { //Pink
-      annBgColor = noteIconBgColor = 'rgba(254,132,201,0.5)';
+      annBgColor = noteIconBgColor = '#fed3ec';
       noteText = 'O';
    } else if (normedRange.color == '#ccf5fd') { //Share(Blue)
       annBgColor = noteIconBgColor = '#ccf5fd';
@@ -3115,19 +3108,13 @@ Annotator = (function(_super) {
       height = $(annElement).offset().top+noteIconHght;
     }
     else
-      height = location.top+39;
-    var selctionOverlap = window.getSelection().getRangeAt(0);
+      height = location.top + 30;
+    var selctionOverlap = window.getSelection().getRangeAt(0), position;
     var iscolorPanel = $(selctionOverlap.startContainer).hasClass('annotator-color-container');
     if (iscolorPanel && isAdderClick == false && $('.annotator-editor .annotator-panel-2 .annotator-listing').css('display') == 'none')
       isAdderClick = true;
-    if(annId) {
-      var position= {
-        top: ((height+(!isAdderClick?140:0) + 100)) 
-      }
-    } else {
-      var position= {
-        top:(height+(!isAdderClick?140:0) + 120) // 120 staic is for align the panel-1 triangle to for inital popup
-      }
+    position = {
+      top: height
     }
     
     this.editor.element.css(position);
@@ -3743,7 +3730,7 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.onNoteContainerClick= function(e) { 
     $("#noteContainer").hide();
     var annotator_editor = $('.annotator-editor')
-    annotator_editor.css({ top : annotator_editor.position().top + 110});
+    annotator_editor.css({ top : annotator_editor.position().top});
     $('.annotator-panel-2').find('textarea').show().css({"pointer-events": "all", "opacity": "1"});
     $('.annotator-panel-2').find('textarea').focus();
     $(".annotator-panel-triangle").addClass("annotator-panel-triangle1").removeClass("annotator-panel-triangle");
@@ -3782,11 +3769,11 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.unShareAnnotation=function() {
      this.annotation.color=this.annotation.lastColor;
      if(this.annotation.color == '#FFD232') { //Yellow
-         annBgColor = 'rgba(248, 230, 0, 0.5)';
+         annBgColor = 'rgba(255,210,50,0.4)';
      } else if (this.annotation.color == '#55DF49') { //Green
-         annBgColor = 'rgba(143, 218, 60, 0.4)';
+         annBgColor = '#bbf2b6';
      } else if (this.annotation.color == '#FC92CF') { //Pink
-         annBgColor = 'rgba(254, 132, 201, 0.5)';
+         annBgColor = '#fed3ec';
      } 
      this.annotation.shareable=false;
      $(this.annotation.highlights).css('background', annBgColor);
@@ -3901,13 +3888,14 @@ Annotator.Editor = (function(_super) {
    }
    var annBgColor = '', noteIconBgColor = '', noteText = '';
    if(colorCode == '#FFD232') { //Yellow
-      annBgColor = noteIconBgColor = 'rgba(248, 230, 0, 0.5)';
+      annBgColor = 'rgba(255,210,50,0.4)';
+      noteIconBgColor = '#ffedad';
       noteText = 'Q';
    } else if (colorCode == '#55DF49') { //Green
-      annBgColor = noteIconBgColor = 'rgba(143, 218, 60, 0.4)';
+      annBgColor = noteIconBgColor = '#bbf2b6';
       noteText = 'M';
    } else if (colorCode == '#FC92CF') { //Pink
-      annBgColor = noteIconBgColor = 'rgba(254, 132, 201, 0.5)';
+      annBgColor = noteIconBgColor = '#fed3ec';
       noteText = 'O';
    } else if (colorCode == '#ccf5fd') { //Share(Blue)
       annBgColor = noteIconBgColor = '#ccf5fd';
@@ -3972,20 +3960,21 @@ Annotator.Editor = (function(_super) {
       $('.annotator-color-select-container').hide(); 
       $('.edit-Note-Panel-1').show();
       $('.annotator-panel-1').css({height: "62px", position : "initial"});
-      $('.annotator-editor').css({ top :$('.annotator-editor').position().top - 90 });
-
       $(".edit-Note-Panel-1 .annotator-select-rect").hide();
       $(".edit-Note-Panel-1 .edit-note-circle").hide();
       $('.edit-Note-Panel-1').find("[value=" + this.annotation.color + "]").show();
       $(".edit-note-rect").css({ "padding": "20px", "margin-top": "0px", "margin-left": "0px"});
 
       $('.ann-cancel-delete-confirm-section').hide();
-      $('.annotator-delete-container').show()
-      console.log("this.annotation.color : ", this.annotation.color)
+      $('.annotator-delete-container').show();
+      $('.annotator-panel-1').addClass('oldAnnotation');
+      $('.annotator-editor').css({ top :$('.annotator-editor').position().top + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true) + $('.annotator-controls').height()});
     } else { // Initial annotation
       $('.edit-Note-Panel-1').hide();
       $('.annotator-color-select-container').show();
       $('.annotator-panel-1').css({height: "130px", position : "relative"});
+      $('.annotator-panel-1').removeClass('oldAnnotation');
+      $('.annotator-editor').css({ top :$('.annotator-editor').position().top + $('.annotator-panel-1').height()});
     }
     this.element.find('.annotator-save').addClass(this.classes.focus);
     this.element.find('.annotator-listing .characters-left').remove();
@@ -4014,13 +4003,14 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.hide = function(event) {
    var annBgColor = '', noteIconBgColor = '', noteText = '';
    if(this.annotation.color == '#FFD232') { //Yellow
-       annBgColor = noteIconBgColor = 'rgba(248, 230, 0, 0.5)';
+       annBgColor = 'rgba(255,210,50,0.4)';
+       noteIconBgColor = '#ffedad';
        noteText = 'Q';
    } else if (this.annotation.color == '#55DF49') { //Green
-       annBgColor = noteIconBgColor = 'rgba(143, 218, 60, 0.4)';
+       annBgColor = noteIconBgColor = 'bbf2b6';
        noteText = 'M';
    } else if (this.annotation.color == '#FC92CF') { //Pink
-       annBgColor = noteIconBgColor = 'rgba(254, 132, 201, 0.5)';
+       annBgColor = noteIconBgColor = '#fed3ec';
        noteText = 'O'
    } else if (this.annotation.color == '#ccf5fd') { //Share(Blue)
        annBgColor = noteIconBgColor = '#ccf5fd';
