@@ -30,9 +30,11 @@ class PopUpInfo extends Component {
     if (event.target.classList.value && event.target.getAttribute('class').indexOf('annotator-hl') > -1 || event.target.classList.contains('annotator-handle')) {
       return false;
     }
+
     const props = this.props.popUpCollection[index];
     const node = this.props.node.contentDocument.body;
     const iframe = document.getElementById(this.props.node.id);
+    const pageFontFamilyStyle=window.getComputedStyle(iframe.contentDocument.body, null ).getPropertyValue( 'font-family' );
     let iframeClientWidth  = 0;
     let iframeFreeSpace = 0;
     let iframeFreeSpaceLeftOrRight = 0;
@@ -95,6 +97,7 @@ class PopUpInfo extends Component {
               // To align moreInfo popup
               document.getElementsByClassName('mm-popup__box__body')[0].classList.add('reAlignPopUp');
             }
+            document.getElementsByClassName('mm-popup__box')[0].style.fontFamily = pageFontFamilyStyle;
             box.style.margin = 0;
             box.style.opacity = 1;
           }
