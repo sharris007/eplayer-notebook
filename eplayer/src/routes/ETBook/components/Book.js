@@ -682,6 +682,8 @@
     }
 
     handlePreferenceClick = () => {
+      let prefIconleft = $('.prefIconBtn').offset().left - 181;
+      $('.preferences-container').css('left', prefIconleft);
       if (this.state.prefOpen === true) {
         this.setState({ prefOpen: false });
       } else {
@@ -695,6 +697,8 @@
       }
     }
     searchClick = (isopenparam) => {
+      let searchIconleft = $('.searchIconBtn').offset().left - 335;
+      $('.searchContainer').css('left', searchIconleft);
       if (this.state.searchOpen === true || isopenparam == 'closesearch') {
         this.setState({ searchOpen: false });
       } else {
@@ -914,7 +918,7 @@
         bookmark: false,
         pref: false,
         search: false,
-        audio: false,
+        audio: true,
         moreIcon: true
       };
       return ( 
