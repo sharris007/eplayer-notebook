@@ -914,7 +914,7 @@
         bookmark: false,
         pref: false,
         search: false,
-        audio: false,
+        audio: true,
         moreIcon: true
       };
       return ( 
