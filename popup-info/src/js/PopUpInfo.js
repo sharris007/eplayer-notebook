@@ -35,22 +35,20 @@ class PopUpInfo extends Component {
     const node = this.props.node.contentDocument.body;
     const iframe = document.getElementById(this.props.node.id);
     const pageFontFamilyStyle=window.getComputedStyle(iframe.contentDocument.body, null ).getPropertyValue( 'font-family' );
-    let iframeClientWidth  = 0;
     let iframeFreeSpace = 0;
-    let iframeFreeSpaceLeftOrRight = 0;
-    let popUpLeftAlign = true;
     let popUpRightAlign = false;
     const contentWidth = this.props.contentWidth;
-    if(contentWidth) {
-      iframeClientWidth = iframe.clientWidth;
+    if (contentWidth) {
       iframeFreeSpace = iframe.clientWidth - contentWidth;
-      if((this.props.contentWidth + iframeFreeSpace/2) - event.target.getBoundingClientRect().left < 350) {
+      if ((this.props.contentWidth + iframeFreeSpace/2) - event.target.getBoundingClientRect().left < 350) {
         popUpRightAlign = true;
-        popUpLeftAlign = false;
-      } else {
-        popUpRightAlign = false;
-        popUpLeftAlign = true;
       }
+    }
+
+    let elementOffsetWidth = event.target.offsetWidth;
+    const pseudoClassProperties = window.getComputedStyle(event.currentTarget, ':after');
+    if (pseudoClassProperties && pseudoClassProperties.getPropertyValue('content')) {
+      elementOffsetWidth = elementOffsetWidth-5;
     }
     /*console.log("iframePosition ", iframePosition);
     console.log("document.getElementById( 'contentIframe' ) ", document.getElementById( 'contentIframe' ).offsetTop)*/
@@ -65,8 +63,8 @@ class PopUpInfo extends Component {
           position: function(box) {
             console.log(document.getElementsByClassName('mm-popup__box'));
             //const elementIdRect = element.getBoundingClientRect();
-            const pseudoClassProperties = window.getComputedStyle(event.currentTarget, ':after');
-            let elementOffsetWidth = element.offsetWidth/2;
+            
+            
             const isWordBroken = element.offsetHeight > 25 ? true : false;
             if (isWordBroken) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign');
@@ -74,23 +72,21 @@ class PopUpInfo extends Component {
               box.style.left = (element.getBoundingClientRect().left) + 'px';
             } 
             else {
-              if (pseudoClassProperties && pseudoClassProperties.getPropertyValue('content')) {
-                elementOffsetWidth = element.offsetWidth-5;
-              }
+              
               //if (window.innerHeight - element.getBoundingClientRect().top < 135) {
               if (element.getBoundingClientRect().top - window.scrollY > 500) {
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpTopAlign');
                 box.style.top = (element.getBoundingClientRect().top + iframe.offsetTop - document.getElementsByClassName('mm-popup__box')[0].clientHeight - 15) + 'px';
-                box.style.left = (element.getBoundingClientRect().left-185+(elementOffsetWidth)) + 'px';
+                box.style.left = (element.getBoundingClientRect().left-185+(element.offsetWidth/2)) + 'px';
               } else if (popUpRightAlign) {
                 box.style.top = (element.getBoundingClientRect().top + iframe.offsetTop + element.offsetHeight + 15) + 'px';
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
-                box.style.left = (element.getBoundingClientRect().left + document.getElementById(iframe.id).offsetLeft + element.offsetWidth - 350) + 'px';
+                box.style.left = (element.getBoundingClientRect().left + document.getElementById(iframe.id).offsetLeft + elementOffsetWidth - 350) + 'px';
               } 
               else {
                 box.style.top = (element.getBoundingClientRect().top + iframe.offsetTop + element.offsetHeight + 15) + 'px';
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign'); 
-                box.style.left = (element.getBoundingClientRect().left  +  element.offsetWidth + document.getElementById(iframe.id).offsetLeft - 50) + 'px';
+                box.style.left = (element.getBoundingClientRect().left  +  elementOffsetWidth + document.getElementById(iframe.id).offsetLeft - 50) + 'px';
               }
             }
             if (!props.popOverCollection.popOverTitle) {
