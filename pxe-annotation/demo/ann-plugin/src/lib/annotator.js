@@ -392,7 +392,7 @@ Annotator = (function(_super) {
       noteText = 'O';
    } else if (normedRange.color == '#ccf5fd') { //Share(Blue)
       annBgColor = noteIconBgColor = '#ccf5fd';
-      noteText = 'S';
+      noteText = 'I';
    } else {
       annBgColor = noteIconBgColor = normedRange.color;
    }
@@ -472,7 +472,7 @@ Annotator = (function(_super) {
     }
     
     this.editor.element.css(position);
-    this.editor.load(annotation,this.isShareable);
+    this.editor.load(annotation,this.isShareable,height);
     this.publish('annotationEditorShown', [this.editor, annotation]);
     if(selctionOverlap.toString()!= '' && ($(selctionOverlap.startContainer).hasClass('annotator-hl') || $(selctionOverlap.endContainer).hasClass('annotator-hl'))) {
       $('.annotator-editor').addClass('overlapingpopup');

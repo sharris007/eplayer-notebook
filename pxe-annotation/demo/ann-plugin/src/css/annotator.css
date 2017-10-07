@@ -802,7 +802,7 @@
   line-height: 1.38;
   letter-spacing: -0.4px;
   font-family: Open Sans;
-  height: 130px;
+  height: 130px !important;
 }
 .annotator-editor .annotator-controls{
 	background: #ffffff;
