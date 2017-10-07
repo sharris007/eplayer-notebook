@@ -46,7 +46,7 @@ class Annotation extends Component {
         }
         newScript.innerText = content;
         if (content != "")
-         this.doc.head.append(newScript);
+         this.doc.head.appendChild(newScript);
       }
     }   
  }
@@ -57,7 +57,7 @@ class Annotation extends Component {
       let content = "$('body').annotator('shareAnnotations', "+this.props.shareableAnnotations+");$('.annotator-editor').css({'left':$('body').width()+40});";
       let newScript = document.createElement('script');
       newScript.innerText = content;
-      this.doc.head.append(newScript); 
+      this.doc.head.appendChild(newScript); 
     }
   }
 
@@ -68,7 +68,7 @@ class Annotation extends Component {
    newContent = method+"if(!annotation) {var annotation = $('body').annotator();} else {annotation=$('body').annotator();} annotation.data('annotator').on('annotationDeleted', annIframeEvent.bind(null, 'annotationDeleted'));annotation.data('annotator').on('annotationEditorSubmit', annIframeEvent.bind(null, 'annotationEditorSubmit'));annotation.data('annotator').on('annotationsLoaded', annIframeEvent.bind(null, 'annotationsLoaded'));";
    var newScript = document.createElement('script');
    newScript.innerText = newContent;
-   this.doc.head.append(newScript);
+   this.doc.head.appendChild(newScript);
      // annotation.data('annotator').on('annotationViewerShown', this.annotationEvent.bind(null, 'annotationViewerShown'));
     // annotation.data('annotator').on('annotationViewerTextField', this.annotationEvent.bind(null, 'annotationViewerTextField'));
   }
