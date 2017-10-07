@@ -3598,7 +3598,7 @@ Annotator.Editor = (function(_super) {
   var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"> \
                   <div class="annotator-color-container">\
                     <div> \
-                      <div class = "annotator-color-select-container" title = "Main ideas" value="#55DF49"> \
+                      <div class = "annotator-color-select-container yellowColorBtn" title = "Main ideas" value="#55DF49"> \
                         <div class = "annotator-select-outer-circle positionAbs"> \
                           <div class = "annotator-select-inner-circle hide" value="#55DF49"></div> \
                         </div> \
@@ -3956,6 +3956,11 @@ Annotator.Editor = (function(_super) {
     /*$('.annotator-color').removeClass('active');
     $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');*/
     $('.annotator-select-inner-circle').hide(); // To hide all inner checkboxes
+    if (this.annotation.id && !$.trim(this.annotation.text).length) {
+      this.element.find('.annotator-widget').addClass('emptyNote');
+    } else {
+      this.element.find('.annotator-widget').removeClass('emptyNote');
+    }
     if(this.annotation.color) { // For Edit container
       $('.annotator-color-select-container').hide(); 
       $('.edit-Note-Panel-1').show();
@@ -3972,7 +3977,7 @@ Annotator.Editor = (function(_super) {
     } else { // Initial annotation
       $('.edit-Note-Panel-1').hide();
       $('.annotator-color-select-container').show();
-      $('.annotator-panel-1').css({height: "130px", position : "relative"});
+      $('.annotator-panel-1').css({height: "110px", position : "relative"});
       $('.annotator-panel-1').removeClass('oldAnnotation');
       $('.annotator-editor').css({ top :$('.annotator-editor').position().top + $('.annotator-panel-1').height()});
     }
@@ -3982,13 +3987,13 @@ Annotator.Editor = (function(_super) {
     $('#letter-count').text(3000-this.element.find('textarea').val().length);
     this.checkOrientation();
     this.textareaHeight = $('#annotator-field-'+this.randomId)[0].scrollHeight || 22; 
-    if(!this.annotation.text || !this.annotation.text.length){
+    if(!$.trim(this.annotation.text) || !$.trim(this.annotation.text).length){
       this.element.find('textarea').css({'pointer-events':'all','opacity':'1'});
       this.element.find('input').css({'pointer-events':'all','opacity':'1'});
     }
     this.element.find(":input:first").focus();
     this.setupDraggables();
-    if(this.element.find('textarea').val().length > 0 || this.annotation.color) {
+    if($.trim(this.element.find('textarea').val()).length > 0 && this.annotation.color) {
       $(this.element).find('#noteContainer').html(linkifyStr(this.element.find('textarea').val()));
       $(this.element.find('textarea')).hide();
       $(this.element).find('#noteContainer').show();
@@ -4019,7 +4024,7 @@ Annotator.Editor = (function(_super) {
        annBgColor = noteIconBgColor = this.annotation.color;
    }
    var text = $('.annotator-panel-2').find('textarea').val();
-   this.annotation.text = text ? text : " ";
+   this.annotation.text = text;
    var noteVal = $.trim(this.annotation.text);
    var currentSelection = $(this.annotation.highlights); 
     for(_i=0; _i<currentSelection.length; _i++) {
