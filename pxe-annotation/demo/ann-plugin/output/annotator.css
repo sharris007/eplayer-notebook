@@ -217,7 +217,7 @@
     pointer-events: none;
 }
 .annotator-panel-triangle.oldAnnotation:before {
-	top: 30%;
+	top: 23.7%;
 }
 .annotator-panel-triangle.oldAnnotation:after {
 	margin-top: -116px;
@@ -225,12 +225,12 @@
 .annotator-panel-triangle:after {
     border-right-color: #ffffff;
     border-width: 8px;
-    margin-top: -70px;
+    margin-top: -55px;
 }
 .annotator-panel-triangle:before {
     border-right-color: #e0e0e0;
     border-width: 9px;
-    margin-top: -71px;
+    margin-top: -55px;
  }
 
  .annotator-panel-triangle1:before {
@@ -245,6 +245,12 @@
     margin-top: -120px;
 }
 
+.emptyNote .annotator-panel-triangle.oldAnnotation:after {
+    margin-top: -72px;
+}
+.emptyNote .annotator-panel-triangle.oldAnnotation:before {
+    top: 37.7%;
+}
 .annotator-widget .annotator-item,
 .annotator-editor .annotator-item input,
 .annotator-editor .annotator-item textarea {
@@ -804,6 +810,10 @@
   font-family: Open Sans;
   height: 130px !important;
 }
+.annotator-editor .annotator-widget.emptyNote .annotator-item:first-child textarea {
+  height: auto !important;
+  min-height: 22px;
+}
 .annotator-editor .annotator-controls{
 	background: #ffffff;
 	height: 47px;	
@@ -1023,14 +1033,14 @@
   width: 83px;
   height: 22px;
   font-family: Open Sans;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.57;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.5px;
   text-align: left;
-  color: #252525;
+  color: #000000;
   /*margin-left: 6px;*/
 }
 .annotator-confirm-cancel {
@@ -1038,14 +1048,14 @@
   width: auto;
   height: 19px;
   font-family: Open Sans;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
   letter-spacing: -0.4px;
   text-align: left;
-  color: #047a9c;
+  color: #19a6a4;
   margin: 0 5px 0 0;
   text-decoration: none;
   cursor: pointer;
@@ -1056,21 +1066,21 @@
   width: auto;
   height: 19px;
   font-family: Open Sans;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
   line-height: normal;
   letter-spacing: -0.4px;
   text-align: left;
-  color: #047a9c;
-  margin: 0 8px 0 5px;
+  color: #19a6a4;
+  margin: 0 5px 0px 5px;
   text-decoration: none;
   cursor: pointer;
   text-transform: uppercase;
 }
 .annotator-confirm-delete:hover, .annotator-confirm-cancel:hover {
-  color: #047a9c;
+  color: #19a6a4;
 }
 .overlay{
 	pointer-events:none;
@@ -1082,13 +1092,13 @@
 .ann-confirm-section{
 	/*width:35%; */
 	float:left;
-	margin: 13px 10px;
+	margin: 13px 10px 13px 15px;
 }
 .ann-canceldelete-section{
 	/*width: 65%;
     float: right;*/
     position: relative;
-    top: 13px;
+    top: 15px;
     right: 10px;
 }
 .annotator-panel-4{
@@ -1200,8 +1210,11 @@
 }
 
 .annotator-color-select-container {
-	margin: 21px 0px;
+	margin-top: 12px;
 	cursor: pointer;
+}
+.yellowColorBtn {
+	margin-top: 20px;	
 }
 
 .annotator-Rect-Pos {
@@ -1237,7 +1250,7 @@
 }
 
 .annotator-panel-1 {
-	height: 130px;
+	height: 110px;
 }
 
 /*Edit - Pane1*/
