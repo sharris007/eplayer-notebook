@@ -805,6 +805,12 @@
         bookDetails.title = this.props.book.toc.content.mainTitle;
         bookDetails.author = this.props.book.toc.content.author;
       }
+
+      if(bookdetailsdata.userCourseSectionDetail) {
+        bookDetails.title = bookdetailsdata.userCourseSectionDetail.section.sectionTitle;
+        bookDetails.author = bookdetailsdata.userCourseSectionDetail.authorName;
+      }
+      
       const tocCompData = {
         separateToggleIcon: true,
         data: this.props.book.toc ? this.props.book.toc : {},
