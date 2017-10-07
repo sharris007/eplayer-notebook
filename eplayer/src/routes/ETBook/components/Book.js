@@ -813,7 +813,7 @@
         bookDetails.author = this.props.book.toc.content.author;
       }
 
-      if(bookdetailsdata.userCourseSectionDetail) {
+      if(bookdetailsdata && bookdetailsdata.userCourseSectionDetail) {
         bookDetails.title = bookdetailsdata.userCourseSectionDetail.section.sectionTitle;
         bookDetails.author = bookdetailsdata.userCourseSectionDetail.authorName;
       }
