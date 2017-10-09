@@ -251,6 +251,12 @@
 .emptyNote .annotator-panel-triangle.oldAnnotation:before {
     top: 37.7%;
 }
+.instructorNote .annotator-panel-triangle.oldAnnotation:after {
+    margin-top: -93px;
+}
+.instructorNote .annotator-panel-triangle.oldAnnotation:before {
+    top: 30%;
+}
 .annotator-widget .annotator-item,
 .annotator-editor .annotator-item input,
 .annotator-editor .annotator-item textarea {
@@ -1248,7 +1254,13 @@
 .annotator-pane1-rect-background-pink {
 	background-color: #fed3ec;
 }
-
+.annotator-pane1-rect-background-blue {
+	background-color: #ccf5fd;
+	cursor: default;
+    pointer-events: none;
+    padding: 0px 15px;
+    width: auto;
+}
 .annotator-panel-1 {
 	height: 110px;
 }
@@ -1295,7 +1307,9 @@
 	background-color: inherit !important;
 	color: inherit !important;
 }
-
+.annotator-select-outer-circle.circleborder {
+    border: 1px solid #19a6a4;
+}
 .annotator-panel-3 {
 pointer-events: none;
 }

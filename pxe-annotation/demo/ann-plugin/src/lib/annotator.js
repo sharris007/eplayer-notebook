@@ -491,6 +491,9 @@ Annotator = (function(_super) {
   Annotator.prototype.onEditorSubmit = function(annotation) {
     this.alignMathMlNote();
     this.alignNotes();
+    if(annotation.shareable) {
+      return;
+    }
     return this.publish('annotationEditorSubmit', [this.editor, annotation]);
   };
 

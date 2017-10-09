@@ -87,6 +87,9 @@ Annotator.Editor = (function(_super) {
                         <div> \
                           <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" value="#FC92CF">' +locale_data[language]['observations']+'</div> \
                         </div> \
+                        <div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" value="#ccf5fd">' +locale_data[language]['instructor']+'</div> \
+                        </div> \
                       </div> \
                               \
                     </div> \
@@ -159,8 +162,10 @@ Annotator.Editor = (function(_super) {
       title = e.target.getAttribute('title')
       dom = e.target;
     }
-    $('.annotator-select-inner-circle').hide()
+    $('.annotator-select-inner-circle').hide();
+    $('.annotator-select-outer-circle').removeClass('circleborder');
     $(dom).find('.annotator-select-inner-circle').show();
+    $(dom).find('.annotator-select-outer-circle').addClass('circleborder');
 
     $('.ann-cancel-delete-confirm-section').hide();
     $('.annotator-delete-container').show()
@@ -392,11 +397,12 @@ Annotator.Editor = (function(_super) {
     }
     else {
       $('.annotator-share').removeClass('on');
-      /* $('.annotator-color-container').removeClass('disabled-save'); */
+      $('.annotator-color-container').removeClass('disabled-save');
     }
     /*$('.annotator-color').removeClass('active');
     $('.annotator-color[value="'+this.annotation.color+'"]').addClass('active');*/
     $('.annotator-select-inner-circle').hide(); // To hide all inner checkboxes
+    $('.annotator-select-outer-circle').removeClass('circleborder');
     if (this.annotation.id && !$.trim(this.annotation.text).length) {
       this.element.find('.annotator-widget').addClass('emptyNote');
     } else {
@@ -414,7 +420,17 @@ Annotator.Editor = (function(_super) {
       $('.ann-cancel-delete-confirm-section').hide();
       $('.annotator-delete-container').show();
       $('.annotator-panel-1').addClass('oldAnnotation');
-      $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true) + $('.annotator-controls').height()});
+      if(this.annotation.color == '#ccf5fd') {
+        this.element.find('.annotator-widget').addClass('instructorNote');
+        $('#noteContainer').css('pointer-events', 'none');
+        $('.annotator-controls').hide();
+        $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true)});
+      } else {
+        this.element.find('.annotator-widget').removeClass('instructorNote');
+        $('#noteContainer').css('pointer-events', 'all');
+        $('.annotator-controls').show();
+        $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true) + $('.annotator-controls').height()});
+      }
     } else { // Initial annotation
       $('.edit-Note-Panel-1').hide();
       $('.annotator-color-select-container').show();

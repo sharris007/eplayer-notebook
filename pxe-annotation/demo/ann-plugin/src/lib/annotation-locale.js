@@ -16,7 +16,8 @@ var locale_data = {
 	"close":"Close",
 	"mainIdeas" : "Main ideas",
 	"questions" : "Questions",
-	"observations" : "Observations"
+	"observations" : "Observations",
+	"instructor":"From Instructor"
   },
   "fr" : {
 	"delete":"Supprimer",
@@ -33,6 +34,7 @@ var locale_data = {
 	"confirm":"Confirmer",
 	"addtitle":"Ajouter un titre",
 	"charleft":"Nombre de caractères restants",
-	"close":"Fermer"
+	"close":"Fermer",
+	"instructor":"De l'instructeur"
   }
 };
