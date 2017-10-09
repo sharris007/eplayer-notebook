@@ -499,7 +499,7 @@ Annotator.Editor = (function(_super) {
     } while (element);
     return false;
   }
-  Editor.prototype.load = function(annotation, isShareable, topPos) {
+  Editor.prototype.load = function(annotation, isShareable, topPos, event) {
     this.isShareable=isShareable;
     if (!isShareable || (annotation && (!annotation.id || !annotation.text)))
       $('.annotator-share-text, .annotator-share').hide();

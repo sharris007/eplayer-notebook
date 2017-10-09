@@ -451,7 +451,7 @@ Annotator = (function(_super) {
     return this;
   };
 
-  Annotator.prototype.showEditor = function(annotation, location, isAdderClick) {
+  Annotator.prototype.showEditor = function(annotation, location, isAdderClick, event) {
     var height=0,annId = annotation?annotation.id:'',len;
     //len = $('span[data-ann-id='+annId+']').length;
     var annElement = $('span[data-ann-id='+annId+']')[0];
@@ -472,7 +472,7 @@ Annotator = (function(_super) {
     }
     
     this.editor.element.css(position);
-    this.editor.load(annotation,this.isShareable,height);
+    this.editor.load(annotation,this.isShareable,height, event);
     this.publish('annotationEditorShown', [this.editor, annotation]);
     if(selctionOverlap.toString()!= '' && ($(selctionOverlap.startContainer).hasClass('annotator-hl') || $(selctionOverlap.endContainer).hasClass('annotator-hl'))) {
       $('.annotator-editor').addClass('overlapingpopup');
@@ -715,7 +715,7 @@ Annotator = (function(_super) {
     }
     this.subscribe('annotationEditorHidden', cancel);
     this.subscribe('annotationEditorSubmit', save);
-    return this.showEditor(annotation, position, true);
+    return this.showEditor(annotation, position, true, event);
   };
 
   Annotator.prototype.onEditAnnotation = function(annotation) {
