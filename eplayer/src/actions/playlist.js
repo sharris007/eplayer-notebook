@@ -168,24 +168,20 @@ function redirectToIDCDashboard(prodType,courseId){
 
 function redirectToZeppelin(bookDetails,passportDetails){
   let successOriginUrl,errOriginUrl;
-   if(window.location.pathname.indexOf('/eplayer/Course/')>-1)
-    {
-      // originUrl  = resources.links.authDomainUrl[domain.getEnvType()];
-      successOriginUrl  = window.location.href;
-      errOriginUrl= window.location.origin+'/eplayer';
-      
-    }
-    else
-    {
-    successOriginUrl  = userAccess.launchUrl;
-    errOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
-    }
-    let userAccess = {
+  let userAccess = {
           userType      : bookDetails.authgrouptype,
           institutionId : bookDetails.section.extras.organizationId,
           productId     : passportDetails.productId,
           appAccess     : passportDetails.access,
           launchUrl     : bookDetails.section.extras.metadata.launchUrl
+    }
+   if(window.location.pathname.indexOf('/eplayer/Course/')>-1)
+    {
+      successOriginUrl = resources.links.consoleUrl[domain.getEnvType()]; 
+      errOriginUrl = resources.links.consoleUrl[domain.getEnvType()]; 
+      // successOriginUrl = window.location.href;
+      // errOriginUrl= window.location.origin+'/eplayer'; 
+      
     }
     const productId     = userAccess.productId ,
           institutionId = userAccess.institutionId ,

@@ -305,7 +305,7 @@
         case typeConstants.ANNOTATION_UPDATED:
           {
             const annList = annStructureChange([data.data]);
-            this.props.dispatch(deleteAnnotationData(data));
+            this.props.dispatch(deleteAnnotationData(data.data));
             this.props.dispatch(getTotalAnnotationData(annList));
             break;
           }
