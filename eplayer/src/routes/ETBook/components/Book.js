@@ -217,10 +217,11 @@
       const deleteAnnData = $.extend(this.state.urlParams, { annId: annotationId });
       this.props.dispatch(deleteAnnCallService(deleteAnnData));
 
-      const currentPageAnnLength = $('*[data-ann-id=' + annotationId + ']').length;
+      let annElement = $('#contentIframe').contents().find('*[data-ann-id=' + annotationId + ']');
+      const currentPageAnnLength = annElement.length;
       if (currentPageAnnLength > 0) {
-        $('*[data-ann-id=' + annotationId + ']').removeAttr('style');
-        const handleAnn = $('*[data-ann-id=' + annotationId + ']').find('.annotator-handle');
+        $('#contentIframe').contents().find('*[data-ann-id=' + annotationId + ']').removeAttr('style');
+        const handleAnn = $('#contentIframe').contents().find('*[data-ann-id=' + annotationId + ']').find('.annotator-handle');
         if (handleAnn.length > 0) {
           handleAnn.remove();
         }
