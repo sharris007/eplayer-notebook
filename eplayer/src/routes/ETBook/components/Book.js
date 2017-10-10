@@ -855,8 +855,16 @@
       });
       if (playlistReceived && bookdetailsdata) {
         const getMathjaxJs = this.loadMathjax();
-        const userType = ( bookdetailsdata.roles === undefined ) ? bookdetailsdata.userCourseSectionDetail.authgrouptype : bookdetailsdata.roles[0];
-        if (userType.toLowerCase() === 'educator' || userType.toLowerCase() === 'instructor') {
+        let userType,i;
+        if( bookdetailsdata.roles === undefined )
+          userType = bookdetailsdata.userCourseSectionDetail.authgrouptype;
+        else {
+          for(i=0;i<bookdetailsdata.roles.length;i++) {
+            if(bookdetailsdata.roles[i].toLowerCase() === 'educator' || bookdetailsdata.roles[i].toLowerCase() === 'instructor')
+              userType='instructor';
+          }
+        }
+        if (userType === 'instructor') {
            annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
            annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
         }
