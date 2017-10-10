@@ -220,7 +220,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             } catch (i) {
                 return console.error(i), null
             }
-            k.load()
+            //k.load()
         }, this.getFileID = function() {
             return m.getFileID()
         }, this.getFileUrl = function() {
