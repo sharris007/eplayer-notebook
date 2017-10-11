@@ -376,7 +376,7 @@ Annotator = (function(_super) {
    if (cssClass == null) {
     cssClass = 'annotator-hl';
    }
-   if(normedRange.note && normedRange.note.length)
+   //if(normedRange.note && normedRange.note.length)
     cssClass+=" highlight-note";
    white = /^\s*$/;
    var annBgColor = '', noteIconBgColor = '', noteText = '';
@@ -548,7 +548,7 @@ Annotator = (function(_super) {
               dataAnnId = $(hlElements[j]).attr('data-ann-id');
               shrable = $(hlElements[j]).attr('shareable');
               if (dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
-                if (this.isShareable || (!shrable || shrable==='false'))
+                if (!shrable || shrable==='false')
                   annArray.push(dataAnnId);
               }
             }
@@ -556,14 +556,14 @@ Annotator = (function(_super) {
               dataAnnId = $(hlElements.context).attr('data-ann-id');
               shrable = $(hlElements.context).attr('shareable');
               if (dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
-                if (this.isShareable || (!shrable || shrable==='false'))
+                if (!shrable || shrable==='false')
                   annArray.push(dataAnnId);
           }
           else if (annArray.length === 0 && $(ancesterContainer).hasClass('annotator-hl')) {
              dataAnnId = $(ancesterContainer).attr('data-ann-id');
              shrable = $(ancesterContainer).attr('shareable');
              if (dataAnnId !== undefined && $.inArray(dataAnnId,annArray)<0)
-               if (this.isShareable || (!shrable || shrable==='false'))
+               if (!shrable || shrable==='false')
                  annArray.push(dataAnnId);
           }
         }
@@ -667,6 +667,7 @@ Annotator = (function(_super) {
   Annotator.prototype.onAdderClick = function(event) {
     var annArray =[],oldAnnArr=[],annObjElement;
     var annotation, cancel, cleanup, position, save;
+    var windowSelection = window.getSelection(), selctionOverlap = windowSelection.getRangeAt(0);
     annArray = this.getSelectedAnnotations();
      if(annArray.length>0) {
       var hlElements = $(event.target).addBack().find('.annotator-hl');
@@ -676,7 +677,17 @@ Annotator = (function(_super) {
                     if(dataAnnId !== undefined && $.inArray(dataAnnId,annArray)>=0)
                       annObjElement = hlElements[j];
               }
-          }
+          } else {
+            var isstartHl = $(selctionOverlap.startContainer).hasClass('annotator-hl'), isendHl = $(selctionOverlap.endContainer).hasClass('annotator-hl');
+            if (isstartHl) {
+              if($.inArray($(selctionOverlap.startContainer).attr('data-ann-id'),annArray)>=0)
+                      annObjElement = $(selctionOverlap.startContainer);
+            }
+            if (isendHl) {
+              if($.inArray($(selctionOverlap.endContainer).attr('data-ann-id'),annArray)>=0)
+                      annObjElement = $(selctionOverlap.endContainer);
+            }
+          } 
           if(!annObjElement && hlElements.context && hlElements.context.outerHTML.match('.annotator-hl'))
             annObjElement = hlElements.context;
             oldAnnArr = $(annObjElement).parents('.annotator-hl').addBack().map(function() {

@@ -25,6 +25,7 @@ import './Header.scss';
 import DrawerComponent from './Drawer';
 import Search from '../search/containers/searchContainer';
 import MoreMenuComponent from '../moreMenu/containers/moreMenuContainer';
+import Popup from 'react-popup';
 // import { injectReducer } from '../../store/reducers';
 // import { languages } from '../../../locale_config/translations/index';
 import { resources, domain } from '../../../const/Settings';
@@ -77,6 +78,11 @@ export class Header extends React.Component {
   }
 
   handleDrawer = () => {
+    try{
+      Popup.close();
+    }
+    catch(e){
+    }
     this.setState({ drawerOpen: true });
     this.setState({prefOpen : false})
     this.setState({searchOpen : false})
@@ -92,12 +98,16 @@ export class Header extends React.Component {
   }
 
   handleBookshelfClick = () => {
+    try{
+      Popup.close();
+    }
+    catch(e){
+    }
     if (this.props.bookData.toc.content !== undefined) {
       this.props.bookData.toc.content = {list:[]};
       this.props.bookData.bookmarks = [];
       this.props.bookData.bookinfo = [];
       this.props.bookData.annTotalData = [];
-      this.props.bookData.bookFeatures = {};
     }
     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
       let redirectConsoleUrl   = consoleUrl[envType];
@@ -129,8 +139,12 @@ export class Header extends React.Component {
       this.setState({ open: false });
     }
   }
-
   handlePreferenceClick = () => {
+    try{
+      Popup.close();
+    }
+    catch(e){
+    }
     if (this.state.prefOpen === true) {
       this.setState({ prefOpen: false });
     } else {
@@ -145,6 +159,11 @@ export class Header extends React.Component {
     }
   }
   searchClick = () => {
+    try{
+      Popup.close();
+    }
+    catch(e){
+    }
     if (this.state.searchOpen === true) {
       this.setState({ searchOpen: false });
     } else {
@@ -182,8 +201,20 @@ export class Header extends React.Component {
   }
 
   handleHeaderClick = () => {
+    try{
+      Popup.close();
+    }
+    catch(e){
+    }
     this.setState({prefOpen : false})
     this.setState({searchOpen : false})
+  }
+  handleMoreMenuClick = () => {
+    try{
+      Popup.close();
+    }
+    catch(e){
+    }
   }
 
 

@@ -213,7 +213,7 @@ export class PdfBookReader extends Component {
     if (pdfEvent === 'pageChanged') {
       localStorage.setItem('currentPageOrder', this.state.currPageIndex);
       __pdfInstance.setCurrentZoomLevel(this.state.currZoomLevel);
-      this.props.fetchRegionsInfo(this.props.location.query.bookid,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails).then(() => {
+      this.props.fetchRegionsInfo(this.props.location.query.bookid,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails,this.props.currentbook.scenario,this.props.currentbook.platform).then(() => {
         if(this.props.book.regions.length > 0 )
         {
           __pdfInstance.displayRegions(this.props.book.regions,this.props.book.bookFeatures);
@@ -737,10 +737,10 @@ export class PdfBookReader extends Component {
                hotspotData = {
                 title : hotspotDetails.name,
                 src : source,
-                caption : hotspotDetails.description,
+                caption : hotspotDetails.description || "",
                 id : hotspotDetails.regionID,
                 thumbnail : {
-                  src : null,
+                  src : "",
                },
                alt : hotspotDetails.name,
                };
@@ -948,10 +948,16 @@ handleRegionClick(hotspotID) {
                 try
                 {
                   thumbnailElement = document.getElementsByClassName('play-pause');
-                  $( "#play-pause" ).draggable();
                 }
                 catch(e){
                 }
+              }
+              if(regionDetails.hotspotType == 'AUDIO')
+              {
+                $.getScript("https://code.jquery.com/ui/1.12.1/jquery-ui.js", function() 
+                {
+                  $( ".aquila-audio-player" ).draggable()
+                });
               }
               if(thumbnailElement !== undefined && thumbnailElement.length > 0)
               {

@@ -561,7 +561,7 @@ export function fetchPageInfo(userid, bookid, bookeditionid,
     });
 }
 /* Created Action creator for getting regions/hotspots. */
-export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleTypeID,bookServerURL){
+export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleTypeID,bookServerURL,scenarioId,platformId){
   const bookState = {
     regions: [],
     isFetching: {
@@ -570,7 +570,15 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
   };
   return (dispatch) => {
     dispatch(request('regions'));
-    var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getregionbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON';
+    var serviceurl;
+    if (platformId == undefined || platformId == null || platformId == "")
+    {
+      serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getregionbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&scenario='+scenarioId+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON';
+    }
+    else
+    {
+      serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getregionbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&platformid='+platformId+'&scenario='+scenarioId+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON';
+    } 
     // tempurl is starts with http to create hash key for matching with server
     var tempurl = serviceurl.replace("https","http");
     var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);

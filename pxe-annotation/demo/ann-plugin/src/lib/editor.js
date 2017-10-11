@@ -349,7 +349,13 @@ Annotator.Editor = (function(_super) {
    } else { 
       annBgColor = noteIconBgColor = colorCode;
    }
-   $(this.annotation.highlights).css('background', annBgColor);
+   $(this.annotation.highlights).each(function() {
+      if ($(this).parent().attr('shareable') == 'true') {
+        $(this).css('background', 'inherit')
+      } else {
+        $(this).css('background', annBgColor);
+      }
+   });
    $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);  if (isTopAlign) {
       var topPosition=this.element.position().top + this.element.find('form').height()-this.element.find('.annotator-panel-1').height()-20;
       this.element.css({top:topPosition});
@@ -490,7 +496,13 @@ Annotator.Editor = (function(_super) {
     }
     if(_i == currentSelection.length)
       $(currentSelection[0]).prepend("<span class='annotator-handle'></span>");
-   $(this.annotation.highlights).css('background', annBgColor)['addClass']('highlight-note');
+   $(this.annotation.highlights).each(function() {
+      if ($(this).parent().attr('shareable') == 'true') {
+        $(this).css('background', 'inherit')['addClass']('highlight-note');
+      } else {
+        $(this).css('background', annBgColor)['addClass']('highlight-note');
+      }
+   });
    $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);
    Annotator.Util.preventEventDefault(event);
    this.element.addClass(this.classes.hide);
