@@ -200,6 +200,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	letter-spacing: -0.5px;
 	color: $popup_font_color;
 	height: auto;
+	word-wrap: break-word;
 }
 .mm-popup__box__body {
 	padding: 5px 15px 15px 15px;
