@@ -199,7 +199,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
 	line-height: 1.22;
 	letter-spacing: -0.5px;
 	color: $popup_font_color;
-	height: auto;
+	height: auto !important;
 	word-wrap: break-word;
 }
 .mm-popup__box__body {
