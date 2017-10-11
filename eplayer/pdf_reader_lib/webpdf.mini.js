@@ -6402,6 +6402,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
         }
         var f = WebPDF.Config.defaults.requestRetryCount,
             g = this;
+            
         this.asyncLoadUserAnnotation = function(a, b, d, e) {
             if ($.isFunction(d) && $.isFunction(e) || $.error("both 'doneHandler' and 'failedHandler' must be function."), 0 >= f) return console.error("Maximum number of retries exceeded for getAnnotData request."), void e(null);
             var h = a.getOptions().url + "userannots?" + Math.random();
@@ -6409,7 +6410,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var i = {
                 password: a.getPDFPassword()
             };
-            $.ajax({
+            /*$.ajax({
                 url: h,
                 dataType: "json",
                 data: i,
@@ -6437,7 +6438,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 error: function() {
                     e(null)
                 }
-            })
+            })*/
         }, this.asyncLoadPDFAnnotation = function(a, b, c, e, f) {
             d(!0, a, b, c, e, f)
         }, this.syncLoadPDFAnnotation = function(a, b, c, e, f) {
@@ -10736,7 +10737,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var h = {
                 password: c.getPDFPassword()
             };
-            $.ajax({
+            /*$.ajax({
                 url: g,
                 dataType: "json",
                 data: h,
@@ -10761,7 +10762,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 error: function() {
                     f(null)
                 }
-            })
+            })*/
         }
     }
 }), define("core/Plugins/FindTool/FindToolPlugin", ["core/Plugins/FindTool/SearchResult"], function(a, b, c) {

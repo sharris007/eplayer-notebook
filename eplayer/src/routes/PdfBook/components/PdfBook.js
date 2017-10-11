@@ -242,7 +242,8 @@ used for before mounting occurs. */
    fetchBookmarksUsingReaderApi for fetching the bookmark details, addBookmarkUsingReaderApi is used for adding the bookmark details,
    and so on as methods names are very specific. */
   render() {
-    if (this.props.book.bookinfo.fetched && this.props.book.bookFeatures.fetched) {
+    const bookFeaturesFetchingStatus = this.props.book.bookFeatures ? this.props.book.bookFeatures.fetched : false
+    if (this.props.book.bookinfo.fetched && bookFeaturesFetchingStatus) {
       langID = this.props.book.bookinfo.book.languageid;
       const locale = languageName(langID);
       const localisedData = locale.split('-')[0];
