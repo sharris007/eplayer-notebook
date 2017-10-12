@@ -108,6 +108,7 @@ export class Header extends React.Component {
       this.props.bookData.bookmarks = [];
       this.props.bookData.bookinfo = [];
       this.props.bookData.annTotalData = [];
+      this.props.bookData.bookFeatures = {};
     }
     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
       let redirectConsoleUrl   = consoleUrl[envType];
