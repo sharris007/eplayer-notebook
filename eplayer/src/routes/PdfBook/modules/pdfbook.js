@@ -371,7 +371,7 @@ export function fetchTocAndViewer(bookId, authorName, title,
     },
     childern: {}
   };
-  return (dispatch) => {
+  return (dispatch,getState) => {
     dispatch(request('toc'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
@@ -383,13 +383,14 @@ export function fetchTocAndViewer(bookId, authorName, title,
         timeout: 100000
       })
     .then((response) => {
-      response.data.forEach((allBaskets) => {
+      if(getState().location.query.bookid === bookId){
+          response.data.forEach((allBaskets) => {
         const basketData = allBaskets.basketsInfoTOList;
       // bookState.toc.content.bookId = basketData[0].bookID || '';
         bookState.toc.content.id = basketData[0].bookID || '';
       // bookState.toc.showDuplicateTitle = true;
-        bookState.toc.content.mainTitle = title || 'Sample Title';
-        bookState.toc.content.author = authorName || 'Saha/Rai/Mahapatra/Pujari';
+        bookState.toc.content.mainTitle = title ;
+        bookState.toc.content.author = authorName ;
         bookState.toc.content.thumbnail = thumbnail
         ||
         'http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/'
@@ -428,6 +429,8 @@ export function fetchTocAndViewer(bookId, authorName, title,
       bookState.toc.fetched = true;
       bookState.isFetching.toc = false;
       dispatch({ type: RECEIVE_TOC, bookState });
+      }
+      
     });
   };
 }
