@@ -768,7 +768,7 @@ export class PdfBookReader extends Component {
                 var courseId = this.props.book.bookinfo.book.activeCourseID;
                }
                /*Framing Complete LTI URl*/
-               var link = serverDetails + 'ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid' + courseId + '&role' + this.props.book.bookinfo.book.roleTypeID + '&userlogin' + this.props.book.userInfo.userid ;
+               var link = serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.book.bookinfo.book.roleTypeID + '&userlogin=' + this.props.book.userInfo.userid ;
                /*Converting URL into https*/
                var ltiUrl = this.createHttps(link);
                window.open(ltiUrl,"_blank");
