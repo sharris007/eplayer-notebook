@@ -132,8 +132,6 @@ export class Header extends React.Component {
       }
     }
     this.setState({ open: false });
-    localStorage.removeItem('isReloaded');
-    localStorage.removeItem('currentPageOrder');
   }
 
   handleBookshelfKeySelect = (event) => {
