@@ -452,7 +452,7 @@ function initViewer(config) {
 function createPDFEvent(eventName) {
   var event = document.createEvent('Event');
   event.initEvent(eventName, true, true);
-  document.querySelector('.docViewer').dispatchEvent(event);
+  //document.querySelector('.docViewer').dispatchEvent(event);
   try{
     document.querySelector('.docViewer').dispatchEvent(event);
   }catch(e){}
@@ -486,7 +486,7 @@ function openFile(baseUrl,fileUrl,headerParams,callback) {
     fileUrl = fileUrl.replace(/^\s*/g, "").replace(/\s*$/g, ""); // trim string
     // User information can be get from custom user system.
     // It can be set at this place,and also can be set by SPI plugin implement.
-    var user = getIP(baseUrl);
+    //var user = getIP(baseUrl);
     var tempURL = "";
     for(var i in headerParams) {
       tempURL = tempURL + i.toString() + "=" + headerParams[i].toString() + '&';

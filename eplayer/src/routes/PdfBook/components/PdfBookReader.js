@@ -212,6 +212,13 @@ export class PdfBookReader extends Component {
      // this.setState({currPageIndex : currentPageIndex});
     if (pdfEvent === 'pageChanged') {
       localStorage.setItem('currentPageOrder', this.state.currPageIndex);
+      this.setState({ executed: false });
+      if (this.state.isFirstPageBeingLoad === true) {
+        this.setState({ isFirstPageBeingLoad: false });
+      }
+    }
+    if (pdfEvent === 'pageLoaded') {
+      this.setState({ pageLoaded: true });
       __pdfInstance.setCurrentZoomLevel(this.state.currZoomLevel);
       this.props.fetchRegionsInfo(this.props.location.query.bookid,this.props.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.book.bookinfo.book.roleTypeID,serverDetails,this.props.currentbook.scenario,this.props.currentbook.platform).then(() => {
         if(this.props.book.regions.length > 0 )
@@ -252,13 +259,6 @@ export class PdfBookReader extends Component {
           });
         }
       });
-      this.setState({ pageLoaded: true });
-      this.setState({ executed: false });
-      if (this.state.isFirstPageBeingLoad === true) {
-        this.setState({ isFirstPageBeingLoad: false });
-      }
-    }
-    if (pdfEvent === 'pageLoaded') {
           // this.loadAssetUrl();
       setTimeout(this.displayHighlight, 1000);
       /*if (this.state.executed === false) {
