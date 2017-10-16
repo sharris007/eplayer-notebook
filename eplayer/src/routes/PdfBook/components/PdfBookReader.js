@@ -15,7 +15,7 @@ import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incub
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
 import { loadState } from '../../../localStorage';
 import Popup from 'react-popup';
-import { PopUpInfo } from '../../../components/GlossaryPopup/PopUpInfo';
+import { PopUpInfo } from '@pearson-incubator/popup-info';
 import {convertHexToRgba} from '../../../components/Utility/Util';
 
 /* Defining the variables for sessionStorage. */
@@ -572,7 +572,7 @@ export class PdfBookReader extends Component {
     }
     if(glossaryDataUpdated.length>0)
     {
-      new PopUpInfo({'popUpCollection' : glossaryDataUpdated, 'bookId' : 'docViewer_ViewContainer_PageContainer_0'});
+      new PopUpInfo({'popUpCollection' : glossaryDataUpdated, 'bookContainerId' : 'docViewer_ViewContainer_PageContainer_0', isET1 : 'Y'});
     }
     this.setState({currZoomLevel : currZoomLevel});
   }
@@ -1220,7 +1220,7 @@ handleRegionClick(hotspotID) {
                 <div id="toolbar" className="pdf-fwr-toolbar" />
                 <div id="frame" className={viewerClassName} onClick={this.onPageClick}>
                   <div id="docViewer" className="docViewer" >
-                    {this.state.popUpCollection.length ? <PopUpInfo bookId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} /> : null }
+                    {this.state.popUpCollection.length ? <PopUpInfo bookContainerId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} isET1 = 'Y'/> : null }
                   </div>
                 </div>
               </div>
