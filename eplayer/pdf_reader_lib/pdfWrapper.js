@@ -860,113 +860,246 @@ function getAssetURLForPDFDownload(config,cb){
         rgba = 'rgba('+r+','+g+','+b+','+a+')';
         return rgba;
       }
+/*Function to return default icons based on the region type if icons are of type swf*/
+  getHotspotType = function(regionLink,_)
+  {
+    var region = '';
+    regionLink = regionLink.toLowerCase();
+    if(_.endsWith(regionLink,'.doc') == true || _.endsWith(regionLink,'.docx') == true)
+    {
+      region = '/hotspot_icons/word.png';
+    }
+    if(_.endsWith(regionLink,'.xls') == true || _.endsWith(regionLink,'.xlsx') == true)
+    {
+      region = '/hotspot_icons/excel.png';
+    }
+    if(_.endsWith(regionLink,'.ppt') == true || _.endsWith(regionLink,'.pptx') == true)
+    {
+      region = '/hotspot_icons/ppt.png';
+    }
+    if(_.endsWith(regionLink,'.pdf') == true)
+    {
+      region = '/hotspot_icons/pdf.png';
+    }
+    else if(_.endsWith(regionLink,'.mp4') == true || _.endsWith(regionLink,'.m4v') == true || _.endsWith(regionLink,'.flv') == true)
+    {
+      region = '/hotspot_icons/video.png';
+    }
+    else if(_.endsWith(regionLink,'.mp3') == true)
+    {
+      region = '/hotspot_icons/audio.png';
+    }
+    else
+    {
+      region = '/hotspot_icons/default.png';
+    }
+    return region;
+  }
+/*Function to replace swf icons with default icons based on the type of hotspot*/
+  resetSwfIcons = function(hotspot,lodashFunction)
+  {
+    var icon= "";
+    if(hotspot.linkTypeID == 2)
+    {
+      icon = '/hotspot_icons/video.png';
+    }
+    else if(hotspot.linkTypeID == 4 || hotspot.linkTypeID == 12)
+    {
+      icon = '/hotspot_icons/audio.png';
+    }
+    else if(hotspot.linkTypeID == 8)
+    {
+      icon = '/hotspot_icons/email.png';
+    }
+    else if(hotspot.linkTypeID == 11)
+    {
+      icon = '/hotspot_icons/ltilink.png';     
+    }
+    else if(hotspot.linkTypeID == 13)
+    {
+      icon = '/hotspot_icons/video.png';
+    }
+    else if(hotspot.linkTypeID == 7)
+    {
+      if(hotspot.regionTypeID == 1)
+      {
+        icon = '/hotspot_icons/audio.png';
+      }
+      if(hotspot.regionTypeID == 8 || hotspot.regionTypeID == 11)
+      {
+      icon = this.getHotspotType(hotspot.linkValue,lodashFunction);
+      }
+      if(hotspot.regionTypeID == 14)
+      {
+        icon = '/hotspot_icons/pdf.png';      
+      }
+      if(hotspot.regionTypeID == 15)
+      {
+        icon = '/hotspot_icons/word.png';
+      }
+      if(hotspot.regionTypeID == 13)
+      {
+        icon = '/hotspot_icons/excel.png';      
+      }
+      if(hotspot.regionTypeID == 9)
+      {
+        icon = '/hotspot_icons/ppt.png';
+      }
+      if(hotspot.regionTypeID == 12)
+      {
+        icon = '/hotspot_icons/video.png';
+      }              
+    }
+    else if(hotspot.linkTypeID == 9)
+    {
+      if(hotspot.regionTypeID == 1)
+      {
+        icon = '/hotspot_icons/audio.png';
+      }
+      if(hotspot.regionTypeID == 8 || hotspot.regionTypeID == 11)
+      {
+        icon = this.getHotspotType(hotspot.linkValue,lodashFunction); 
+      }
+      if(hotspot.regionTypeID == 14)
+      {
+        icon = '/hotspot_icons/pdf.png';      
+      }
+      if(hotspot.regionTypeID == 15)
+      {
+        icon = '/hotspot_icons/word.png';
+      }
+      if(hotspot.regionTypeID == 13)
+      {
+        icon = '/hotspot_icons/excel.png';      
+      }
+      if(hotspot.regionTypeID == 9)
+      {
+        icon = '/hotspot_icons/ppt.png';
+      }
+      if(hotspot.regionTypeID == 12)
+      {
+        icon = '/hotspot_icons/video.png';
+      }              
+    }
+    else if(hotspot.linkTypeID == 15)
+    {
+      icon = this.getHotspotType(hotspot.linkValue,lodashFunction);  
+    }
+    else
+    {
+      icon = '/hotspot_icons/default.png';
+    }
+  return icon;
+  }
 /*Function to render regions/hotspots on the page*/
-      displayRegions = function(hotspots,hotspotFeatures) {
-       try
-       {
-        if(hotspots.length>0)
+  displayRegions = function(hotspots,hotspotFeatures,lodashFunction) {
+   try
+   {
+    if(hotspots.length>0)
+    {
+      var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
+      var regionType,mySpan,icon,iconArt,regionElement,iconDiv;
+      var widthScale,heightScale;
+      var pageWidth = $("#docViewer_ViewContainer_BG_0").width();
+      var pageHeight = $("#docViewer_ViewContainer_BG_0").height();
+      var originalPdfWidth = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageWidth();
+      var originalPdfHeight = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageHeight();
+      widthScale = pageWidth / originalPdfWidth;
+      heightScale = pageHeight / originalPdfHeight;
+      for(var i=0;i<hotspots.length;i++)
         {
-          var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
-          var regionType,mySpan,icon,iconArt,regionElement,iconDiv;
-          var widthScale,heightScale;
-          var pageWidth = $("#docViewer_ViewContainer_BG_0").width();
-          var pageHeight = $("#docViewer_ViewContainer_BG_0").height();
-          var originalPdfWidth = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageWidth();
-          var originalPdfHeight = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageHeight();
-          widthScale = pageWidth / originalPdfWidth;
-          heightScale = pageHeight / originalPdfHeight;
-          for(var i=0;i<hotspots.length;i++)
+          try{
+          $('#'+ 'region' + hotspots[i].regionID).remove();
+          $('#'+ 'icon' + hotspots[i].regionID).remove();
+          }
+          catch(e){
+          }                 
+          regionType=hotspots[i].iconTypeID;
+          if(regionType !== 1 && (lodashFunction.endsWith(hotspots[i].imagePath,'.swf') == false))
+          {
+              iconArt = hotspots[i].imagePath;
+              if(!(/^http:\/\//i.test(iconArt)) && !(/^https:\/\//i.test(iconArt)))
+              {
+                iconArt = 'https://' + hotspots[i].imagePath ;
+              }
+              else if(/^http:\/\//i.test(iconArt))
+              {
+                var link=iconArt.substring(4);
+                iconArt = 'https' + link ;                     
+              }
+          }
+          else
+          {
+            iconArt = this.resetSwfIcons(hotspots[i],lodashFunction);
+          }
+          regionElement=document.createElement('div');
+          regionElement.setAttribute('id','region' + hotspots[i].regionID);
+          regionElement.setAttribute('name',hotspots[i].name);
+          regionElement.style.left= (hotspots[i].x * widthScale)  + 'px';
+          regionElement.style.top= (hotspots[i].y * heightScale) + 'px';
+          regionElement.style.width=(hotspots[i].width * widthScale) + 'px';
+          regionElement.style.height=(hotspots[i].height * heightScale) + 'px';
+          iconDiv=document.createElement('div');
+          if (regionType == 1)
+          {
+            if(hotspots[i].transparent == true || hotspotFeatures.isunderlinehotspot == true)
             {
-              try{
-              $('#'+ 'region' + hotspots[i].regionID).remove();
-              $('#'+ 'icon' + hotspots[i].regionID).remove();
+              regionElement.style.background = convertHexToRgba(hotspotFeatures.hotspotcolor,0);
+              regionElement.onmouseover = function(event){
+                _this.triggerEvent("RegionHovered", event.currentTarget.id);
               }
-              catch(e){
-              }                 
-              regionType=hotspots[i].iconTypeID;
-              if(regionType !== 1)
-              {
-                  iconArt = hotspots[i].imagePath;
-                  if(!(/^http:\/\//i.test(iconArt)) && !(/^https:\/\//i.test(iconArt)))
-                  {
-                    iconArt = 'https://' + hotspots[i].imagePath ;
-                  }
-                  else if(/^http:\/\//i.test(iconArt))
-                  {
-                    var link=iconArt.substring(4);
-                    iconArt = 'https' + link ;                     
-                  }
+              regionElement.onmouseout = function(event){
+                _this.triggerEvent("RegionUnhovered", event.currentTarget.id);
               }
-              regionElement=document.createElement('div');
-              regionElement.setAttribute('id','region' + hotspots[i].regionID);
-              regionElement.setAttribute('name',hotspots[i].name);
-              regionElement.style.left= (hotspots[i].x * widthScale)  + 'px';
-              regionElement.style.top= (hotspots[i].y * heightScale) + 'px';
-              regionElement.style.width=(hotspots[i].width * widthScale) + 'px';
-              regionElement.style.height=(hotspots[i].height * heightScale) + 'px';
-
-              iconDiv=document.createElement('div');
-
-              if (regionType == 1)
-              {
-                if(hotspots[i].transparent == true || hotspotFeatures.isunderlinehotspot == true)
-                {
-                  regionElement.style.background = convertHexToRgba(hotspotFeatures.hotspotcolor,0);
-                  regionElement.onmouseover = function(event){
-                    _this.triggerEvent("RegionHovered", event.currentTarget.id);
-                  }
-                  regionElement.onmouseout = function(event){
-                    _this.triggerEvent("RegionUnhovered", event.currentTarget.id);
-                  }
-                }
-                else
-                {
-                  regionElement.style.background = convertHexToRgba(hotspotFeatures.hotspotcolor,hotspotFeatures.regionhotspotalpha);
-                }
-
-                if(hotspotFeatures.isunderlinehotspot == true && hotspots[i].transparent !== true)
-                {
-                  regionElement.style.borderBottomColor = hotspotFeatures.underlinehotspotcolor;
-                  regionElement.style.borderBottomWidth = hotspotFeatures.underlinehotspotthickness + 'px';
-                  regionElement.style.borderBottomStyle = 'solid';             
-                }
-                else if(hotspotFeatures.isunderlinehotspot == true && hotspots[i].transparent == true)
-                {
-                  regionElement.style.borderBottomColor = convertHexToRgba(hotspotFeatures.underlinehotspotcolor,0);
-                  regionElement.transparent = true;
-                }
-              }
-              else
-              {
-                iconDiv.setAttribute('id','icon' + hotspots[i].regionID);
-                iconDiv.setAttribute('name','icon' + hotspots[i].name);
-                iconDiv.style.width=(hotspots[i].width * widthScale) + 'px';
-                iconDiv.style.height=(hotspots[i].height * heightScale) + 'px';
-                iconDiv.style.left= (hotspots[i].x * widthScale)  + 'px';
-                iconDiv.style.top= (hotspots[i].y * heightScale) + 'px';
-                iconDiv.style.backgroundImage = 'url('+iconArt+')';
-                iconDiv.style.opacity = hotspotFeatures.iconhotspotalpha/100;
-                iconDiv.style.backgroundSize = 'cover';
-              }
-              regionElement.className='hotspot';
-              iconDiv.style.position='absolute';
-              tooltip = document.createElement('span')
-              tooltip.className='tooltiptext';
-              tooltip.innerHTML = hotspots[i].name;
-              if(hotspots[i].regionTypeID !== 5)
-              {
-                 regionElement.onclick =function(event) { 
-                 _this.triggerEvent("regionClicked", event.currentTarget.id);                                  
-                 }
-              }
-              regionElement.appendChild(tooltip);
-              parentPageElement.appendChild(iconDiv);
-              parentPageElement.appendChild(regionElement);
             }
+            else
+            {
+              regionElement.style.background = convertHexToRgba(hotspotFeatures.hotspotcolor,hotspotFeatures.regionhotspotalpha);
+            }
+
+            if(hotspotFeatures.isunderlinehotspot == true && hotspots[i].transparent !== true)
+            {
+              regionElement.style.borderBottomColor = hotspotFeatures.underlinehotspotcolor;
+              regionElement.style.borderBottomWidth = hotspotFeatures.underlinehotspotthickness + 'px';
+              regionElement.style.borderBottomStyle = 'solid';             
+            }
+            else if(hotspotFeatures.isunderlinehotspot == true && hotspots[i].transparent == true)
+            {
+              regionElement.style.borderBottomColor = convertHexToRgba(hotspotFeatures.underlinehotspotcolor,0);
+              regionElement.transparent = true;
+            }
+          }
+          else
+          {
+            iconDiv.setAttribute('id','icon' + hotspots[i].regionID);
+            iconDiv.setAttribute('name','icon' + hotspots[i].name);
+            iconDiv.style.width=(hotspots[i].width * widthScale) + 'px';
+            iconDiv.style.height=(hotspots[i].height * heightScale) + 'px';
+            iconDiv.style.left= (hotspots[i].x * widthScale)  + 'px';
+            iconDiv.style.top= (hotspots[i].y * heightScale) + 'px';
+            iconDiv.style.backgroundImage = 'url('+iconArt+')';
+            iconDiv.style.opacity = hotspotFeatures.iconhotspotalpha/100;
+            iconDiv.style.backgroundSize = 'cover';
+          }
+          regionElement.className='hotspot';
+          iconDiv.style.position='absolute';
+          tooltip = document.createElement('span')
+          tooltip.className='tooltiptext';
+          tooltip.innerHTML = hotspots[i].name;
+          if(hotspots[i].regionTypeID !== 5)
+          {
+             regionElement.onclick =function(event) { 
+             _this.triggerEvent("regionClicked", event.currentTarget.id);                                  
+             }
+          }
+          regionElement.appendChild(tooltip);
+          parentPageElement.appendChild(iconDiv);
+          parentPageElement.appendChild(regionElement);
         }
-      }
-      catch(e){}
-      }
+    }
+  }
+  catch(e){}
+  }
 
 
       _this.reRenderHighlightCornerImages = function(highlights) {
@@ -1335,8 +1468,8 @@ function getAssetURLForPDFDownload(config,cb){
         {
           _this.removeHighlightElement(id);
         },
-        displayRegions:function(hotspots,hotspotFeatures){
-          var currPage = displayRegions(hotspots,hotspotFeatures);
+        displayRegions:function(hotspots,hotspotFeatures,lodashFunction){
+          var currPage = displayRegions(hotspots,hotspotFeatures,lodashFunction);
         },     
         /*Get the total Number of Pages in the PDF*/    
          getPageCount: function() {

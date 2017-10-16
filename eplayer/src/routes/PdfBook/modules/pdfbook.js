@@ -41,8 +41,8 @@ export const REQUEST_TOC = 'REQUEST_TOC';
 export const RECEIVE_TOC = 'RECEIVE_TOC';
 export const GO_TO_PAGE = 'GO_TO_PAGE';
 export const RECEIVEBOOKINFO_PENDING = 'RECEIVEBOOKINFO_PENDING';
-export const RECEIVEBOOKINFO_REJECTED = 'RECEIVEBOOKINFO_REJECTED';
-export const RECEIVEBOOKINFO_FULFILLED = 'RECEIVEBOOKINFO_FULFILLED';
+export const RECEIVEBOOKINFO_FAILED = 'RECEIVEBOOKINFO_FAILED';
+export const RECEIVEBOOKINFO_SUCCESS = 'RECEIVEBOOKINFO_SUCCESS';
 export const RECEIVE_PAGE_INFO = 'RECEIVE_PAGE_INFO';
 export const RECEIVE_USER_INFO_PENDING = 'RECEIVE_USER_INFO_PENDING';
 export const RECEIVE_USER_INFO_REJECTED = 'RECEIVE_USER_INFO_REJECTED';
@@ -82,6 +82,8 @@ export function request(component) {
       return { type: REQUEST_HIGHLIGHTS };
     case 'regions' :
       return {type: REQUEST_REGIONS};
+    case 'bookInfo' :
+      return {type: RECEIVEBOOKINFO_PENDING};
     default:
       return {};
   }
@@ -456,23 +458,55 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
   if (roleTypeID === undefined || roleTypeID === null || roleTypeID === '') {
     roleTypeID = 2;
   }
-  /*let piToken = pitoken
-  if(piToken === '' || piToken === null || piToken === undefined)
-  {
-    piToken = 'NA';
-  }*/
-
-   // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-  var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenario}&userinfolastmodifieddate=${uid}&userbooklastmodifieddate=${ubd}&userbookscenariolastmodifieddate=${ubsd}&globaluserid=${globaluserid}&authkey=${authkey}&outputformat=JSON`;
-  // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
-  return {
-    type: 'RECEIVEBOOKINFO',
-    payload: axios.get(`${serviceurl}&hsid=${hsid}`),
-    timeout: 20000
+  const bookState = {
+    bookInfo: {
+    userbook : {},
+      book: {}
+    },
   };
-}
+  return (dispatch) => {
+    dispatch(request('bookInfo'));
+      var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenario}&userinfolastmodifieddate=${uid}&userbooklastmodifieddate=${ubd}&userbookscenariolastmodifieddate=${ubsd}&globaluserid=${globaluserid}&authkey=${authkey}&outputformat=JSON`;
+    // tempurl is starts with http to create hash key for matching with server
+    var tempurl = serviceurl.replace("https","http");
+    var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+    return axios.get(''+serviceurl+'&hsid='+hsid,
+  {
+  timeout: 20000
+  }).then((response) => {
+      if (response.data.code >= 400) 
+      {
+        return dispatch({ type: 'RECEIVEBOOKINFO_FAILED',bookState});
+      }
+      else if(response.data.length) 
+      {
+      const userbookObj = {};
+      const bookObj = {};
+      userbookObj.userbookid = response.data[0].userBookTOList[0].userBookID,
+      bookObj.globalbookid= response.data[0].userBookTOList[0].globalBookID,
+      bookObj.numberOfPages= response.data[0].userBookTOList[0].numberOfPages,
+      bookObj.bookid= response.data[0].userBookTOList[0].bookID,
+      bookObj.bookeditionid= response.data[0].userBookTOList[0].bookEditionID,
+      bookObj.hastocflatten= response.data[0].userBookTOList[0].hastocflatten,
+      bookObj.languageid= response.data[0].userBookTOList[0].languageID,
+      bookObj.roleTypeID= response.data[0].userBookTOList[0].roleTypeID,
+      bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseID,
+      bookObj.version= response.data[0].userBookTOList[0].version,
+      bookObj.author= response.data[0].userBookTOList[0].authorList[0].firstName+' '+
+        response.data[0].userBookTOList[0].authorList[0].lastName,
+      bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt,
+      bookObj.title = response.data[0].userBookTOList[0].title,
+      bookObj.pdfCoverArt = response.data[0].userBookTOList[0].pdfCoverArt,
+      bookObj.ssoKey= response.data[0].userBookTOList[0].sessionID
+      bookState.bookInfo.userbook = userbookObj;
+      bookState.bookInfo.book = bookObj;
+      bookState.bookInfo.fetching = false;
+      bookState.bookInfo.fetched = true;
+      return dispatch({ type: 'RECEIVEBOOKINFO_SUCCESS',bookState});
+      }
+    });
+    }
+  }
 /* Created Action creator for getting page details by page number */
 export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
   pageNo, sessionKey,bookServerURL) {
@@ -1195,34 +1229,18 @@ const ACTION_HANDLERS = {
       fetched: false
     }
   }),
-  [RECEIVEBOOKINFO_FULFILLED]: (state, action) => ({
+  [RECEIVEBOOKINFO_PENDING]: state => ({
     ...state,
-    bookinfo: {
-      fetching: false,
-      fetched: true,
-      userbook: {
-        userbookid: action.payload.data[0].userBookTOList[0].userBookID
-      },
-      book: {
-        globalbookid: action.payload.data[0].userBookTOList[0].globalBookID,
-        numberOfPages: action.payload.data[0].userBookTOList[0].numberOfPages,
-        bookid: action.payload.data[0].userBookTOList[0].bookID,
-        bookeditionid: action.payload.data[0].userBookTOList[0].bookEditionID,
-        hastocflatten: action.payload.data[0].userBookTOList[0].hastocflatten,
-        languageid: action.payload.data[0].userBookTOList[0].languageID,
-        roleTypeID: action.payload.data[0].userBookTOList[0].roleTypeID,
-        activeCourseID: action.payload.data[0].userBookTOList[0].lastAccessedCourseID,
-        version: action.payload.data[0].userBookTOList[0].version,
-        author: action.payload.data[0].userBookTOList[0].authorList[0].firstName+' '+
-                action.payload.data[0].userBookTOList[0].authorList[0].lastName,
-        thumbnailimg : action.payload.data[0].userBookTOList[0].thumbnailArt,
-        title : action.payload.data[0].userBookTOList[0].title,
-        pdfCoverArt : action.payload.data[0].userBookTOList[0].pdfCoverArt,
-        ssoKey: action.payload.data[0].userBookTOList[0].sessionID
-      }
-    }
+    bookinfo : {
+      fetching: true,
+      fetched: false
+    },
   }),
-  [RECEIVEBOOKINFO_REJECTED]: state => ({
+  [RECEIVEBOOKINFO_SUCCESS]: (state, action) => ({
+    ...state,
+    bookinfo: action.bookState.bookInfo,
+  }),
+  [RECEIVEBOOKINFO_FAILED]: state => ({
     ...state,
     bookinfo: {
       fetching: false,

@@ -79,6 +79,7 @@ webpackConfig.plugins = [
   }),
   new CopyWebpackPlugin([
       { from: path.join(__dirname, '../pdf_reader_lib'), to: 'pdf' },
+      { from: path.join(__dirname, '../hotspot_icons'), to: 'hotspot_icons' },
       { from: annotationLibPath, to: 'annotation-lib' },
       { from: webInfPath, to: 'WEB-INF' },
       { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/public/pxe'), to: 'pxe_scripts' },
