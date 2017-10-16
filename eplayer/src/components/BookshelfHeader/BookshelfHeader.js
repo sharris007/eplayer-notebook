@@ -55,6 +55,7 @@ export class BookshelfHeader extends React.Component {
     });
   };
   onClick = () => {
+    sessionStorage.clear();
     const langQuery = localStorage.getItem('bookshelfLang');
     const cookies = new Cookies();
     let i = localStorage.length;

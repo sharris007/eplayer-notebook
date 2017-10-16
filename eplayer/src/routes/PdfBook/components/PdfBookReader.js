@@ -100,8 +100,8 @@ export class PdfBookReader extends Component {
         ssoKey,serverDetails);
       this.goToPageNumber(this.props.currentbook.startpage);
     }
-    else if (localStorage.getItem('isReloaded') && localStorage.getItem('currentPageOrder')) {
-      this.goToPage(Number(localStorage.getItem('currentPageOrder')));
+    else if (sessionStorage.getItem('isReloaded') && sessionStorage.getItem('currentPageOrder')) {
+      this.goToPage(Number(sessionStorage.getItem('currentPageOrder')));
     } else {
       //this.goToPage(coverPage);
       this.loadCoverPage('cover');
@@ -109,8 +109,8 @@ export class PdfBookReader extends Component {
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
    componentWillUnmount(){
-    localStorage.removeItem('isReloaded');
-    localStorage.removeItem('currentPageOrder');
+    sessionStorage.removeItem('isReloaded');
+    sessionStorage.removeItem('currentPageOrder');
     localStorage.removeItem('pages');
     localStorage.removeItem('assertUrls');
     pages = null;
@@ -136,8 +136,8 @@ export class PdfBookReader extends Component {
     };
      __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
-    localStorage.setItem("currentPageOrder",currentPageIndex);
-    localStorage.setItem('isReloaded',true);
+    sessionStorage.setItem("currentPageOrder",currentPageIndex);
+    sessionStorage.setItem('isReloaded',true);
     const data = this.state.data;
     data.isFirstPage = true;
     data.isLastPage = false;
@@ -175,7 +175,7 @@ export class PdfBookReader extends Component {
     __pdfInstance.registerEvent('RegionUnhovered', this.handleTransparentRegionUnhover.bind(this));
     __pdfInstance.createPDFViewer(config);
     this.setState({ currPageIndex: currentPageIndex });
-    localStorage.setItem("currentPageOrder",currentPageIndex);
+    sessionStorage.setItem("currentPageOrder",currentPageIndex);
     const data = this.state.data;
     var startpage = find(pages,page => page.pagenumber == this.props.currentbook.startpage);
     var endpage = find(pages,page => page.pagenumber == this.props.currentbook.endpage);
@@ -211,7 +211,7 @@ export class PdfBookReader extends Component {
   pdfBookCallback = (pdfEvent) => {
      // this.setState({currPageIndex : currentPageIndex});
     if (pdfEvent === 'pageChanged') {
-      localStorage.setItem('currentPageOrder', this.state.currPageIndex);
+      sessionStorage.setItem('currentPageOrder', this.state.currPageIndex);
       this.setState({ executed: false });
       if (this.state.isFirstPageBeingLoad === true) {
         this.setState({ isFirstPageBeingLoad: false });

@@ -35,6 +35,7 @@ class MoreMenuComponent extends React.Component {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
     handleClick = () => {
+    sessionStorage.clear();
     const langQuery = localStorage.getItem('bookshelfLang');
     const cookies = new Cookies();
     let i = localStorage.length;

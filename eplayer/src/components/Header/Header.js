@@ -131,6 +131,8 @@ export class Header extends React.Component {
 
       }
     }
+    sessionStorage.removeItem('isReloaded');
+    sessionStorage.removeItem('currentPageOrder');
     this.setState({ open: false });
   }
 
