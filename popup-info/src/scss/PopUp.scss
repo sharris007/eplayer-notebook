@@ -64,7 +64,22 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
     top: -30px;
     right:35px
 }
-
+.et1popUp::before{
+	content: "";
+	border: 15px solid transparent;
+    border-bottom-color: $popup_arrow_before_color;
+    position: absolute;
+    top: -30px;
+    left:110px;
+ }
+.et1popUp::after {
+	content: "";
+	border: 15px solid transparent;
+    border-bottom-color: $popup_background_color;
+    position: absolute;
+    top: -30px;
+    left:110px;
+}
 .popUpRightAlign::after {
 	content: "";
 	border: 15px solid transparent;
