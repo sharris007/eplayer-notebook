@@ -212,7 +212,7 @@ Annotator.Editor = (function(_super) {
     }
     if(checkoverlap) {
       $('#noteContainer').css('display', 'none');
-      $('#annotator-field-0').css({'display':'inline-block', 'pointer-events': 'all','opacity': '1'});
+      $('#annotator-field-0').css({'display':'inline-block', 'pointer-events': 'all','opacity': '1'}).removeAttr('readonly');
       $('.annotator-edit-container').hide();
     }
     // this.publish('save', [this.annotation]);
