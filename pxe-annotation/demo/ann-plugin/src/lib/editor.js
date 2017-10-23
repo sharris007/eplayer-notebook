@@ -503,7 +503,11 @@ Annotator.Editor = (function(_super) {
         $(this).css('background', annBgColor)['addClass']('highlight-note');
       }
    });
-   $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);
+   $(this.annotation.highlights).find('.annotator-handle').each(function(i) {
+      if(i == 0) {
+        $(this).text(noteText).css('background-color', noteIconBgColor);
+      }
+   });
    Annotator.Util.preventEventDefault(event);
    this.element.addClass(this.classes.hide);
    this.element.addClass('hide-note').removeClass('show-edit-options');

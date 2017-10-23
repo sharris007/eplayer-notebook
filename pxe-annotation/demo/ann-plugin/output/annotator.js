@@ -2919,7 +2919,11 @@ Annotator = (function(_super) {
   Annotator.prototype.deleteAnnotation = function(annotation) {
     var child, h, _i, _len, _ref;
     if (annotation.highlights != null) {
-      $(annotation.highlights).find('.annotator-handle').remove();
+      $(annotation.highlights).find('.annotator-handle').each(function(i) {
+        if($(this).closest('.annotator-hl').attr('shareable') != 'true') {
+          $(this).remove();
+        }
+      });
       $('.annotator-handle').css({'margin-top' : '6px'});
       _ref = annotation.highlights;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -3280,7 +3284,7 @@ Annotator = (function(_super) {
     var currAnnPosition=0,_i;
     if(this.selectedAnnArr.length > 0)
       return false;
-    var annotations = $(event.target).parents('.annotator-hl').addBack().map(function() {
+    var annotations = $(event.target).closest('.annotator-hl').addBack().map(function() {
       return $(this).data("annotation");
     }).toArray();
     for (_i = 0; _i <annotations.length ; _i++) {
@@ -4078,7 +4082,11 @@ Annotator.Editor = (function(_super) {
         $(this).css('background', annBgColor)['addClass']('highlight-note');
       }
    });
-   $(this.annotation.highlights).find('.annotator-handle').text(noteText).css('background-color', noteIconBgColor);
+   $(this.annotation.highlights).find('.annotator-handle').each(function(i) {
+      if(i == 0) {
+        $(this).text(noteText).css('background-color', noteIconBgColor);
+      }
+   });
    Annotator.Util.preventEventDefault(event);
    this.element.addClass(this.classes.hide);
    this.element.addClass('hide-note').removeClass('show-edit-options');
