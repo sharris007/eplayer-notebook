@@ -81,13 +81,29 @@ export const clients = {
       'Content-Type': 'application/json'
     }
   }),
-  readerApi: axios.create({
-    baseURL: 'https://api-sandbox.readerplatform.pearson-intl.com',
-    timeout: 20000,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }),
+  readerApi: {
+    qa: axios.create({
+      baseURL: 'https://api-sandbox.readerplatform.pearson-intl.com',
+      timeout: 20000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
+    stage: axios.create({
+      baseURL: 'https://api-sandbox.readerplatform.pearson-intl.com',
+      timeout: 20000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }),
+    prod: axios.create({
+      baseURL: 'https://api-prod.readerplatform.pearson-intl.com',
+      timeout: 20000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  },
 
   /* getLogin: axios.create({
     baseURL: 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api',

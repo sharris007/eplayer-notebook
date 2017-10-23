@@ -102,14 +102,35 @@ function randomString(length) {
   return text;
 }
 function createAuthorizationToken(relativeURL, method) {
-  const credentials = {
+  const qa_credentials = {
     id: 'tArkNWL2dK',
     key: 'Fc0C9w05bZy6U9TB7wN6CBgKyM32yk6Q',
     algorithm: 'sha256'
   };
-
-
-  const baseUrl = clients.readerApi.defaults.baseURL;
+  const stage_credentials = {
+    id: 'tArkNWL2dK',
+    key: 'Fc0C9w05bZy6U9TB7wN6CBgKyM32yk6Q',
+    algorithm: 'sha256'
+  };
+  const prod_credentials = {
+    id: 'h8wZiP6v1YJn',
+    key: 't7hCxYrbAP0HMqpB57ieN0qzFUu9Y3Flb0D3',
+    algorithm: 'sha256'
+  };
+  var credentials;
+  if(envType === 'qa')
+  {
+    credentials = qa_credentials;
+  }
+  else if(envType === 'stage')
+  {
+    credentials = stage_credentials;
+  }
+  else if(envType === 'prod')
+  {
+    credentials = prod_credentials;
+  }
+  const baseUrl = clients.readerApi[envType].defaults.baseURL;
   const uri = baseUrl + relativeURL;
   const header = Hawk.client.header(uri, method, { credentials,
     ext: '',
@@ -136,7 +157,7 @@ export function fetchBookmarksUsingReaderApi(bookId, shared, courseId, userId, P
   return (dispatch) => {
     dispatch(request('bookmarks'));
 
-    return clients.readerApi.get(`/bookmark?includeShared=${shared}&`
+    return clients.readerApi[envType].get(`/bookmark?includeShared=${shared}&`
       + `userId=${userId}&bookId=${bookId}&courseId=${courseId}`, {
         headers: {
           Accept: 'application/json',
@@ -181,7 +202,7 @@ export function fetchBookmarksUsingReaderApi(bookId, shared, courseId, userId, P
 export function addBookmarkUsingReaderApi(userId, bookId, pageId, pageNo, externalId, courseId, shared, Page) {
   const authorizationHeaderVal = createAuthorizationToken('/bookmark', 'POST');
 
-  clients.readerApi.defaults.headers.Authorization = authorizationHeaderVal;
+  clients.readerApi[envType].defaults.headers.Authorization = authorizationHeaderVal;
 
   const data = {
     userId,
@@ -198,7 +219,7 @@ export function addBookmarkUsingReaderApi(userId, bookId, pageId, pageNo, extern
   return (dispatch) => {
     dispatch(request('bookmarks'));
 
-    return clients.readerApi.post('/bookmark', data)
+    return clients.readerApi[envType].post('/bookmark', data)
     .then((response) => {
       if (response.status >= 400) {
         // console.log(`Add bookmark error: ${response.statusText}`);
@@ -233,7 +254,7 @@ export function removeBookmarkUsingReaderApi(bookmarkId) {
   const authorizationHeaderVal = createAuthorizationToken(`/bookmark/${bookmarkId}`, 'DELETE');
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.readerApi.delete(`/bookmark/${bookmarkId}`, {
+    return clients.readerApi[envType].delete(`/bookmark/${bookmarkId}`, {
       headers: {
         Authorization: authorizationHeaderVal
       }
@@ -775,7 +796,7 @@ export function fetchHighlightUsingReaderApi(userId, bookId, shared, courseId) {
   return (dispatch) => {
     dispatch(request('highlights'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-    return clients.readerApi.get(`/highlight?includeShared=${shared}&limit=100`
+    return clients.readerApi[envType].get(`/highlight?includeShared=${shared}&limit=100`
       + `&userId=${userId}&bookId=${bookId}&courseId=${courseId}`, {
         headers: {
           Authorization: authorizationHeaderVal
@@ -825,7 +846,7 @@ export function fetchHighlightUsingReaderApi(userId, bookId, shared, courseId) {
 export function saveHighlightUsingReaderApi(userId, bookId, pageId, pageNo,
   courseId, shared, highlightHash, note, selectedText, colour, meta, currentPageId) {
   const authorizationHeaderVal = createAuthorizationToken('/highlight', 'POST');
-  const axiosInstance = clients.readerApi;
+  const axiosInstance = clients.readerApi[envType];
   axiosInstance.defaults.headers.Authorization = authorizationHeaderVal;
   const data = {
     userId,
@@ -892,7 +913,7 @@ export function removeHighlightUsingReaderApi(id) {
         Accept : 'application/json',
         Authorization : authorizationHeaderVal
       }
-    })*/return clients.readerApi.delete(`/highlight/${id}`, {
+    })*/return clients.readerApi[envType].delete(`/highlight/${id}`, {
       headers: {
         Authorization: authorizationHeaderVal
       }
@@ -951,7 +972,7 @@ export function editHighlightUsingReaderApi(id, note, colour, isShared) {
   const authorizationHeaderVal = createAuthorizationToken(editHightlightURI, 'PUT');
   return (dispatch) => {
     dispatch(request('highlights'));
-    return clients.readerApi.put(editHightlightURI, data, {
+    return clients.readerApi[envType].put(editHightlightURI, data, {
       headers: {
         Authorization: authorizationHeaderVal
       }
