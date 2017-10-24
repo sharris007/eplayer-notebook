@@ -43,7 +43,8 @@ export class BindMoreInfoCallBacks {
           }           
           }
           if (hrefId) {
-            popOverCollection.popOverDescription = bookDiv.getElementById(hrefId).getElementsByTagName('p')[0].innerHTML;
+            const popOverDescription = bookDiv.getElementById(hrefId).getElementsByTagName('p');
+            popOverCollection.popOverDescription = popOverDescription.length > 0 ?  popOverDescription[0].innerHTML : '';
           } else {
             popOverCollection.popOverDescription = moreInfoIconDOM.children[0].innerHTML;
           }
