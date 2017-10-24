@@ -97,7 +97,7 @@
     "@pearson-incubator/preferences": "^0.1.35",
     "@pearson-incubator/pxe-annotation": "^1.0.19",
     "@pearson-incubator/pxe-printpage": "*",
-    "@pearson-incubator/pxe-wrapper": "^1.0.1",
+    "@pearson-incubator/pxe-wrapper": "^1.0.2",
     "@pearson-incubator/search": "^0.1.33",
     "@pearson-incubator/toc": "^0.1.54",
     "@pearson-incubator/vega-core": "0.0.44",

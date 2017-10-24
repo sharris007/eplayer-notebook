@@ -98,7 +98,7 @@ export class BindGlossaryCallBacks {
               this.glossaryCollection.push({'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
             } else {
               popOverCollection.popOverTitle = bookDivQuerySelectorClasses[i].innerHTML;
-              popOverCollection.popOverDescription = '';
+              popOverCollection.popOverDescription = glossaryDesc ? glossaryDesc : '';
               this.glossaryCollection.push({'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
             }
           }
