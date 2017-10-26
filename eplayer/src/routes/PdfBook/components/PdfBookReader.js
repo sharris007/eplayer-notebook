@@ -1220,7 +1220,7 @@ handleRegionClick(hotspotID) {
                 <div id="toolbar" className="pdf-fwr-toolbar" />
                 <div id="frame" className={viewerClassName} onClick={this.onPageClick}>
                   <div id="docViewer" className="docViewer" >
-                    {this.state.popUpCollection.length ? <PopUpInfo bookContainerId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} isET1 = 'Y'/> : null }
+                    {this.state.popUpCollection.length ? <PopUpInfo bookContainerId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} isET1='Y'/> : null }
                   </div>
                 </div>
               </div>
