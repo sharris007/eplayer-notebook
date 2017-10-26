@@ -65,6 +65,23 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
     right:35px
 }
 
+.glosspopUp::before{
+	content: "";
+	border: 15px solid transparent;
+    border-bottom-color: $popup_arrow_before_color;
+    position: absolute;
+    top: -30px;
+    left:110px;
+ }
+.glosspopUp::after {
+	content: "";
+	border: 15px solid transparent;
+    border-bottom-color: $popup_background_color;
+    position: absolute;
+    top: -30px;
+    left:110px;
+}
+
 .popUpRightAlign::after {
 	content: "";
 	border: 15px solid transparent;

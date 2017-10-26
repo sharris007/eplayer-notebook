@@ -11,18 +11,52 @@ class PopUpInfo extends Component {
       glossaryResponse: ''
     };
     this.popUpArray = [];
-    if (props.node) {
+    if (props.node || props.bookContainerId) {
       if (props && props.popUpCollection && props.popUpCollection.length > 0) {
         this.props = props;
         this.props.popUpCollection.forEach((popUpProps, i) => {
           if (!popUpProps.item.getAttribute('rendered')) {
             popUpProps.item.setAttribute('rendered', true);
             this.popUpArray[i] = popUpProps.popOverCollection;
-            popUpProps.item.addEventListener('click', this.framePopOver.bind(this, i));
+            if(this.props.bookContainerId !== null && this.props.bookContainerId !== undefined && this.props.bookContainerId !== "")
+            {
+              popUpProps.item.addEventListener('click', this.frameGlossPopOver.bind(this, i));
+            }
+            else
+            {
+              popUpProps.item.addEventListener('click', this.framePopOver.bind(this, i));
+            }
           }     
         });
       }
     }
+  }
+
+  frameGlossPopOver = (index, event) => {
+    event.preventDefault();
+    const props = this.props.popUpCollection[index];
+    const bookContainerId = document.getElementById(this.props.bookContainerId);
+    const bookDivHeight = bookContainerId.clientHeight + 'px';
+    document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
+    Popup.registerPlugin('popover', function(element) {
+      this.create({
+          title: props.popOverCollection.popOverTitle ? renderHTML(props.popOverCollection.popOverTitle) : '',
+          content: renderHTML(props.popOverCollection.popOverDescription),
+          noOverlay: true,
+          position: function(box) {
+            var element = document.getElementById(props.item.id);
+            var popUpElement=document.getElementsByClassName('mm-popup')[0];
+            var popUpTop = parseInt(element.style.top,10) + parseInt(element.style.height,10) ;
+            document.getElementsByClassName('mm-popup__box')[0].classList.add('glosspopUp');
+            box.style.top = popUpTop + 10 + 'px';
+            box.style.left = (parseInt(element.style.left,10) - 100 )+ 'px';
+            bookContainerId.appendChild(popUpElement);
+            box.style.margin = 0;
+            box.style.opacity = 1;
+          }
+      });
+    });
+    Popup.plugins.popover(event.currentTarget);
   }
 
   framePopOver = (index, event) => {
