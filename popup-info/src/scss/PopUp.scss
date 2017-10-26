@@ -64,7 +64,8 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
     top: -30px;
     right:35px
 }
-.et1popUp::before{
+
+.glosspopUp::before{
 	content: "";
 	border: 15px solid transparent;
     border-bottom-color: $popup_arrow_before_color;
@@ -72,7 +73,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
     top: -30px;
     left:110px;
  }
-.et1popUp::after {
+.glosspopUp::after {
 	content: "";
 	border: 15px solid transparent;
     border-bottom-color: $popup_background_color;
@@ -80,6 +81,7 @@ $data_uri_1: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rht
     top: -30px;
     left:110px;
 }
+
 .popUpRightAlign::after {
 	content: "";
 	border: 15px solid transparent;
