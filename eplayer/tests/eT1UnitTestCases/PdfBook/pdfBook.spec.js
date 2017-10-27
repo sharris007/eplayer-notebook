@@ -1,5 +1,11 @@
 import book from '../../../src/routes/Book/modules/book';
-import {REQUEST_BOOKMARKS, RECEIVE_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK, REQUEST_TOC, RECEIVE_TOC, GO_TO_PAGE, RECEIVEBOOKINFO_PENDING, RECEIVEBOOKINFO_REJECTED, RECEIVEBOOKINFO_FULFILLED, RECEIVE_PAGE_INFO, RECEIVE_USER_INFO_PENDING, RECEIVE_USER_INFO_REJECTED, RECEIVE_USER_INFO_FULFILLED, SAVE_HIGHLIGHT, REQUEST_HIGHLIGHTS, RECIEVE_HIGHLIGHTS, REMOVE_HIGHLIGHT, LOAD_ASSERT_URL, EDIT_HIGHLIGHT, REQUEST_REGIONS, RECEIVE_REGIONS, RECEIVE_BOOK_FEATURES_PENDING, RECEIVE_BOOK_FEATURES_FULFILLED, RECEIVE_BOOK_FEATURES_REJECTED, RECEIVE_GLOSSARY_TERM, RECEIVE_BASEPATH_PENDING, RECEIVE_BASEPATH_FULFILLED, RECEIVE_BASEPATH_REJECTED, UPDATE_AUTH_KEY} from '../../../src/routes/PdfBook/modules/pdfbook';
+import {REQUEST_BOOKMARKS, RECEIVE_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK, REQUEST_TOC, 
+  RECEIVE_TOC, GO_TO_PAGE, RECEIVEBOOKINFO_PENDING, RECEIVEBOOKINFO_REJECTED, RECEIVEBOOKINFO_FULFILLED, 
+  RECEIVE_PAGE_INFO, RECEIVE_USER_INFO_PENDING, RECEIVE_USER_INFO_REJECTED, RECEIVE_USER_INFO_FULFILLED, 
+  SAVE_HIGHLIGHT, REQUEST_HIGHLIGHTS, RECIEVE_HIGHLIGHTS, REMOVE_HIGHLIGHT, LOAD_ASSERT_URL, EDIT_HIGHLIGHT, 
+  REQUEST_REGIONS, RECEIVE_REGIONS, RECEIVE_BOOK_FEATURES_PENDING, RECEIVE_BOOK_FEATURES_FULFILLED, 
+  RECEIVE_BOOK_FEATURES_REJECTED, RECEIVE_GLOSSARY_TERM, RECEIVE_BASEPATH_PENDING, 
+  RECEIVE_BASEPATH_FULFILLED, RECEIVE_BASEPATH_REJECTED, UPDATE_AUTH_KEY, RECEIVEBOOKINFO_FAILED} from '../../../src/routes/PdfBook/modules/pdfbook';
 const reducer = require('../../../src/routes/PdfBook/modules/pdfbook').default;
 const initialState = {
   annotations: [],
@@ -60,21 +66,20 @@ describe("PdfBook (Reducer)", () => {
   let expectedState = Object.assign({},initialState);
   expectedState.isFetching.bookmarks = true;
   let action = {
-    type: REQUEST_BOOKMARKS,
-    isFetching : {
-        bookmarks : true
-      }
+    type: REQUEST_BOOKMARKS
     }
   test1(REQUEST_BOOKMARKS,'REQUEST_BOOKMARKS',expectedState,action);
 
   //RECEIVE_BOOKMARKS
   expectedState.bookmarks = [];
-  expectedState.isFetching.bookmarks = [];
+  expectedState.isFetching.bookmarks = false;
   action = {
     type : RECEIVE_BOOKMARKS,
-      bookmarks : [],
-      isFetching : {
-        bookmarks : []
+      bookState : {
+        bookmarks : [],
+        isFetching : {
+          bookmarks : false
+        }
       }
     }
   test1(RECEIVE_BOOKMARKS,'RECEIVE_BOOKMARKS',expectedState,action);
@@ -137,17 +142,13 @@ describe("PdfBook (Reducer)", () => {
   }
   test1(RECEIVEBOOKINFO_PENDING,'RECEIVEBOOKINFO_PENDING',expectedState,action);
 
-  //RECEIVEBOOKINFO_REJECTED
-  expectedState.bookinfo.fetching = true;
+  //RECEIVEBOOKINFO_FAILED
+  expectedState.bookinfo.fetching = false;
   expectedState.bookinfo.fetched = false;
   action = {
-    type : RECEIVEBOOKINFO_REJECTED,
-    bookinfo : {
-      fetching : true,
-      fetched : false
-    }
+    type : RECEIVEBOOKINFO_FAILED
   }
-  test1(RECEIVEBOOKINFO_REJECTED,'RECEIVEBOOKINFO_REJECTED',expectedState,action);
+  test1(RECEIVEBOOKINFO_FAILED,'RECEIVEBOOKINFO_FAILED',expectedState,action);
 
   //UPDATE_AUTH_KEY
   expectedState.sessionInfo.ssoKey = [];
