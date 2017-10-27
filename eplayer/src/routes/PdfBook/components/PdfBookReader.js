@@ -11,6 +11,7 @@ import Header from '../../../components/Header';/* Importing header for padfPage
 import './PdfBook.scss';/* Importing the css for PdfBook. */
 import { languages } from '../../../../locale_config/translations/index';
 import { eT1Contants } from '../../../components/common/et1constants';
+import { resources, domain } from '../../../../const/Settings';
 import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
 import { loadState } from '../../../localStorage';
@@ -18,6 +19,8 @@ import Popup from 'react-popup';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import {convertHexToRgba} from '../../../components/Utility/Util';
 
+const envType = domain.getEnvType();
+const foxiturl = eT1Contants.FoxitUrls[envType];
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -124,7 +127,7 @@ export class PdfBookReader extends Component {
     }
     const config = {
     // host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
-      host: eT1Contants.FOXIT_HOST_URL,
+      host: foxiturl,
     // PDFassetURL: this.props.bookshelf.uPdf,
     // PDFassetURL: "http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM31206032/ipadpdfs/"+pdfPath,
       PDFassetURL: `${serverDetails}/ebookassets`
@@ -155,7 +158,7 @@ export class PdfBookReader extends Component {
     }
     const config = {
     // host: "https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/",
-      host: eT1Contants.FOXIT_HOST_URL,
+      host: foxiturl,
     // PDFassetURL: this.props.bookshelf.uPdf,
     // PDFassetURL: "http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/ebookCM31206032/ipadpdfs/"+pdfPath,
       PDFassetURL: `${serverDetails}/ebookassets`
@@ -282,7 +285,7 @@ export class PdfBookReader extends Component {
   }
 
   openFile = (currentPageIndex, pdfpath) => {
-    const host = eT1Contants.FOXIT_HOST_URL;
+    const host = foxiturl;
     const PDFassetURL = `${serverDetails}/ebookassets/`
           + `ebook${this.props.book.bookinfo.book.globalbookid}/ipadpdfs/${pdfpath}`;
     const index = host.lastIndexOf('foxit-webpdf-web');

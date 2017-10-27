@@ -151,9 +151,13 @@ used for before mounting occurs. */
         {
           const bookserverno = this.props.location.query.bookserver;
           var bookserver;
-          if (envType == 'qa' || envType == 'stage')
+          if (envType == 'qa')
           {
             bookserver = 'CERT'+bookserverno;
+          }
+          else if(envType == 'stage')
+          {
+            bookserver = 'PPE'+bookserverno;
           }
           else if(envType == 'prod')
           {
@@ -307,4 +311,3 @@ PdfBook.propTypes = {
   editHighlightUsingReaderApi: React.PropTypes.func
 };
 export default PdfBook;
-

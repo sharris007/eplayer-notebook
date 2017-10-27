@@ -13,91 +13,27 @@
  *******************************************************************************/
 import contentful from 'contentful';  // eslint-disable-line import/no-extraneous-dependencies
 import axios from 'axios';
+import eT1Contants from './et1constants';
 
 
 export const clients = {
-
-  search: axios.create({
-    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
-    timeout: 20000,
-    headers: {
-    }
-  }),
-
-  fetchBookmarks: axios.create({
-    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
-    timeout: 20000,
-    headers: {
-    }
-  }),
-
-  addBookmarks: axios.create({
-    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
-    timeout: 20000,
-    headers: {
-    }
-  }),
-
-  removeBookmark: axios.create({
-    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
-    timeout: 20000,
-    headers: {
-    }
-  }),
-
-  fetchTocAndViewer: axios.create({
-    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
-    timeout: 20000,
-    headers: {
-    }
-  }),
-
-  fetchBookInfo: axios.create({
-    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
-    timeout: 20000,
-    headers: {
-    }
-  }),
-
-  fetchPageInfo: axios.create({
-    baseURL: 'https://view.cert1.ebookplus.pearsoncmg.com/ebook/ipad',
-    timeout: 20000,
-    headers: {
-    }
-  }),
-
-  /* getBookShelf: axios.create({
-    baseURL: 'http://sms.bookshelf.dev1.ebookplus.pearsoncmg.com/ebook/ipad/getuserbooks?siteid=11444&hsid=a37e42b90f86d8cb700fb8b61555bb22&key=1975822139101138730252017',
-    timeout: 20000,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }),*/
-
-  getBookShelf: axios.create({
-    baseURL: 'https://etext-qa-stg.pearson.com/api/nextext-api/v1/api/nextext',
-    timeout: 20000,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }),
   readerApi: {
     qa: axios.create({
-      baseURL: 'https://api-sandbox.readerplatform.pearson-intl.com',
+      baseURL: eT1Contants.readerApiBaseUrls.QA,
       timeout: 20000,
       headers: {
         'Content-Type': 'application/json'
       }
     }),
     stage: axios.create({
-      baseURL: 'https://api-sandbox.readerplatform.pearson-intl.com',
+      baseURL: eT1Contants.readerApiBaseUrls.STAGE,
       timeout: 20000,
       headers: {
         'Content-Type': 'application/json'
       }
     }),
     prod: axios.create({
-      baseURL: 'https://api-prod.readerplatform.pearson-intl.com',
+      baseURL: eT1Contants.readerApiBaseUrls.PROD,
       timeout: 20000,
       headers: {
         'Content-Type': 'application/json'

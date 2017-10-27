@@ -12,7 +12,6 @@
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 export const eT1Contants = {
-  FOXIT_HOST_URL: 'https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/',
   CERT_SITE_ID: '11444',
   PROD_SITE_ID: '15102',
   MD5_SECRET_KEY: 'ipadsecuretext',
@@ -63,6 +62,17 @@ export const eT1Contants = {
     S11 : 11,
     S88 : 88
   },
+  FoxitUrls : {
+    // qa: 'https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/',
+    qa: 'https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/',
+    stage: 'https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/',
+    prod: 'https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/'
+  },
+  readerApiBaseUrls : {
+    QA : 'https://api-sandbox.readerplatform.pearson-intl.com',
+    STAGE : 'https://api-sandbox.readerplatform.pearson-intl.com',
+    PROD : 'https://api-prod.readerplatform.pearson-intl.com'
+  },
   ServerUrls : {
     qa : {
             CERT1 : 'https://view.cert1.ebookplus.pearsoncmg.com',
@@ -70,19 +80,26 @@ export const eT1Contants = {
             CERT3 : 'https://view.cert3.ebookplus.pearsoncmg.com'
          },
     stage : {
-            CERT1 : 'https://view.cert1.ebookplus.pearsoncmg.com',
-            CERT2 : 'https://view.cert2.ebookplus.pearsoncmg.com',
-            CERT3 : 'https://view.cert3.ebookplus.pearsoncmg.com'
-         }
+            PPE1 : 'https://live.ppe1.ebookplus.pearsoncmg.com',
+            PPE2 : 'https://live.ppe2.ebookplus.pearsoncmg.com',
+            PPE3 : 'https://live.ppe3.ebookplus.pearsoncmg.com'
+         },
+    prod  : {
+            PROD1 : 'https://view.prod1.ebookplus.pearsoncmg.com',
+            PROD2 : 'https://view.prod2.ebookplus.pearsoncmg.com',
+            PROD3 : 'https://view.prod3.ebookplus.pearsoncmg.com'
+        }
   },
-  BookshelfBaseUrls :{
+  SMSBookshelfBaseUrls :{
     DEV : 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com',
     CERT : 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com',
-    PROD : 'https://sms.bookshelf.ebookplus.pearsoncmg.com'
+    PROD : 'https://sms.bookshelf.ebookplus.pearsoncmg.com',
+    PPE : 'https://sms.bookshelf.ppe1.ebookplus.pearsoncmg.com'
   },
   SMSBaseUrls : {
     CERT : 'https://login.cert.pearsoncmg.com/sso/SSOServlet2',
-    PROD : 'https://login.pearsoncmg.com/sso/SSOServlet2'
+    PROD : 'https://login.pearsoncmg.com/sso/SSOServlet2',
+    PPE : 'https://loginppe.pearsoncmg.com/sso/SSOServlet2'
   },
   SITE_IDs : {
     qa : {
@@ -93,11 +110,11 @@ export const eT1Contants = {
       S88 : '11442'
     },
     stage : {
-      S1 : '11444',
-      S3 : '7171',
-      S6 : '10063',
-      S11 : '11442',
-      S88 : '11442'
+      S1 : '15102',
+      S3 : '9688',
+      S6 : '10402',
+      S11 : '15107',
+      S88 : '15107'
     },
     prod : {
       S1 : '15102',

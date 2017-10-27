@@ -129,13 +129,17 @@ export default class BookshelfPage extends React.Component {
           var baseBookshelfUrl;
           if (this.props.location.query.invoketype === 'et1') {
             // This bookshelf temp mentioned as constant
-            if (envType == 'qa' || envType == 'stage')
+            if (envType == 'qa')
             {
-              baseBookshelfUrl = eT1Contants.BookshelfBaseUrls['CERT'];
+              baseBookshelfUrl = eT1Contants.SMSBookshelfBaseUrls['CERT'];
+            }
+            else if(envType == 'stage')
+            {
+              baseBookshelfUrl = eT1Contants.SMSBookshelfBaseUrls['PPE'];
             }
             else if(envType == 'prod')
             {
-              baseBookshelfUrl = eT1Contants.BookshelfBaseUrls['PROD'];
+              baseBookshelfUrl = eT1Contants.SMSBookshelfBaseUrls['PROD'];
             }
             var siteid = eT1Contants.SITE_IDs[envType].S1;
             urn = baseBookshelfUrl

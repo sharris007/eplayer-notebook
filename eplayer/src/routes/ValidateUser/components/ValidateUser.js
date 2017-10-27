@@ -138,10 +138,15 @@
 			if(bookserver !== undefined)
 	        {
 	          var bookserverurl;
-	          if (envType == 'qa' || envType == 'stage')
+	          if (envType == 'qa')
 	          {
 	            bookserverurl = 'CERT'+bookserver;
 	            smsbaseurl = eT1Contants.SMSBaseUrls['CERT'];
+	          }
+	          else if(envType == 'stage')
+	          {
+	            bookserverurl = 'PPE'+bookserver;
+	            smsbaseurl = eT1Contants.SMSBaseUrls['PPE'];
 	          }
 	          else if(envType == 'prod')
 	          {
