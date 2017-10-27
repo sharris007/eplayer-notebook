@@ -1,14 +1,14 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
+ *
  *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
- *  * 
+ *  *
  *  * NOTICE:  All information contained herein is, and remains
  *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
  *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
  *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
+ *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 // import fetch from 'isomorphic-fetch'; /* isomorphic-fetch is third party library used for making ajax call like axios. */
@@ -17,7 +17,7 @@ import axios from 'axios'; /* axios is third party library, used to make ajax re
 import Hawk from 'hawk';
 import find from 'lodash/find';
 import { browserHistory } from 'react-router';
-import { clients } from '../../../components/common/client'; 
+import { clients } from '../../../components/common/client';
 import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
 import { eT1Contants } from '../../../components/common/et1constants';
@@ -453,7 +453,7 @@ export function fetchTocAndViewer(bookId, authorName, title,
       bookState.isFetching.toc = false;
       dispatch({ type: RECEIVE_TOC, bookState });
       }
-      
+
     });
   };
 }
@@ -495,14 +495,20 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
   {
   timeout: 20000
   }).then((response) => {
-      if (response.data.code >= 400) 
+      if (response.data.code >= 400)
       {
         return dispatch({ type: 'RECEIVEBOOKINFO_FAILED',bookState});
       }
-      else if(response.data.length) 
+      else if(response.data.length)
       {
-      const userbookObj = {};
-      const bookObj = {};
+        const userbookObj = {};
+        const bookObj = {};
+        var author = response.data[0].userBookTOList[0].authorList[0].lastName;
+        var authorListLen = response.data[0].userBookTOList[0].authorList.length;
+        for(var i=1; i<authorListLen; i++)
+        {
+          author += '/'+response.data[0].userBookTOList[0].authorList[i].lastName;
+        }
       userbookObj.userbookid = response.data[0].userBookTOList[0].userBookID,
       bookObj.globalbookid= response.data[0].userBookTOList[0].globalBookID,
       bookObj.numberOfPages= response.data[0].userBookTOList[0].numberOfPages,
@@ -513,8 +519,7 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
       bookObj.roleTypeID= response.data[0].userBookTOList[0].roleTypeID,
       bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseID,
       bookObj.version= response.data[0].userBookTOList[0].version,
-      bookObj.author= response.data[0].userBookTOList[0].authorList[0].firstName+' '+
-        response.data[0].userBookTOList[0].authorList[0].lastName,
+      bookObj.author=author,
       bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt,
       bookObj.title = response.data[0].userBookTOList[0].title,
       bookObj.pdfCoverArt = response.data[0].userBookTOList[0].pdfCoverArt,
@@ -636,7 +641,7 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
     else
     {
       serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getregionbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&platformid='+platformId+'&scenario='+scenarioId+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON';
-    } 
+    }
     // tempurl is starts with http to create hash key for matching with server
     var tempurl = serviceurl.replace("https","http");
     var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -644,11 +649,11 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
   {
   timeout: 20000
   }).then((response) => {
-      if (response.status >= 400) 
+      if (response.status >= 400)
       {
         console.log(`fetchRegionsInfo error: ${response.statusText}`);
       }
-      else if(response.data.length) 
+      else if(response.data.length)
       {
           for (var i=0;i<response.data[0].regionsList.length;i++)
           {
@@ -729,7 +734,7 @@ export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerU
         console.log(`fetch Glossary Items error: ${response.statusText}`);
       } else if (response.data.length) {
           for(var i=0;i<response.data[0].glossaryList.length;i++)
-          { 
+          {
             response.data.forEach((glossTerm) => {
               const glossaryInfo = {};
               glossaryInfo.glossaryTerm = glossTerm.glossaryList[i].glossaryTerm;
@@ -1017,14 +1022,14 @@ export function fetchbookDetails(urn, piToken,bookID)
   return dispatch =>
      axios.get(url, {
       headers: { 'Content-Type': 'application/json',
-        'X-Authorization': piToken } 
+        'X-Authorization': piToken }
       }).then((response) => {
       var bookDetails;
       if (response.status >= 400) {
         console.log(`bookshelf error`);
       } else if (response.data) {
         var booksArray = response.data.entries;
-           for(var i=0; i<booksArray.length; i++)    
+           for(var i=0; i<booksArray.length; i++)
         {
           if(booksArray[i].bookId === bookID)
           {
@@ -1043,7 +1048,7 @@ export function validateAuthkey(userid,authkey,bookServerURL)
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
-  return dispatch => 
+  return dispatch =>
     axios.get(''+serviceurl+'&hsid='+hsid).then((response) => {
       if (response.status >= 400) {
         console.log(`validateAuthkey service error`);
@@ -1063,7 +1068,7 @@ export function validateUser(userid,scenario,invoketype,bookid,roletypeid,piToke
   // tempurl is starts with http to create hash key for matching with server
   var tempurl = serviceurl.replace("https","http");
   var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
-  return dispatch => 
+  return dispatch =>
     axios.get(''+serviceurl+'&hsid='+hsid).then((response) => {
       if (response.status >= 400) {
         console.log(`validateuser service error`);
@@ -1357,7 +1362,7 @@ const ACTION_HANDLERS = {
       hashighlightingtoolbutton: action.payload.data[0].toolBarFeaturesTO.hasHighlightingToolButton,
       hasnotetoolbutton: action.payload.data[0].toolBarFeaturesTO.hasNoteToolButton,
       hasbookmarkpagebutton: action.payload.data[0].toolBarFeaturesTO.hasBookMarkPageButton,
-      hasdrawerbutton: action.payload.data[0].generalFeaturesTO.hasLeftAccordion  
+      hasdrawerbutton: action.payload.data[0].generalFeaturesTO.hasLeftAccordion
     }
   }),
   [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({
