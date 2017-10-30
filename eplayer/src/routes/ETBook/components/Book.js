@@ -592,8 +592,8 @@
       }
       this.onNavChange(page);
     };
-    onPageLoad = (pageId) => {
-      const currentPage = find(this.state.pageDetails.playListURL, page => page.id === pageId);
+    onPageLoad = (pageObj) => {
+      const currentPage = find(this.state.pageDetails.playListURL, page => page.id === pageObj.id);
       if (currentPage) {
         this.onNavChange(currentPage);
         if (this.props.bookdetailsdata.userCourseSectionDetail !== undefined) {

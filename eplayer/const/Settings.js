@@ -19,7 +19,7 @@ export const resources = {
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
     idcDashboardEnabled : false,
-    zeppelinEnabled     : true
+    zeppelinEnabled     : false
   },
   links: {
     legalNotice    : 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
