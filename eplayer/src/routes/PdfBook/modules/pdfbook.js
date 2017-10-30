@@ -501,14 +501,8 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
       }
       else if(response.data.length)
       {
-        const userbookObj = {};
-        const bookObj = {};
-        var author = response.data[0].userBookTOList[0].authorList[0].lastName;
-        var authorListLen = response.data[0].userBookTOList[0].authorList.length;
-        for(var i=1; i<authorListLen; i++)
-        {
-          author += '/'+response.data[0].userBookTOList[0].authorList[i].lastName;
-        }
+      const userbookObj = {};
+      const bookObj = {};
       userbookObj.userbookid = response.data[0].userBookTOList[0].userBookID,
       bookObj.globalbookid= response.data[0].userBookTOList[0].globalBookID,
       bookObj.numberOfPages= response.data[0].userBookTOList[0].numberOfPages,
@@ -519,7 +513,8 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
       bookObj.roleTypeID= response.data[0].userBookTOList[0].roleTypeID,
       bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseID,
       bookObj.version= response.data[0].userBookTOList[0].version,
-      bookObj.author=author,
+      bookObj.author= response.data[0].userBookTOList[0].authorList[0].firstName+' '+
+        response.data[0].userBookTOList[0].authorList[0].lastName,
       bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt,
       bookObj.title = response.data[0].userBookTOList[0].title,
       bookObj.pdfCoverArt = response.data[0].userBookTOList[0].pdfCoverArt,
