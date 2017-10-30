@@ -501,28 +501,33 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
       }
       else if(response.data.length)
       {
-      const userbookObj = {};
-      const bookObj = {};
-      userbookObj.userbookid = response.data[0].userBookTOList[0].userBookID,
-      bookObj.globalbookid= response.data[0].userBookTOList[0].globalBookID,
-      bookObj.numberOfPages= response.data[0].userBookTOList[0].numberOfPages,
-      bookObj.bookid= response.data[0].userBookTOList[0].bookID,
-      bookObj.bookeditionid= response.data[0].userBookTOList[0].bookEditionID,
-      bookObj.hastocflatten= response.data[0].userBookTOList[0].hastocflatten,
-      bookObj.languageid= response.data[0].userBookTOList[0].languageID,
-      bookObj.roleTypeID= response.data[0].userBookTOList[0].roleTypeID,
-      bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseID,
-      bookObj.version= response.data[0].userBookTOList[0].version,
-      bookObj.author= response.data[0].userBookTOList[0].authorList[0].firstName+' '+
-        response.data[0].userBookTOList[0].authorList[0].lastName,
-      bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt,
-      bookObj.title = response.data[0].userBookTOList[0].title,
-      bookObj.pdfCoverArt = response.data[0].userBookTOList[0].pdfCoverArt,
-      bookObj.ssoKey= response.data[0].userBookTOList[0].sessionID
-      bookState.bookInfo.userbook = userbookObj;
-      bookState.bookInfo.book = bookObj;
-      bookState.bookInfo.fetching = false;
-      bookState.bookInfo.fetched = true;
+        const userbookObj = {};
+          const bookObj = {};
+          var author = (response.data[0].userBookTOList[0].authorList[0].firstName+' '+response.data[0].userBookTOList[0].authorList[0].lastName);
+          var authorListLen = response.data[0].userBookTOList[0].authorList.length;
+          for(var i=1; i<authorListLen; i++)
+          {
+            author += '/ ' + (response.data[0].userBookTOList[0].authorList[i].firstName+' '+response.data[0].userBookTOList[0].authorList[i].lastName);
+          }
+        userbookObj.userbookid = response.data[0].userBookTOList[0].userBookID,
+        bookObj.globalbookid= response.data[0].userBookTOList[0].globalBookID,
+        bookObj.numberOfPages= response.data[0].userBookTOList[0].numberOfPages,
+        bookObj.bookid= response.data[0].userBookTOList[0].bookID,
+        bookObj.bookeditionid= response.data[0].userBookTOList[0].bookEditionID,
+        bookObj.hastocflatten= response.data[0].userBookTOList[0].hastocflatten,
+        bookObj.languageid= response.data[0].userBookTOList[0].languageID,
+        bookObj.roleTypeID= response.data[0].userBookTOList[0].roleTypeID,
+        bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseID,
+        bookObj.version= response.data[0].userBookTOList[0].version,
+        bookObj.author=author,
+        bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt,
+        bookObj.title = response.data[0].userBookTOList[0].title,
+        bookObj.pdfCoverArt = response.data[0].userBookTOList[0].pdfCoverArt,
+        bookObj.ssoKey= response.data[0].userBookTOList[0].sessionID
+        bookState.bookInfo.userbook = userbookObj;
+        bookState.bookInfo.book = bookObj;
+        bookState.bookInfo.fetching = false;
+        bookState.bookInfo.fetched = true;
       return dispatch({ type: 'RECEIVEBOOKINFO_SUCCESS',bookState});
       }
     });
