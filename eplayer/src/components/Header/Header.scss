@@ -208,6 +208,10 @@ $headerPadding: 15px 55px;
     line-height :normal;
 }
 
+.headerBar h1 {
+  padding-top: 0px !important
+}
+
 .headerBar.visible {
     display: block
 }
