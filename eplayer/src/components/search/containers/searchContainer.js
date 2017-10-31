@@ -33,7 +33,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => ({
   // search: state.search
-  search: (state.search ? state.search : {})
+  search: (state.search ? state.search : {data:[]})
 
 });
 
