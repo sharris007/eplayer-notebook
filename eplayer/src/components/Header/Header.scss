@@ -74,10 +74,10 @@ $headerPadding: 15px 55px;
   width:$prefIcon-width;
 }
 .preferences-container, .searchContainer, .preferences-container-eT1 {
-  position: absolute;
-  right: $prefCont-right;
-  top: $prefCont-top;
-  z-index: 10001;
+  position: absolute !important;
+  right: $prefCont-right !important;
+  top: $prefCont-top !important;
+  z-index: 10001 !important;
 }
 
 .bookmarkIcon {
