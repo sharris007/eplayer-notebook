@@ -90,7 +90,7 @@
     "@pearson-incubator/aquila-js-quiz": "*",
     "@pearson-incubator/aquila-js-graph": "0.0.39",
     "@pearson-incubator/bookmark-icon": "0.1.30",
-    "@pearson-incubator/bookmarks": "0.1.32",
+    "@pearson-incubator/bookmarks": "0.1.36",
     "@pearson-incubator/bookshelf": "0.1.36",
     "@pearson-incubator/notes": "0.1.37",
     "@pearson-incubator/popup-info": "2.0.0",
