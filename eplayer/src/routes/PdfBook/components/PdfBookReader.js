@@ -38,7 +38,7 @@ export class PdfBookReader extends Component {
     super(props);
    /* Here we have set intial state of following properties. */
     this.state = {
-      classname: 'headerBar',
+      classname: 'eT1headerBar',
       currPageIndex: '',
       pageLoaded: false,
       drawerOpen: false,

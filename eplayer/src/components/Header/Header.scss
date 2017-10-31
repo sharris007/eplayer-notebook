@@ -194,7 +194,7 @@ $headerPadding: 15px 55px;
 }
 
 // Hearder style
-.headerBar {
+.eT1headerBar {
     min-height: 50px;
     height: 50px;
     position: fixed;
@@ -208,71 +208,71 @@ $headerPadding: 15px 55px;
     line-height :normal;
 }
 
-.headerBar h1 {
+.eT1headerBar h1 {
   padding-top: 0px !important
 }
 
-.headerBar.visible {
+.eT1headerBar.visible {
     display: block
 }
 
 
-.headerBar.chapterOpenerPg {
+.eT1headerBar.chapterOpenerPg {
     background: transparent;
     position: absolute;
     box-shadow: none
 }
 
-.headerBar.chapterOpenerPg .icon-white,.headerBar.chapterOpenerPg h1 {
+.eT1headerBar.chapterOpenerPg .icon-white,.eT1headerBar.chapterOpenerPg h1 {
     color: #fff!important
 }
 
-.headerBar.chapterOpenerPg.fixHeader h1,.headerBar h1 {
+.eT1headerBar.chapterOpenerPg.fixHeader h1,.eT1headerBar h1 {
     color: #1c1c1c!important
 }
 
-.headerBar.chapterOpenerPg.fixHeader .icon-white,.headerBar .icon-white {
+.eT1headerBar.chapterOpenerPg.fixHeader .icon-white,.eT1headerBar .icon-white {
     color: #6a7070!important
 }
 
-.headerBar .bookmarkIcon svg path,.headerBar.chapterOpenerPg.fixHeader .bookmarkIcon svg path {
+.eT1headerBar .bookmarkIcon svg path,.eT1headerBar.chapterOpenerPg.fixHeader .bookmarkIcon svg path {
     fill: $gray !important;
 }
 
-.headerBar.chapterOpenerPg .bookmarkIcon svg path {
+.eT1headerBar.chapterOpenerPg .bookmarkIcon svg path {
     fill: #fff!important
 }
 
-.headerBar.chapterOpenerPg.fixHeader {
+.eT1headerBar.chapterOpenerPg.fixHeader {
     background: #fff;
     position: fixed;
     box-shadow: 0 3px 3px #e9e9e9;
     transition: all .25s
 }
 
-.headerBar.chapterOpenerPg.fixHeader .PrefernceTriangleUp,.headerBar .PrefernceTriangleUp {
+.eT1headerBar.chapterOpenerPg.fixHeader .PrefernceTriangleUp,.eT1headerBar .PrefernceTriangleUp {
     border-bottom: 20px solid #f2f2f2;
     margin-left: 147px!important
 }
 
-.headerBar.chapterOpenerPg.fixHeader .triangle-up,.headerBar .triangle-up {
+.eT1headerBar.chapterOpenerPg.fixHeader .triangle-up,.eT1headerBar .triangle-up {
     border-bottom: 20px solid #f2f2f2;
     margin-left: 300px
 }
 
-.headerBar.chapterOpenerPg .PrefernceTriangleUp,.headerBar.chapterOpenerPg .triangle-up {
+.eT1headerBar.chapterOpenerPg .PrefernceTriangleUp,.eT1headerBar.chapterOpenerPg .triangle-up {
     border-bottom: 20px solid #fff
 }
 @media (max-width: 736px) {
-  .headerBar {
+  .eT1headerBar {
     padding: 15px;
   }
-  .headerBar h1 {
+  .eT1headerBar h1 {
     margin-left: 15px !important;
   }
 }
 @media (max-width: 480px) {
-  .headerBar h1 {
+  .eT1headerBar h1 {
     margin-left: 15px !important;
   }
 }
@@ -288,10 +288,10 @@ $headerPadding: 15px 55px;
   .searchIcon {
     margin: 0 50px !important;
   }
-  .headerBar.chapterOpenerPg.fixHeader .triangle-up, .headerBar .triangle-up {
+  .eT1headerBar.chapterOpenerPg.fixHeader .triangle-up, .eT1headerBar .triangle-up {
     margin-left: 266px !important;
   }
-  .headerBar.chapterOpenerPg.fixHeader .PrefernceTriangleUp, .headerBar .PrefernceTriangleUp {
+  .eT1headerBar.chapterOpenerPg.fixHeader .PrefernceTriangleUp, .eT1headerBar .PrefernceTriangleUp {
     margin-left: 127px !important;
   }
 
