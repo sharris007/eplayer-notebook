@@ -34,23 +34,23 @@ Scenario Outline: Presence of links (Forgot Username/ Password, Footer links) in
         | span*=Privacy |    
         | span*=Terms |
 
-#Scenario: Should be able to access Help link from Footer
-#    When I click on the element "#supportLink"
-#    Then I expect that element "#o-contextual-help-drawer" becomes visible
-#   And I pause for 1000ms
-#    Then I click on the element ".pe-icon--btn.close-help"
+Scenario: Should be able to access Help link from Footer
+    When I click on the element "#supportLink"
+    Then I expect that element "#o-contextual-help-drawer" becomes visible
+   And I pause for 1000ms
+    Then I click on the element ".pe-icon--btn.close-help"
 
-#Scenario Outline: Should be able to access footer links
-#    When I click on the element "<LinkName>"
-#    And I focus the last opened tab
-#    Then I expect that element "<NewPage>" becomes visible
-#    And I pause for 1000ms
-#    Then I close the last opened tab
-# Examples:
-# | LinkName | NewPage |
-# | span*=Accessibility | .mar-bot--125 |
-# | span*=Privacy | h1*=Privacy |
-# | span*=Terms | h1*=Pearson |
+Scenario Outline: Should be able to access footer links
+    When I click on the element "<LinkName>"
+    And I focus the last opened tab
+    Then I expect that element "<NewPage>" becomes visible
+    And I pause for 1000ms
+    Then I close the last opened tab
+ Examples:
+ | LinkName | NewPage |
+ | span*=Accessibility | .mar-bot--125 |
+ | span*=Privacy | h1*=Privacy |
+ | span*=Terms | h1*=Pearson |
 
 
 
