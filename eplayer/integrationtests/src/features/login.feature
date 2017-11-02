@@ -2,26 +2,27 @@ Feature:
     In order to keep my product stable
     As a developer or product manager
     I want to make sure that everything works as expected
-    
-Scenario Outline: Presence of labels (Sign in, Password, New to Pearson, copyright message) in Login page
+
+        
+Scenario Outline: Presence of labels (Sign in, Username, Password, copyright message) in Login page
     Given I open the site "/eplayer"
     Then I expect that element ".auth-form.ng-scope" becomes visible
+    And I pause for 1000ms
     Then I expect that element "<label1>" contains the text "<text1>"
         Examples:
         | label1 | text1 |
         | .pe-page-title.pe-page-title--small.ng-binding |  Sign in |
         | #mainForm > div:nth-child(4) > label |  Username |    
         | #mainForm > div:nth-child(5) > label |  Password |
-        | h2.pe-title.pe-title--small | New to Pearson? |
         | .copyright | Copyright © 2017 Pearson Education Inc. All rights reserved. |
 
-Scenario Outline: Presence of Buttons (Show, sign In, Create Account) in Login page
+Scenario Outline: Presence of Buttons (Show, sign In, Help in Sidebar) in Login page
     Then I expect that element "<btn1>" becomes visible
         Examples:
         | btn1 |
         | .toggle-pw-button |
         | #mainButton |
-        | .pe-btn__primary.pe-btn--btn_xlarge.ng-binding.ng-scope |
+        | #help-in-form |
 
 
 Scenario Outline: Presence of links (Forgot Username/ Password, Footer links) in Login page
@@ -35,7 +36,8 @@ Scenario Outline: Presence of links (Forgot Username/ Password, Footer links) in
         | span*=Terms |
 
 Scenario: Should be able to access Help link from Footer
-    When I click on the element "#supportLink"
+    When I scroll to element "#supportLink"
+    And I click on the element "#supportLink"
     Then I expect that element "#o-contextual-help-drawer" becomes visible
    And I pause for 1000ms
     Then I click on the element ".pe-icon--btn.close-help"
