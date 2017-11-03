@@ -18,6 +18,8 @@ import { loadState } from '../../../localStorage';
 import Popup from 'react-popup';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import {convertHexToRgba} from '../../../components/Utility/Util';
+import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
+import { PdfViewer } from '@pearson-incubator/vega-viewer';
 
 const envType = domain.getEnvType();
 const foxiturl = eT1Contants.FoxitUrls[envType];
@@ -114,7 +116,6 @@ export class PdfBookReader extends Component {
     sessionStorage.removeItem('isReloaded');
     sessionStorage.removeItem('currentPageOrder');
     localStorage.removeItem('pages');
-    localStorage.removeItem('assertUrls');
     pages = null;
     assertUrls = null;
   }
@@ -124,16 +125,9 @@ export class PdfBookReader extends Component {
     if(isNaN(pageIndexToLoad)){
      this.goToPage(pageIndexToLoad); 
     }
-    const config = {
-      host: foxiturl,
-      PDFassetURL: `${serverDetails}/ebookassets`
-                + `/ebook${this.props.data.book.bookinfo.book.globalbookid}${this.props.data.book.bookinfo.book.pdfCoverArt}`,
-      encpwd: null,
-      zip: false,
-      callbackOnPageChange: this.pdfBookCallback,
-      assertUrl: ''
-    };
-     __pdfInstance.createPDFViewer(config);
+    const PDFassetURL = `${serverDetails}/ebookassets`
+                + `/ebook${this.props.data.book.bookinfo.book.globalbookid}${this.props.data.book.bookinfo.book.pdfCoverArt}`;
+    this.props.data.actions.loadcurrentPage(this.props.data.location.query.bookid,currentPageIndex,PDFassetURL,'CoverPage');
     this.setState({ currPageIndex: currentPageIndex });
     sessionStorage.setItem("currentPageOrder",currentPageIndex);
     sessionStorage.setItem('isReloaded',true);
@@ -147,29 +141,9 @@ export class PdfBookReader extends Component {
   loadPdfPage = (currentPageIndex) => {
     const currentPage = find(pages, page => page.pageorder === currentPageIndex);
     const pdfPath = currentPage.pdfPath;
-    let assertUrl = '';
-    const assertUrlListObj = find(assertUrls, url => url.pageOrder === currentPageIndex);
-    if (assertUrlListObj !== undefined) {
-      assertUrl = assertUrlListObj.assertUrl;
-    }
-    const config = {
-      host: foxiturl,
-      PDFassetURL: `${serverDetails}/ebookassets`
-                + `/ebook${this.props.data.book.bookinfo.book.globalbookid}/ipadpdfs/${pdfPath}`,
-      encpwd: null,
-      zip: false,
-      callbackOnPageChange: this.pdfBookCallback,
-      assertUrl
-    };
-    if(this.props.data.book.bookFeatures.hashighlightingtoolbutton)
-    {
-      __pdfInstance.registerEvent('textSelected', this.createHighlight.bind(this));
-      __pdfInstance.registerEvent('highlightClicked', this.handleHighlightClick.bind(this));
-    }
-    __pdfInstance.registerEvent('regionClicked', this.handleRegionClick.bind(this));
-    __pdfInstance.registerEvent('RegionHovered', this.handleTransparentRegionHover.bind(this));
-    __pdfInstance.registerEvent('RegionUnhovered', this.handleTransparentRegionUnhover.bind(this));
-    __pdfInstance.createPDFViewer(config);
+    const PDFassetURL = `${serverDetails}/ebookassets`
+                + `/ebook${this.props.data.book.bookinfo.book.globalbookid}/ipadpdfs/${pdfPath}`;
+    this.props.data.actions.loadcurrentPage(this.props.data.location.query.bookid,currentPageIndex,PDFassetURL,'BookPage');
     this.setState({ currPageIndex: currentPageIndex });
     sessionStorage.setItem("currentPageOrder",currentPageIndex);
     const data = this.state.data;
@@ -249,42 +223,12 @@ export class PdfBookReader extends Component {
                 }
               }
             }
-            this.setState({glossaryRegions : regionsData});
-            this.setState({popUpCollection : glossaryData});
+          this.setState({glossaryRegions : regionsData, popUpCollection : glossaryData});
           });
         }
       });
       setTimeout(this.displayHighlight, 1000);
     }
-  }
-  storeAssertUrl = () => {
-    if (assertUrls === undefined || assertUrls === null) {
-      assertUrls = this.props.data.book.bookinfo.assertUrls;
-      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
-    } else if (assertUrls.length > this.props.data.book.bookinfo.assertUrls.length) {
-      assertUrls = assertUrls.concat(this.props.data.book.bookinfo.assertUrls);
-      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
-    } else {
-      assertUrls = this.props.data.book.bookinfo.assertUrls;
-      localStorage.setItem('assertUrls', JSON.stringify(assertUrls));
-    }
-  }
-
-  openFile = (currentPageIndex, pdfpath) => {
-    const host = foxiturl;
-    const PDFassetURL = `${serverDetails}/ebookassets/`
-          + `ebook${this.props.data.book.bookinfo.book.globalbookid}/ipadpdfs/${pdfpath}`;
-    const index = host.lastIndexOf('foxit-webpdf-web');
-    const baseUrl = host.substr(0, index + 17);
-    const headerParams = {
-      assetid: '',
-      deviceid: '',
-      appversion: '',
-      authorization: '',
-      acceptLanguage: ''
-    };
-    const assertUrl = __pdfInstance.openFileUrl(baseUrl, PDFassetURL, headerParams);
-    return assertUrl;
   }
 
   goToPage = (pageno) => {
@@ -328,10 +272,8 @@ export class PdfBookReader extends Component {
         return; 
       }
       __pdfInstance.removeExistingHighlightCornerImages();
-      this.setState({ drawerOpen: false });
-      this.setState({ pageLoaded: false });
-      this.setState({ regionData: null});
-      this.setState({ popUpCollection: []});
+      this.setState({ drawerOpen: false,pageLoaded: false,regionData: null,
+        popUpCollection: [],highlightList: []});
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
@@ -363,7 +305,6 @@ export class PdfBookReader extends Component {
   }
 
   findPages = (lPages, pageOrder) => find(lPages, page => page.pageorder === pageOrder)
-  findAssertUrl = (lassertUrls, pageOrder) => find(lassertUrls, url => url.pageorder === pageOrder)
   /* Method for getting the pageorder for calculating the page details
      and we have defined multiple variables in this method. */
   getPageOrdersToGetPageDetails = (pageOrderToNav) => {
@@ -392,31 +333,6 @@ export class PdfBookReader extends Component {
     return totalPagesToHit;
   }
 
-  getPageOrdersToGetAssertUrl = (pageOrderToNav) => {
-    let prevPageCount = 0;
-    let nextPageCount = 0;
-    let totalPagesToHit = '';
-    let pageOrder = pageOrderToNav;
-    const totalPageCount = this.getPageCount();
-    while (prevPageCount <= 1 && pageOrder > 0) {
-      const currentPage = (assertUrls !== undefined) ? this.findAssertUrl(assertUrls, pageOrder) : undefined;
-      if (currentPage === undefined) {
-        totalPagesToHit = `${totalPagesToHit + pageOrder},`;
-        prevPageCount++;
-      }
-      pageOrder--;
-    }
-    pageOrder = pageOrderToNav + 1;
-    while (nextPageCount < 1 && pageOrder <= totalPageCount) {
-      const currentPage = (assertUrls !== undefined) ? this.findAssertUrl(assertUrls, pageOrder) : undefined;
-      if (currentPage === undefined) {
-        totalPagesToHit = `${totalPagesToHit + pageOrder},`;
-        nextPageCount++;
-      }
-      pageOrder++;
-    }
-    return totalPagesToHit;
-  }
   /* Method for getting the page count and defined a letiable inside method that will store the value of numberOfPages. */
   getPageCount = () => {
     const pagecount = this.props.data.book.bookinfo.book.numberOfPages;
@@ -1098,12 +1014,10 @@ handleRegionClick(hotspotID) {
     }
   }
 
-  onPageClick = () => {
-    __pdfInstance.enableSelectTool();
-  }
 /* Method for render the component and any change in store data, reload the changes. */
   render() {
     const callbacks = {};
+    const viewerCallBacks = {};
     const { messages } = languages.translations[this.props.locale];
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
@@ -1112,12 +1026,11 @@ handleRegionClick(hotspotID) {
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPage;
-    let viewerClassName;
-    if (this.state.pageLoaded !== true) {
-      viewerClassName = 'hideViewerContent';
-    } else {
-      viewerClassName = '';
-    }
+    viewerCallBacks.handleHighlightClick = this.handleHighlightClick.bind(this);
+    viewerCallBacks.createHighlight = this.createHighlight.bind(this);
+    viewerCallBacks.handleRegionClick = this.handleRegionClick.bind(this);
+    viewerCallBacks.handleTransparentRegionHover = this.handleTransparentRegionHover.bind(this);
+    viewerCallBacks.handleTransparentRegionUnhover = this.handleTransparentRegionUnhover.bind(this);
     const searchUrl = `${serverDetails}/ebook/pdfplayer/searchbook?bookid=${this.props.data.location.query.bookid}`
         + `&globalbookid=${globalbookid}&searchtext=searchText&sortby=1&version=${this.props.data.book.bookinfo.book.version}&authkey=${ssoKey}`;
     this.props.data.book.annTotalData.forEach((annotation) => {
@@ -1137,6 +1050,13 @@ handleRegionClick(hotspotID) {
     {
       this.props.data.book.tocReceived = false;
     }
+    let productData = {
+      metaData : {
+        pdfInstance : __pdfInstance,
+        pdfRendererUrl : foxiturl,
+        bookFeatures : (this.props.data.book.bookFeatures ? this.props.data.book.bookFeatures : {})
+      }
+    };
     /* Here we are passing data, pages, goToPageCallback,
        getPrevNextPage method and isET1 flag in ViewerComponent
        which is defined in @pearson-incubator/viewer . */
@@ -1181,23 +1101,24 @@ handleRegionClick(hotspotID) {
         </div>
         <div>
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
-          <div id="main">
-            <div id="mainContainer" className="pdf-fwr-pc-main">
-              <div id="right" className="pdf-fwr-pc-right">
-                <div id="toolbar" className="pdf-fwr-toolbar" />
-                <div id="frame" className={viewerClassName} onClick={this.onPageClick}>
-                  <div id="docViewer" className="docViewer" >
-                    {this.state.popUpCollection.length ? <PopUpInfo bookContainerId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} isET1='Y'/> : null }
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <LearningContextProvider 
+          contextId = {this.props.data.location.query.bookid}
+          contentType = "PDF"
+          metadata = {productData.metaData}
+        >
+        <PdfViewer
+          isPageLoaded = {this.state.pageLoaded}
+          currentPage = {this.props.data.book.currentPageInfo}
+          onPageLoadComplete = {this.pdfBookCallback}
+          viewerCallBacks = {viewerCallBacks}
+        />
+        </LearningContextProvider>
+        {this.state.popUpCollection.length ? <PopUpInfo bookContainerId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} isET1='Y'/> : null }
         </div>
         {this.state.pageLoaded !== true ?
-          <div className="centerCircularBar">
-          <RefreshIndicator size={50} left={650} top={200} status="loading" />
-          </div> : null}
+        <div className="centerCircularBar">
+        <RefreshIndicator size={50} left={650} top={200} status="loading" />
+        </div> : null}
       </div>
     );
   }
@@ -1216,7 +1137,6 @@ PdfBookReader.propTypes = {
   editHighlightUsingReaderApi: React.PropTypes.func,
   PdfbookMessages: React.PropTypes.object,
   fetchPageInfo: React.PropTypes.func,
-  loadAssertUrl: React.PropTypes.func,
   book: React.PropTypes.object,
   bookshelf: React.PropTypes.object,
   params: React.PropTypes.object
