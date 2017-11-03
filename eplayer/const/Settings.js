@@ -75,11 +75,11 @@ export const resources = {
       prod         : 'https://pi.pearsoned.com/v1/piapi/login/js/session.js'
     },
     clientId :{
-      local        :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      dev          :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
+      local        :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
+      dev          :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
       qa           :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
       stage        :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
-      prod         :"AT8R4irZrJRPstMMUdb8XaqOvbRJpqs4",
+      prod         :"mmiGVm0apwEdyZzZieOY5q5su06Ch0kN",
     },
     consoleUrl :{
       local        :"https://console-qa.pearsoned.com",
