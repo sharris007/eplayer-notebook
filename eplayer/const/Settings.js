@@ -77,8 +77,8 @@ export const resources = {
     clientId :{
       local        :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
       dev          :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      qa           :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
-      stage        :"vGZ2o5WhK7XTy9ovNwtj1aBZhnOAASYb",
+      qa           :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
+      stage        :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
       prod         :"AT8R4irZrJRPstMMUdb8XaqOvbRJpqs4",
     },
     consoleUrl :{
