@@ -257,7 +257,6 @@
       data.uri = data.href;
       data.label = data.title;
       const pageDetails = { ...this.state.pageDetails };
-      pageDetails.annId = null;
       this.setState({
         currentPageDetails: data,
         currentPageTitle: data.title,
@@ -299,20 +298,20 @@
           }
         case typeConstants.ANNOTATION_CREATED:
           {
-            const annList = annStructureChange([data.data]);
+            const annList = annStructureChange([data.rows[0]]);
             this.props.dispatch(getTotalAnnotationData(annList));
             break;
           }
         case typeConstants.ANNOTATION_UPDATED:
           {
-            const annList = annStructureChange([data.data]);
-            this.props.dispatch(deleteAnnotationData(data.data));
+            const annList = annStructureChange([data.rows[0]]);
+            this.props.dispatch(deleteAnnotationData(data.rows[0]));
             this.props.dispatch(getTotalAnnotationData(annList));
             break;
           }
         case typeConstants.ANNOTATION_DELETED:
           {
-            this.props.dispatch(deleteAnnotationData(data.data));
+            this.props.dispatch(deleteAnnotationData(data.rows[0]));
             break;
           }
         case 'pagescroll':
@@ -587,6 +586,10 @@
 
     onPageRequest = (page) => {
       const pageDetails={...this.state.pageDetails};
+      pageDetails.annId = null;
+      this.setState({
+        pageDetails
+      });
       if(pageDetails.searchText && pageDetails.searchText.length) {
         pageDetails.searchText=[];
         this.setState({ pageDetails });
@@ -1008,7 +1011,7 @@
           }
           onPageLoad = { this.onPageLoad }
           onPageClick = { this.onPageClick }
-          applnCallback = { this.onPageChange } 
+          handleAnnotationUpdate = { this.onPageChange } 
           annSearchId = { bootstrapParams.pageDetails.annId }
           key = { bootstrapParams.pageDetails.currentPageURL.id }
           /> 
