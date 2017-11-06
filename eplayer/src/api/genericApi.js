@@ -21,7 +21,7 @@ const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
 
-export const getTotalAnndata = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations`, {
+export const getTotalAnndata = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations?withShared=true`, {
   method: 'GET',
   headers: {
     Accept: 'application/json',
