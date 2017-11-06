@@ -83,7 +83,7 @@ export function request(component) {
   }
 }
 function extractTextContent(content) {
-  var span= document.createElement('span');
+  let span= document.createElement('span');
   span.innerHTML= content;
   return span.textContent || span.innerText;
 }
@@ -111,7 +111,7 @@ function createAuthorizationToken(relativeURL, method) {
     key: 't7hCxYrbAP0HMqpB57ieN0qzFUu9Y3Flb0D3',
     algorithm: 'sha256'
   };
-  var credentials;
+  let credentials;
   if(envType === 'qa')
   {
     credentials = qa_credentials;
@@ -391,10 +391,10 @@ export function fetchTocAndViewer(bookId, authorName, title,
   return (dispatch,getState) => {
     dispatch(request('toc'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-    var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
+    let serviceurl = `${bookServerURL}/ebook/pdfplayer/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
     // tempurl is starts with http to create hash key for matching with server
-    var tempurl = serviceurl.replace("https","http");
-    var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+    let tempurl = serviceurl.replace("https","http");
+    let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
     return axios.get(`${serviceurl}&hsid=${hsid}`,
       {
         timeout: 100000
@@ -428,7 +428,7 @@ export function fetchTocAndViewer(bookId, authorName, title,
               });
             }
           });
-        /* var tocLevel_1_Obj = new Node();
+        /* let tocLevel_1_Obj = new Node();
         tocLevel_1_Obj.id=tocLevel1.basketID;
         tocLevel_1_Obj.title=tocLevel1.name;
         tocLevel_1_Obj.children=tocLevel1ChildList;*/
@@ -481,10 +481,10 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
   };
   return (dispatch) => {
     dispatch(request('bookInfo'));
-      var serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenario}&userinfolastmodifieddate=${uid}&userbooklastmodifieddate=${ubd}&userbookscenariolastmodifieddate=${ubsd}&globaluserid=${globaluserid}&authkey=${authkey}&outputformat=JSON`;
+      let serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenario}&userinfolastmodifieddate=${uid}&userbooklastmodifieddate=${ubd}&userbookscenariolastmodifieddate=${ubsd}&globaluserid=${globaluserid}&authkey=${authkey}&outputformat=JSON`;
     // tempurl is starts with http to create hash key for matching with server
-    var tempurl = serviceurl.replace("https","http");
-    var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+    let tempurl = serviceurl.replace("https","http");
+    let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
     return axios.get(''+serviceurl+'&hsid='+hsid,
   {
   timeout: 20000
@@ -497,9 +497,9 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
       {
         const userbookObj = {};
           const bookObj = {};
-          var author = (response.data[0].userBookTOList[0].authorList[0].firstName+' '+response.data[0].userBookTOList[0].authorList[0].lastName);
-          var authorListLen = response.data[0].userBookTOList[0].authorList.length;
-          for(var i=1; i<authorListLen; i++)
+          let author = (response.data[0].userBookTOList[0].authorList[0].firstName+' '+response.data[0].userBookTOList[0].authorList[0].lastName);
+          let authorListLen = response.data[0].userBookTOList[0].authorList.length;
+          for(let i=1; i<authorListLen; i++)
           {
             author += '/ ' + (response.data[0].userBookTOList[0].authorList[i].firstName+' '+response.data[0].userBookTOList[0].authorList[i].lastName);
           }
@@ -535,10 +535,10 @@ export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
       pages: []
     }
   };
-  var serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagebybookpagenumber?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&bookpagenumbers=${pageNo}&authkey=${sessionKey}&outputformat=JSON`;
+  let serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagebybookpagenumber?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&bookpagenumbers=${pageNo}&authkey=${sessionKey}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  let tempurl = serviceurl.replace("https","http");
+  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return dispatch =>
      // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
      axios.get(`${serviceurl}&hsid=${hsid}`,
@@ -580,10 +580,10 @@ export function fetchPageInfo(userid, bookid, bookeditionid,
       pages: []
     }
   };
-  var serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagebypageorder?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&listval=${totalPagesToHit}&authkey=${sessionKey}&outputformat=JSON`;
+  let serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagebypageorder?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&listval=${totalPagesToHit}&authkey=${sessionKey}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  let tempurl = serviceurl.replace("https","http");
+  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return dispatch =>
      // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
      axios.get(`${serviceurl}&hsid=${hsid}`,
@@ -627,7 +627,7 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
   };
   return (dispatch) => {
     dispatch(request('regions'));
-    var serviceurl;
+    let serviceurl;
     if (platformId == undefined || platformId == null || platformId == "")
     {
       serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getregionbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&scenario='+scenarioId+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON';
@@ -637,8 +637,8 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
       serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getregionbypageorder?bookid='+bookid+'&bookeditionid='+bookeditionid+'&listval='+pageorder+'&platformid='+platformId+'&scenario='+scenarioId+'&userroleid='+roleTypeID+'&authkey='+sessionKey+'&outputformat=JSON';
     }
     // tempurl is starts with http to create hash key for matching with server
-    var tempurl = serviceurl.replace("https","http");
-    var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+    let tempurl = serviceurl.replace("https","http");
+    let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
     return axios.get(''+serviceurl+'&hsid='+hsid,
   {
   timeout: 20000
@@ -649,7 +649,7 @@ export function fetchRegionsInfo(bookid,bookeditionid,pageorder,sessionKey,roleT
       }
       else if(response.data.length)
       {
-          for (var i=0;i<response.data[0].regionsList.length;i++)
+          for (let i=0;i<response.data[0].regionsList.length;i++)
           {
           response.data.forEach((region) => {
           const regionObj= {};
@@ -714,10 +714,10 @@ export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerU
       glossaryInfoList : [],
     }
   };
-  var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getglossary?bookid='+bookid+'&glossaryentryid='+glossaryentryid+'&authkey='+sessionKey+'&outputformat=JSON';
+  let serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getglossary?bookid='+bookid+'&glossaryentryid='+glossaryentryid+'&authkey='+sessionKey+'&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  let tempurl = serviceurl.replace("https","http");
+  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return dispatch =>
      axios.get(''+serviceurl+'&hsid='+hsid,
        {
@@ -727,7 +727,7 @@ export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerU
       if (response.status >= 400) {
         console.log(`fetch Glossary Items error: ${response.statusText}`);
       } else if (response.data.length) {
-          for(var i=0;i<response.data[0].glossaryList.length;i++)
+          for(let i=0;i<response.data[0].glossaryList.length;i++)
           {
             response.data.forEach((glossTerm) => {
               const glossaryInfo = {};
@@ -743,10 +743,10 @@ export function fetchGlossaryItems(bookid,glossaryentryid,sessionKey,bookServerU
 }
  /* Created Action creator for getting basepath of relative regions/hotspots. */
 export function fetchBasepaths(bookid, sessionKey, userid, bookServerURL, roleTypeID) {
-  var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/launchbook?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON';
+  let serviceurl = ''+bookServerURL+'/ebook/pdfplayer/launchbook?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  let tempurl = serviceurl.replace("https","http");
+  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return {
     type: 'RECEIVE_BASEPATH',
     payload: axios.get(''+serviceurl+'&hsid='+hsid),
@@ -756,10 +756,10 @@ export function fetchBasepaths(bookid, sessionKey, userid, bookServerURL, roleTy
  /* Created Action creator for getting book features. */
 export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, roleTypeID,scenarioId) {
     // payload: axios.get(''+bookServerURL+'/ebook/ipad/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON',
-  var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&scenario=' + scenarioId + '&outputformat=JSON';
+  let serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&scenario=' + scenarioId + '&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  let tempurl = serviceurl.replace("https","http");
+  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return {
     type: 'RECEIVE_BOOK_FEATURES',
     payload: axios.get(''+serviceurl+'&hsid='+hsid),
@@ -769,10 +769,10 @@ export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, rol
  /* Created Action creator for fetching user information. */
 export function fetchUserInfo(globaluserid, bookid, uid, ubd, ubsd, sessionKey, bookServerURL) {
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-  var serviceurl = `${bookServerURL}/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid=${globaluserid}&bookid=${bookid}&uid=${ubd}&ubd=${ubd}&ubsd=${ubsd}&authkey=${sessionKey}`;
+  let serviceurl = `${bookServerURL}/ebook/ipad/synchbookwithbookshelfserverdata?globaluserid=${globaluserid}&bookid=${bookid}&uid=${ubd}&ubd=${ubd}&ubsd=${ubsd}&authkey=${sessionKey}`;
   // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  let tempurl = serviceurl.replace("https","http");
+  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return {
     type: 'RECEIVE_USER_INFO',
     payload: axios.get(`${serviceurl}&hsid=${hsid}`),
@@ -789,7 +789,7 @@ export function fetchHighlightUsingReaderApi(userId, bookId, shared, courseId) {
     }
   };
 
-  // var uri = 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared=true&userId='+userId+'&bookId='+bookId+'&pageId='+pageId;
+  // let uri = 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared=true&userId='+userId+'&bookId='+bookId+'&pageId='+pageId;
   const authorizationHeaderVal = createAuthorizationToken(`/highlight?includeShared=${shared}`
     + `&limit=100&userId=${userId}&bookId=${bookId}&courseId=${courseId}`, 'GET');
   return (dispatch) => {
@@ -989,12 +989,12 @@ export function fetchbookDetails(urn, piToken,bookID)
       headers: { 'Content-Type': 'application/json',
         'X-Authorization': piToken }
       }).then((response) => {
-      var bookDetails;
+      let bookDetails;
       if (response.status >= 400) {
         console.log(`bookshelf error`);
       } else if (response.data) {
-        var booksArray = response.data.entries;
-           for(var i=0; i<booksArray.length; i++)
+        let booksArray = response.data.entries;
+           for(let i=0; i<booksArray.length; i++)
         {
           if(booksArray[i].bookId === bookID)
           {
@@ -1009,11 +1009,11 @@ export function fetchbookDetails(urn, piToken,bookID)
 
 export function validateUser(userid,scenario,invoketype,bookid,roletypeid,piToken,bookServerURL)
 {
-  var serviceurl = ''+bookServerURL+'/ebook/pdfplayer/validateuser?values=bookid::' + bookid + '::scenario::' +  scenario + '::invoketype::'
+  let serviceurl = ''+bookServerURL+'/ebook/pdfplayer/validateuser?values=bookid::' + bookid + '::scenario::' +  scenario + '::invoketype::'
                         +invoketype+'::userid::'+userid+'::roletypeid::'+roletypeid+'&key='+piToken+'&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  let tempurl = serviceurl.replace("https","http");
+  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return dispatch =>
     axios.get(''+serviceurl+'&hsid='+hsid).then((response) => {
       if (response.status >= 400) {
@@ -1029,10 +1029,10 @@ export function validateUser(userid,scenario,invoketype,bookid,roletypeid,piToke
 
 export function getlocaluserID(bookServerURL,globaluserid,type)
 {
-  var serviceurl = ''+bookServerURL+'/ebook/ipad/getlocaluserid?globaluserid=' + globaluserid + '&type=' +  type + '&outputformat=JSON';
+  let serviceurl = ''+bookServerURL+'/ebook/ipad/getlocaluserid?globaluserid=' + globaluserid + '&type=' +  type + '&outputformat=JSON';
   // tempurl is starts with http to create hash key for matching with server
-  var tempurl = serviceurl.replace("https","http");
-  var hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  let tempurl = serviceurl.replace("https","http");
+  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
   return {
     type: 'RECEIVE_USER_INFO',
     payload: axios.get(`${serviceurl}&hsid=${hsid}`),

@@ -506,7 +506,7 @@ function onNoteChange(event) {
   }
   $(popupElementId).find(":input:first").focus();
   if($(popupElementId).find('textarea').val().length > 0) {
-    $($(popupElementId)).find('#noteContainer').html(linkifyStr($(popupElementId).find('textarea').val()));
+    $($(popupElementId)).find('#noteContainer').html($(popupElementId).find('textarea').val());
     $($(popupElementId).find('textarea')).hide();
     $($(popupElementId)).find('#noteContainer').show();
   } else {
