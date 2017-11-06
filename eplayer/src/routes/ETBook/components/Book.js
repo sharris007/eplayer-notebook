@@ -277,10 +277,10 @@
     };
 
     onPageChange = (type, data) => {
-      if (data) {
-        switch (type) {
-          case 'continue':
+      switch (type) {
+        case 'continue':
           {
+            if (data) {
               document.title = data.title;
               this.setState({ isPanelOpen: true }, () => {
                 const pageDetails = { ...this.state.pageDetails };
@@ -293,36 +293,38 @@
                 // window.open(`/eplayer/MultiTaskPanel`, 'panel');
                 // window.open(`http://localhost:3000/eplayer/ETbook/1Q98UHDD1E1/page/${data.id}`,'panel');
               });
+            }
             break;
           }
-          case typeConstants.ANNOTATION_CREATED:
+        case typeConstants.ANNOTATION_CREATED:
           {
             const annList = annStructureChange([data.rows[0]]);
             this.props.dispatch(getTotalAnnotationData(annList));
             break;
           }
-          case typeConstants.ANNOTATION_UPDATED:
+        case typeConstants.ANNOTATION_UPDATED:
           {
             const annList = annStructureChange([data.rows[0]]);
             this.props.dispatch(deleteAnnotationData(data.rows[0]));
             this.props.dispatch(getTotalAnnotationData(annList));
             break;
           }
-          case typeConstants.ANNOTATION_DELETED:
+        case typeConstants.ANNOTATION_DELETED:
           {
             this.props.dispatch(deleteAnnotationData(data.rows[0]));
             break;
           }
-          case 'pagescroll':
-            $("#pageNum").val(data);
-            break;
-          default:
+        case 'pagescroll':
+          $("#pageNum").val(data);
+          break;
+        default:
           {
             // other than continue
-            this.onNavChange(data);
+            if (data){
+              this.onNavChange(data);
+            }
             break;
           }
-        }
       }
     }
 
@@ -1009,7 +1011,7 @@
           }
           onPageLoad = { this.onPageLoad }
           onPageClick = { this.onPageClick }
-          handleAnnotationUpdate = { this.onPageChange } 
+          onAnnotationUpdate = { this.onPageChange } 
           annSearchId = { bootstrapParams.pageDetails.annId }
           key = { bootstrapParams.pageDetails.currentPageURL.id }
           /> 
