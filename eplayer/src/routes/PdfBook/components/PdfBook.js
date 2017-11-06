@@ -34,7 +34,7 @@ let ssoKey;
 let serverDetails;
 let langID;
 let roleTypeID;
-var currentbook;
+let currentbook;
 /* Creating PdfBook component. */
 export class PdfBook extends Component {
   constructor(props){
@@ -71,8 +71,8 @@ export class PdfBook extends Component {
 used for before mounting occurs. */
   async componentWillMount() {
   currentbook = {};
-  var bookID = this.props.location.query.bookid;
-  var bookData = {};
+  let bookID = this.props.location.query.bookid;
+  let bookData = {};
   if ((this.props.location.query.invoketype !== undefined && 
           this.props.location.query.invoketype === 'pi') || (this.props.currentbook.globalUserId !== undefined && this.props.location.query.invoketype !== undefined && 
           this.props.location.query.invoketype === 'et1'))
@@ -93,7 +93,6 @@ used for before mounting occurs. */
         uid = this.props.currentbook.uid;
         ubd = this.props.currentbook.ubd;
         ubsd = this.props.currentbook.ubsd;
-        // ssoKey = this.props.currentbook.ssoKey;
         serverDetails = this.props.currentbook.serverDetails;
         roleTypeID = this.props.currentbook.roleTypeID;
       }
@@ -106,7 +105,7 @@ used for before mounting occurs. */
         }); 
         const secureToken  = localStorage.getItem('secureToken');
         let urn = 'compositeBookShelf';
-        await this.props.fetchbookDetails(urn, secureToken,this.props.location.query.bookid).then((bookDetails) =>{
+        await this.props.actions.fetchbookDetails(urn, secureToken,this.props.location.query.bookid).then((bookDetails) =>{
           if(bookDetails)
           {
             bookData = bookDetails;
@@ -125,8 +124,8 @@ used for before mounting occurs. */
       { 
         const islocal = this.props.location.query.islocal;
         const ispxedev = this.props.location.query.ispxedev; 
-        var querystr = window.location.search.substring(1);
-        var serverhsid = this.props.location.query.hsid; 
+        let querystr = window.location.search.substring(1);
+        let serverhsid = this.props.location.query.hsid; 
           // For testing purpose we added islocal & ispxedev fields. Should be removed once testing is done
         if(islocal !== undefined && islocal !== '' && islocal !== null)
         {
@@ -137,7 +136,7 @@ used for before mounting occurs. */
           querystr = querystr.replace("&ispxedev=Y","");
         }   
         querystr = querystr.replace("&hsid="+serverhsid,"");  
-        var clienthsid = getmd5(querystr+eT1Contants.DEEPLINK_MD5_SECRET_KEY);   
+        let clienthsid = getmd5(querystr+eT1Contants.DEEPLINK_MD5_SECRET_KEY);   
         if(clienthsid == serverhsid)    
         {   
           console.log("hsid match success. Continue to launch the title")   
@@ -150,7 +149,7 @@ used for before mounting occurs. */
         if(this.props.location.query.bookserver !== undefined)
         {
           const bookserverno = this.props.location.query.bookserver;
-          var bookserver;
+          let bookserver;
           if (envType == 'qa')
           {
             bookserver = 'CERT'+bookserverno;
@@ -177,8 +176,7 @@ used for before mounting occurs. */
     if (this.props.location.query.invoketype !== undefined && 
           this.props.location.query.invoketype === 'pi' && this.props.location.query.userid === undefined)
     {
-      // await this.props.fetchUserInfo(identityId, bookID, ubd, ubd, ubsd, ssoKey, serverDetails);
-      await this.props.getlocaluserID(serverDetails,identityId,'sms');
+      await this.props.actions.getlocaluserID(serverDetails,identityId,'sms');
     }
     else
     {
@@ -203,11 +201,11 @@ used for before mounting occurs. */
     {
       currentbook.scenario = eT1Contants.SCENARIOS.S1;
     }
-    var authkey;
+    let authkey;
     if(this.props.location.query.invoketype && this.props.location.query.invoketype === 'pi')
     {
         const piToken  = localStorage.getItem('secureToken');
-        await this.props.validateUser(this.props.book.userInfo.userid,currentbook.scenario,this.props.location.query.invoketype,
+        await this.props.actions.validateUser(this.props.book.userInfo.userid,currentbook.scenario,this.props.location.query.invoketype,
                   bookID,roleTypeID,piToken,serverDetails);
         authkey = this.props.book.sessionInfo.ssoKey;
     }
@@ -215,8 +213,8 @@ used for before mounting occurs. */
     {
       authkey = this.props.location.query.sessionid;
     }
-    this.props.updateAuthKey(authkey);
-    await this.props.fetchBookInfo(bookID, currentbook.scenario,
+    this.props.actions.updateAuthKey(authkey);
+    await this.props.actions.fetchBookInfo(bookID, currentbook.scenario,
               this.props.book.userInfo.userid, serverDetails, roleTypeID,uid,ubd,ubsd,identityId,authkey);
     if(!this.props.book.bookinfo.fetched)
     {
@@ -224,7 +222,7 @@ used for before mounting occurs. */
     }
     currentbook.globaluserid = identityId;
     currentbook.authorName = bookData.author ? bookData.author : this.props.book.bookinfo.book.author;
-    var tempThumbnail = bookData.image ? bookData.image : this.props.book.bookinfo.book.thumbnailimg;
+    let tempThumbnail = bookData.image ? bookData.image : this.props.book.bookinfo.book.thumbnailimg;
     if(tempThumbnail.indexOf("http") !== 0)
     {
       tempThumbnail = serverDetails+'/ebookassets/'+this.props.book.bookinfo.book.globalbookid+tempThumbnail;
@@ -237,7 +235,7 @@ used for before mounting occurs. */
     currentbook.languageid = this.props.location.query.languageid ?   
                              this.props.location.query.languageid : undefined;    
     currentbook.ssoKey = authkey;
-    await this.props.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
+    await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
     
   }
 
@@ -257,31 +255,10 @@ used for before mounting occurs. */
       };
       return (
         <PdfBookReader
+          data={this.props}
           locale={locale}
-          fetchTocAndViewer={this.props.fetchTocAndViewer}
-          fetchBookmarksUsingReaderApi={this.props.fetchBookmarksUsingReaderApi}
-          addBookmarkUsingReaderApi={this.props.addBookmarkUsingReaderApi}
-          removeBookmarkUsingReaderApi={this.props.removeBookmarkUsingReaderApi}
-          fetchBookInfo={this.props.fetchBookInfo}
-          fetchPageInfo={this.props.fetchPageInfo}
-          goToPage={this.props.goToPage}
-          book={this.props.book}
           currentbook={currentbook}
-          login={this.props.login}
-          params={this.props.params}
-          location={this.props.location}
-          fetchHighlightUsingReaderApi={this.props.fetchHighlightUsingReaderApi}
-          saveHighlightUsingReaderApi={this.props.saveHighlightUsingReaderApi}
-          removeHighlightUsingReaderApi={this.props.removeHighlightUsingReaderApi}
           PdfbookMessages={PdfbookMessages}
-          loadAssertUrl={this.props.loadAssertUrl}
-          editHighlightUsingReaderApi={this.props.editHighlightUsingReaderApi}
-          fetchRegionsInfo={this.props.fetchRegionsInfo}
-          fetchPagebyPageNumber={this.props.fetchPagebyPageNumber}
-          fetchUserIcons={this.props.fetchUserIcons}
-          fetchBookFeatures={this.props.fetchBookFeatures}
-          fetchGlossaryItems={this.props.fetchGlossaryItems}
-          fetchBasepaths={this.props.fetchBasepaths}
         />);
     }
 

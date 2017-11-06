@@ -32,6 +32,31 @@ class PopUpInfo extends Component {
     }
   }
 
+  linkHandler =(e) => {
+    const ele = e.currentTarget;
+    const newTabClasses = ['include', 'termref', 'index-locator', 'ulink', 'webresource'];
+    for (let i = 0; i < newTabClasses.length; i++) {
+      if (ele.classList.contains(newTabClasses[i])) {
+        ele.target = '_blank';
+        return;
+      }
+    }
+    e.preventDefault();
+    const message = {
+      sender: 'GlossaryPopUpInfo',
+      type: 'ewl',
+      time: Date.now(),
+      data: {
+        title: ele.innerText,
+        src: ele.href,
+        type: ele.className
+      }
+    };
+    if (this.props.popUpCallBack) {
+      this.props.popUpCallBack(message);
+    }
+  }
+
   frameGlossPopOver = (index, event) => {
     event.preventDefault();
     const props = this.props.popUpCollection[index];
@@ -89,10 +114,16 @@ class PopUpInfo extends Component {
     if (props.popOverCollection) {
       const bookDivHeight = node.clientHeight + 'px';
       document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
+      const content = renderHTML(props.popOverCollection.popOverDescription);
+      for (let i = 0; i < content.length; i++) {
+        if (content[i].type === 'a') {
+          content.splice(i, 1, React.cloneElement(content[i], { onClick: this.linkHandler }));
+        }
+      }
       Popup.registerPlugin('popover', function(element) {
         this.create({
           title: props.popOverCollection.popOverTitle ? renderHTML(props.popOverCollection.popOverTitle) : '',
-          content: renderHTML(props.popOverCollection.popOverDescription),
+          content,//: renderHTML(props.popOverCollection.popOverDescription),
           noOverlay: true,
           position: function(box) {
             console.log(document.getElementsByClassName('mm-popup__box'));

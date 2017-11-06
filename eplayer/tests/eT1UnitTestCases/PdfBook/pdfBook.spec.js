@@ -61,19 +61,12 @@ function test1(actionType,expectedActionType,expectedState,actionObj){
 }
 
 describe("PdfBook (Reducer)", () => {
-
-  //REQUEST_BOOKMARKS
-  let expectedState = Object.assign({},initialState);
-  expectedState.isFetching.bookmarks = true;
-  let action = {
-    type: REQUEST_BOOKMARKS
-    }
-  test1(REQUEST_BOOKMARKS,'REQUEST_BOOKMARKS',expectedState,action);
-
+  
   //RECEIVE_BOOKMARKS
+  let expectedState = Object.assign({},initialState);
   expectedState.bookmarks = [];
   expectedState.isFetching.bookmarks = false;
-  action = {
+  let action = {
     type : RECEIVE_BOOKMARKS,
       bookState : {
         bookmarks : [],

@@ -1,45 +1,12 @@
 import React from 'react';
 import ShallowRenderer from 'react-test-renderer/shallow';
+import { shallow } from 'enzyme';
+import { BookshelfComponent } from '@pearson-incubator/bookshelf';
 import BookshelfPage from '../../../src/routes/Bookshelf/components/Bookshelf';
+import BookshelfHeader from '../../../src/components/BookshelfHeader';
 import { fetch, storeBookDetails, storeSsoKey } from '../../../src/routes/Bookshelf/modules/bookshelfActions';
-/*let piSession = {
-ErrorEvent:"error",
-LoginEvent:"login",
-LogoutEvent:"logout",
-NoSession:"nosession",
-NoToken:"notoken",
-RefreshEvent:"refresh",
-RequiredLifetimeTooLong:"requiredLifetimeTooLong",
-SessionStateKnownEvent:"sessionstateknown",
-Success:"success",
-TimedOut:"timedout",
-Unknown:"unknown",
-autoimpersonate:function(bf,be){},
-autologin:function(bh,bf,be,bg){},
-currentLastUserActivityTime:function(){},
-currentSessionExpiry:function(){},
-currentToken:function(),
-currentTokenExpiry:function(){},
-doNotUseThisDeprecatedMethod:function(be){},
-extendUserSession:function(){},
-getHomeCountryCode:function(){},
-getToken:function(bi,bh,bf){},
-getsmssession:function(bh,be,bg,bf){},
-hasValidSession:function(be){},
-initialize:function(be,bf){},
-isUserEventMonitoringActive:function(){},
-login:function(bg,bh,bi){},
-logout:function(be){},
-monitorUserActivity:function(be){},
-off:function(be,bf){},
-on:function(be,bf){},
-recordUserActivity:function(){},
-setOptions:function(be){},
-trigger:function(be,bf){},
-userId:function(){}
-}*/
 
-function shallowRender (component) {
+/*function shallowRender (component) {
   	const renderer = new ShallowRenderer();
 	renderer.render(component)
  	 return renderer.getRenderOutput()
@@ -47,6 +14,10 @@ function shallowRender (component) {
 
 function shallowRenderWithProps (props = {}) {
   	return shallowRender(<BookshelfPage {...props}/>)
+}*/
+
+function handleBookClick(bookId, type){
+
 }
 
 	describe(" Bookshelf ", function(){
@@ -55,7 +26,10 @@ function shallowRenderWithProps (props = {}) {
 		beforeEach(function(){
 
 			_props = {
-				bookshelf : {},
+				bookshelf : {
+					fetching : false,
+					fetched : true
+				},
 				book : {},
 				login : {},
 				location : {
@@ -67,15 +41,23 @@ function shallowRenderWithProps (props = {}) {
 				storeBookDetails,
 				storeSsoKey, 
 			}
-			 _component = shallowRenderWithProps(_props);
+			 _component = shallow(<BookshelfPage {..._props}/>);
 		})
 
 		it('Should render as a <div>.', function () {
-    		expect(_component.type).to.equal('div')
+    		expect(_component.type()).to.equal('div')
   		})
 
   		it('Should have id "bookshelf-page"', function() {
-  			expect(_component.props.id).to.equal('bookshelf-page')
+  			expect(_component).to.have.id('bookshelf-page')
   		})
-	
+
+  		it('Should have children component BookshelfHeader', () => {
+  			expect(_component.find(BookshelfHeader)).to.have.length(1)
+  		})
+
+  		it('Should have children component BookshelfComponent', () => {
+  			expect(_component.find(BookshelfComponent)).to.have.length(1)
+  		})
+
 	})

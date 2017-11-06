@@ -912,8 +912,8 @@
           brixCss: `${window.location.origin}/eplayer/bxix_scripts/brix.css`,
           environment: 'LOCAL', 
           pxeUserPreference:{
-            bgColor:bootstrapParams.pageDetails.bgColor, 
-            pageFontSize:bootstrapParams.pageDetails.pageFontSize,
+            theme:bootstrapParams.pageDetails.bgColor, 
+            fontSize:bootstrapParams.pageDetails.pageFontSize,
             isAnnotationHide: bootstrapParams.pageDetails.isAnnotationHide
           }, 
           searchText: bootstrapParams.pageDetails.searchText

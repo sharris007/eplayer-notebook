@@ -80,7 +80,7 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
    //coord.left = coord.left + (coord.width * 1.5);
    //coord.top = coord.top + (coord.height * 1.5);
-   coord.top = (coord.top + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
+   coord.top = (coord.top + document.getElementsByClassName('eT1headerBar')[0].clientHeight) - 20;
    var id = 'openPopupHighlight';
    var parentElement = document.createElement('div');
    parentElement.setAttribute('id', id);
@@ -412,10 +412,10 @@ function onNoteChange(event) {
    var pageWidth = $("#docViewer_ViewContainer").width();
    coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
    //coord.top = coord.top + (coord.height * 1.5);
-   coord.top = (coord.top + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
+   coord.top = (coord.top + document.getElementsByClassName('eT1headerBar')[0].clientHeight) - 20;
    if(cornerFoldedImageTop!==undefined)
    {
-     coord.top = (cornerFoldedImageTop + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
+     coord.top = (cornerFoldedImageTop + document.getElementsByClassName('eT1headerBar')[0].clientHeight) - 20;
    }
    var id = 'openPopupHighlight';
    var parentElement = document.createElement('div');
@@ -506,7 +506,7 @@ function onNoteChange(event) {
   }
   $(popupElementId).find(":input:first").focus();
   if($(popupElementId).find('textarea').val().length > 0) {
-    $($(popupElementId)).find('#noteContainer').html(linkifyStr($(popupElementId).find('textarea').val()));
+    $($(popupElementId)).find('#noteContainer').html($(popupElementId).find('textarea').val());
     $($(popupElementId).find('textarea')).hide();
     $($(popupElementId)).find('#noteContainer').show();
   } else {

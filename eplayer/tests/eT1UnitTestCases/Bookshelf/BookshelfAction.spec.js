@@ -87,11 +87,5 @@ describe("Bookshelf (Action Creators)", function(){
 	it("gotAuthToken() Should return an action with type GOTAUTH", function(){
 		expect(gotAuthToken()).to.have.property('type','GOTAUTH');
 	})
-
-
-	it("gotAuthToken() Should return an action with payload", function(){
-		let payload =  { authFetched: {} }
-		expect(gotAuthToken({})).to.have.deep.property('payload',payload);
-	})
-
+	
 })

@@ -12,8 +12,10 @@
     "compile": "better-npm-run compile",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
+    "lint-html": "eslint src -f html -o ./eslintReport/lint-results.html",
     "start": "better-npm-run start",
     "dev": "better-npm-run dev",
+     "unit-test": "jest",
     "test": "better-npm-run test",
     "test:dev": "npm run test -- --watch",
     "testpdf": "better-npm-run testpdf",
@@ -69,7 +71,7 @@
       }
     },
     "test": {
-      "command": "jest",
+      "command": "node ./node_modules/karma/bin/karma start build/karma.conf",
       "env": {
         "NODE_ENV": "test",
         "DEBUG": "app:*"
@@ -102,14 +104,14 @@
     "@pearson-incubator/bookshelf": "^0.1.36",
     "@pearson-incubator/notes": "^0.1.37",
     "@pearson-incubator/popup-info": "^2.0.10",
-    "@pearson-incubator/preferences": "^0.1.35",
+    "@pearson-incubator/preferences": "^0.1.36",
     "@pearson-incubator/pxe-annotation": "^1.0.19",
     "@pearson-incubator/pxe-printpage": "*",
     "@pearson-incubator/pxe-wrapper": "^1.0.2",
     "@pearson-incubator/search": "^0.1.33",
     "@pearson-incubator/toc": "^0.1.54",
     "@pearson-incubator/vega-core": "0.0.44",
-    "@pearson-incubator/vega-viewer": "^0.0.59",
+    "@pearson-incubator/vega-viewer": "^0.0.65",
     "@pearson-incubator/viewer": "^0.1.32",
     "axios": "^0.15.3",
     "babel-loader": "^6.2.5",

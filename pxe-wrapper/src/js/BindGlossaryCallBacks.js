@@ -60,7 +60,7 @@ export class BindGlossaryCallBacks {
         console.log('Working : - ', 'this.glossaryurlIndex :- ', this.glossaryurlIndex, this.glossaryUrlCollection[this.glossaryurlIndex]);
         this.glossaryCollection = [];
         const bookDiv = this.props.node.contentDocument.body;
-        this.props.divGlossaryRef.innerHTML = text;
+        this.props.divGlossaryRef.innerHTML = `<base href=${this.props.basePath} />${text}`;
         GlossaryPopUpClasses.forEach((classes) => {
           const bookDivQuerySelectorClasses = bookDiv.querySelectorAll(classes);
           for (let i=0;i<bookDivQuerySelectorClasses.length;i++) {

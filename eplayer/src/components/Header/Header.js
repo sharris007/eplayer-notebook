@@ -67,6 +67,7 @@ export class Header extends React.Component {
         })
         this.setState({loadingFirstTime : false})
       }
+      $('.navigation').css({height :60})
     }
   }
 
@@ -261,11 +262,33 @@ export class Header extends React.Component {
           textAlign: 'center',
           height: 'auto',
           lineHeight: 'inherit',
-          margin: '0 0 0 117px'
+          margin: '0 0 0 117px',
+          paddingTop: '0 !important'
         },
         navUp: {
           top: '-84px'
         }
+      },
+      hideBookshelfIcon: {
+        margin: '0',
+        visibility:'hidden'
+      },
+      hideDrawerIcon: {
+        margin: '0 0 0 30px',
+        height: '16.5px',
+        width: '18px',
+        visibility:'hidden'
+      },
+      hideBookmarkIcon: {
+        visibility:'hidden'
+      },
+      hidePrefIcon: {
+        margin: '0 0 0 30px',
+        visibility:'hidden'
+      },
+      hideSearchIcon: {
+        margin: '0 30px',
+        visibility:'hidden'
       }
     };
 
@@ -294,7 +317,9 @@ export class Header extends React.Component {
             <div>
               <div className="back_rec">
               {this.props.isET1 === 'Y' && (!this.props.bookData.bookFeatures.hasbookshelflink || this.props.invoketype === 'et1') ?
-                <div className="empty"/> :
+                <div 
+                  className="icon-white "
+                  style={style.hideBookshelfIcon}/> :
                 <span
                   className="icon-white "
                   style={style.bookshelfIcon}
@@ -303,13 +328,14 @@ export class Header extends React.Component {
                   role="button"
                   tabIndex="0"
                 >
-                  <span className = "tooltiptext"> Bookshelf </span>
                   <Icon name="chevron-back-18" />
                 </span>
               }
               </div>
               {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hasdrawerbutton ?
-                <div className="empty"/> :
+                <div 
+                  className="drawerIcon icon-white"
+                  style={style.hideDrawerIcon}/> :
               <span
                 className="drawerIcon icon-white"
                 style={style.drawerIcon}
@@ -318,7 +344,6 @@ export class Header extends React.Component {
                 role="button"
                 tabIndex="0"
               >
-                <span className = "tooltiptext"> Drawer </span>
                 <Icon name="hamburger-light-18" />
               </span>
             }
@@ -327,14 +352,15 @@ export class Header extends React.Component {
           iconElementRight={
             <div>
             {this.props.currentPageIndex == 0 || (this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hasbookmarkpagebutton) ?
-              <div className="empty"/> :
+              <div className="bookmarkIcon" style={style.hideBookmarkIcon}/> :
               <div className="bookmarkIcon" onClick={this.handleHeaderClick} role="button" tabIndex="0">
-              <span className = "tooltiptext"> Bookmark </span>
                 <BookmarkIconComponent data={bookmarkIconData} locale="en"/>
               </div>
             }
             {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.haszoominbutton && !this.props.bookData.bookFeatures.haszoomoutbutton ?
-              <div className="empty"/> :
+              <div 
+                className="icon-white prefIcon"
+                style={style.hidePrefIcon}/> :
               <div
                 className="icon-white prefIcon"
                 style={style.prefIcon}
@@ -343,7 +369,6 @@ export class Header extends React.Component {
                 role="button"
                 tabIndex="0"
               >
-                <span className = "tooltiptext"> Zoom </span>
                 <Icon name="font-setting-24" />
               </div>
             }
@@ -351,7 +376,9 @@ export class Header extends React.Component {
        : <div className="preferences-container">{this.state.prefOpen ? <div className="content"><PreferencesComponent fetch={this.props.getPreference} preferenceUpdate={this.props.updatePreference}
          disableBackgroundColor={false} locale="en" /></div> : <div className="empty" />} </div>}
          {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hassearchbutton ?
-              <div className="empty"/> :
+              <div 
+                className="icon-white searchIcon"
+                style={style.hideSearchIcon}/> :
               <div
                 className="icon-white searchIcon"
                 style={style.searchIcon}
@@ -360,7 +387,6 @@ export class Header extends React.Component {
                 onClick={this.searchClick}
                 onKeyDown={this.searchKeySelect}
               >
-                <span className = "tooltiptext"> Search </span>
                 <Icon name="search-lg-18" />
               </div>
             }
@@ -368,7 +394,6 @@ export class Header extends React.Component {
                 {this.state.searchOpen ? <Search locale={locale} store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={pageId => this.goToPage(pageId)} indexId={this.props.indexId} listClick={this.props.listClick} isET1="Y" /> : <div className="empty" />}
               </div>
               <div className="moreIcon" onClick={this.handleMoreMenuClick}>
-              <span className = "tooltiptext"> LogOut </span>
                 <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} sceanrio={this.props.currentScenario} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages} />
               </div>
             </div>}
