@@ -33,8 +33,15 @@ class PopUpInfo extends Component {
   }
 
   linkHandler =(e) => {
-    e.preventDefault();
     const ele = e.currentTarget;
+    const newTabClasses = ['include', 'termref', 'index-locator', 'ulink', 'webresource'];
+    for (let i = 0; i < newTabClasses.length; i++) {
+      if (ele.classList.contains(newTabClasses[i])) {
+        ele.target = '_blank';
+        return;
+      }
+    }
+    e.preventDefault();
     const message = {
       sender: 'GlossaryPopUpInfo',
       type: 'ewl',
