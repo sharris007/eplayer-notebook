@@ -193,3 +193,15 @@ export const postPreferencedata = data => fetch(`${etextService[envType]}/nextex
   },
   body: JSON.stringify(data.preferenceObj)
 });
+
+//putCustomTocDetails
+export const putCustomTocDetails = (tocContents, piToken, bookId) => fetch(`${resources.links.updateCustomTocUrl[envType]}/${bookId}/publish`, { // eslint-disable-line no-undef
+  method: 'PUT',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-Authorization': piToken,
+    'productType':'ETEXT2_PXE'
+  },
+  body: JSON.stringify(tocContents)
+});
