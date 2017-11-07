@@ -11,7 +11,7 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-import { getBookDetails, getPlaylistDetails, getTocDetails, getCourseDetails , getPiUserProfile } from './genericApi';
+import { getBookDetails, getPlaylistDetails, getTocDetails, getCourseDetails , getPiUserProfile, putCustomTocDetails } from './genericApi';
 
 class PlaylistApi {
   static doGetPiUserDetails = piUserDetails => getPiUserProfile(piUserDetails)
@@ -19,6 +19,7 @@ class PlaylistApi {
   static doGetPlaylistDetails = (bookId, tocurl, piToken) => getPlaylistDetails(bookId, tocurl, piToken)
   static doGetTocDetails = (bookId, tocurl, piToken) => getTocDetails(bookId, tocurl, piToken)
   static doGetCourseDetails = courseDetails => getCourseDetails(courseDetails)
+  static doPutCustomTocDetails = (tocContents, piToken, bookId) => putCustomTocDetails(tocContents, piToken, bookId)
 }
 
 export default PlaylistApi;
