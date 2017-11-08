@@ -38,7 +38,7 @@ export const annStructureChange = (annTotalList) => {
         time: annTotalList[i].createdTimestamp,
         text: annTotalList[i].quote,
         comment: annTotalList[i].text || '',
-        color: colorArr[annTotalList[i].color] || 'Green'
+        color: colorArr[annTotalList[i].colorCode] || 'Green'
       };
       annListArray.push(setArray);
     }
