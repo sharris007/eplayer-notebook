@@ -720,6 +720,19 @@ function getAssetURLForPDFDownload(config,cb){
         return false;
       }
 
+      _this.handleNoteIconClick = function(event) {
+        var noteIcon = this;
+        var pageLeft = $("#docViewer_ViewContainer").offset().left;
+        var conatinerWidth = $("#docViewer_ViewContainer").width();
+        var originalPosition =((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 271)) + 'px'
+        event.currentTarget.style.left = ((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 287 + 32)) + 'px';
+        $("body").on('click',function(e) {
+          if($('#openPopupHighlight').is(':hidden') && noteIcon.style.left !== originalPosition)
+            {
+              noteIcon.style.left = ((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 271)) + 'px';
+            }
+        });
+      }     
       _this.loadHighlights = function() {
         //console.log("Highlights Loading ");
         var highlightedNodes = document.querySelectorAll('.fwr-highlight-annot');
@@ -1187,7 +1200,7 @@ function getAssetURLForPDFDownload(config,cb){
                     finaltop = childHighlightElement.offsetTop;
                     isOverlap = true;
                 }
-                var finalleft = (pageLeft + conatinerWidth) - ($(".fwr-page").offset().left + 287 + 32);
+                var finalleft = (pageLeft + conatinerWidth) - ($(".fwr-page").offset().left + 271);
                 //var finalleft = 0.9*pageWidth;
                 childElement.style.left = finalleft + "px";
                 childElement.style.top = (finaltop - 5) + "px";
@@ -1196,13 +1209,13 @@ function getAssetURLForPDFDownload(config,cb){
                 childElement.style.visibility = "visible";
                 childElement.style.height = 15*heightScale + "px";
                 childElement.style.width = 15*widthScale + "px";
+                childElement.addEventListener("click",_this.handleNoteIconClick);
                 _this.setClickEvent(childElement, hId, (finaltop + 5));
                 parentElement.appendChild(childElement);
             }
         }
         var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
         parentPageElement.appendChild(parentElement);
-
       } catch (e) {}
     }
 
