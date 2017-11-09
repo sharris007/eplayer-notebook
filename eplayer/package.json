@@ -167,7 +167,8 @@
     "universal-cookie": "^2.0.7",
     "url-loader": "^0.5.6",
     "webpack": "^1.12.14",
-    "yargs": "^5.0.0"
+    "yargs": "^5.0.0",
+    "babel-plugin-add-module-exports":"0.2.1"
   },
   "devDependencies": {
     "allure-commandline": "^2.1.1",
