@@ -481,11 +481,11 @@ export class PdfBookReader extends Component {
           if (pages === undefined) {
             pages = this.props.data.book.bookinfo.pages;
             localStorage.setItem('pages', JSON.stringify(pages));
-            let currentPage = find(pages,page => page.pagenumber == pageNo)
+            currentPage = find(pages,page => page.pagenumber == pageNo)
           } else {
             pages = pages.concat(this.props.data.book.bookinfo.pages);
             localStorage.setItem('pages', JSON.stringify(pages));
-            let currentPage = find(pages,page => page.pagenumber == pageNo)
+            currentPage = find(pages,page => page.pagenumber == pageNo)
           }
           this.goToPage(Number(currentPage.pageorder));
       });
