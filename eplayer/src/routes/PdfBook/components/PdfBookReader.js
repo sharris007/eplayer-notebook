@@ -83,10 +83,9 @@ export class PdfBookReader extends Component {
       courseId = -1;
     }
     /* Method for getting the bookmarks details which is already in book. */
-    this.props.data.actions.fetchBookmarksUsingReaderApi(this.props.data.location.query.bookid, false, courseId,
-      this.props.data.book.userInfo.userid, this.props.PdfbookMessages.PageMsg);
-    this.props.data.actions.fetchHighlightUsingReaderApi(this.props.data.book.userInfo.userid,
-      this.props.data.location.query.bookid, true, courseId, authorName);
+    this.props.data.actions.fetchBookmarksUsingReaderApi(this.props.data.location.query.bookid,
+      this.props.data.book.userInfo.userid, this.props.PdfbookMessages.PageMsg, this.props.data.book.bookinfo.book.roleTypeID, courseId);
+    this.props.data.actions.fetchHighlightUsingReaderApi(this.props.data.location.query.bookid,courseId,this.props.data.book.userInfo.userid,this.props.data.book.bookinfo.book.roleTypeID);
     this.props.data.actions.fetchBasepaths(this.props.data.location.query.bookid,ssoKey,this.props.data.book.userInfo.userid,serverDetails,this.props.data.book.bookinfo.book.roleTypeID);
 
     if ((this.props.currentbook.scenario == 1 || this.props.currentbook.scenario == 3
@@ -872,7 +871,7 @@ handleRegionClick(hotspotID) {
     const curHighlightCords = highlightData1.serializedHighlight;
     const curHighlightCordsStr = curHighlightCords.replace('@0.000000', '');
     const curHighlightCordsList = JSON.parse(curHighlightCordsStr);
-    let highLightID;
+    let selectedHighlight;
     let isExistinghighlightFound = false;
     for (let i = 0; i < highlightList.length; i++) {
       const actSt = highlightList[i].highlightHash;
@@ -884,7 +883,7 @@ handleRegionClick(hotspotID) {
                   && parseInt(cordList[j].top, 10) <= parseInt(curHighlightCordsList[k].top, 10)
                   && parseInt(cordList[j].bottom, 10) >= parseInt(curHighlightCordsList[k].bottom, 10)
                   && parseInt(cordList[j].right, 10) >= parseInt(curHighlightCordsList[k].right, 10)) {
-            highLightID = highlightList[i].id;
+            selectedHighlight = highlightList[i];
             isExistinghighlightFound = true;
           }
           if (isExistinghighlightFound) {
@@ -899,9 +898,13 @@ handleRegionClick(hotspotID) {
         break;
       }
     }
-
-    if (highLightID !== undefined && isExistinghighlightFound) {
-      this.handleHighlightClick(highLightID);
+    if (selectedHighlight !== undefined && selectedHighlight.meta.roletypeid == 3 &&
+            this.props.data.book.bookinfo.book.roleTypeID == 2)
+    {
+      return;
+    }
+    else if (selectedHighlight !== undefined && isExistinghighlightFound) {
+      this.handleHighlightClick(selectedHighlight.id);
     } else {
       const highlightsLength = highlightList.length;
       currentHighlight.id = highlightsLength + 1;
@@ -976,6 +979,7 @@ handleRegionClick(hotspotID) {
   displayHighlight = () => {
     const currentPageId = this.state.currPageIndex;
     const highlightList = [];
+    let noteIconsList = [];
     this.props.data.book.annTotalData.forEach((annotation) => {
       if (annotation.pageId === currentPageId) {
         if(annotation.shared){
@@ -986,17 +990,16 @@ handleRegionClick(hotspotID) {
           annotation.color = annotation.originalColor;
           annotation.meta.colorcode = annotation.originalColor;
         }
-        if (_.toString(annotation.meta.roletypeid) === _.toString(this.props.data.book.bookinfo.book.roleTypeID)) {
-          highlightList.push(annotation);
-        } else if (this.props.data.book.bookinfo.book.roleTypeID == 2
-          && annotation.meta.roletypeid == 3 && annotation.shared) {
-          highlightList.push(annotation);
+        highlightList.push(annotation);
+        if(!annotation.isHighlightOnly)
+        {
+          noteIconsList.push(annotation);
         }
       }
     });
     __pdfInstance.restoreHighlights(highlightList, this.deleteHighlight);
-    __pdfInstance.reRenderHighlightCornerImages(highlightList);
-    this.setState({ highlightList });
+    __pdfInstance.reRenderHighlightCornerImages(noteIconsList);
+    this.setState({ highlightList:highlightList });
   }
   /* Method for delete Highlight via passing the id of selected area. */
   deleteHighlight = (id) => {

@@ -137,22 +137,29 @@ function createAuthorizationToken(relativeURL, method) {
 }
 
 /* Method for fetching the bookmarks from Redaer Api by passing the below parameters. */
-export function fetchBookmarksUsingReaderApi(bookId, shared, courseId, userId, Page) {
+export function fetchBookmarksUsingReaderApi(bookId, userId, Page, roletypeid, courseId) {
   const bookState = {
     bookmarks: [],
     isFetching: {
       bookmarks: true
     }
   };
-  const authorizationHeaderVal = createAuthorizationToken('/bookmark?'
-    + `includeShared=${shared}&userId=${userId}&bookId=${bookId}&courseId=${courseId}`, 'GET');
+  let queryString;
+  if (roletypeid == 2)
+  {
+    queryString = `/bookmark?limit=${eT1Contants.readerApiResponseRecordsLimits}&userId=${userId}&bookId=${bookId}`;
+  }
+  else
+  {
+    queryString = `/bookmark?limit=${eT1Contants.readerApiResponseRecordsLimits}&userId=${userId}&bookId=${bookId}&courseId=${courseId}`;
+  }
+  const authorizationHeaderVal = createAuthorizationToken(queryString, 'GET');
 
   /* Dispatch is part of middleware used to dispatch the action, usually used in Asynchronous Ajax call.*/
   return (dispatch) => {
     dispatch(request('bookmarks'));
 
-    return clients.readerApi[envType].get(`/bookmark?includeShared=${shared}&`
-      + `userId=${userId}&bookId=${bookId}&courseId=${courseId}`, {
+    return clients.readerApi[envType].get(queryString, {
         headers: {
           Accept: 'application/json',
           Authorization: authorizationHeaderVal
@@ -191,6 +198,7 @@ export function fetchBookmarksUsingReaderApi(bookId, shared, courseId, userId, P
     });
   };
 }
+
 
 /* Created action creator for addBookmarkUsingReaderApi. */
 export function addBookmarkUsingReaderApi(userId, bookId, pageId, pageNo, externalId, courseId, shared, Page) {
@@ -784,22 +792,27 @@ export function fetchUserInfo(globaluserid, bookid, uid, ubd, ubsd, sessionKey, 
 }
 
 /* Created Action creator for feching highlight details from Reader Api. */
-export function fetchHighlightUsingReaderApi(userId, bookId, shared, courseId) {
+export function fetchHighlightUsingReaderApi(bookId, courseId, userid, roletypeid) {
   const bookState = {
     highlights: [],
     isFetching: {
       highlights: true
     }
   };
-
-  // let uri = 'https://api-sandbox.readerplatform.pearson-intl.com/highlight?includeShared=true&userId='+userId+'&bookId='+bookId+'&pageId='+pageId;
-  const authorizationHeaderVal = createAuthorizationToken(`/highlight?includeShared=${shared}`
-    + `&limit=100&userId=${userId}&bookId=${bookId}&courseId=${courseId}`, 'GET');
+  let queryString;
+  if (roletypeid == 2)
+  {
+    queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}`;
+  }
+  else
+  {
+    queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}&courseId=${courseId}&userId=${userid}`;
+  }
+  const authorizationHeaderVal = createAuthorizationToken(queryString, 'GET');
   return (dispatch) => {
     dispatch(request('highlights'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-    return clients.readerApi[envType].get(`/highlight?includeShared=${shared}&limit=100`
-      + `&userId=${userId}&bookId=${bookId}&courseId=${courseId}`, {
+    return clients.readerApi[envType].get(queryString, {
         headers: {
           Authorization: authorizationHeaderVal
         }
@@ -834,8 +847,21 @@ export function fetchHighlightUsingReaderApi(userId, bookId, shared, courseId) {
             hlObj.creationTime = highlight.creationTime;
             hlObj.time = time;
             hlObj.pageIndex = 1;        // For Foxit
-
-            bookState.highlights.push(hlObj);
+            if ((_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
+                  && (_.toString(hlObj.userId) === _.toString(userid))) {
+              hlObj.isHighlightOnly = false;
+              bookState.highlights.push(hlObj);
+            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3 && hlObj.courseId == courseId) {
+              if(hlObj.shared)
+              {
+               hlObj.isHighlightOnly = false;
+              }
+              else
+              {
+               hlObj.isHighlightOnly = true;
+              }
+              bookState.highlights.push(hlObj);
+            }
           });
         }
         bookState.highlights.sort((hl1, hl2) => hl2.time - hl1.time);
