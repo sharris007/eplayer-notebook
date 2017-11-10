@@ -733,6 +733,7 @@ function getAssetURLForPDFDownload(config,cb){
       }
 
       _this.handleNoteIconClick = function(event) {
+        var noteIcon;
         var pageLeft = $("#docViewer_ViewContainer").offset().left;
         var conatinerWidth = $("#docViewer_ViewContainer").width();
         var originalPosition =((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 271)) + 'px';
@@ -742,12 +743,20 @@ function getAssetURLForPDFDownload(config,cb){
         {
           noteIconElementList[i].style.left = originalPosition;
         }
-        var noteIcon = this;
-        event.currentTarget.style.left = ((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 287 + 32)) + 'px';
+        if($('#' + event.currentTarget.id).hasClass('pdfHighlight'))
+        {
+          noteIcon = document.getElementById(event.currentTarget.id + '_cornerimg');
+        }
+        else
+        {
+          noteIcon = this;
+        }
+        // noteIcon.style.left = ((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 287 + 32)) + 'px';
+        noteIcon.style.left = (parseInt(originalPosition,10) - 48) + 'px';
         $("body").on('click',function(e) {
           if($('#openPopupHighlight').is(':hidden') && noteIcon.style.left !== originalPosition)
             {
-              noteIcon.style.left = ((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 271)) + 'px';
+              noteIcon.style.left = originalPosition;
             }
         });
       }     
@@ -1227,7 +1236,15 @@ function getAssetURLForPDFDownload(config,cb){
                 childElement.style.visibility = "visible";
                 childElement.style.height = 15*heightScale + "px";
                 childElement.style.width = 15*widthScale + "px";
+                var noteHiglightIdElement = document.getElementById(hId); 
                 childElement.addEventListener("click",_this.handleNoteIconClick);
+                noteHiglightIdElement.addEventListener("click",_this.handleNoteIconClick);
+                var highlightElementList = $('.fwr-highlight-annot');
+                var highlightCount = $('.fwr-highlight-annot').length;
+                for(var k=0 ; k <highlightCount ; k ++)
+                {
+                  highlightElementList[k].addEventListener("click",_this.handleNoteIconClick);
+                }
                 _this.setClickEvent(childElement, hId, (finaltop + 5));
                 parentElement.appendChild(childElement);
             }

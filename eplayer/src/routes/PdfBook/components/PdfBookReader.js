@@ -642,13 +642,14 @@ export class PdfBookReader extends Component {
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={this.onHotspotClose}/>;
                break;
       case 'LTILINK':
+               let courseId;
                if (this.props.data.book.bookinfo.book.activeCourseID === undefined || this.props.data.book.bookinfo.book.activeCourseID === '' || this.props.data.book.bookinfo.book.activeCourseID === null)
                {
-                let courseId = -1;
+                courseId = -1;
                }
                else
                {
-                let courseId = this.props.data.book.bookinfo.book.activeCourseID;
+                courseId = this.props.data.book.bookinfo.book.activeCourseID;
                }
                /*Framing Complete LTI URl*/
                let link = serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.data.book.bookinfo.book.roleTypeID + '&userlogin=' + this.props.data.book.userInfo.userid ;
