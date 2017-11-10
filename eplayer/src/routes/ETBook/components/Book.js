@@ -664,30 +664,31 @@
         this.props.book.bookinfo = [];
         this.props.book.annTotalData = [];
       }
-      if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-         let originurl = localStorage.getItem('sourceUrl');       
-        if(originurl != null)
-          {
-            const langQuery = localStorage.getItem('bookshelfLang');
-            if (langQuery && langQuery !== '?languageid=1') {
-              browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-            } else {
-              browserHistory.push('/eplayer/bookshelf');
-            }
-          }
-          else
-            {
-                let redirectConsoleUrl   = resources.links.consoleUrl[domain.getEnvType()];
-        window.location.href = redirectConsoleUrl;
-            }  
-      }else {
-        const langQuery = localStorage.getItem('bookshelfLang');
-        if (langQuery && langQuery !== '?languageid=1') {
-          browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-        } else {
-          browserHistory.push('/eplayer/bookshelf');
-        }
-      }
+      window.history.back();
+      // if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+      //    let originurl = localStorage.getItem('sourceUrl');       
+      //   if(originurl != null)
+      //     {
+      //       const langQuery = localStorage.getItem('bookshelfLang');
+      //       if (langQuery && langQuery !== '?languageid=1') {
+      //         browserHistory.push(`/eplayer/bookshelf${langQuery}`);
+      //       } else {
+      //         browserHistory.push('/eplayer/bookshelf');
+      //       }
+      //     }
+      //     else
+      //       {
+      //           let redirectConsoleUrl   = resources.links.consoleUrl[domain.getEnvType()];
+      //   window.location.href = redirectConsoleUrl;
+      //       }  
+      // }else {
+      //   const langQuery = localStorage.getItem('bookshelfLang');
+      //   if (langQuery && langQuery !== '?languageid=1') {
+      //     browserHistory.push(`/eplayer/bookshelf${langQuery}`);
+      //   } else {
+      //     browserHistory.push('/eplayer/bookshelf');
+      //   }
+      // }
       this.setState({ open: false });
     }
 
