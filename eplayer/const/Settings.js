@@ -118,7 +118,7 @@ export const resources = {
      },
     updateCustomTocUrl : {
       local        :"https://etext-instructor-qa.pearson.com/idc-api/course",
-      dev          :"https://etext-instructor-qa.pearson.com/idc-api/course",
+      dev          :"https://etext-instructor-dev.pearson.com/idc-api/course",
       qa           :"https://etext-instructor-qa.pearson.com/idc-api/course",
       stage        :"https://etext-instructor-qa.pearson.com/idc-api/course",
       prod         :"https://etext-instructor-qa.pearson.com/idc-api/course",
