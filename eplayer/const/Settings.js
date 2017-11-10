@@ -18,8 +18,8 @@ export const resources = {
     TextSearchLimit: 100,
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
-    idcDashboardEnabled : false,
-    zeppelinEnabled     : false
+    idcDashboardEnabled : true,
+    zeppelinEnabled     : true
   },
   links: {
     legalNotice    : 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
@@ -110,15 +110,15 @@ export const resources = {
       prod         :"https://product-transaction.openclass.com/products",
     },
     idcUrl : {
-      local        :"https://idc-web-ar.dev-prsn.com",
-      dev          :"https://idc-web-ar-qa.dev-prsn.com",
-      qa           :"https://idc-web-ar-qa.dev-prsn.com",
-      stage        :"https://idc-web-ar.stg-prsn.com",
-      prod         :"https://idc-web-ar.stg-prsn.com",
+      local        :"https://etext-instructor-qa.pearson.com/idc-api/course",
+      dev          :"https://etext-instructor-qa.pearson.com/idc-api/course",
+      qa           :"https://etext-instructor-qa.pearson.com/idc-api/course",
+      stage        :"https://etext-instructor-stg.pearson.com/idc-api/course",
+      prod         :"https://etext-instructor.pearson.com",
      },
     updateCustomTocUrl : {
       local        :"https://etext-instructor-qa.pearson.com/idc-api/course",
-      dev          :"https://etext-instructor-dev.pearson.com/idc-api/course",
+      dev          :"https://etext-instructor-qa.pearson.com/idc-api/course",
       qa           :"https://etext-instructor-qa.pearson.com/idc-api/course",
       stage        :"https://etext-instructor-qa.pearson.com/idc-api/course",
       prod         :"https://etext-instructor-qa.pearson.com/idc-api/course",
