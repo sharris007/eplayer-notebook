@@ -98,7 +98,7 @@ export const getBookTocCallService  = data => dispatch =>
                 urn: n.id,
               href: n.href,
               id: n.id,
-              playorder: n.playorder,
+              playOrder: n.playOrder,
               title: n.title
             }));
           }

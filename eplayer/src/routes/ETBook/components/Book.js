@@ -866,6 +866,7 @@
               urn: n.id,
               href: n.href,
               id: n.id,
+              playOrder: n.playOrder,
               title: n.title
               }));
             }
