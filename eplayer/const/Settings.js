@@ -55,11 +55,11 @@ export const resources = {
       prod         : 'https://content-service.prd-prsn.com/csg/api/cm'
     },
     pxeServiceUrl: {
-      local        : 'https://pxe-services-dev.pearson.com/services-api/api/3.1',
-      dev          : 'https://pxe-services-dev.pearson.com/services-api/api/3.1',
-      qa           : 'https://pxe-services-qa-stg.pearson.com/services-api/api/3.1',
-      stage        : 'https://pxe-services-stg.pearson.com/services-api/api/3.1',
-      prod         : 'https://pxe-services.pearson.com/services-api/api/3.1'
+      local        : 'https://pxe-services-dev.pearson.com/services-api/api/3.2',
+      dev          : 'https://pxe-services-dev.pearson.com/services-api/api/3.2',
+      qa           : 'https://pxe-services-qa-stg.pearson.com/services-api/api/3.2',
+      stage        : 'https://pxe-services-stg.pearson.com/services-api/api/3.2',
+      prod         : 'https://pxe-services.pearson.com/services-api/api/3.2'
     },
     csgIngestUrl: {
       local        : 'https://dragonfly-qa.stg-openclass.com/pxereader-cm/latest/api/cm',

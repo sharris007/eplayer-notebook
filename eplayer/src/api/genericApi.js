@@ -23,11 +23,7 @@ const courseServiceUrl = resources.links.courseServiceUrl;
 
 export const getTotalAnndata = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations?withShared=true`, {
   method: 'GET',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'Identity-Id': data.user
-  }
+  headers: data.annHeaders
 });
 
 export const getAnndata = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations?uri=${data.uri}`, {
@@ -62,11 +58,7 @@ export const putAnnData = data => fetch(`${pxeService[envType]}/context/${data.c
 export const deleteAnnData = data =>
  fetch(`${pxeService[envType]}/context/${data.context}/annotations/${data.annId}`, {// eslint-disable-line no-undef
    method: 'DELETE',
-   headers: {
-     Accept: 'application/json',
-     'Content-Type': 'application/json',
-     'Identity-Id': data.user
-   }
+   headers: data.annHeaders
  });
 
 // ----Play list toc----------------------------------
@@ -117,7 +109,8 @@ export const getTotalBookmarkData = data => fetch(`${pxeService[envType]}/contex
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id': data.user
+    'Identity-Id': data.user,
+    'X-Authorization': data.xAuth
   }
 });
 
@@ -127,28 +120,34 @@ export const getBookmarkData = data => fetch(`${pxeService[envType]}/context/${d
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id': data.user
+    'Identity-Id': data.user,
+    'X-Authorization': data.xAuth
   }
 });
 // Bookmark Api Post Call,
 
-export const postBookmarkData = postData => fetch(`${pxeService[envType]}/context/${postData.context}/identities/${postData.user}/bookmarks`, {  // eslint-disable-line max-len
-  method: 'POST',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'Identity-Id': postData.user
-  },
-  body: JSON.stringify(postData)
-});
-
+export const postBookmarkData = postData => {
+  let payload = Object.assign({},postData);
+  delete payload.xAuth;
+  return fetch(`${pxeService[envType]}/context/${postData.context}/identities/${postData.user}/bookmarks`, {  // eslint-disable-line max-len
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Identity-Id': postData.user,
+      'X-Authorization': postData.xAuth
+    },
+    body: JSON.stringify(payload)
+  });
+}
 // Bookmark Api Delete Call,
 
 export const deleteBookmarkData = deleteData => fetch(`${pxeService[envType]}/context/${deleteData.context}/identities/${deleteData.user}/bookmarks?uri=${deleteData.uri}`, {  // eslint-disable-line max-len
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'X-Authorization': deleteData.xAuth
   }
 });
 

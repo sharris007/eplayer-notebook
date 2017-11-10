@@ -23,7 +23,7 @@
   import './Book.scss';
   import { browserHistory } from 'react-router';
   import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService } from '../../../actions/playlist';
+  import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService } from '../../../actions/playlist';
   import { getGotoPageCall } from '../../../actions/gotopage';
   import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
   import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
@@ -88,6 +88,8 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
       };
       this.divGlossaryRef = '';
       this.wrapper = '';
+      this.courseBook = false,
+      this.annHeaders = {},
       this.nodesToUnMount = [];
       this.bookIndexId = {};
       this.searchUrl = '';
@@ -127,6 +129,7 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
           }
           if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
             bookDetailsData.courseId = this.props.params.bookId;
+            this.courseBook = true;
             this.props.dispatch(getCourseCallService(bookDetailsData));
           } else {
             this.props.dispatch(getBookPlayListCallService(bookDetailsData));
@@ -214,7 +217,8 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
     }
 
     removeAnnotationHandler = (annotationId) => {
-      const deleteAnnData = $.extend(this.state.urlParams, { annId: annotationId });
+      let deleteAnnData = $.extend(this.state.urlParams, { annId: annotationId });
+      deleteAnnData.annHeaders = this.annHeaders;
       this.props.dispatch(deleteAnnCallService(deleteAnnData));
 
       let annElement = $('#contentIframe').contents().find('*[data-ann-id=' + annotationId + ']');
@@ -238,7 +242,8 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
         title: bMarkData.currentPageTitle,
         labels: [bMarkData.currentPageTitle],
         context: bMarkData.urlParams.context,
-        user: bMarkData.urlParams.user
+        user: bMarkData.urlParams.user,
+        xAuth: localStorage.getItem('secureToken')
       };
       this.props.dispatch(postBookmarkCallService(bookmark));
     };
@@ -246,7 +251,9 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
     removeBookmarkHandler = (bookmarkId) => {
       this.state.urlParams.uri = (bookmarkId ? bookmarkId : this.state.currentPageDetails.id);
       this.forceUpdate();
-      this.props.dispatch(deleteBookmarkCallService(this.state.urlParams));
+      let bookmarksParams = this.state.urlParams;
+      bookmarksParams.xAuth = localStorage.getItem('secureToken');
+      this.props.dispatch(deleteBookmarkCallService(bookmarksParams));
     };
 
     onNavChange = (data) => {
@@ -269,8 +276,9 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
         } else {
           browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
         }
-
-        this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+        let bookmarksParams = this.state.urlParams;
+        bookmarksParams.xAuth = localStorage.getItem('secureToken');
+        this.props.dispatch(getBookmarkCallService(bookmarksParams));
         // this.props.dispatch(getAnnCallService(this.state.urlParams));
       });
 
@@ -446,9 +454,12 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
       if (viewerCallBack == false) {
         this.setState({ drawerOpen: true }, function() {
           if (!this.state.asynCallLoaded) {
+            let params = this.state.urlParams;
+            params.xAuth = localStorage.getItem('secureToken');
             this.props.dispatch(getBookTocCallService());
             this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
-            this.props.dispatch(getTotalAnnCallService(this.state.urlParams));
+            params.annHeaders = this.annHeaders;
+            this.props.dispatch(getTotalAnnCallService(params));
             this.state.asynCallLoaded = true;
           }
         });
@@ -488,7 +499,9 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
           } else {
             browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
           }
-          this.props.dispatch(getBookmarkCallService(this.state.urlParams));
+          let bookmarksParams = this.state.urlParams;
+          bookmarksParams.xAuth = localStorage.getItem('secureToken');
+          this.props.dispatch(getBookmarkCallService(bookmarksParams));
         }),
         this.viewerContentCallBack(true);
         if (annId) {
@@ -915,13 +928,19 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
         timeout: 5000,
         headers: {}
       });
-      const annotationClient =  axios.create({
+      this.annHeaders = this.courseBook ? { 
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization' : localStorage.getItem('secureToken')} : 
+        {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'idpName': 'SMS',
+        'X-Authorization' : localStorage.getItem('secureToken')};
+
+      const annotationClient = axios.create({
         baseURL: `${bootstrapParams.pageDetails.endPoints.services}/context/${this.state.urlParams.context}/annotations`,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Identity-Id': this.state.urlParams.user
-          },
+        headers: this.annHeaders,
         data: {
           context: this.state.urlParams.context,
           user: this.state.urlParams.user
