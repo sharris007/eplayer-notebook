@@ -847,7 +847,7 @@
       let configTocData = {
         dropLevelType: 'WITH_IN_SAME_LEVEL',
         tocContents: tocCompData.data.content.list,
-        tocLevel: 3,
+        tocLevel: 2,
         dndType: 'TableOfContents',
         handlePublish: (changedTocContent) => {
         //console.log("changedTocContent---------", changedTocContent);
