@@ -809,7 +809,7 @@ function getAssetURLForPDFDownload(config,cb){
               try {
                 page = childDiv[i].getAttribute("page-index");
                 WebPDF.ViewerInstance.highlightText((page -1), pdfRectArray);                
-               _this.saveHighlight(page, highlightHashes, hId, highlightColor);
+               _this.saveHighlight(page, highlightHashes, hId, highlightColor, highlights[i].isHighlightOnly);
               }catch(e){
                 console.log("Error Saving Highlight");
               }
@@ -1296,7 +1296,7 @@ function getAssetURLForPDFDownload(config,cb){
       /*
        This method is used create Highlight Element on the Page.
       */
-      _this.saveHighlight = function(pageIndex, highlightHash, id, highlightColor) { 
+      _this.saveHighlight = function(pageIndex, highlightHash, id, highlightColor, isHighlightOnly) { 
         var highlightElements = document.querySelectorAll('.fwr-search-text-highlight');
         var parentElement = document.createElement('div');
         parentElement.setAttribute('id', id);
@@ -1312,6 +1312,8 @@ function getAssetURLForPDFDownload(config,cb){
           childElement.style.width = highlightElements[i].style.width;
           childElement.style.height = highlightElements[i].style.height;
           childElement.style.backgroundColor = highlightColor ;
+          if(!isHighlightOnly)
+          {
           childElement.onclick = function() {
             if($("#"+id+"_cornerimg")[0] !== undefined)
             {
@@ -1328,6 +1330,7 @@ function getAssetURLForPDFDownload(config,cb){
             {
               _this.triggerEvent("highlightClicked", id);
             }
+          }
           }
           parentElement.appendChild(childElement);
         }

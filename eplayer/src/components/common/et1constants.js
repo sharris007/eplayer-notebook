@@ -73,6 +73,7 @@ export const eT1Contants = {
     STAGE : 'https://api-sandbox.readerplatform.pearson-intl.com',
     PROD : 'https://api-prod.readerplatform.pearson-intl.com'
   },
+  readerApiResponseRecordsLimits: 1000,
   ServerUrls : {
     qa : {
             CERT1 : 'https://view.cert1.ebookplus.pearsoncmg.com',

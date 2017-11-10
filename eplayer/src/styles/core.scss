@@ -184,6 +184,7 @@ svg[class$="-24"] {
   }
   .hotspot {
   position: absolute;
+  z-index:2;
   }
 
   .hotspot .tooltiptext {
@@ -200,6 +201,7 @@ svg[class$="-24"] {
     top: 30%;
     font-size: 13px;
     font-family: inherit;
+    z-index:2;
   }
 
   .hotspot:hover .tooltiptext {

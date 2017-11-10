@@ -352,7 +352,7 @@ export class Header extends React.Component {
           iconElementRight={
             <div>
             {this.props.currentPageIndex == 0 || (this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hasbookmarkpagebutton) ?
-              <div className="bookmarkIcon" style={style.hideBookmarkIcon}/> :
+              <div className="empty" style={style.hideBookmarkIcon}/> :
               <div className="bookmarkIcon" onClick={this.handleHeaderClick} role="button" tabIndex="0">
                 <BookmarkIconComponent data={bookmarkIconData} locale="en"/>
               </div>

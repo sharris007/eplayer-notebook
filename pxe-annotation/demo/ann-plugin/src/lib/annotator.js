@@ -246,7 +246,7 @@ Annotator = (function(_super) {
     annotation.highlights = [];
     for (_j = 0, _len1 = normedRanges.length; _j < _len1; _j++) {
       normed = normedRanges[_j];
-      normed.color=annotation.color;
+      normed.color=annotation.colorCode;
       normed.note=annotation.text;
       if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
       annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
