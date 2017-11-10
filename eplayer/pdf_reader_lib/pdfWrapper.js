@@ -571,14 +571,17 @@ function Resize(){
  function updateLayer() {
   var toolBar = $("#toolbar");
   var width = toolBar.outerWidth();
-  if($(window).height() >= 662){
-    var height = 0.898*$("#right").height();
+  var height;
+  if($(window).height() <= 635 && $(window).height() > 595){
+    height = 0.89*$("#right").height();
   }
-  else if($(window).height() <= 635 && $(window).height() > 550){
-    var height = 0.88*$("#right").height();
+  else if($(window).height() <= 595 && $(window).height() > 550){
+    height = 0.87*$("#right").height();
   }
   else if($(window).height() <= 550){
-    var height = 0.84*$("#right").height();
+    height = 0.85*$("#right").height();
+  }else{
+    height = 0.9*$("#right").height();
   }
   var topOffset = toolBar.is(":visible") ? toolBar.outerHeight() - 2 : 0;
   $("#frame").css({
