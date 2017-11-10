@@ -264,7 +264,7 @@ used for before mounting occurs. */
 
     return (
       <div className="centerCircularBar">
-        <RefreshIndicator size={50} left={650} top={200} status="loading" />
+        <RefreshIndicator size={50} left={0.48*$(window).width()} top={200} status="loading" />
       </div>);
   }
 

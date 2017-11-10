@@ -109,6 +109,15 @@ export class PdfBookReader extends Component {
     } else {
       this.loadCoverPage('cover');
     }
+     let that = this;
+    $(window).resize(function(){
+      __pdfInstance.onDocviewerResize();
+          that.displayHighlight();
+          if(that.props.data.book.regions.length > 0 )
+          {
+          __pdfInstance.displayRegions(that.props.data.book.regions,that.props.data.book.bookFeatures,_);
+          }
+      })
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
    componentWillUnmount(){
@@ -1120,7 +1129,7 @@ handleRegionClick(hotspotID) {
         </div>
         {this.state.pageLoaded !== true ?
         <div className="centerCircularBar">
-        <RefreshIndicator size={50} left={650} top={200} status="loading" />
+        <RefreshIndicator size={50} left={0.48*$(window).width()} top={200} status="loading" />
         </div> : null}
       </div>
     );

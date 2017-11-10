@@ -435,6 +435,9 @@ function initViewer(config) {
         var pdfImageLoad = document.querySelector("#docViewer_ViewContainer_BG_" + currentPageIndex).className;
         if(pdfImageLoad.indexOf("fwr-hidden") > 1) {
         createPDFEvent('wrpageChanged');
+        
+          Resize();
+        
          pdfBookCallback('pageChanged');
         }
     });
@@ -547,10 +550,8 @@ function openFile(baseUrl,fileUrl,headerParams,callback) {
  * Function defined to handle the window resize event.
  */
 function Resize(){
-  var width = $(window).width();
-  var height = $(window).height();
-
-
+  var width = 0.915*$(window).width();
+  var height =0.9*$(window).height() - 60;
   $("#right").css({
       width: width,
       "min-width": width
@@ -570,7 +571,15 @@ function Resize(){
  function updateLayer() {
   var toolBar = $("#toolbar");
   var width = toolBar.outerWidth();
-  var height = $("#right").height();;
+  if($(window).height() >= 662){
+    var height = 0.898*$("#right").height();
+  }
+  else if($(window).height() <= 635 && $(window).height() > 550){
+    var height = 0.88*$("#right").height();
+  }
+  else if($(window).height() <= 550){
+    var height = 0.84*$("#right").height();
+  }
   var topOffset = toolBar.is(":visible") ? toolBar.outerHeight() - 2 : 0;
   $("#frame").css({
     "margin-top":topOffset
@@ -1593,7 +1602,10 @@ function getAssetURLForPDFDownload(config,cb){
         openFileUrl : function(baseUrl,fileUrl,headerParams,callback){
           var assertUrl = _this.openFileUrl(baseUrl,fileUrl,headerParams,callback);
           return assertUrl;
-        }
+        },
+        onDocviewerResize: function(){
+          Resize();
+         }
       };
     }
     return pdfWrapper;
