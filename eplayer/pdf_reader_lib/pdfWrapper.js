@@ -733,10 +733,16 @@ function getAssetURLForPDFDownload(config,cb){
       }
 
       _this.handleNoteIconClick = function(event) {
-        var noteIcon = this;
         var pageLeft = $("#docViewer_ViewContainer").offset().left;
         var conatinerWidth = $("#docViewer_ViewContainer").width();
-        var originalPosition =((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 271)) + 'px'
+        var originalPosition =((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 271)) + 'px';
+        var noteIconCount = $('.annotator-handle').length;
+        var noteIconElementList = $('.annotator-handle');
+        for (var i=0; i<noteIconCount; i++)
+        {
+          noteIconElementList[i].style.left = originalPosition;
+        }
+        var noteIcon = this;
         event.currentTarget.style.left = ((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 287 + 32)) + 'px';
         $("body").on('click',function(e) {
           if($('#openPopupHighlight').is(':hidden') && noteIcon.style.left !== originalPosition)
