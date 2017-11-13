@@ -37,11 +37,7 @@ export const getBookDetails = json => ({
   bookDetailsRecived: true
 });
 
-const updateToc = tocContents => ({
-  type: typeConstants.PUT_CUSTOM_TOC,
-  data: tocContents,
-  updatedToc: true
-});
+
 
 const tocResponse = json => ({
   type: typeConstants.GET_TOC_RESPONSE,

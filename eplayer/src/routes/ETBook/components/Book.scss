@@ -68,3 +68,7 @@ $cont-padding-bottom: 85px;
 .navigation .section .contentWrapper .content {
   line-height: 1.3;
 }
+
+.alert-Error, .alert-Information, .alert-Success{
+  z-index:10000 !important;
+}
