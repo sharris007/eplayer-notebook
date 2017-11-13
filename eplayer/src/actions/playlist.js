@@ -13,7 +13,7 @@
  *******************************************************************************/
 /* global $ */
 import PlaylistApi from '../api/playlistApi';
-import { resources , domain , typeConstants } from '../../const/Settings';
+import { resources, domain, typeConstants } from '../../const/Settings';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -37,16 +37,18 @@ export const getBookDetails = json => ({
   bookDetailsRecived: true
 });
 
-const updateToc = tocContents => ({
-  type:typeConstants.PUT_CUSTOM_TOC,
-  data:tocContents,
-  updatedToc:true
-});
 
- var tocUrl = '';
- var piToken = '';
- var bookId='';
- var bookDetails ='';
+
+const tocResponse = json => ({
+  type: typeConstants.GET_TOC_RESPONSE,
+  data: json,
+  updatedToc: true
+})
+
+var tocUrl = '';
+var piToken = '';
+var bookId = '';
+var bookDetails = '';
 
 function getTocUrlOnResp(resp) {
   let tocUrl;
@@ -60,148 +62,151 @@ function getTocUrlOnResp(resp) {
   }
   return tocUrl ? tocUrl.replace('http:', 'https:') : null;
 }
-export const getBookPlayListCallService = data => dispatch => 
+export const getBookPlayListCallService = data => dispatch =>
   PlaylistApi.doGetPiUserDetails(data).then(response => response.json())
-  .then((response)=>{
-      data.userName  = response.UserName;
+    .then((response) => {
+      data.userName = response.UserName;
       PlaylistApi.doGetBookDetails(data)
         .then(response => response.json())
         .then((response) => {
-         dispatch(getBookDetails(response));
-         bookId = response.bookDetail.bookId;
+          dispatch(getBookDetails(response));
+          bookId = response.bookDetail.bookId;
 
-     tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
-     bookDetails = response.bookDetail.metadata;
-     piToken = data.piToken;
-     PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
-      .then(response => dispatch(getPlaylistCompleteDetails(response)));
-   }
-);
- 
-});
+          tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
+          bookDetails = response.bookDetail.metadata;
+          piToken = data.piToken;
+          PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
+            .then(response => dispatch(getPlaylistCompleteDetails(response)));
+        }
+        );
 
-export const getBookTocCallService  = data => dispatch => 
+    });
+
+export const getBookTocCallService = data => dispatch =>
   PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
-      .then((response) => {
-        const tocResponse = response.content;
-        tocResponse.mainTitle = bookDetails.title;
-        tocResponse.author = bookDetails.creator;
-        tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
+    .then((response) => {
+      const tocResponse = response.content;
+      tocResponse.mainTitle = bookDetails.title;
+      tocResponse.author = bookDetails.creator;
+      tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
 
 
-        tocResponse.list = [];
-        const tocItems = tocResponse.items;
-        let subItems = [];
-        const listData = tocItems.map((itemObj) => {
-          if (itemObj.items) {
-            subItems = itemObj.items.map(n => ({
-                urn: n.id,
-              href: n.href,
-              id: n.id,
-              playOrder: n.playOrder,
-              title: n.title
-            }));
-          }
-          return {
-            id: itemObj.id,
-            urn: itemObj.id,
-            title: itemObj.title,
-            coPage: itemObj.coPage,
-            playOrder: itemObj.playOrder,
-            children: subItems
-          };
-        });
-        tocResponse.list = listData;
-        delete tocResponse.items;
-        const tocFinalModifiedData = { content: tocResponse, bookDetails };
-        dispatch(getTocCompleteDetails(tocFinalModifiedData));
+      tocResponse.list = [];
+      const tocItems = tocResponse.items;
+      let subItems = [];
+      const listData = tocItems.map((itemObj) => {
+        if (itemObj.items) {
+          subItems = itemObj.items.map(n => ({
+            urn: n.id,
+            href: n.href,
+            id: n.id,
+            playOrder: n.playOrder,
+            title: n.title
+          }));
+        }
+        return {
+          id: itemObj.id,
+          urn: itemObj.id,
+          title: itemObj.title,
+          coPage: itemObj.coPage,
+          playOrder: itemObj.playOrder,
+          children: subItems
+        };
       });
+      tocResponse.list = listData;
+      delete tocResponse.items;
+      const tocFinalModifiedData = { content: tocResponse, bookDetails };
+      dispatch(getTocCompleteDetails(tocFinalModifiedData));
+    });
 
-export const putCustomTocCallService  = data => dispatch => 
-  PlaylistApi.doPutCustomTocDetails(data , piToken, bookId).then(response => response.json())
-      .then((response) => {});
+
+export const putCustomTocCallService = data => dispatch =>
+  PlaylistApi.doPutCustomTocDetails(data, piToken, bookId).then(response => response.json())
+    .then((response) => {
+      dispatch(tocResponse(response));
+    });
+
 
 export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseDetails(data)
-   .then(response => response.json())
-   .then((response) => {    
-      console.log("response----",response.status);
-      if(response.status>=400){
-         browserHistory.push('/eplayer/error/'+response.status);
-         return false;
-      }
-     
-      dispatch(getBookDetails(response));
-      const baseUrl      = response.userCourseSectionDetail.baseUrl;
-      tocUrl             = getTocUrlOnResp(response.userCourseSectionDetail.toc);
-      bookDetails        = response.userCourseSectionDetail;
-      piToken            = data.piToken;
-      bookId             = bookDetails.section.sectionId;
+  .then(response => response.json())
+  .then((response) => {
+    console.log("response----", response.status);
+    if (response.status >= 400) {
+      browserHistory.push('/eplayer/error/' + response.status);
+      return false;
+    }
 
-      const passportDetails = response.passportPermissionDetail;
-      const url = window.location.href;
-      const n = url.search('prdType');
-      let prdType  ='';
-      if (n > 0) {
-        const urlSplit = url.split('prdType=');
-        prdType = urlSplit[1];
-      }  
-      let studentCheck     = resources.constants.zeppelinEnabled; 
-      let instructorCheck  = resources.constants.idcDashboardEnabled; 
-      if(studentCheck && bookDetails.authgrouptype=='student' && passportDetails && !passportDetails.access){
-        redirectToZeppelin(bookDetails,passportDetails);
-        return false;
-      }
-      else if(instructorCheck && bookDetails.authgrouptype=='instructor' && !prdType ){
-        const productType = bookDetails.section.extras.metadata.productModel;
-        const prodType=productType, courseId=bookId;
-        redirectToIDCDashboard(prodType,courseId);
-        return false;
-      }
+    dispatch(getBookDetails(response));
+    const baseUrl = response.userCourseSectionDetail.baseUrl;
+    tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
+    bookDetails = response.userCourseSectionDetail;
+    piToken = data.piToken;
+    bookId = bookDetails.section.sectionId;
 
-     PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
+    const passportDetails = response.passportPermissionDetail;
+    const url = window.location.href;
+    const n = url.search('prdType');
+    let prdType = '';
+    if (n > 0) {
+      const urlSplit = url.split('prdType=');
+      prdType = urlSplit[1];
+    }
+    let studentCheck = resources.constants.zeppelinEnabled;
+    let instructorCheck = resources.constants.idcDashboardEnabled;
+    if (studentCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access) {
+      redirectToZeppelin(bookDetails, passportDetails);
+      return false;
+    }
+    else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType) {
+      const productType = bookDetails.section.extras.metadata.productModel;
+      const prodType = productType, courseId = bookId;
+      redirectToIDCDashboard(prodType, courseId);
+      return false;
+    }
+
+    PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then(response => {
-        const securl      = baseUrl.replace(/^http:\/\//i, 'https://');
-        response.baseUrl  = securl ;
+        const securl = baseUrl.replace(/^http:\/\//i, 'https://');
+        response.baseUrl = securl;
         dispatch(getPlaylistCompleteDetails(response))
       });
-   }
+  }
 
-)
+  )
 
-function redirectToIDCDashboard(prodType,courseId){
-  const idcBaseurl = resources.links.idcUrl[domain.getEnvType()]+'/idc?';
-  const IdcRelativeURL = 'product_type='+prodType+'&courseId='+courseId
-  const redirectIdcURL = idcBaseurl+ IdcRelativeURL;
-  window.open(redirectIdcURL,'_self');
-} 
+function redirectToIDCDashboard(prodType, courseId) {
+  const idcBaseurl = resources.links.idcUrl[domain.getEnvType()] + '/idc?';
+  const IdcRelativeURL = 'product_type=' + prodType + '&courseId=' + courseId
+  const redirectIdcURL = idcBaseurl + IdcRelativeURL;
+  window.open(redirectIdcURL, '_self');
+}
 
-function redirectToZeppelin(bookDetails,passportDetails){
-  let successOriginUrl,errOriginUrl;
+function redirectToZeppelin(bookDetails, passportDetails) {
+  let successOriginUrl, errOriginUrl;
   let userAccess = {
-          userType      : bookDetails.authgrouptype,
-          institutionId : bookDetails.section.extras.organizationId,
-          productId     : passportDetails.productId,
-          appAccess     : passportDetails.access,
-          launchUrl     : bookDetails.section.extras.metadata.launchUrl
-    }
-   if(window.location.pathname.indexOf('/eplayer/Course/')>-1)
-    {
-      successOriginUrl = resources.links.consoleUrl[domain.getEnvType()]; 
-      errOriginUrl = resources.links.consoleUrl[domain.getEnvType()]; 
-      // successOriginUrl = window.location.href;
-      // errOriginUrl= window.location.origin+'/eplayer'; 
-      
-    }
-    const productId     = userAccess.productId ,
-          institutionId = userAccess.institutionId ,
-          courseAccess  = userAccess.appAccess,
-          successUrl    = encodeURIComponent(successOriginUrl),
-          failureUrl    = encodeURIComponent(errOriginUrl),          
-          cancelUrl     = encodeURIComponent(errOriginUrl),    
-          zeppelinAccessBassUrl  = resources.links.zeppelinUrl[domain.getEnvType()],
-          zeppelinRelativeurl =productId+'?institutionId='+institutionId+
-          '&failureUrl='+failureUrl+'&cancelUrl='+cancelUrl+'&successUrl='+successUrl;
-    const zeppelinRedirect  = zeppelinAccessBassUrl+'/'+zeppelinRelativeurl;
-    window.location = zeppelinRedirect;
-    
+    userType: bookDetails.authgrouptype,
+    institutionId: bookDetails.section.extras.organizationId,
+    productId: passportDetails.productId,
+    appAccess: passportDetails.access,
+    launchUrl: bookDetails.section.extras.metadata.launchUrl
+  }
+  if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+    successOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    errOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    // successOriginUrl = window.location.href;
+    // errOriginUrl= window.location.origin+'/eplayer'; 
+
+  }
+  const productId = userAccess.productId,
+    institutionId = userAccess.institutionId,
+    courseAccess = userAccess.appAccess,
+    successUrl = encodeURIComponent(successOriginUrl),
+    failureUrl = encodeURIComponent(errOriginUrl),
+    cancelUrl = encodeURIComponent(errOriginUrl),
+    zeppelinAccessBassUrl = resources.links.zeppelinUrl[domain.getEnvType()],
+    zeppelinRelativeurl = productId + '?institutionId=' + institutionId +
+      '&failureUrl=' + failureUrl + '&cancelUrl=' + cancelUrl + '&successUrl=' + successUrl;
+  const zeppelinRedirect = zeppelinAccessBassUrl + '/' + zeppelinRelativeurl;
+  window.location = zeppelinRedirect;
+
 }

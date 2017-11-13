@@ -15,9 +15,11 @@ const initalData = {
   data: [],
   bookdetailsdata: [],
   tocdata: { bookDetails: {}, content: { list: [] } },
+  tocresponse: [],
   playlistReceived: false,
   tocReceived: false,
-  bookDetailsRecived: false
+  bookDetailsRecived: false,
+  updatedToc: false
 };
 export default (state = initalData, action) => {
   switch (action.type) {
@@ -25,11 +27,11 @@ export default (state = initalData, action) => {
       if (action.data.content[0].playOrder === 0) {
         action.data.content.splice(0, 1);
       }
-      if(!action.data.content[0].type) {
+      if (!action.data.content[0].type) {
         action.data.content.forEach((list) => {
-        const item = list;
-        item.type = 'page';
-      });
+          const item = list;
+          item.type = 'page';
+        });
       }
       return {
         ...state,
@@ -59,7 +61,14 @@ export default (state = initalData, action) => {
         bookDetailsRecived: action.bookDetailsRecived
       };
     }
-    default :
+    case 'GET_TOC_RESPONSE': {
+      return {
+        ...state,
+        tocresponse: action.data,
+        updatedToc: action.updatedToc
+      };
+    }
+    default:
       return state;
   }
 };

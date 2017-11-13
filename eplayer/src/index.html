@@ -13,16 +13,17 @@
 -->
 <!doctype html>
 <html lang="en">
+
 <head>
   <title>E-Player App</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="//d12m40tknrppbi.cloudfront.net/cite/css/style.css"> 
+  <link rel="stylesheet" href="//d12m40tknrppbi.cloudfront.net/cite/css/style.css">
   <script src="https://cdn.polyfill.io/v2/polyfill.js?features=CustomEvent,Intl.~locale.en,Intl.~locale.fr"></script>
   <!-- <script src="https://etext-qa-stg.pearson.com/eplayer-ann/jquery.min.js"></script> -->
   <link rel="stylesheet" href="/eplayer/annotation-lib/instructor-annotator/instructor-annotator.css">
   <script src="/eplayer/annotation-lib/jquery.min.js"></script>
-  
+
   <!-- <script src="https://pxe-sdk-qa.stg-openclass.com/eplayer-ann/pdfannotator.js"></script> -->
   <script src="/eplayer/annotation-lib/pdfannotator.js"></script>
   <script src="/eplayer/pdf/webpdf.tools.mini.js"></script>
@@ -31,42 +32,61 @@
   <script src="/eplayer/pdf/seajs.js"></script>
   <link rel="stylesheet" type="text/css" href="https://brix-content.pearsoned.com/brix/assets/brix/api/item/ba0f0972-271d-43d3-ab28-9a95e24bceeb/110/file/brixauthoring/client/css/brix.css">
 </head>
+
 <body style="overflow:visible;">
   <script src="https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js"></script>
-   <script type="text/javascript">
-      var redirectPiurl   = window.location.href;
-      redirectPiurl       = decodeURIComponent(redirectPiurl).replace(/\s/g, "+").replace(/%20/g, "+");
-      var clientId        = 'I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU';
-      var jwtSetting = {"useJwt": true,"checkSessionMilliseconds"  : "6000",
-                          "sessionIdleTimeoutSeconds" : "1800"};
-      piSession.initialize(clientId,jwtSetting);
-      piSession.on(piSession.SessionStateKnownEvent, onSessionStateKnown);
-      function onSessionStateKnown() {
-          if(piSession.hasValidSession(10) === 'notoken'){
-             piSession.login(redirectPiurl, 10);
-          }
-          piSession.recordUserActivity();
-          piSession.extendUserSession();
-          piSession.monitorUserActivity(false);
+  <script type="text/javascript">
+    var redirectPiurl = window.location.href;
+    redirectPiurl = decodeURIComponent(redirectPiurl).replace(/\s/g, "+").replace(/%20/g, "+");
+    var clientId = 'I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU';
+    var jwtSetting = {
+      "useJwt": true, "checkSessionMilliseconds": "6000",
+      "sessionIdleTimeoutSeconds": "1800"
+    };
+    piSession.initialize(clientId, jwtSetting);
+    piSession.on(piSession.SessionStateKnownEvent, onSessionStateKnown);
+    function onSessionStateKnown() {
+      if (piSession.hasValidSession(10) === 'notoken') {
+        piSession.login(redirectPiurl, 10);
       }
-      setInterval(function(){ 
-        piSession.getToken(function(result, userToken){
-            if(result === piSession['Success']){
-              setStorage("secureToken",userToken);
-            }else if(result === 'unknown' || result === 'notoken' ){
-               piSession.login(redirectPiurl, 10);
-            }
-        }); 
-      }, 1500000);
-      function setStorage(secureToken, svalue) {
-          localStorage.setItem("secureToken", svalue);
-      }
-         
-    </script>
+      piSession.recordUserActivity();
+      piSession.extendUserSession();
+      piSession.monitorUserActivity(false);
+    }
+    setInterval(function () {
+      piSession.getToken(function (result, userToken) {
+        if (result === piSession['Success']) {
+          setStorage("secureToken", userToken);
+        } else if (result === 'unknown' || result === 'notoken') {
+          piSession.login(redirectPiurl, 10);
+        }
+      });
+    }, 1500000);
+    function setStorage(secureToken, svalue) {
+      localStorage.setItem("secureToken", svalue);
+    }
+  </script>
   <script>
-    var __pdfInstance = pdfWrapper();
+      var __pdfInstance = pdfWrapper();
+
+  </script>
+  <!-- Icons -->
+  <script>
+    if (document.body.children[0].nodeName !== 'svg') {
+      var pe_ajax = new XMLHttpRequest();
+      pe_ajax.open("GET", "https://unpkg.com/pearson-elements@1.14.9/dist/icons/p-icons-sprite-1.1.svg", true);
+      pe_ajax.responseType = "document";
+      pe_ajax.onload = function (e) {
+        document.body.insertBefore(
+          pe_ajax.responseXML.documentElement,
+          document.body.childNodes[0]
+        );
+      }
+      pe_ajax.send();
+    }
   </script>
   <div id="root" style="height: 100%"></div>
 </body>
 <script src="/eplayer/annotation-lib/annotator.js"></script>
+
 </html>
