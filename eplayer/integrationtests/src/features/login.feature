@@ -80,4 +80,8 @@ Scenario: should let you log in with correct Username and correct Password
     Then I expect that element "#username" contains the text "et1_qaautomation_edu1"
     When I set "Pa55word@123" to the inputfield "#password"
     And I click on the button "#mainButton"
-    Then I expect that element "#bookshelf" becomes visible 
+    And I pause for 3000ms
+    And I click on the element "#skipLink"
+    Then I expect that element ".modal-content" becomes visible
+    And I click on the element "#skipLink"
+    Then I expect that element "#bookshelf" becomes visible
