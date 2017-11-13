@@ -17,7 +17,8 @@ Annotator.Editor = (function(_super) {
     '.annotator-edit-container click':'onEditClick',
     '.annotator-listing textarea keyup':'onNoteChange',
     '.annotator-delete-container click':'onDeleteIconClick',
-    '.annotator-confirm-cancel click':'onCancelClick'
+    '.annotator-confirm-cancel click':'onCancelClick',
+    'keyup' : 'onKeyupSelection'
   };
 
   Editor.prototype.classes = {
@@ -32,13 +33,13 @@ Annotator.Editor = (function(_super) {
     characters :3000
   }
   var language = window.annotationLocale || 'en-US';
-  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" class="annotator-color annotator-yellow" title="' + locale_data[language]['yellow'] + '" value="#FFD232"/><input type="button" class="annotator-color annotator-green" title="' + locale_data[language]['green'] + '" value="#55DF49"/><input type="button" class="annotator-color annotator-pink" title="' + locale_data[language]['pink'] + '" value="#FC92CF"/></div><div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"></div><div class="annotator-edit-container" title="' + locale_data[language]['edit'] + '"></div></div>'
+  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" tabindex="1" class="annotator-color annotator-yellow" title="' + locale_data[language]['yellow'] + '" value="#FFD232"/><input type="button" tabindex="2" class="annotator-color annotator-green" title="' + locale_data[language]['green'] + '" value="#55DF49"/><input type="button" tabindex="3" class="annotator-color annotator-pink" title="' + locale_data[language]['pink'] + '" value="#FC92CF"/></div><div tabindex="5" class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"></div><div class="annotator-edit-container" tabindex="4" title="' + locale_data[language]['edit'] + '"></div></div>'
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
-  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share" title="' + locale_data[language]['share'] + '"></div></div><div class="ann-cancelsave-section"><a class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a><a class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a></div></div></div>';
+  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share" tabindex="9" title="' + locale_data[language]['share'] + '"></div></div><div class="ann-cancelsave-section"><a tabindex="0" class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a><a tabindex="0" class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a></div></div></div>';
 
-  var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a><a class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a></div></div></div>';
+  var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a tabindex="2" class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a><a tabindex="1" class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a></div></div></div>';
 
   var panel5 ='<li style="display:none"; class="characters-left"><span id="letter-count">'+(Editor.prototype.const.characters)+'</span id="letter-text">  ' + locale_data[language]['charleft'] + '<span><span></li>';
 
@@ -62,12 +63,20 @@ Annotator.Editor = (function(_super) {
     this.onCancelClick=__bind(this.onCancelClick, this);
     this.onEditClick=__bind(this.onEditClick, this);
     this.onNoteChange=__bind(this.onNoteChange, this);
+    this.onKeyupSelection=__bind(this.onKeyupSelection, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
     this.annotation = {};
   }
+  Editor.prototype.onKeyupSelection = function(event) {
+    if (event.keyCode === 32 || event.keyCode === 13) {
+      console.log("Key presssssseddddddd!!! ",event);
+      $(event.target).trigger('click');
+    }
+  }
   Editor.prototype.unShareAnnotation=function() {
      this.annotation.colorCode=this.annotation.lastColor;
+     var i=1;
      if(this.annotation.colorCode == '#FFD232') { //Yellow
          annBgColor = 'rgba(248, 230, 0, 0.5)';
      } else if (this.annotation.colorCode == '#55DF49') { //Green
@@ -80,6 +89,9 @@ Annotator.Editor = (function(_super) {
      $('.annotator-color').removeClass('active');
      $('.annotator-color[value="'+this.annotation.colorCode+'"]').addClass('active');
      $('.annotator-color-container').removeClass('disabled-save');
+     $(".annotator-color-container input:button").each(function(e){
+        $(this).attr("tabindex",i++);
+     });
      $(this.annotation.highlights).removeClass('sharedNote');
   }
   Editor.prototype.onShareClick=function(event) {
@@ -108,7 +120,7 @@ Annotator.Editor = (function(_super) {
     panel2Sec.removeClass('overlay');
     panel3Sec.removeClass('overlay');
     panel4Sec.remove();
-    this.element.addClass('hide-note')
+    this.element.addClass('hide-note');
     return $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
   }
   Editor.prototype.onDeleteIconClick=function(event) {  
@@ -123,6 +135,7 @@ Annotator.Editor = (function(_super) {
     else {
         this.onDeleteClick(event);
     }
+    $(".annotator-confirm-cancel").focus();
   }
   Editor.prototype.onCancelClick=function(event) {  
     var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'), panel3Sec =  this.element.find('.annotator-panel-3'), panel4Sec = this.element.find('.annotator-panel-4') ;
@@ -132,13 +145,18 @@ Annotator.Editor = (function(_super) {
     panel4Sec.remove();
     $(panel2Sec).find('textarea').removeAttr('readonly');
   }
-  Editor.prototype.onEditClick=function(event) {  
+  Editor.prototype.onEditClick=function(event) { 
+    var i=1; 
     this.element.addClass('show-edit-options');
     $(this.element).find('textarea').show();
     $(this.element).find('#noteContainer').hide();
     this.element.find('textarea').css({'pointer-events':'all', 'opacity':'1','min-height':'40px'});
     this.element.find('input').css({'pointer-events':'all', 'opacity':'1'});
     $(this.element).find('.annotator-color-container').removeClass('disabled-save');
+    $(".annotator-color-container input:button").each(function(e){
+        $(this).attr("tabindex",i++);
+     });
+    $(this.element).find('textarea').focus();
   }
   
   Editor.prototype.onNoteChange=function(event) {
@@ -243,12 +261,19 @@ Annotator.Editor = (function(_super) {
     if (this.annotation.shareable) {
       $('.annotator-share').addClass('on');
       $('.annotator-color-container').addClass('disabled-save');
+      $(".annotator-color-container.disabled-save input:button").each(function(e){
+        $(this).attr("tabindex",-1);
+      });
       if (!this.isShareable)
         $('.annotator-panel-1').addClass('disabled-save');
     }
     else {
+      var i=1;
       $('.annotator-share').removeClass('on');
       $('.annotator-color-container').removeClass('disabled-save'); 
+      $(".annotator-color-container.disabled-save input:button").each(function(e){
+        $(this).attr("tabindex",i++);
+      });
     }
     $('.annotator-color').removeClass('active');
     $('.annotator-color[value="'+this.annotation.colorCode+'"]').addClass('active');
@@ -272,6 +297,10 @@ Annotator.Editor = (function(_super) {
       $(this.element.find('textarea')).show();
       $(this.element).find('#noteContainer').hide();
     }
+    if (this.annotation.shareable) 
+      $('.annotator-edit-container').focus();
+    else
+      $('.annotator-color[value="'+this.annotation.colorCode+'"]').focus();
     return this.publish('show');
   };
 
