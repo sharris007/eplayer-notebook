@@ -70,7 +70,6 @@ Annotator.Editor = (function(_super) {
   }
   Editor.prototype.onKeyupSelection = function(event) {
     if (event.keyCode === 32 || event.keyCode === 13) {
-      console.log("Key presssssseddddddd!!! ",event);
       $(event.target).trigger('click');
     }
   }
