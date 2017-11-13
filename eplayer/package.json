@@ -15,7 +15,7 @@
     "lint-html": "eslint src -f html -o ./eslintReport/lint-results.html",
     "start": "better-npm-run start",
     "dev": "better-npm-run dev",
-     "unit-test": "jest",
+    "unit-test": "jest",
     "test": "better-npm-run test",
     "test:dev": "npm run test -- --watch",
     "testpdf": "better-npm-run testpdf",
@@ -142,6 +142,8 @@
     "material-ui": "^0.16.3",
     "node-sass": "^3.7.0",
     "normalize.css": "^4.1.1",
+    "pearson-compounds": "0.12.x",
+    "pearson-elements": "^1.14.2",
     "postcss-loader": "^0.13.0",
     "prop-types": "^15.5.10",
     "pxe-annotation": "*",
@@ -168,7 +170,7 @@
     "url-loader": "^0.5.6",
     "webpack": "^1.12.14",
     "yargs": "^5.0.0",
-    "babel-plugin-add-module-exports":"0.2.1"
+    "babel-plugin-add-module-exports": "0.2.1"
   },
   "devDependencies": {
     "allure-commandline": "^2.1.1",

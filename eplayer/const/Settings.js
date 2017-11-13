@@ -75,7 +75,7 @@ export const resources = {
       prod         : 'https://pi.pearsoned.com/v1/piapi/login/js/session.js'
     },
     clientId :{
-       local        :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
+       local       :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
       dev          :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
       qa           :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
       stage        :"I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU",
@@ -145,7 +145,8 @@ export const typeConstants = {
   ANNOTATION_DELETED     : 'ANNOTATION_DELETED',
   BOOK_DETAILS           : 'BOOK_DETAILS',
   GET_PREFERENCE         : 'GET_PREFERENCE',
-  POST_PREFERENCE        : 'POST_PREFERENCE'
+  POST_PREFERENCE        : 'POST_PREFERENCE',
+   GET_TOC_RESPONSE       : 'GET_TOC_RESPONSE'
 };
 
 export const domain = {
