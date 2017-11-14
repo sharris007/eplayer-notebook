@@ -3593,7 +3593,7 @@ Annotator.Editor = (function(_super) {
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
-  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share" tabindex="9" title="' + locale_data[language]['share'] + '"></div></div><div class="ann-cancelsave-section"><a tabindex="0" class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a><a tabindex="0" class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a></div></div></div>';
+  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share" tabindex="9" title="' + locale_data[language]['share'] + '"></div></div><div class="ann-cancelsave-section"><a tabindex="7" class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a><a tabindex="8" class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a></div></div></div>';
 
   var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a tabindex="2" class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a><a tabindex="1" class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a></div></div></div>';
 
@@ -3983,7 +3983,7 @@ Annotator.Editor = (function(_super) {
     field.element = element[0];
     switch (field.type) {
     case 'textarea':
-      input = $('<textarea maxlength="3000"/>');
+      input = $('<textarea maxlength="3000" tabindex="6"/>');
       break;
     case 'input':
     case 'checkbox':

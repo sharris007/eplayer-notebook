@@ -4061,7 +4061,7 @@ Annotator.Editor = (function(_super) {
     }
     $(".annotator-panel-triangle1").addClass("annotator-panel-triangle").removeClass("annotator-panel-triangle1");
     if(this.annotation.colorCode) 
-      $(".annotator-edit-Note-Panel-1-rect[value=" + "'" + this.annotation.colorCode + "']").focus();
+      (this.annotation.colorCode != '#ccf5fd') && $(".annotator-edit-Note-Panel-1-rect[value=" + "'" + this.annotation.colorCode + "']").focus();
     else
       $('.annotator-select-outer-circle')[0].focus();
     return this.publish('show');
