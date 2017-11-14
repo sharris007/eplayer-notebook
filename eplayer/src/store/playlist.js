@@ -68,6 +68,12 @@ export default (state = initalData, action) => {
         updatedToc: action.updatedToc
       };
     }
+    case 'GETTING_TOC_RESPONSE': {
+      return {
+        ...state,
+        updatedToc: action.updatedToc
+      };
+    }
     default:
       return state;
   }
