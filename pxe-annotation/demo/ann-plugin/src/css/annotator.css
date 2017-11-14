@@ -1053,7 +1053,6 @@
   /*margin-left: 6px;*/
 }
 .annotator-confirm-cancel {
-  float: right;
   width: auto;
   height: 19px;
   font-family: Open Sans;
@@ -1071,7 +1070,6 @@
   text-transform: uppercase;
 }
 .annotator-confirm-delete {
-  float: right;
   width: auto;
   height: 19px;
   font-family: Open Sans;
@@ -1088,7 +1086,7 @@
   cursor: pointer;
   text-transform: uppercase;
 }
-.annotator-confirm-delete:hover, .annotator-confirm-cancel:hover {
+.annotator-confirm-delete:hover, .annotator-confirm-cancel:hover, .annotator-confirm-delete:focus, .annotator-confirm-cancel:focus {
   color: #19a6a4;
 }
 .overlay{
@@ -1104,8 +1102,8 @@
 	margin: 13px 10px 13px 15px;
 }
 .ann-canceldelete-section{
-	/*width: 65%;
-    float: right;*/
+	/*width: 65%;*/
+    float: right;
     position: relative;
     top: 15px;
     right: 10px;

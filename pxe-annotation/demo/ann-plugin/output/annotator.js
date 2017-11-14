@@ -3603,7 +3603,8 @@ Annotator.Editor = (function(_super) {
     '.annotator-color-select-container click': 'onAnnotatorColorChange',
     '.annotator-edit-Note-Panel-1-rect click' : 'onEditRectClick',
     '.annotator-edit-Note-Panel-1-circle click' : 'onEditColorChange',
-    '#noteContainer click' : 'onNoteContainerClick'
+    '#noteContainer click' : 'onNoteContainerClick',
+    '.annotator-select-outer-circle,.annotator-select-rect,.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle keyup': 'onKeyupClick'
   };
 
   Editor.prototype.classes = {
@@ -3622,22 +3623,22 @@ Annotator.Editor = (function(_super) {
                   <div class="annotator-color-container">\
                     <div> \
                       <div class = "annotator-color-select-container yellowColorBtn" title = "Main ideas" value="#55DF49"> \
-                        <div class = "annotator-select-outer-circle positionAbs"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="1"> \
                           <div class = "annotator-select-inner-circle hide" value="#55DF49"></div> \
                         </div> \
-                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-green">' +locale_data[language]['mainIdeas']+'</div> \
+                        <div tabindex="2" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-green">' +locale_data[language]['mainIdeas']+'</div> \
                       </div> \
                       <div class = "annotator-color-select-container" title = "Questions" value="#FFD232"> \
-                        <div class = "annotator-select-outer-circle positionAbs"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="3"> \
                           <div class = "annotator-select-inner-circle hide" value="#FFD232"></div> \
                         </div> \
-                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-sepia">' +locale_data[language]['questions']+'</div> \
+                        <div tabindex="4" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-sepia">' +locale_data[language]['questions']+'</div> \
                       </div> \
                       <div class = "annotator-color-select-container" title = "Observations" value="#FC92CF"> \
-                        <div class = "annotator-select-outer-circle positionAbs"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="5"> \
                           <div class = "annotator-select-inner-circle hide" value="#FC92CF"></div> \
                         </div> \
-                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-pink">' +locale_data[language]['observations']+'</div> \
+                        <div tabindex="6" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-pink">' +locale_data[language]['observations']+'</div> \
                       </div> \
                     </div> \
                   </div> \
@@ -3650,27 +3651,27 @@ Annotator.Editor = (function(_super) {
                   <div class = "edit-Note-Panel-1">  <!-- Edit Note Panel-->\
                     <div> <!-- Edit Note circle-->\
                       <div class = "edit-note-circle"> \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" value="#55DF49"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" tabindex="1" value="#55DF49"> \
                         </div> \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" value="#FFD232"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" tabindex="2" value="#FFD232"> \
                         </div > \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" value="#FC92CF"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" tabindex="3" value="#FC92CF"> \
                         </div > \
                       </div> \
                       <div class = "edit-note-rect"> <!-- Edit Note Rectangle-->\
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-green annotator-edit-Note-Panel-1-rect" value="#55DF49">' +locale_data[language]['mainIdeas']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-green annotator-edit-Note-Panel-1-rect" tabindex="0" value="#55DF49">' +locale_data[language]['mainIdeas']+'</div> \
                         </div> \
                                 \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-sepia annotator-edit-Note-Panel-1-rect" value="#FFD232">' +locale_data[language]['questions']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-sepia annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FFD232">' +locale_data[language]['questions']+'</div> \
                         </div> \
                                 \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" value="#FC92CF">' +locale_data[language]['observations']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FC92CF">' +locale_data[language]['observations']+'</div> \
                         </div> \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" value="#ccf5fd">' +locale_data[language]['instructor']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" tabindex="0" value="#ccf5fd">' +locale_data[language]['instructor']+'</div> \
                         </div> \
                       </div> \
                               \
@@ -3682,15 +3683,15 @@ Annotator.Editor = (function(_super) {
 
   var panel3 ='<div class="annotator-panel-3"> \
                 <div class="annotator-controls"> \
-                  <div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"> \
+                  <div class="annotator-delete-container" tabindex="0" title="' + locale_data[language]['delete'] + '"> \
                   </div> \
                   <div class="ann-cancel-delete-confirm-section hide"> \
                     <div class="ann-confirm-section"> \
                       <label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label> \
                     </div> \
                     <div class = "ann-canceldelete-section"> \
-                      <a class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a> \
-                      <a class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a> \
+                      <a class="annotator-confirm-cancel" tabindex="0" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a> \
+                      <a class="annotator-confirm-delete" tabindex="0" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a> \
                     </div> \
                   </div> \
                   <!--div class="ann-share-section"> \
@@ -3764,6 +3765,13 @@ Annotator.Editor = (function(_super) {
     $(".annotator-panel-triangle").addClass("annotator-panel-triangle1").removeClass("annotator-panel-triangle");
   }
 
+  Editor.prototype.onKeyupClick= function(e) { 
+    var keycode = e.keyCode;
+    if(keycode == 13 || keycode == 32) {
+      $(e.target).trigger('click');
+    }
+  }
+
   Editor.prototype.onEditColorChange= function(e) { 
     e.preventDefault();
     var editNoteCircleDom = $(".edit-note-circle");
@@ -3781,7 +3789,7 @@ Annotator.Editor = (function(_super) {
     var value = $(e.target).attr('value');
     editNoteCircleDom.show();
     editNoteCircleDom.find('.annotator-edit-Note-Panel-1-circle').css({"border": "0px","height": "18px", "width": "18px"}); // reset to default circle
-    editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"}) // highlight the selected circle
+    editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"}).focus(); // highlight the selected circle
     $(".edit-note-rect").css({"padding" : "0px","margin-top": "-43px","margin-left": "99px"});
     
     if(value === "#55DF49") { // Green
@@ -3862,7 +3870,7 @@ Annotator.Editor = (function(_super) {
     panel4Sec.remove();
     $(".ann-cancel-delete-confirm-section").hide();
     $(".annotator-delete-container").show();
-    $(panel2Sec).find('textarea').removeAttr('readonly');
+    $(panel2Sec).find('textarea').removeAttr('readonly').focus();
   }
 
   Editor.prototype.onEditClick=function(event) {  
@@ -3955,6 +3963,11 @@ Annotator.Editor = (function(_super) {
     // this.publish('save', [this.annotation]);
     // if(isTopAlign)
     //    $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
+    var annText = this.annotation.text;
+    if(annText)
+      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 4);
+    else
+      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
   }
 
   Editor.prototype.show = function(event, topPos) {
@@ -4047,6 +4060,10 @@ Annotator.Editor = (function(_super) {
       $(this.element).find('#noteContainer').hide();
     }
     $(".annotator-panel-triangle1").addClass("annotator-panel-triangle").removeClass("annotator-panel-triangle1");
+    if(this.annotation.colorCode) 
+      $(".annotator-edit-Note-Panel-1-rect[value=" + "'" + this.annotation.colorCode + "']").focus();
+    else
+      $('.annotator-select-outer-circle')[0].focus();
     return this.publish('show');
   };
 
