@@ -59,6 +59,7 @@ class PopUpInfo extends Component {
     if (this.props.popUpCallBack) {
       this.props.popUpCallBack(message);
     }
+  // this.closePopUp();
   }
 
   frameGlossPopOver = (index, event) => {
@@ -101,6 +102,7 @@ class PopUpInfo extends Component {
 
   framePopOver = (index, event) => {
     event.preventDefault();
+    this.closePopUp();
     const currTarget = event.currentTarget;
     if (event.target.classList.value && event.target.getAttribute('class').indexOf('annotator-hl') > -1 || event.target.classList.contains('annotator-handle')) {
       return false;
@@ -131,22 +133,6 @@ class PopUpInfo extends Component {
       const bookDivHeight = `${node.clientHeight}px`;
       document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
       const content = renderHTML(props.popOverCollection.popOverDescription);
-      let lastIndex;
-      for (let i = 0; i < content.length; i++) {
-        if (content[i].type === 'a') {
-          lastIndex = i;
-          content.splice(i, 1, React.cloneElement(content[i], { onClick: this.linkHandler }));
-        }
-      }
-      if (lastIndex !== undefined) {
-        content.splice(lastIndex, 1, React.cloneElement(content[lastIndex], { onKeyDown: (e) => {
-          if (e.keyCode === 9 && !e.shiftKey)
-            {
-            this.closePopUp();
-            currTarget.focus();
-          }
-        } }));
-      }
       Popup.registerPlugin('popover', function (element) {
         this.create({
           title: props.popOverCollection.popOverTitle ? renderHTML(props.popOverCollection.popOverTitle) : '',
@@ -207,10 +193,28 @@ class PopUpInfo extends Component {
       });
       document.getElementsByClassName('mm-popup__box')[0].addEventListener('keydown', (e) => {
         if (e.keyCode === 27) {
+          // for esc close popup
           this.closePopUp();
           currTarget.focus();
         }
       });
+      // links inside popup
+      const popupBox = document.getElementsByClassName('mm-popup__box')[0];
+      const links = popupBox.getElementsByTagName('a');
+      if (links.length) {
+        for (let index = 0; index < links.length; index++) {
+          const element = links[index];
+          element.addEventListener('click', this.linkHandler);
+          if (index === links.length - 1) {
+            element.addEventListener('keydown', (e) => {
+              if (e.keyCode === 9 && !e.shiftKey) {
+                this.closePopUp();
+                currTarget.focus();
+              }
+            });
+          }
+        }
+      }
     }
   }
 
