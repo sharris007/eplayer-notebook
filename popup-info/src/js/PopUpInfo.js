@@ -18,15 +18,19 @@ class PopUpInfo extends Component {
           if (!popUpProps.item.getAttribute('rendered')) {
             popUpProps.item.setAttribute('rendered', true);
             this.popUpArray[i] = popUpProps.popOverCollection;
-            if(this.props.bookContainerId !== null && this.props.bookContainerId !== undefined && this.props.bookContainerId !== "")
+            if (this.props.bookContainerId !== null && this.props.bookContainerId !== undefined && this.props.bookContainerId !== '')
             {
               popUpProps.item.addEventListener('click', this.frameGlossPopOver.bind(this, i));
             }
             else
             {
               popUpProps.item.addEventListener('click', this.framePopOver.bind(this, i));
+              popUpProps.item.addEventListener('keydown', (e) => {
+                if (e.keyCode === 32)
+                  { this.framePopOver(i, e); }
+              });
             }
-          }     
+          }
         });
       }
     }
@@ -61,31 +65,43 @@ class PopUpInfo extends Component {
     event.preventDefault();
     const props = this.props.popUpCollection[index];
     const bookContainerId = document.getElementById(this.props.bookContainerId);
-    const bookDivHeight = bookContainerId.clientHeight + 'px';
+    const bookDivHeight = `${bookContainerId.clientHeight}px`;
     document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
-    Popup.registerPlugin('popover', function(element) {
+    Popup.registerPlugin('popover', function (element) {
       this.create({
-          title: props.popOverCollection.popOverTitle ? renderHTML(props.popOverCollection.popOverTitle) : '',
-          content: renderHTML(props.popOverCollection.popOverDescription),
-          noOverlay: true,
-          position: function(box) {
-            var element = document.getElementById(props.item.id);
-            var popUpElement=document.getElementsByClassName('mm-popup')[0];
-            var popUpTop = parseInt(element.style.top,10) + parseInt(element.style.height,10) ;
-            document.getElementsByClassName('mm-popup__box')[0].classList.add('glosspopUp');
-            box.style.top = popUpTop + 10 + 'px';
-            box.style.left = (parseInt(element.style.left,10) - 100 )+ 'px';
-            bookContainerId.appendChild(popUpElement);
-            box.style.margin = 0;
-            box.style.opacity = 1;
-          }
+        title: props.popOverCollection.popOverTitle ? renderHTML(props.popOverCollection.popOverTitle) : '',
+        content: renderHTML(props.popOverCollection.popOverDescription),
+        noOverlay: true,
+        position(box) {
+          const element = document.getElementById(props.item.id);
+          const popUpElement = document.getElementsByClassName('mm-popup')[0];
+          const popUpTop = parseInt(element.style.top, 10) + parseInt(element.style.height, 10);
+          document.getElementsByClassName('mm-popup__box')[0].classList.add('glosspopUp');
+          box.style.top = `${popUpTop + 10}px`;
+          box.style.left = `${parseInt(element.style.left, 10) - 100}px`;
+          bookContainerId.appendChild(popUpElement);
+          box.style.margin = 0;
+          box.style.opacity = 1;
+        }
       });
     });
     Popup.plugins.popover(event.currentTarget);
   }
 
+  fnIsChild=(parentElem, childElem) => {
+    let element = childElem;
+    do {
+      if (element.parentNode === parentElem) {
+        return true;
+      }
+      element = element.parentNode;
+    } while (element);
+    return false;
+  }
+
   framePopOver = (index, event) => {
     event.preventDefault();
+    const currTarget = event.currentTarget;
     if (event.target.classList.value && event.target.getAttribute('class').indexOf('annotator-hl') > -1 || event.target.classList.contains('annotator-handle')) {
       return false;
     }
@@ -93,13 +109,13 @@ class PopUpInfo extends Component {
     const props = this.props.popUpCollection[index];
     const node = this.props.node.contentDocument.body;
     const iframe = document.getElementById(this.props.node.id);
-    const pageFontFamilyStyle=window.getComputedStyle(iframe.contentDocument.body, null ).getPropertyValue( 'font-family' );
+    const pageFontFamilyStyle = window.getComputedStyle(iframe.contentDocument.body, null).getPropertyValue('font-family');
     let iframeFreeSpace = 0;
     let popUpRightAlign = false;
     const contentWidth = this.props.contentWidth;
     if (contentWidth) {
       iframeFreeSpace = iframe.clientWidth - contentWidth;
-      if ((this.props.contentWidth + iframeFreeSpace/2) - event.target.getBoundingClientRect().left < 350) {
+      if ((this.props.contentWidth + iframeFreeSpace / 2) - event.target.getBoundingClientRect().left < 350) {
         popUpRightAlign = true;
       }
     }
@@ -107,51 +123,62 @@ class PopUpInfo extends Component {
     let elementOffsetWidth = event.target.offsetWidth;
     const pseudoClassProperties = window.getComputedStyle(event.currentTarget, ':after');
     if (pseudoClassProperties && pseudoClassProperties.getPropertyValue('content')) {
-      elementOffsetWidth = elementOffsetWidth-5;
+      elementOffsetWidth -= 5;
     }
-    /*console.log("iframePosition ", iframePosition);
+    /* console.log("iframePosition ", iframePosition);
     console.log("document.getElementById( 'contentIframe' ) ", document.getElementById( 'contentIframe' ).offsetTop)*/
     if (props.popOverCollection) {
-      const bookDivHeight = node.clientHeight + 'px';
+      const bookDivHeight = `${node.clientHeight}px`;
       document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
       const content = renderHTML(props.popOverCollection.popOverDescription);
+      let lastIndex;
       for (let i = 0; i < content.length; i++) {
         if (content[i].type === 'a') {
+          lastIndex = i;
           content.splice(i, 1, React.cloneElement(content[i], { onClick: this.linkHandler }));
         }
       }
-      Popup.registerPlugin('popover', function(element) {
+      if (lastIndex !== undefined) {
+        content.splice(lastIndex, 1, React.cloneElement(content[lastIndex], { onKeyDown: (e) => {
+          if (e.keyCode === 9 && !e.shiftKey)
+            {
+            this.closePopUp();
+            currTarget.focus();
+          }
+        } }));
+      }
+      Popup.registerPlugin('popover', function (element) {
         this.create({
           title: props.popOverCollection.popOverTitle ? renderHTML(props.popOverCollection.popOverTitle) : '',
-          content,//: renderHTML(props.popOverCollection.popOverDescription),
+          content, // : renderHTML(props.popOverCollection.popOverDescription),
           noOverlay: true,
-          position: function(box) {
+          position(box) {
             console.log(document.getElementsByClassName('mm-popup__box'));
-            //const elementIdRect = element.getBoundingClientRect();
-            
-            
-            const isWordBroken = element.offsetHeight > 25 ? true : false;
+            // const elementIdRect = element.getBoundingClientRect();
+
+
+            const isWordBroken = element.offsetHeight > 25;
             if (isWordBroken) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign');
-              box.style.top = (element.getBoundingClientRect().top + iframe.offsetTop + element.offsetHeight + 15) + 'px';
-              box.style.left = (element.getBoundingClientRect().left) + 'px';
-            } 
+              box.style.top = `${element.getBoundingClientRect().top + iframe.offsetTop + element.offsetHeight + 15}px`;
+              box.style.left = `${element.getBoundingClientRect().left}px`;
+            }
             else {
-              
-              //if (window.innerHeight - element.getBoundingClientRect().top < 135) {
+
+              // if (window.innerHeight - element.getBoundingClientRect().top < 135) {
               if (element.getBoundingClientRect().top - window.scrollY > 500) {
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpTopAlign');
-                box.style.top = (element.getBoundingClientRect().top + iframe.offsetTop - document.getElementsByClassName('mm-popup__box')[0].clientHeight - 15) + 'px';
-                box.style.left = (element.getBoundingClientRect().left-185+(element.offsetWidth/2)) + 'px';
+                box.style.top = `${element.getBoundingClientRect().top + iframe.offsetTop - document.getElementsByClassName('mm-popup__box')[0].clientHeight - 15}px`;
+                box.style.left = `${element.getBoundingClientRect().left - 185 + (element.offsetWidth / 2)}px`;
               } else if (popUpRightAlign) {
-                box.style.top = (element.getBoundingClientRect().top + iframe.offsetTop + element.offsetHeight + 15) + 'px';
+                box.style.top = `${element.getBoundingClientRect().top + iframe.offsetTop + element.offsetHeight + 15}px`;
                 document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpRightAlign');
-                box.style.left = (element.getBoundingClientRect().left + document.getElementById(iframe.id).offsetLeft + elementOffsetWidth - 350) + 'px';
-              } 
+                box.style.left = `${element.getBoundingClientRect().left + document.getElementById(iframe.id).offsetLeft + elementOffsetWidth - 350}px`;
+              }
               else {
-                box.style.top = (element.getBoundingClientRect().top + iframe.offsetTop + element.offsetHeight + 15) + 'px';
-                document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign'); 
-                box.style.left = (element.getBoundingClientRect().left  +  elementOffsetWidth + document.getElementById(iframe.id).offsetLeft - 50) + 'px';
+                box.style.top = `${element.getBoundingClientRect().top + iframe.offsetTop + element.offsetHeight + 15}px`;
+                document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign');
+                box.style.left = `${element.getBoundingClientRect().left + elementOffsetWidth + document.getElementById(iframe.id).offsetLeft - 50}px`;
               }
             }
             if (!props.popOverCollection.popOverTitle) {
@@ -168,14 +195,30 @@ class PopUpInfo extends Component {
       if (props.popOverCollection.popOverDescription) {
         this.checkValidURL(props.popOverCollection.popOverDescription);
       }
+      document.getElementsByClassName('mm-popup__box')[0].setAttribute('tabindex', 0);
+      document.getElementsByClassName('mm-popup__box')[0].focus();
+      document.getElementsByClassName('mm-popup__box')[0].style.outline = 'none';
+      document.getElementsByClassName('mm-popup__box')[0].addEventListener('blur', (e) => {
+        // console.log(e.relatedTarget);
+        if (e.relatedTarget && !this.fnIsChild(document.getElementsByClassName('mm-popup__box')[0], e.relatedTarget)) {
+          this.closePopUp();
+          currTarget.focus();
+        }
+      });
+      document.getElementsByClassName('mm-popup__box')[0].addEventListener('keydown', (e) => {
+        if (e.keyCode === 27) {
+          this.closePopUp();
+          currTarget.focus();
+        }
+      });
     }
   }
 
   checkValidURL = (str) => {
-    //console.log(str)
+    // console.log(str)
     const regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
     console.log(document.getElementsByClassName('mm-popup__box'));
-    if (!regex .test(str)) {      
+    if (!regex.test(str)) {
       document.getElementsByClassName('mm-popup__box')[0].style.width = '400px';
     } else {
       document.getElementsByClassName('mm-popup__box')[0].style.width = '370px';
@@ -183,11 +226,11 @@ class PopUpInfo extends Component {
   }
 
   closePopUp = () => {
-    Popup.close()
+    Popup.close();
   }
 
   render() {
-    return ( <div>< Popup / ></div> );
+    return (<div tabIndex="0">< Popup closeBtn={false} / ></div>);
   }
 
 }
