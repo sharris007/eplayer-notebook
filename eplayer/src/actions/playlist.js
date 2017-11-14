@@ -45,6 +45,11 @@ const tocResponse = json => ({
   updatedToc: true
 })
 
+const gettingTocResponse = () => ({
+  type: 'GETTING_TOC_RESPONSE',
+  updatedToc: false
+})
+
 var tocUrl = '';
 var piToken = '';
 var bookId = '';
@@ -123,8 +128,10 @@ export const getBookTocCallService = data => dispatch =>
 export const putCustomTocCallService = data => dispatch =>
   PlaylistApi.doPutCustomTocDetails(data, piToken, bookId).then(response => response.json())
     .then((response) => {
+      dispatch(gettingTocResponse());
       dispatch(tocResponse(response));
     });
+
 
 
 export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseDetails(data)

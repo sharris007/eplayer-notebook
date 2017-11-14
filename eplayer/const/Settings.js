@@ -146,7 +146,8 @@ export const typeConstants = {
   BOOK_DETAILS           : 'BOOK_DETAILS',
   GET_PREFERENCE         : 'GET_PREFERENCE',
   POST_PREFERENCE        : 'POST_PREFERENCE',
-   GET_TOC_RESPONSE       : 'GET_TOC_RESPONSE'
+  GET_TOC_RESPONSE       : 'GET_TOC_RESPONSE',
+  GETTING_TOC_RESPONSE   :'GETTING_TOC_RESPONSE'
 };
 
 export const domain = {

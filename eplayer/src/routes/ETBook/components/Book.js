@@ -796,7 +796,9 @@ export class Book extends Component {
   render() {
     const callbacks = {};
     let annJsPath, annCssPath, productData;
-    const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props; // eslint-disable-line react/prop-types
+    const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props; 
+      console.log("updatedToc", updatedToc);
+    // eslint-disable-line react/prop-types
     // const annData  = annotationData.rows;
     this.props.book.annTotalData = annotationTotalData;
     this.props.book.toc = tocData;
@@ -1121,10 +1123,7 @@ export class Book extends Component {
             </div>
           </LearningContextProvider>}
         {
-          updatedToc ?
-            <div>
-              <StaticAlert type={type} title={title} message={message} />
-            </div> : <div></div>
+          updatedToc?<StaticAlert type={type} title={title} message={message} /> : <div></div>
         } </div>
     );
   }
