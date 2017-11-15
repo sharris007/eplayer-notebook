@@ -357,7 +357,6 @@ export class Book extends Component {
       const transactionDt = new Date().toISOString();
       updatedPageLoadData.activities[0].payload.personId = this.state.urlParams.user;
       updatedPageLoadData.activities[0].payload.courseId = this.state.courseId;
-      updatedPageLoadData.activities[0].payload.pageUserNavigatedToUrn = this.state.nextPageId;
       updatedPageLoadData.activities[0].payload.courseSectionId = this.state.sectionId;
       updatedPageLoadData.activities[0].payload.contentId = this.state.contentId;
       updatedPageLoadData.activities[0].payload.messageId = messageId;
@@ -395,7 +394,6 @@ export class Book extends Component {
       const transactionDt = new Date().toISOString();
       updatedPageUnLoadData.activities[0].payload.personId = this.state.urlParams.user;
       updatedPageUnLoadData.activities[0].payload.courseId = this.state.courseId;
-      updatedPageUnLoadData.activities[0].payload.pageUserNavigatedToUrn = this.state.nextPageId;
       updatedPageUnLoadData.activities[0].payload.courseSectionId = this.state.sectionId;
       updatedPageUnLoadData.activities[0].payload.contentId = this.state.contentId;
       updatedPageUnLoadData.activities[0].payload.messageId = messageId;
