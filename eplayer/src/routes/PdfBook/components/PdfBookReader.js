@@ -23,6 +23,7 @@ import { PdfViewer } from '@pearson-incubator/vega-viewer';
 
 const envType = domain.getEnvType();
 const foxiturl = eT1Contants.FoxitUrls[envType];
+const foxitCdnUrl = eT1Contants.foxitCDNUrl[envType];
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -1077,6 +1078,7 @@ handleRegionClick(hotspotID) {
       metaData : {
         pdfInstance : __pdfInstance,
         pdfRendererUrl : foxiturl,
+        pdfRendererCacheUrl : foxitCdnUrl,
         bookFeatures : (this.props.data.book.bookFeatures ? this.props.data.book.bookFeatures : {})
       }
     };
