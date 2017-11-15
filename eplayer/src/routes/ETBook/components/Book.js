@@ -919,12 +919,15 @@ export class Book extends Component {
     let message = '';
     const title = 'Status';
     if (tocResponse) {
-      if (tocResponse.status === 'Success')
+      if (tocResponse.status === 'Success'){
         type = tocResponse.status;
+        message='TOC customized successfully';
+    }
       else {
         type = 'Error';
+        message='TOC customization failed. Please contact support';
       }
-      message = tocResponse.message;
+      
     }
     const pages = bootstrapParams.pageDetails.playListURL || [];
     const bookmarArr = this.props.book.bookmarks ? this.props.book.bookmarks : [];
