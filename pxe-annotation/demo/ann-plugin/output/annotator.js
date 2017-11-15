@@ -3604,7 +3604,7 @@ Annotator.Editor = (function(_super) {
     '.annotator-edit-Note-Panel-1-rect click' : 'onEditRectClick',
     '.annotator-edit-Note-Panel-1-circle click' : 'onEditColorChange',
     '#noteContainer click' : 'onNoteContainerClick',
-    '.annotator-select-outer-circle,.annotator-select-rect,.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle keyup': 'onKeyupClick'
+    '.annotator-select-outer-circle,.annotator-select-rect,.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle,#noteContainer keyup': 'onKeyupClick'
   };
 
   Editor.prototype.classes = {
@@ -3791,7 +3791,8 @@ Annotator.Editor = (function(_super) {
     editNoteCircleDom.find('.annotator-edit-Note-Panel-1-circle').css({"border": "0px","height": "18px", "width": "18px"}); // reset to default circle
     editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"}).focus(); // highlight the selected circle
     $(".edit-note-rect").css({"padding" : "0px","margin-top": "-43px","margin-left": "99px"});
-    
+    $("#noteContainer").attr("tabindex", "4");
+    $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 5);
     if(value === "#55DF49") { // Green
 
     } else if(value ==="#FFD232") { // Sepia
@@ -3870,6 +3871,7 @@ Annotator.Editor = (function(_super) {
     panel4Sec.remove();
     $(".ann-cancel-delete-confirm-section").hide();
     $(".annotator-delete-container").show();
+    $(panel2Sec).find('#noteContainer').focus();
     $(panel2Sec).find('textarea').removeAttr('readonly').focus();
   }
 
@@ -3964,10 +3966,12 @@ Annotator.Editor = (function(_super) {
     // if(isTopAlign)
     //    $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
     var annText = this.annotation.text;
-    if(annText)
-      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 4);
-    else
-      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
+    if(annText) {
+      $('#noteContainer').attr('tabindex', 4);
+      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 5);
+    } else {
+      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,#noteContainer').attr('tabindex', 0);
+    }
   }
 
   Editor.prototype.show = function(event, topPos) {
@@ -4137,7 +4141,7 @@ Annotator.Editor = (function(_super) {
     else      
       $('.annotator-share-text, .annotator-share').show();
     if (!$('.annotator-item input').length) {
-     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '." id = "mathTitle"/><div class="noteContainer" id = "noteContainer" ></div>');
+     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '." id = "mathTitle"/><div class="noteContainer" id = "noteContainer" tabindex="0"></div>');
     }
     $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax')){
@@ -4257,6 +4261,7 @@ Annotator.Editor = (function(_super) {
       // return this.submit();
       event.stopPropagation();
     }
+    $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
   };
 
   Editor.prototype.onCancelButtonMouseover = function() {
