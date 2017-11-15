@@ -829,7 +829,17 @@ handleRegionClick(hotspotID) {
                 }
                 catch(e){
                 }
-              }    
+              }
+              else if(this.state.regionData.hotspotType == 'URL')
+              {
+                try
+                {
+                  let ExternalLinkComponent = document.getElementsByClassName('link-model')[0];
+                  ExternalLinkComponent.style.backgroundColor = '#ffffff';
+                }
+                catch(e){
+                }
+              }     
               else if(this.state.regionData.hotspotType == 'AUDIO' && this.state.regionData.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
               {
                 try
