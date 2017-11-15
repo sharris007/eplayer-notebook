@@ -104,6 +104,7 @@ class PopUpInfo extends Component {
     event.preventDefault();
     this.closePopUp();
     const currTarget = event.currentTarget;
+    currTarget.setAttribute('aria-describedby', `popup-${currTarget.id}`);
     if (event.target.classList.value && event.target.getAttribute('class').indexOf('annotator-hl') > -1 || event.target.classList.contains('annotator-handle')) {
       return false;
     }
@@ -142,7 +143,7 @@ class PopUpInfo extends Component {
             console.log(document.getElementsByClassName('mm-popup__box'));
             // const elementIdRect = element.getBoundingClientRect();
 
-
+            document.getElementsByClassName('mm-popup__box')[0].setAttribute('id', `popup-${currTarget.id}`);
             const isWordBroken = element.offsetHeight > 25;
             if (isWordBroken) {
               document.getElementsByClassName('mm-popup__box')[0].classList.add('popUpLeftAlign');
@@ -234,7 +235,7 @@ class PopUpInfo extends Component {
   }
 
   render() {
-    return (<div tabIndex="0">< Popup closeBtn={false} / ></div>);
+    return (<div tabIndex="0" id="glossary-popup">< Popup closeBtn={false} / ></div>);
   }
 
 }
