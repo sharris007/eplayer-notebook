@@ -178,7 +178,15 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       return false;
     }
     
-    const getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    const getsourceUrl = localStorage.getItem('sourceUrl');
+    let getOriginUrl;
+    if( getsourceUrl === 'bookshelf'){
+      getOriginUrl = resources.links.authDomainUrl[domain.getEnvType()];
+    }
+    else{
+      getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    }
+    localStorage.setItem('sourceUrl', '');
     localStorage.setItem('backUrl',getOriginUrl);
     PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then(response => {
