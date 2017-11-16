@@ -1067,7 +1067,7 @@ handleRegionClick(hotspotID) {
         }
       });
     if (this.props.data.book.toc.fetched && this.props.data.book.toc.content !== undefined
-              && this.props.data.book.toc.content.list !== undefined && this.props.data.book.toc.content.list.length !== 0)
+              && this.props.data.book.toc.content.list !== undefined)
     {
       this.props.data.book.tocReceived = true;
     }
