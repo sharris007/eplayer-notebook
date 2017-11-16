@@ -130,13 +130,16 @@ export const putCustomTocCallService = data => dispatch =>
     .then((response) => {
       dispatch(gettingTocResponse());
       dispatch(updateTocResponse(response));
-      let tocResponse = {};
-      tocResponse.mainTitle = bookDetails.title;
-      tocResponse.author = bookDetails.creator;
-      tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
-       tocResponse.list = data.tocContents;
-      const tocUpdatedData = { content: tocResponse, bookDetails };
-      dispatch(getTocCompleteDetails(tocUpdatedData));
+      if(response.status==='Success')
+      {
+        let tocResponse = {};
+        tocResponse.mainTitle = bookDetails.title;
+        tocResponse.author = bookDetails.creator;
+        tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
+        tocResponse.list = data.tocContents;
+        const tocUpdatedData = { content: tocResponse, bookDetails };
+        dispatch(getTocCompleteDetails(tocUpdatedData));
+      }
     });
 
 
@@ -144,7 +147,6 @@ export const putCustomTocCallService = data => dispatch =>
 export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseDetails(data)
   .then(response => response.json())
   .then((response) => {
-    console.log("response----", response.status);
     if (response.status >= 400) {
       browserHistory.push('/eplayer/error/' + response.status);
       return false;

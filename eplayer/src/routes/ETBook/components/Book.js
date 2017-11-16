@@ -363,7 +363,6 @@ export class Book extends Component {
       updatedPageLoadData.activities[0].payload.userAgent = this.state.userAgent;
       updatedPageLoadData.activities[0].payload.operatingSystemCode = this.state.operatingSystemCode;
       updatedPageLoadData.activities[0].payload.organizationId = this.state.organizationId;
-      // console.log("updatedPageLoadData12", updatedPageLoadData);
       const getSecureToken = localStorage.getItem('secureToken');
       loadPageEvent(getSecureToken, updatedPageLoadData);
 
@@ -397,7 +396,6 @@ export class Book extends Component {
       updatedPageUnLoadData.activities[0].payload.userAgent = this.state.userAgent;
       updatedPageUnLoadData.activities[0].payload.operatingSystemCode = this.state.operatingSystemCode;
       updatedPageUnLoadData.activities[0].payload.organizationId = this.state.organizationId;
-      // console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
       const getSecureToken = localStorage.getItem('secureToken');
       unLoadPageEvent(getSecureToken, updatedPageUnLoadData);
       if (loadFunCall) {
@@ -797,9 +795,7 @@ export class Book extends Component {
     const callbacks = {};
     let annJsPath, annCssPath, productData;
     const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props; 
-      console.log("updatedToc", updatedToc);
     // eslint-disable-line react/prop-types
-    // const annData  = annotationData.rows;
     this.props.book.annTotalData = annotationTotalData;
     this.props.book.toc = tocData;
     this.props.book.tocReceived = tocReceived;
@@ -847,23 +843,12 @@ export class Book extends Component {
       isTocWrapperRequired: false
     };
 
-    // this.setState( tocCompData = {
-    //   separateToggleIcon: true,
-    //   data: this.props.book.toc ? this.props.book.toc : {},
-    //   depth: 5,
-    //   childField: 'children',
-    //   isTocWrapperRequired: false
-    // };
-
     let configTocData = {
       dropLevelType: 'WITH_IN_SAME_LEVEL',
       tocContents: tocCompData.data.content.list,
       tocLevel: 2,
       dndType: 'TableOfContents',
       handlePublish: (changedTocContent) => {
-        console.log("tocdata to CITE for toc",tocCompData);
-        console.log("tocdata to CITE on arrange contents click",tocCompData.data.content.list);
-        //console.log("changedTocContent---------", changedTocContent);
         let tocPayload = [];
         let i = 0;
         for (const prop in changedTocContent) {
