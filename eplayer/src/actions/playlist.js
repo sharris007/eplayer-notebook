@@ -71,7 +71,7 @@ export const getBookPlayListCallService = data => dispatch =>
   PlaylistApi.doGetPiUserDetails(data).then(response => response.json())
     .then((response) => {
       data.userName = response.UserName;
-      const bookshelfUrl = resources.links.authDomainUrl[domain.getEnvType()];
+      const bookshelfUrl = resources.links.authDomainUrl[domain.getEnvType()] +'/eplayer';
       localStorage.setItem('backUrl', bookshelfUrl);
       PlaylistApi.doGetBookDetails(data)
         .then(response => response.json())
@@ -181,7 +181,7 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
     const getsourceUrl = localStorage.getItem('sourceUrl');
     let getOriginUrl;
     if( getsourceUrl === 'bookshelf'){
-      getOriginUrl = resources.links.authDomainUrl[domain.getEnvType()];
+      getOriginUrl = resources.links.authDomainUrl[domain.getEnvType()]+'/eplayer';
     }
     else{
       getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
