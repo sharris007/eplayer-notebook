@@ -2896,7 +2896,15 @@ Annotator = (function(_super) {
       normed = normedRanges[_j];
       normed.color=annotation.colorCode;
       normed.note=annotation.text;
-      if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+      if($(normed.commonAncestor).find(".annotator-handle").length) {
+        noteIcon = $(normed.commonAncestor).find(".annotator-handle")[0].innerText;
+        $(normed.commonAncestor).find(".annotator-handle")[0].innerText = "";
+        if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+        $(normed.commonAncestor).find(".annotator-handle")[0].innerText = noteIcon;
+      }
+      else
+       if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+
       annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
       $.merge(annotation.highlights, this.highlightRange(normed));
     }
@@ -3055,7 +3063,7 @@ Annotator = (function(_super) {
    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
      node = _ref[_i];
      if (!white.test(node.nodeValue)) {
-      if(!$(node).closest('.annotator-handle').length) {
+      if(!$(node).closest('.annotator-handle').length || !$(node).closest('.biblioref').length ) {
          _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
          if($(node).closest('.pxereaderSearchHighlight').length > 0) {
            $(node).parent().find('.annotator-handle').text(noteText).css('background-color', normedRange.color);
@@ -3757,6 +3765,8 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onNoteContainerClick= function(e) { 
+    if ($('.annotator-widget').hasClass("instructorNote"))
+      return;
     $("#noteContainer").hide();
     var annotator_editor = $('.annotator-editor')
     annotator_editor.css({ top : annotator_editor.position().top});
@@ -4027,7 +4037,7 @@ Annotator.Editor = (function(_super) {
       $('.annotator-panel-1').addClass('oldAnnotation');
       if(this.annotation.colorCode == '#ccf5fd') {
         this.element.find('.annotator-widget').addClass('instructorNote');
-        $('#noteContainer').css('pointer-events', 'none');
+        //$('#noteContainer').css('pointer-events', 'none');
         $('.annotator-controls').hide();
         $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true)});
       } else {
