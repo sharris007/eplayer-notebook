@@ -682,7 +682,10 @@ export class Book extends Component {
       this.props.book.bookinfo = [];
       this.props.book.annTotalData = [];
     }
-    window.history.back();
+    const getOriginurl = localStorage.getItem('backUrl');
+    if(getOriginurl) {
+      window.location.href = getOriginurl;
+    }
     // if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
     //    let originurl = localStorage.getItem('sourceUrl');       
     //   if(originurl != null)
