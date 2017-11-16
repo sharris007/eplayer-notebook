@@ -248,7 +248,15 @@ Annotator = (function(_super) {
       normed = normedRanges[_j];
       normed.color=annotation.colorCode;
       normed.note=annotation.text;
-      if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+      if($(normed.commonAncestor).find(".annotator-handle").length) {
+        noteIcon = $(normed.commonAncestor).find(".annotator-handle")[0].innerText;
+        $(normed.commonAncestor).find(".annotator-handle")[0].innerText = "";
+        if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+        $(normed.commonAncestor).find(".annotator-handle")[0].innerText = noteIcon;
+      }
+      else
+       if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+
       annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
       $.merge(annotation.highlights, this.highlightRange(normed));
     }
@@ -407,7 +415,7 @@ Annotator = (function(_super) {
    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
      node = _ref[_i];
      if (!white.test(node.nodeValue)) {
-      if(!$(node).closest('.annotator-handle').length) {
+      if(!$(node).closest('.annotator-handle').length || !$(node).closest('.biblioref').length ) {
          _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
          if($(node).closest('.pxereaderSearchHighlight').length > 0) {
            $(node).parent().find('.annotator-handle').text(noteText).css('background-color', normedRange.color);

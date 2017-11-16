@@ -175,6 +175,8 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onNoteContainerClick= function(e) { 
+    if ($('.annotator-widget').hasClass("instructorNote"))
+      return;
     $("#noteContainer").hide();
     var annotator_editor = $('.annotator-editor')
     annotator_editor.css({ top : annotator_editor.position().top});
@@ -445,7 +447,7 @@ Annotator.Editor = (function(_super) {
       $('.annotator-panel-1').addClass('oldAnnotation');
       if(this.annotation.colorCode == '#ccf5fd') {
         this.element.find('.annotator-widget').addClass('instructorNote');
-        $('#noteContainer').css('pointer-events', 'none');
+        //$('#noteContainer').css('pointer-events', 'none');
         $('.annotator-controls').hide();
         $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true)});
       } else {

@@ -1317,3 +1317,10 @@ pointer-events: none;
 .annotator-editor .annotator-delete-container, .annotator-editor .ann-cancel-delete-confirm-section {
 pointer-events: all;
 }
+
+.biblioref {
+   -webkit-user-select: none; 
+   -moz-user-select: none; 
+   -ms-user-select: none; 
+   user-select: none;
+}
