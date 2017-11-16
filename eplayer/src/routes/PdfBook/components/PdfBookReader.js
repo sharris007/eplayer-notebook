@@ -191,12 +191,12 @@ export class PdfBookReader extends Component {
     if (pdfEvent === 'pageChanged') {
       sessionStorage.setItem('currentPageOrder', this.state.currPageIndex);
       this.setState({ executed: false });
-      if (this.state.isFirstPageBeingLoad === true) {
-        this.setState({ isFirstPageBeingLoad: false });
-      }
     }
     if (pdfEvent === 'pageLoaded') {
       this.setState({ pageLoaded: true });
+       if (this.state.isFirstPageBeingLoad === true) {
+        this.setState({ isFirstPageBeingLoad: false });
+      }
       __pdfInstance.setCurrentZoomLevel(this.state.currZoomLevel);
       this.props.data.actions.fetchRegionsInfo(this.props.data.location.query.bookid,this.props.data.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.data.book.bookinfo.book.roleTypeID,serverDetails,this.props.currentbook.scenario,this.props.currentbook.platform).then(() => {
         if(this.props.data.book.regions.length > 0 )
@@ -1050,6 +1050,7 @@ handleRegionClick(hotspotID) {
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPage;
+    callbacks.resetCurrentPageDetails = this.props.data.actions.loadcurrentPage
     viewerCallBacks.handleHighlightClick = this.handleHighlightClick.bind(this);
     viewerCallBacks.createHighlight = this.createHighlight.bind(this);
     viewerCallBacks.handleRegionClick = this.handleRegionClick.bind(this);

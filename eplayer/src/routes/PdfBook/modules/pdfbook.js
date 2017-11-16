@@ -1072,9 +1072,12 @@ export function getlocaluserID(bookServerURL,globaluserid,type)
 // Load the current page details in redux store
 export function loadcurrentPage(bookId,currentPageOrder,pdfpath,pagetype)
 {
-  const currentPage = {
+  let currentPage = {} ;
+  if(pdfpath){
+    currentPage = {
     bookId,currentPageOrder,pdfpath,pagetype
-  };
+    };
+  }
   return {
     type: LOAD_CURRENT_PAGE,
     payload: currentPage

@@ -74,8 +74,8 @@ export const eT1Contants = {
   },
   foxitCDNUrl : {
     qa : "https://drlngevdyobo7.cloudfront.net/foxit-webpdf-web/",
-    stage:  "https://d205uwuz6t2dy1.cloudfront.net/foxit-webpdf-web/",
-    prod : "https://drlngevdyobo7.cloudfront.net/foxit-webpdf-web/"
+    stage: "https://d205uwuz6t2dy1.cloudfront.net/foxit-webpdf-web/",
+    prod : "https://d1ubxfsvhe3rl7.cloudfront.net/foxit-webpdf-web/"
   },
   readerApiResponseRecordsLimits: 1000,
   ServerUrls : {
