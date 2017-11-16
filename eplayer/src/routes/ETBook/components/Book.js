@@ -847,12 +847,22 @@ export class Book extends Component {
       isTocWrapperRequired: false
     };
 
+    // this.setState( tocCompData = {
+    //   separateToggleIcon: true,
+    //   data: this.props.book.toc ? this.props.book.toc : {},
+    //   depth: 5,
+    //   childField: 'children',
+    //   isTocWrapperRequired: false
+    // };
+
     let configTocData = {
       dropLevelType: 'WITH_IN_SAME_LEVEL',
       tocContents: tocCompData.data.content.list,
       tocLevel: 2,
       dndType: 'TableOfContents',
       handlePublish: (changedTocContent) => {
+        console.log("tocdata to CITE for toc",tocCompData);
+        console.log("tocdata to CITE on arrange contents click",tocCompData.data.content.list);
         //console.log("changedTocContent---------", changedTocContent);
         let tocPayload = [];
         let i = 0;
@@ -904,11 +914,11 @@ export class Book extends Component {
     if (tocResponse) {
       if (tocResponse.status === 'Success'){
         type = tocResponse.status;
-        message='TOC customized successfully';
+        message="The table of contents has been updated!";
     }
       else {
         type = 'Error';
-        message='TOC customization failed. Please contact support';
+        message="Your changes didn't get published. Give us a few moments and try again.";
       }
       
     }

@@ -39,7 +39,7 @@ export const getBookDetails = json => ({
 
 
 
-const tocResponse = json => ({
+const updateTocResponse = json => ({
   type: typeConstants.GET_TOC_RESPONSE,
   data: json,
   updatedToc: true
@@ -129,7 +129,14 @@ export const putCustomTocCallService = data => dispatch =>
   PlaylistApi.doPutCustomTocDetails(data, piToken, bookId).then(response => response.json())
     .then((response) => {
       dispatch(gettingTocResponse());
-      dispatch(tocResponse(response));
+      dispatch(updateTocResponse(response));
+      let tocResponse = {};
+      tocResponse.mainTitle = bookDetails.title;
+      tocResponse.author = bookDetails.creator;
+      tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
+       tocResponse.list = data.tocContents;
+      const tocUpdatedData = { content: tocResponse, bookDetails };
+      dispatch(getTocCompleteDetails(tocUpdatedData));
     });
 
 
