@@ -426,21 +426,24 @@ export function fetchTocAndViewer(bookId, authorName, title,
           const tocLevel1ChildList = [];
           tocLevel1ChildData.forEach((tocLevel2) => {
             const tocLevel2ChildData = tocLevel2.bc.b.be;
-            if (tocLevel2ChildData.length === undefined) {
-              const childList = constructTree(tocLevel2ChildData);
-              tocLevel1ChildList.push(childList);
-            } else {
-              tocLevel2ChildData.forEach((tocLevel3) => {
-                const childList = constructTree(tocLevel3);
+            if(tocLevel2ChildData !== undefined)
+            {
+              if (tocLevel2ChildData.length === undefined) {
+                const childList = constructTree(tocLevel2ChildData);
                 tocLevel1ChildList.push(childList);
-              });
+              } else {
+                tocLevel2ChildData.forEach((tocLevel3) => {
+                  const childList = constructTree(tocLevel3);
+                  tocLevel1ChildList.push(childList);
+                });
+              }
             }
           });
         /* let tocLevel_1_Obj = new Node();
         tocLevel_1_Obj.id=tocLevel1.basketID;
         tocLevel_1_Obj.title=tocLevel1.name;
         tocLevel_1_Obj.children=tocLevel1ChildList;*/
-          if (hastocflatten === 'Y') {
+          if (hastocflatten === 'Y' && tocLevel1ChildList.length !== 0) {
             bookState.toc.content.list = flatten1(tocLevel1ChildList);
           } else {
             bookState.toc.content.list = tocLevel1ChildList;
@@ -1072,9 +1075,12 @@ export function getlocaluserID(bookServerURL,globaluserid,type)
 // Load the current page details in redux store
 export function loadcurrentPage(bookId,currentPageOrder,pdfpath,pagetype)
 {
-  const currentPage = {
+  let currentPage = {} ;
+  if(pdfpath){
+    currentPage = {
     bookId,currentPageOrder,pdfpath,pagetype
-  };
+    };
+  }
   return {
     type: LOAD_CURRENT_PAGE,
     payload: currentPage

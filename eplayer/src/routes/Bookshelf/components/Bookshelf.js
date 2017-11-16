@@ -198,9 +198,8 @@ export default class BookshelfPage extends React.Component {
       browserHistory.push(`/eplayer/ETbook/${bookId}`);
     }
     else if( type === 'course') {
-      localStorage.setItem('sourceUrl', window.location.origin);
+      localStorage.setItem('sourceUrl', 'bookshelf');
       browserHistory.push(`/eplayer/Course/${bookId}`);
-      localStorage.setItem('sourceUrl', window.location.origin);
     }
   }
   /* Method used for loading the data. Any change in store data it will reload the view. */

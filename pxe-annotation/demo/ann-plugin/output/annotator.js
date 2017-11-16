@@ -2896,7 +2896,15 @@ Annotator = (function(_super) {
       normed = normedRanges[_j];
       normed.color=annotation.colorCode;
       normed.note=annotation.text;
-      if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+      if($(normed.commonAncestor).find(".annotator-handle").length) {
+        noteIcon = $(normed.commonAncestor).find(".annotator-handle")[0].innerText;
+        $(normed.commonAncestor).find(".annotator-handle")[0].innerText = "";
+        if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+        $(normed.commonAncestor).find(".annotator-handle")[0].innerText = noteIcon;
+      }
+      else
+       if(Array.isArray(annotation.quote))annotation.quote.push($.trim(normed.text()));
+
       annotation.ranges.push(normed.serialize(this.wrapper[0], '.annotator-hl'));
       $.merge(annotation.highlights, this.highlightRange(normed));
     }
@@ -3055,7 +3063,7 @@ Annotator = (function(_super) {
    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
      node = _ref[_i];
      if (!white.test(node.nodeValue)) {
-      if(!$(node).closest('.annotator-handle').length) {
+      if(!$(node).closest('.annotator-handle').length || !$(node).closest('.biblioref').length ) {
          _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
          if($(node).closest('.pxereaderSearchHighlight').length > 0) {
            $(node).parent().find('.annotator-handle').text(noteText).css('background-color', normedRange.color);
@@ -3603,7 +3611,8 @@ Annotator.Editor = (function(_super) {
     '.annotator-color-select-container click': 'onAnnotatorColorChange',
     '.annotator-edit-Note-Panel-1-rect click' : 'onEditRectClick',
     '.annotator-edit-Note-Panel-1-circle click' : 'onEditColorChange',
-    '#noteContainer click' : 'onNoteContainerClick'
+    '#noteContainer click' : 'onNoteContainerClick',
+    '.annotator-select-outer-circle,.annotator-select-rect,.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle,#noteContainer keyup': 'onKeyupClick'
   };
 
   Editor.prototype.classes = {
@@ -3622,22 +3631,22 @@ Annotator.Editor = (function(_super) {
                   <div class="annotator-color-container">\
                     <div> \
                       <div class = "annotator-color-select-container yellowColorBtn" title = "Main ideas" value="#55DF49"> \
-                        <div class = "annotator-select-outer-circle positionAbs"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="1"> \
                           <div class = "annotator-select-inner-circle hide" value="#55DF49"></div> \
                         </div> \
-                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-green">' +locale_data[language]['mainIdeas']+'</div> \
+                        <div tabindex="2" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-green">' +locale_data[language]['mainIdeas']+'</div> \
                       </div> \
                       <div class = "annotator-color-select-container" title = "Questions" value="#FFD232"> \
-                        <div class = "annotator-select-outer-circle positionAbs"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="3"> \
                           <div class = "annotator-select-inner-circle hide" value="#FFD232"></div> \
                         </div> \
-                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-sepia">' +locale_data[language]['questions']+'</div> \
+                        <div tabindex="4" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-sepia">' +locale_data[language]['questions']+'</div> \
                       </div> \
                       <div class = "annotator-color-select-container" title = "Observations" value="#FC92CF"> \
-                        <div class = "annotator-select-outer-circle positionAbs"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="5"> \
                           <div class = "annotator-select-inner-circle hide" value="#FC92CF"></div> \
                         </div> \
-                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-pink">' +locale_data[language]['observations']+'</div> \
+                        <div tabindex="6" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-pink">' +locale_data[language]['observations']+'</div> \
                       </div> \
                     </div> \
                   </div> \
@@ -3650,27 +3659,27 @@ Annotator.Editor = (function(_super) {
                   <div class = "edit-Note-Panel-1">  <!-- Edit Note Panel-->\
                     <div> <!-- Edit Note circle-->\
                       <div class = "edit-note-circle"> \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" value="#55DF49"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" tabindex="1" value="#55DF49"> \
                         </div> \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" value="#FFD232"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" tabindex="2" value="#FFD232"> \
                         </div > \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" value="#FC92CF"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" tabindex="3" value="#FC92CF"> \
                         </div > \
                       </div> \
                       <div class = "edit-note-rect"> <!-- Edit Note Rectangle-->\
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-green annotator-edit-Note-Panel-1-rect" value="#55DF49">' +locale_data[language]['mainIdeas']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-green annotator-edit-Note-Panel-1-rect" tabindex="0" value="#55DF49">' +locale_data[language]['mainIdeas']+'</div> \
                         </div> \
                                 \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-sepia annotator-edit-Note-Panel-1-rect" value="#FFD232">' +locale_data[language]['questions']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-sepia annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FFD232">' +locale_data[language]['questions']+'</div> \
                         </div> \
                                 \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" value="#FC92CF">' +locale_data[language]['observations']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FC92CF">' +locale_data[language]['observations']+'</div> \
                         </div> \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" value="#ccf5fd">' +locale_data[language]['instructor']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" tabindex="0" value="#ccf5fd">' +locale_data[language]['instructor']+'</div> \
                         </div> \
                       </div> \
                               \
@@ -3682,15 +3691,15 @@ Annotator.Editor = (function(_super) {
 
   var panel3 ='<div class="annotator-panel-3"> \
                 <div class="annotator-controls"> \
-                  <div class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"> \
+                  <div class="annotator-delete-container" tabindex="0" title="' + locale_data[language]['delete'] + '"> \
                   </div> \
                   <div class="ann-cancel-delete-confirm-section hide"> \
                     <div class="ann-confirm-section"> \
                       <label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label> \
                     </div> \
                     <div class = "ann-canceldelete-section"> \
-                      <a class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a> \
-                      <a class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a> \
+                      <a class="annotator-confirm-cancel" tabindex="0" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a> \
+                      <a class="annotator-confirm-delete" tabindex="0" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a> \
                     </div> \
                   </div> \
                   <!--div class="ann-share-section"> \
@@ -3756,12 +3765,21 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onNoteContainerClick= function(e) { 
+    if ($('.annotator-widget').hasClass("instructorNote"))
+      return;
     $("#noteContainer").hide();
     var annotator_editor = $('.annotator-editor')
     annotator_editor.css({ top : annotator_editor.position().top});
     $('.annotator-panel-2').find('textarea').show().css({"pointer-events": "all", "opacity": "1"});
     $('.annotator-panel-2').find('textarea').focus();
     $(".annotator-panel-triangle").addClass("annotator-panel-triangle1").removeClass("annotator-panel-triangle");
+  }
+
+  Editor.prototype.onKeyupClick= function(e) { 
+    var keycode = e.keyCode;
+    if(keycode == 13 || keycode == 32) {
+      $(e.target).trigger('click');
+    }
   }
 
   Editor.prototype.onEditColorChange= function(e) { 
@@ -3781,9 +3799,10 @@ Annotator.Editor = (function(_super) {
     var value = $(e.target).attr('value');
     editNoteCircleDom.show();
     editNoteCircleDom.find('.annotator-edit-Note-Panel-1-circle').css({"border": "0px","height": "18px", "width": "18px"}); // reset to default circle
-    editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"}) // highlight the selected circle
+    editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"}).focus(); // highlight the selected circle
     $(".edit-note-rect").css({"padding" : "0px","margin-top": "-43px","margin-left": "99px"});
-    
+    $("#noteContainer").attr("tabindex", "4");
+    $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 5);
     if(value === "#55DF49") { // Green
 
     } else if(value ==="#FFD232") { // Sepia
@@ -3862,7 +3881,8 @@ Annotator.Editor = (function(_super) {
     panel4Sec.remove();
     $(".ann-cancel-delete-confirm-section").hide();
     $(".annotator-delete-container").show();
-    $(panel2Sec).find('textarea').removeAttr('readonly');
+    $(panel2Sec).find('#noteContainer').focus();
+    $(panel2Sec).find('textarea').removeAttr('readonly').focus();
   }
 
   Editor.prototype.onEditClick=function(event) {  
@@ -3955,6 +3975,13 @@ Annotator.Editor = (function(_super) {
     // this.publish('save', [this.annotation]);
     // if(isTopAlign)
     //    $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
+    var annText = this.annotation.text;
+    if(annText) {
+      $('#noteContainer').attr('tabindex', 4);
+      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 5);
+    } else {
+      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,#noteContainer').attr('tabindex', 0);
+    }
   }
 
   Editor.prototype.show = function(event, topPos) {
@@ -4010,7 +4037,7 @@ Annotator.Editor = (function(_super) {
       $('.annotator-panel-1').addClass('oldAnnotation');
       if(this.annotation.colorCode == '#ccf5fd') {
         this.element.find('.annotator-widget').addClass('instructorNote');
-        $('#noteContainer').css('pointer-events', 'none');
+        //$('#noteContainer').css('pointer-events', 'none');
         $('.annotator-controls').hide();
         $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true)});
       } else {
@@ -4047,6 +4074,10 @@ Annotator.Editor = (function(_super) {
       $(this.element).find('#noteContainer').hide();
     }
     $(".annotator-panel-triangle1").addClass("annotator-panel-triangle").removeClass("annotator-panel-triangle1");
+    if(this.annotation.colorCode) 
+      (this.annotation.colorCode != '#ccf5fd') && $(".annotator-edit-Note-Panel-1-rect[value=" + "'" + this.annotation.colorCode + "']").focus();
+    else
+      $('.annotator-select-outer-circle')[0].focus();
     return this.publish('show');
   };
 
@@ -4120,7 +4151,7 @@ Annotator.Editor = (function(_super) {
     else      
       $('.annotator-share-text, .annotator-share').show();
     if (!$('.annotator-item input').length) {
-     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '." id = "mathTitle"/><div class="noteContainer" id = "noteContainer" ></div>');
+     $('.annotator-item').prepend('<input placeholder="' + locale_data[language]['addtitle'] + '." id = "mathTitle"/><div class="noteContainer" id = "noteContainer" tabindex="0"></div>');
     }
     $('.annotator-item input').val(annotation.quote);
     if(this.hasClass(annotation.highlights[0], 'MathJax')){
@@ -4240,6 +4271,7 @@ Annotator.Editor = (function(_super) {
       // return this.submit();
       event.stopPropagation();
     }
+    $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
   };
 
   Editor.prototype.onCancelButtonMouseover = function() {

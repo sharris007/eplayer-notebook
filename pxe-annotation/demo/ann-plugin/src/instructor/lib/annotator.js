@@ -411,11 +411,13 @@ Annotator = (function(_super) {
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
-        _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
-        if($(node).closest('.pxereaderSearchHighlight').length > 0) {
-          $(node).parent().find('.annotator-handle').css('background-color', normedRange.color);
+        if (!$(node).closest('.biblioref').length) {
+          _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
+          if($(node).closest('.pxereaderSearchHighlight').length > 0) {
+            $(node).parent().find('.annotator-handle').css('background-color', normedRange.color);
+          }
+          handle='';
         }
-        handle='';
       }
     }
     window.getSelection().removeAllRanges();

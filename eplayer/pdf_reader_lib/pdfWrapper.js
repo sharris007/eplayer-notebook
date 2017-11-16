@@ -390,22 +390,22 @@ function initViewer(config) {
   authorization = config.requestheaderParams.token || "";
   acceptLanguage = config.requestheaderParams.acceptLanguage || "";
   }
-
+  var cdnURL = config.cdnURL;
   var uStr = localStorage.getItem('userInformation');
   var uObj = {};
-  if(uStr) 
-  {
-    uObj = $.parseJSON(uStr);
-    $.ajaxSetup({
-    beforeSend: function(xhr) {
-     xhr.setRequestHeader('token',uObj.userToken);
-   }
-  });
-  }
+  // if(uStr) 
+  // {
+  //   uObj = $.parseJSON(uStr);
+  //   $.ajaxSetup({
+  //   beforeSend: function(xhr) {
+  //    xhr.setRequestHeader('token',uObj.userToken);
+  //  }
+  // });
+  // }
   //initWebPDFMini()
   // open the sample file
    if(assertUrl === '')
-  { assertUrl = openFile(baseUrl,openFileUrl, config.headerParams);}
+  { assertUrl = openFile(baseUrl,openFileUrl, config.headerParams, cdnURL);}
   if (assertUrl == null) return;
   if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
@@ -485,7 +485,7 @@ function getIP(baseUrl) {
  * @param fileUrl the file url to be opened.
  * @param callback the callback function to implement after open the file.
  */
-function openFile(baseUrl,fileUrl,headerParams,callback) {
+function openFile(baseUrl,fileUrl,headerParams,cdnURL, callback) {
     fileUrl = fileUrl.replace(/^\s*/g, "").replace(/\s*$/g, ""); // trim string
     // User information can be get from custom user system.
     // It can be set at this place,and also can be set by SPI plugin implement.
@@ -529,7 +529,7 @@ function openFile(baseUrl,fileUrl,headerParams,callback) {
                 return null;
             }
 
-            url = baseUrl + "asserts\/" + curID;
+            url = cdnURL + "asserts\/" + curID;
            /* if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
                 WebPDF.ViewerInstance.openFile(url);

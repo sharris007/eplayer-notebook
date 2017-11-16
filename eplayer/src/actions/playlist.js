@@ -71,6 +71,8 @@ export const getBookPlayListCallService = data => dispatch =>
   PlaylistApi.doGetPiUserDetails(data).then(response => response.json())
     .then((response) => {
       data.userName = response.UserName;
+      const bookshelfUrl = resources.links.authDomainUrl[domain.getEnvType()] +'/eplayer';
+      localStorage.setItem('backUrl', bookshelfUrl);
       PlaylistApi.doGetBookDetails(data)
         .then(response => response.json())
         .then((response) => {
@@ -151,7 +153,7 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       browserHistory.push('/eplayer/error/' + response.status);
       return false;
     }
-
+    localStorage.setItem('backUrl', '');
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
@@ -167,6 +169,11 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       const urlSplit = url.split('prdType=');
       prdType = urlSplit[1];
     }
+    const checkIDCreturnUrl = url.search('returnurl=');
+    if(checkIDCreturnUrl > 0){
+      const IDCreturnUrl = url.split('returnurl=')[1];
+      localStorage.setItem('backUrl',decodeURIComponent(IDCreturnUrl));
+    }
     let studentCheck = resources.constants.zeppelinEnabled;
     let instructorCheck = resources.constants.idcDashboardEnabled;
     if (studentCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access) {
@@ -179,7 +186,17 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       redirectToIDCDashboard(prodType, courseId);
       return false;
     }
-
+    
+    const getsourceUrl = localStorage.getItem('sourceUrl');
+    let getOriginUrl;
+    if( getsourceUrl === 'bookshelf'){
+      getOriginUrl = resources.links.authDomainUrl[domain.getEnvType()]+'/eplayer';
+    }
+    else{
+      getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    }
+    localStorage.setItem('sourceUrl', '');
+    localStorage.setItem('backUrl',getOriginUrl);
     PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then(response => {
         const securl = baseUrl.replace(/^http:\/\//i, 'https://');
@@ -209,6 +226,7 @@ function redirectToZeppelin(bookDetails, passportDetails) {
   if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
     successOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
     errOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    localStorage.setItem('backUrl',errOriginUrl);
     // successOriginUrl = window.location.href;
     // errOriginUrl= window.location.origin+'/eplayer'; 
 

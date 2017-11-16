@@ -34,6 +34,8 @@
 </head>
 
 <body style="overflow:visible;">
+  <div id="divSVG" style="display:none">  
+  </div>
   <script src="https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js"></script>
   <script type="text/javascript">
     var redirectPiurl = window.location.href;
@@ -77,10 +79,12 @@
       pe_ajax.open("GET", "https://unpkg.com/pearson-elements@1.14.9/dist/icons/p-icons-sprite-1.1.svg", true);
       pe_ajax.responseType = "document";
       pe_ajax.onload = function (e) {
-        document.body.insertBefore(
-          pe_ajax.responseXML.documentElement,
-          document.body.childNodes[0]
-        );
+        var currentDiv = document.getElementById("divSVG")
+        currentDiv.appendChild(pe_ajax.responseXML.documentElement);
+        // document.body.insertBefore(
+        //   pe_ajax.responseXML.documentElement,
+        //  currentDiv
+        // );
       }
       pe_ajax.send();
     }

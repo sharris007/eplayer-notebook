@@ -23,6 +23,7 @@ import { PdfViewer } from '@pearson-incubator/vega-viewer';
 
 const envType = domain.getEnvType();
 const foxiturl = eT1Contants.FoxitUrls[envType];
+const foxitCdnUrl = eT1Contants.foxitCDNUrl[envType];
 /* Defining the variables for sessionStorage. */
 let title;
 let authorName;
@@ -190,12 +191,12 @@ export class PdfBookReader extends Component {
     if (pdfEvent === 'pageChanged') {
       sessionStorage.setItem('currentPageOrder', this.state.currPageIndex);
       this.setState({ executed: false });
-      if (this.state.isFirstPageBeingLoad === true) {
-        this.setState({ isFirstPageBeingLoad: false });
-      }
     }
     if (pdfEvent === 'pageLoaded') {
       this.setState({ pageLoaded: true });
+       if (this.state.isFirstPageBeingLoad === true) {
+        this.setState({ isFirstPageBeingLoad: false });
+      }
       __pdfInstance.setCurrentZoomLevel(this.state.currZoomLevel);
       this.props.data.actions.fetchRegionsInfo(this.props.data.location.query.bookid,this.props.data.book.bookinfo.book.bookeditionid,this.state.currPageIndex,ssoKey,this.props.data.book.bookinfo.book.roleTypeID,serverDetails,this.props.currentbook.scenario,this.props.currentbook.platform).then(() => {
         if(this.props.data.book.regions.length > 0 )
@@ -829,7 +830,17 @@ handleRegionClick(hotspotID) {
                 }
                 catch(e){
                 }
-              }    
+              }
+              else if(this.state.regionData.hotspotType == 'URL')
+              {
+                try
+                {
+                  let ExternalLinkComponent = document.getElementsByClassName('link-model')[0];
+                  ExternalLinkComponent.style.backgroundColor = '#ffffff';
+                }
+                catch(e){
+                }
+              }     
               else if(this.state.regionData.hotspotType == 'AUDIO' && this.state.regionData.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
               {
                 try
@@ -1039,6 +1050,7 @@ handleRegionClick(hotspotID) {
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPage = this.goToPage;
     callbacks.goToPageCallback = this.goToPage;
+    callbacks.resetCurrentPageDetails = this.props.data.actions.loadcurrentPage
     viewerCallBacks.handleHighlightClick = this.handleHighlightClick.bind(this);
     viewerCallBacks.createHighlight = this.createHighlight.bind(this);
     viewerCallBacks.handleRegionClick = this.handleRegionClick.bind(this);
@@ -1055,7 +1067,7 @@ handleRegionClick(hotspotID) {
         }
       });
     if (this.props.data.book.toc.fetched && this.props.data.book.toc.content !== undefined
-              && this.props.data.book.toc.content.list !== undefined && this.props.data.book.toc.content.list.length !== 0)
+              && this.props.data.book.toc.content.list !== undefined)
     {
       this.props.data.book.tocReceived = true;
     }
@@ -1067,6 +1079,7 @@ handleRegionClick(hotspotID) {
       metaData : {
         pdfInstance : __pdfInstance,
         pdfRendererUrl : foxiturl,
+        pdfRendererCacheUrl : foxitCdnUrl,
         bookFeatures : (this.props.data.book.bookFeatures ? this.props.data.book.bookFeatures : {})
       }
     };

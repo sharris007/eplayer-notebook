@@ -6402,7 +6402,6 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
         }
         var f = WebPDF.Config.defaults.requestRetryCount,
             g = this;
-            
         this.asyncLoadUserAnnotation = function(a, b, d, e) {
             if ($.isFunction(d) && $.isFunction(e) || $.error("both 'doneHandler' and 'failedHandler' must be function."), 0 >= f) return console.error("Maximum number of retries exceeded for getAnnotData request."), void e(null);
             var h = a.getOptions().url + "userannots?" + Math.random();
@@ -6410,7 +6409,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var i = {
                 password: a.getPDFPassword()
             };
-            /*$.ajax({
+            $.ajax({
                 url: h,
                 dataType: "json",
                 data: i,
@@ -6438,7 +6437,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 error: function() {
                     e(null)
                 }
-            })*/
+            })
         }, this.asyncLoadPDFAnnotation = function(a, b, c, e, f) {
             d(!0, a, b, c, e, f)
         }, this.syncLoadPDFAnnotation = function(a, b, c, e, f) {
@@ -10732,7 +10731,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 }
             }else{*/
                 g = c.getOptions().url + "bookmarks";
-           // }
+            //}
             c.isFormMode() && (g += "?formMode=true");
             var h = {
                 password: c.getPDFPassword()
@@ -17133,24 +17132,34 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 c = {
                     userId: a.getIP()
                 };
-            $.ajax({
-                url: b + "?" + Math.random(),
-                type: "GET",
-                data: c,
-                async: !1,
-                timeout: 500,
-                success: function(a) {
-                    if (0 == a.resultCode) {
-                        var b = a.resultBody.hasTrail;
-                        n = null == b || "0" == b ? !1 : !0;
-                        var c = $.parseJSON(a.resultBody.content);
-                        c.globalWatermark && (l = $.parseJSON(c.globalWatermark)), c.userWatermark && (m = $.parseJSON(c.userWatermark))
-                    }
-                },
-                error: function() {
-                    alert("Fail to load watermark")
+            try{
+                var watTemp = {"resultCode":"0","resultMsg":"","resultBody":{"content":"{\"globalWatermark\":\"{\\\"add\\\":false,\\\"content\\\":\\\"test watermark\\\",\\\"fontSize\\\":20,\\\"fontFamily\\\":\\\"\\u0027Segoe UI\\u0027, sans-serif\\\",\\\"fontWeight\\\":\\\"normal\\\",\\\"fontStyle\\\":false,\\\"rotation\\\":0,\\\"color\\\":11259615,\\\"scale\\\":1,\\\"opacity\\\":1,\\\"isDynamic\\\":false,\\\"userName\\\":false,\\\"ip\\\":false,\\\"openTime\\\":false}\"}","hasTrail":"0"}}
+                if (0 == watTemp.resultCode) {
+                    var b = watTemp.resultBody.hasTrail;
+                    n = null == b || "0" == b ? !1 : !0;
+                    var c = $.parseJSON(watTemp.resultBody.content);
+                    c.globalWatermark && (l = $.parseJSON(c.globalWatermark)), c.userWatermark && (m = $.parseJSON(c.userWatermark))
                 }
-            }), m = a.getWatermarkInfo()
+            }catch(e){}
+            // $.ajax({
+            //     url: b + "?" + Math.random(),
+            //     type: "GET",
+            //     data: c,
+            //     async: !1,
+            //     timeout: 500,
+            //     success: function(a) {
+            //         if (0 == a.resultCode) {
+            //             var b = a.resultBody.hasTrail;
+            //             n = null == b || "0" == b ? !1 : !0;
+            //             var c = $.parseJSON(a.resultBody.content);
+            //             c.globalWatermark && (l = $.parseJSON(c.globalWatermark)), c.userWatermark && (m = $.parseJSON(c.userWatermark))
+            //         }
+            //     },
+            //     error: function() {
+            //         alert("Fail to load watermark")
+            //     }
+            // }), 
+            m = a.getWatermarkInfo()
         }, this.getWatermarkInfo = function() {
             return l
         }, this.getUserWatermarkInfo = function() {
@@ -17500,7 +17509,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 }else{*/
                     f = i.getOptions().url + "image/" + a + "/" + d + e;
                     return f += "&accessToken=" + "null", i.isFormMode() && (f += "&formMode=true"), f
-               // }
+                //}
         }, this.getPixelsPerPoint = function() {
             return 96 / 72
         }, this.renderPage = function(a, b) {
@@ -17533,7 +17542,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                             var q = "";
                             q = l ? i.getBaseUrl() + "images/reader/imgFailed.png" : i.getBaseUrl() + "images/reader/imgLimit.png", a.showErrorPage(q)
                         } else{
-                            $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.setPageLoaded(!0);  
+                            $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.setPageLoaded(!0);
                         } 
                         
                         !a.isThumb() && a.isPageLoaded() && (a.setPageLoadError(e), $(i).trigger(WebPDF.EventList.PAGE_SHOW_COMPLETE, {
@@ -17581,7 +17590,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
 }), define("core/ImageLazyLoad", ["core/WebPDF"], function(a, b, c) {
     var d = a("core/WebPDF");
     return d.ImgLazyLoad = function(a, b, c, e, f) {
-        /*if(window.location.protocol != "file:"){
+       /* if(window.location.protocol != "file:"){
             if(a.indexOf("pages") > -1){
                 e(c);      
             }

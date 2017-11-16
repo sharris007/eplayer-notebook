@@ -54,6 +54,8 @@ export class Book extends Component {
         }
       }
     });
+    this.environmentCode = '';
+    this.personRoleCode = '';
     this.state = {
       classname: 'headerBar visible',
       viewerContent: true,
@@ -78,6 +80,7 @@ export class Book extends Component {
       timeOnTaskUuid: '',
       contentId: '',
       sectionId: '',
+      courseId: '',
       piToken: localStorage.getItem('secureToken'),
       pageLoad: false,
       currentPageId: '',
@@ -344,6 +347,7 @@ export class Book extends Component {
       timeOnTaskUuid: this.getGUID(),
       contentId: cu,
       sectionId: this.props.bookdetailsdata.userCourseSectionDetail.section.sectionId,
+      courseId: this.props.bookdetailsdata.userCourseSectionDetail.section.courseId,
       organizationId: this.props.bookdetailsdata.userCourseSectionDetail.section.extras.organizationId
     }, function () {
       this.setState({ pageLoad: true });
@@ -351,9 +355,8 @@ export class Book extends Component {
       let updatedPageLoadData = this.state.pageLoadData;
       const messageId = this.getGUID();
       const transactionDt = new Date().toISOString();
-      updatedPageLoadData.activities[0].payload.personId = "urn:udson:pearson.com/sms/prod:user/" + this.state.urlParams.user;
-      updatedPageLoadData.activities[0].payload.courseId = "urn:udson:pearson.com/sms/prod:course/" + this.props.params.bookId;
-      updatedPageLoadData.activities[0].payload.pageUserNavigatedToUrn = "urn:udson:pearson.com/sms/prod:course/" + this.state.nextPageId;
+      updatedPageLoadData.activities[0].payload.personId = this.state.urlParams.user;
+      updatedPageLoadData.activities[0].payload.courseId = this.state.courseId;
       updatedPageLoadData.activities[0].payload.courseSectionId = this.state.sectionId;
       updatedPageLoadData.activities[0].payload.contentId = this.state.contentId;
       updatedPageLoadData.activities[0].payload.messageId = messageId;
@@ -363,6 +366,9 @@ export class Book extends Component {
       updatedPageLoadData.activities[0].payload.userAgent = this.state.userAgent;
       updatedPageLoadData.activities[0].payload.operatingSystemCode = this.state.operatingSystemCode;
       updatedPageLoadData.activities[0].payload.organizationId = this.state.organizationId;
+      updatedPageLoadData.activities[0].payload.environmentCode = this.environmentCode;
+      updatedPageLoadData.activities[0].payload.personRoleCode = this.personRoleCode;
+      // console.log("updatedPageLoadData12", updatedPageLoadData);
       const getSecureToken = localStorage.getItem('secureToken');
       loadPageEvent(getSecureToken, updatedPageLoadData);
 
@@ -379,15 +385,15 @@ export class Book extends Component {
       nextPageId: nx,
       contentId: cu,
       sectionId: this.props.bookdetailsdata.userCourseSectionDetail.section.sectionId,
+      courseId: this.props.bookdetailsdata.userCourseSectionDetail.section.courseId,
       organizationId: this.props.bookdetailsdata.userCourseSectionDetail.section.extras.organizationId
     }, function () {
       this.setState({ currentPageId: cu });
 
       const messageId = this.getGUID();
       const transactionDt = new Date().toISOString();
-      updatedPageUnLoadData.activities[0].payload.personId = "urn:udson:pearson.com/sms/prod:user/" + this.state.urlParams.user;
-      updatedPageUnLoadData.activities[0].payload.courseId = "urn:udson:pearson.com/sms/prod:course/" + this.props.params.bookId;
-      updatedPageUnLoadData.activities[0].payload.pageUserNavigatedToUrn = "urn:udson:pearson.com/sms/prod:course/" + this.state.nextPageId;
+      updatedPageUnLoadData.activities[0].payload.personId = this.state.urlParams.user;
+      updatedPageUnLoadData.activities[0].payload.courseId = this.state.courseId;
       updatedPageUnLoadData.activities[0].payload.courseSectionId = this.state.sectionId;
       updatedPageUnLoadData.activities[0].payload.contentId = this.state.contentId;
       updatedPageUnLoadData.activities[0].payload.messageId = messageId;
@@ -396,6 +402,9 @@ export class Book extends Component {
       updatedPageUnLoadData.activities[0].payload.userAgent = this.state.userAgent;
       updatedPageUnLoadData.activities[0].payload.operatingSystemCode = this.state.operatingSystemCode;
       updatedPageUnLoadData.activities[0].payload.organizationId = this.state.organizationId;
+      updatedPageUnLoadData.activities[0].payload.environmentCode = this.environmentCode;
+      updatedPageUnLoadData.activities[0].payload.personRoleCode = this.personRoleCode;
+      // console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
       const getSecureToken = localStorage.getItem('secureToken');
       unLoadPageEvent(getSecureToken, updatedPageUnLoadData);
       if (loadFunCall) {
@@ -613,6 +622,16 @@ export class Book extends Component {
     if (currentPage) {
       this.onNavChange(currentPage);
       if (this.props.bookdetailsdata.userCourseSectionDetail !== undefined) {
+         const envCode = {
+            local        :"DEV",
+            dev          :"QA",
+            qa           :"QA",
+            stage        :"STG",
+            prod         :"PRD"
+          }
+        this.environmentCode = envCode[domain.getEnvType()];
+        let getAuthType = this.props.bookdetailsdata.userCourseSectionDetail.authgrouptype;
+        this.personRoleCode = getAuthType.charAt(0).toUpperCase() + getAuthType.slice(1);
         let getnextPageId = '';
         if (!this.state.pageLoad) {
           getnextPageId = this.getNxtPageId(this.state.urlParams.id);
@@ -663,7 +682,10 @@ export class Book extends Component {
       this.props.book.bookinfo = [];
       this.props.book.annTotalData = [];
     }
-    window.history.back();
+    const getOriginurl = localStorage.getItem('backUrl');
+    if(getOriginurl) {
+      window.location.href = getOriginurl;
+    }
     // if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
     //    let originurl = localStorage.getItem('sourceUrl');       
     //   if(originurl != null)

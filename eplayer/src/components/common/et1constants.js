@@ -63,15 +63,19 @@ export const eT1Contants = {
     S88 : 88
   },
   FoxitUrls : {
-    // qa: 'https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/',
-    qa: 'https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/',
-    stage: 'https://foxit-sandbox.gls.pearson-intl.com/foxit-webpdf-web/pc/',
+    qa: 'https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/',
+    stage: 'http://foxit-poc.gls.pearson-intl.com/foxit-webpdf-web/pc/',
     prod: 'https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/'
   },
   readerApiBaseUrls : {
     QA : 'https://api-sandbox.readerplatform.pearson-intl.com',
     STAGE : 'https://api-sandbox.readerplatform.pearson-intl.com',
     PROD : 'https://api-prod.readerplatform.pearson-intl.com'
+  },
+  foxitCDNUrl : {
+    qa : "https://drlngevdyobo7.cloudfront.net/foxit-webpdf-web/",
+    stage: "https://d205uwuz6t2dy1.cloudfront.net/foxit-webpdf-web/",
+    prod : "https://d1ubxfsvhe3rl7.cloudfront.net/foxit-webpdf-web/"
   },
   readerApiResponseRecordsLimits: 1000,
   ServerUrls : {
@@ -86,21 +90,21 @@ export const eT1Contants = {
             PPE3 : 'https://live.ppe3.ebookplus.pearsoncmg.com'
          },
     prod  : {
-            PROD1 : 'https://view.prod1.ebookplus.pearsoncmg.com',
-            PROD2 : 'https://view.prod2.ebookplus.pearsoncmg.com',
-            PROD3 : 'https://view.prod3.ebookplus.pearsoncmg.com'
+            PROD1 : 'https://view.ebookplus.pearsoncmg.com',
+            PROD2 : 'https://view.etext.home2.pearsoncmg.com',
+            PROD3 : 'https://view.etext.home3.pearsoncmg.com'
         }
   },
   SMSBookshelfBaseUrls :{
     DEV : 'https://sms.bookshelf.dev1.ebookplus.pearsoncmg.com',
     CERT : 'https://sms.bookshelf.cert1.ebookplus.pearsoncmg.com',
-    PROD : 'https://sms.bookshelf.ebookplus.pearsoncmg.com',
-    PPE : 'https://sms.bookshelf.ppe1.ebookplus.pearsoncmg.com'
+    PPE : 'https://sms.bookshelf.ppe1.ebookplus.pearsoncmg.com',
+    PROD : 'https://sms.bookshelf.ebookplus.pearsoncmg.com'
   },
   SMSBaseUrls : {
     CERT : 'https://login.cert.pearsoncmg.com/sso/SSOServlet2',
-    PROD : 'https://login.pearsoncmg.com/sso/SSOServlet2',
-    PPE : 'https://loginppe.pearsoncmg.com/sso/SSOServlet2'
+    PPE : 'https://loginppe.pearsoncmg.com/sso/SSOServlet2',
+    PROD : 'https://login.pearsoncmg.com/sso/SSOServlet2'
   },
   SITE_IDs : {
     qa : {
