@@ -19,7 +19,8 @@ const initalData = {
   playlistReceived: false,
   tocReceived: false,
   bookDetailsRecived: false,
-  updatedToc: false
+  updatedToc: false,
+  customTocPlaylistReceived:false
 };
 export default (state = initalData, action) => {
   switch (action.type) {
@@ -72,6 +73,18 @@ export default (state = initalData, action) => {
       return {
         ...state,
         updatedToc: action.updatedToc
+      };
+    }
+    case 'GET_CUSTOM_PLAYLIST':{
+      return {
+        ...state,
+        customTocPlaylistReceived: action.customTocPlaylistReceived
+      };
+    }
+    case 'GOT_CUSTOM_PLAYLIST':{
+      return {
+        ...state,
+        customTocPlaylistReceived: action.customTocPlaylistReceived
       };
     }
     default:

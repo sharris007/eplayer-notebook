@@ -23,7 +23,7 @@ import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVer
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService } from '../../../actions/playlist';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails } from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
@@ -126,17 +126,17 @@ export class Book extends Component {
           });
         }
         const getSecureToken = localStorage.getItem('secureToken');
-        const bookDetailsData = {
+        this.bookDetailsData = {
           context: this.state.urlParams.context,
           piToken: getSecureToken,
           bookId: this.props.params.bookId
         }
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          bookDetailsData.courseId = this.props.params.bookId;
+          this.bookDetailsData.courseId = this.props.params.bookId;
           this.courseBook = true;
-          this.props.dispatch(getCourseCallService(bookDetailsData));
+          this.props.dispatch(getCourseCallService(this.bookDetailsData));
         } else {
-          this.props.dispatch(getBookPlayListCallService(bookDetailsData));
+          this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
       }
       const getPreferenceData = {
@@ -180,6 +180,10 @@ export class Book extends Component {
       }
 
     }
+    if (nextProps.customTocPlaylistReceived) {
+      pageParameters.currentPageURL = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
+      this.onNavChange(pageParameters.currentPageURL);
+    }
     if (typeof nextProps.bookdetailsdata === "object" && nextProps.bookdetailsdata && nextProps.bookdetailsdata.bookDetail && nextProps.bookdetailsdata.bookDetail.metadata && nextProps.bookdetailsdata.bookDetail.metadata.indexId) {
       this.bookIndexId = nextProps.bookdetailsdata.bookDetail.metadata.indexId;
       this.searchUrl = resources.links.etextSearchUrl[domain.getEnvType()] + '/search?indexId=' + this.bookIndexId + '&q=searchText&s=0&n=' + resources.constants.TextSearchLimit;
@@ -213,6 +217,7 @@ export class Book extends Component {
         });
       }
     }
+    //this.props.dispatch(gotCustomPlaylistCompleteDetails());
   }
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
@@ -285,7 +290,7 @@ export class Book extends Component {
       this.props.dispatch(getBookmarkCallService(bookmarksParams));
       // this.props.dispatch(getAnnCallService(this.state.urlParams));
     });
-
+    this.props.dispatch(gotCustomPlaylistCompleteDetails());
   };
 
   onPageChange = (type, data) => {
@@ -903,7 +908,7 @@ export class Book extends Component {
           };
         });
         const tocResponseData = { tocContents: listData };
-        this.props.dispatch(putCustomTocCallService(tocResponseData));
+        this.props.dispatch(putCustomTocCallService(tocResponseData, this.bookDetailsData));
       },
       handleDashBoard: () => {
         if (this.props.book.toc.content !== undefined) {
@@ -912,7 +917,10 @@ export class Book extends Component {
           this.props.book.bookinfo = [];
           this.props.book.annTotalData = [];
         }
-        window.history.back();
+        const getOriginurl = localStorage.getItem('backUrl');
+        if (getOriginurl) {
+          window.location.href = getOriginurl;
+        }
         this.setState({ open: false });
       }
     };
@@ -1188,7 +1196,8 @@ const mapStateToProps = state => {
     gotoPageObj: state.gotopageReducer.gotoPageObj,
     isGoToPageRecived: state.gotopageReducer.isGoToPageRecived,
     bookdetailsdata: state.playlistReducer.bookdetailsdata,
-    getPreferenceData: state.preferenceReducer.preferenceObj
+    getPreferenceData: state.preferenceReducer.preferenceObj,
+    customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived
   }
 }; // eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book); // eslint-disable-line no-class-assign
