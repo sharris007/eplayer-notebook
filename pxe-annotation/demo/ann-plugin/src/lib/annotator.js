@@ -415,7 +415,7 @@ Annotator = (function(_super) {
    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
      node = _ref[_i];
      if (!white.test(node.nodeValue)) {
-      if(!$(node).closest('.annotator-handle').length || !$(node).closest('.biblioref').length ) {
+      if(!$(node).closest('.annotator-handle').length && !$(node).closest('.biblioref').length && !$(node).closest('.annotator-hl[shareable="true"]').length) {
          _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
          if($(node).closest('.pxereaderSearchHighlight').length > 0) {
            $(node).parent().find('.annotator-handle').text(noteText).css('background-color', normedRange.color);

@@ -3894,7 +3894,7 @@ Annotator.Editor = (function(_super) {
     if(this.annotation.colorCode && this.annotation.colorCode.length)
       this.publish('save', [this.annotation]);
     if(this.annotation.highlights)
-      $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
+      $(this.annotation.highlights)[(this.annotation.text.length)?'addClass':'removeClass']('highlight-note');
     return this.publish('hide');
   };
   Editor.prototype.hasClass=function(element, className) {
