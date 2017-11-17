@@ -207,15 +207,8 @@ export class PdfBookReader extends Component {
           for(let arr=0;arr < this.props.data.book.regions.length ; arr++)
           {
             if(this.props.data.book.regions[arr].regionTypeID == 5 && this.props.data.book.regions[arr].glossaryEntryID !== null)
-            { 
-              if(glossaryEntryIDsToFetch == '')
-              {
-                glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + this.props.data.book.regions[arr].glossaryEntryID;
-              }
-              else
-              {
-                glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + this.props.data.book.regions[arr].glossaryEntryID;
-              }      
+            {       
+              glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + this.props.data.book.regions[arr].glossaryEntryID;
               regionsData.push(this.props.data.book.regions[arr]);
             }
           }
@@ -848,25 +841,25 @@ handleRegionClick(hotspotID) {
                 catch(e){
                 }
               }     
-              else if(this.state.regionData.hotspotType == 'AUDIO')
+              else if(this.state.regionData.hotspotType == 'AUDIO' && this.state.regionData.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
               {
-                jQuery(function(){
-                 jQuery('.play-pause').click();
-                });
-                if(this.state.regionData.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
+                try
                 {
-                  try
-                  {
-                   $('.aquila-audio-player').hide();
-                  }
-                  catch(e){
-                  }                  
+                 $('.aquila-audio-player').hide();
+                  jQuery(function(){
+                   jQuery('.play-pause').click();
+                  });
+                }
+                catch(e){
                 }
               }
               if(this.state.regionData.hotspotType == 'AUDIO')
               {
                 try
                 {
+                  jQuery(function(){
+                   jQuery('.play-pause').click();
+                  });
                   $.getScript("https://code.jquery.com/ui/1.12.1/jquery-ui.js", function() 
                   {
                     $( ".aquila-audio-player" ).draggable()

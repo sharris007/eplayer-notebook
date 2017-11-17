@@ -622,13 +622,13 @@ export class Book extends Component {
     if (currentPage) {
       this.onNavChange(currentPage);
       if (this.props.bookdetailsdata.userCourseSectionDetail !== undefined) {
-         const envCode = {
-            local        :"DEV",
-            dev          :"QA",
-            qa           :"QA",
-            stage        :"STG",
-            prod         :"PRD"
-          }
+        const envCode = {
+          local: "DEV",
+          dev: "QA",
+          qa: "QA",
+          stage: "STG",
+          prod: "PRD"
+        }
         this.environmentCode = envCode[domain.getEnvType()];
         let getAuthType = this.props.bookdetailsdata.userCourseSectionDetail.authgrouptype;
         this.personRoleCode = getAuthType.charAt(0).toUpperCase() + getAuthType.slice(1);
@@ -683,7 +683,7 @@ export class Book extends Component {
       this.props.book.annTotalData = [];
     }
     const getOriginurl = localStorage.getItem('backUrl');
-    if(getOriginurl) {
+    if (getOriginurl) {
       window.location.href = getOriginurl;
     }
     // if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
@@ -798,16 +798,18 @@ export class Book extends Component {
     return scriptSrc;
   };
   closeHeaderPopups = (e) => {
-    const eleSearch = $(e.target).closest('.searchIconBtn');
-    const elepref = $(e.target).closest('.prefIconBtn');
-    const searchContainer = $(e.target).closest('.searchContainer');
-    const prefContainer = $(e.target).closest('.preferences-container');
-    if (eleSearch.length === 0 && elepref.length === 0 && prefContainer.length === 0 && searchContainer.length === 0) {
-      this.setState({ searchOpen: false, prefOpen: false });
-    } else if (eleSearch.length === 0 && searchContainer.length === 0) {
-      this.setState({ searchOpen: false });
-    } else if (elepref.length === 0 && prefContainer.length === 0) {
-      this.setState({ prefOpen: false });
+    if (!this.state.drawerOpen) {
+      const eleSearch = $(e.target).closest('.searchIconBtn');
+      const elepref = $(e.target).closest('.prefIconBtn');
+      const searchContainer = $(e.target).closest('.searchContainer');
+      const prefContainer = $(e.target).closest('.preferences-container');
+      if (eleSearch.length === 0 && elepref.length === 0 && prefContainer.length === 0 && searchContainer.length === 0) {
+        this.setState({ searchOpen: false, prefOpen: false });
+      } else if (eleSearch.length === 0 && searchContainer.length === 0) {
+        this.setState({ searchOpen: false });
+      } else if (elepref.length === 0 && prefContainer.length === 0) {
+        this.setState({ prefOpen: false });
+      }
     }
   };
   onPageClick = () => {
@@ -816,7 +818,7 @@ export class Book extends Component {
   render() {
     const callbacks = {};
     let annJsPath, annCssPath, productData;
-    const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props; 
+    const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props;
     // eslint-disable-line react/prop-types
     this.props.book.annTotalData = annotationTotalData;
     this.props.book.toc = tocData;
@@ -919,15 +921,15 @@ export class Book extends Component {
     let message = '';
     const title = 'Status';
     if (tocResponse) {
-      if (tocResponse.status === 'Success'){
+      if (tocResponse.status === 'Success') {
         type = tocResponse.status;
-        message="The table of contents has been updated!";
-    }
+        message = "The table of contents has been updated!";
+      }
       else {
         type = 'Error';
-        message="Your changes didn't get published. Give us a few moments and try again.";
+        message = "Your changes didn't get published. Give us a few moments and try again.";
       }
-      
+
     }
     const pages = bootstrapParams.pageDetails.playListURL || [];
     const bookmarArr = this.props.book.bookmarks ? this.props.book.bookmarks : [];
@@ -1143,7 +1145,7 @@ export class Book extends Component {
             </div>
           </LearningContextProvider>}
         {
-          updatedToc?<StaticAlert type={type} title={title} message={message} /> : <div></div>
+          updatedToc ? <StaticAlert type={type} title={title} message={message} /> : <div></div>
         } </div>
     );
   }
