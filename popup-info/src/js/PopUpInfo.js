@@ -38,7 +38,7 @@ class PopUpInfo extends Component {
 
   linkHandler =(e) => {
     const ele = e.currentTarget;
-    const newTabClasses = ['include', 'termref', 'index-locator', 'ulink', 'webresource'];
+    const newTabClasses = ['include', 'ulink', 'webresource'];
     for (let i = 0; i < newTabClasses.length; i++) {
       if (ele.classList.contains(newTabClasses[i])) {
         ele.target = '_blank';

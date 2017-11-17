@@ -103,7 +103,7 @@
     "@pearson-incubator/bookmarks": "0.1.36",
     "@pearson-incubator/bookshelf": "0.1.36",
     "@pearson-incubator/notes": "0.1.39",
-    "@pearson-incubator/popup-info": "2.0.15",
+    "@pearson-incubator/popup-info": "2.0.16",
     "@pearson-incubator/preferences": "0.1.37",
     "@pearson-incubator/pxe-annotation": "1.0.28",
     "@pearson-incubator/pxe-printpage": "*",
