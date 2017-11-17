@@ -56,6 +56,7 @@ export class Book extends Component {
     });
     this.environmentCode = '';
     this.personRoleCode = '';
+    this.isTOCUpdated = false;
     this.state = {
       classname: 'headerBar visible',
       viewerContent: true,
@@ -373,7 +374,6 @@ export class Book extends Component {
       updatedPageLoadData.activities[0].payload.organizationId = this.state.organizationId;
       updatedPageLoadData.activities[0].payload.environmentCode = this.environmentCode;
       updatedPageLoadData.activities[0].payload.personRoleCode = this.personRoleCode;
-      // console.log("updatedPageLoadData12", updatedPageLoadData);
       const getSecureToken = localStorage.getItem('secureToken');
       loadPageEvent(getSecureToken, updatedPageLoadData);
 
@@ -409,7 +409,6 @@ export class Book extends Component {
       updatedPageUnLoadData.activities[0].payload.organizationId = this.state.organizationId;
       updatedPageUnLoadData.activities[0].payload.environmentCode = this.environmentCode;
       updatedPageUnLoadData.activities[0].payload.personRoleCode = this.personRoleCode;
-      // console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
       const getSecureToken = localStorage.getItem('secureToken');
       unLoadPageEvent(getSecureToken, updatedPageUnLoadData);
       if (loadFunCall) {
@@ -815,8 +814,23 @@ export class Book extends Component {
       } else if (elepref.length === 0 && prefContainer.length === 0) {
         this.setState({ prefOpen: false });
       }
+      this.handleConfirmMessage();
     }
   };
+  handleConfirmMessage = () => {
+    if(this.isTOCUpdated && !this.props.updatedToc){
+        let closeDrawer = confirm("Are you sure?");
+        if(closeDrawer)
+        {
+          this.setState({ drawerOpen: false });
+        }
+        else
+        {
+          this.setState({ drawerOpen: true });
+        }
+        this.isTOCUpdated = false;
+    }    
+  }
   onPageClick = () => {
     this.setState({ searchOpen: false, prefOpen: false });
   };
@@ -877,6 +891,7 @@ export class Book extends Component {
       tocContents: tocCompData.data.content.list,
       tocLevel: 2,
       dndType: 'TableOfContents',
+      tocHeight:300,
       handlePublish: (changedTocContent) => {
         let tocPayload = [];
         let i = 0;
@@ -922,12 +937,17 @@ export class Book extends Component {
           window.location.href = getOriginurl;
         }
         this.setState({ open: false });
+      },
+      onTocChange: (isChanged) =>{
+        this.isTOCUpdated = isChanged;
+      },
+      showModal: ()=> {
+        this.handleConfirmMessage();
       }
     };
 
     let type = '';
     let message = '';
-    const title = 'Status';
     if (tocResponse) {
       if (tocResponse.status === 'Success') {
         type = tocResponse.status;
@@ -987,12 +1007,12 @@ export class Book extends Component {
         }
       }
       if (userType === 'instructor') {
-        annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
-        annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
+        annJsPath = 'annotation-lib/instructor-annotator/instructor-annotator.js';
+        annCssPath = 'annotation-lib/instructor-annotator/instructor-annotator.css';
       }
       else {
-        annJsPath = 'eplayer/annotation-lib/annotator.js';
-        annCssPath = 'eplayer/annotation-lib/annotator.css';
+        annJsPath = 'annotation-lib/annotator.js';
+        annCssPath = 'annotation-lib/annotator.css';
       }
       productData = {
         product: 'PXE',
@@ -1015,22 +1035,22 @@ export class Book extends Component {
           }
         },
         pxeOptions: {
-          script: `${window.location.origin}/eplayer/pxe_scripts/bundle.js`,
-          style: `${window.location.origin}/eplayer/pxe_scripts/style.css`,
+          script: `${window.location.origin}/pxe_scripts/bundle.js`,
+          style: `${window.location.origin}/pxe_scripts/style.css`,
           scriptsToReplace: [
             {
               old: 'https://revel-content.openclass.com/content/amc/amc-bootstrap.js',
-              new: `${window.location.origin}/eplayer/bxix_scripts/brix.js`
+              new: `${window.location.origin}/bxix_scripts/brix.js`
             }
           ],
-          scriptsToAdd: [`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
+          scriptsToAdd: [`${window.location.origin}/annotation-lib/jquery.min.js`,
           `${window.location.origin}/${annJsPath}`,
             getMathjaxJs],
           stylesToAdd: [`${window.location.origin}/${annCssPath}`]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
-          brixCss: `${window.location.origin}/eplayer/bxix_scripts/brix.css`,
+          brixCss: `${window.location.origin}/bxix_scripts/brix.css`,
           environment: 'LOCAL',
           pxeUserPreference: {
             theme: bootstrapParams.pageDetails.bgColor,
@@ -1153,7 +1173,7 @@ export class Book extends Component {
             </div>
           </LearningContextProvider>}
         {
-          updatedToc ? <StaticAlert type={type} title={title} message={message} /> : <div></div>
+          updatedToc ? <StaticAlert type={type} title='' message={message} /> : <div></div>
         } </div>
     );
   }
