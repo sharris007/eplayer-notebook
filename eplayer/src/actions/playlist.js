@@ -25,6 +25,15 @@ export const getPlaylistCompleteDetails = json => ({
   playlistReceived: true
 });
 
+const getCustomPlaylistCompleteDetails = () => ({
+  type:'GET_CUSTOM_PLAYLIST',
+  customTocPlaylistReceived: true
+});
+export const gotCustomPlaylistCompleteDetails = () => ({
+  type:'GOT_CUSTOM_PLAYLIST',
+  customTocPlaylistReceived: false
+});
+
 export const getTocCompleteDetails = json => ({
   type: typeConstants.GET_TOC,
   data: json,
@@ -67,7 +76,7 @@ function getTocUrlOnResp(resp) {
   }
   return tocUrl ? tocUrl.replace('http:', 'https:') : null;
 }
-export const getBookPlayListCallService = data => dispatch =>
+export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
   PlaylistApi.doGetPiUserDetails(data).then(response => response.json())
     .then((response) => {
       data.userName = response.UserName;
@@ -83,7 +92,12 @@ export const getBookPlayListCallService = data => dispatch =>
           bookDetails = response.bookDetail.metadata;
           piToken = data.piToken;
           PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
-            .then(response => dispatch(getPlaylistCompleteDetails(response)));
+            .then(response => {
+              dispatch(getPlaylistCompleteDetails(response));
+              if(isFromCustomToc){
+                dispatch(getCustomPlaylistCompleteDetails());
+              }
+            });
         }
         );
 
@@ -127,8 +141,8 @@ export const getBookTocCallService = data => dispatch =>
     });
 
 
-export const putCustomTocCallService = data => dispatch =>
-  PlaylistApi.doPutCustomTocDetails(data, piToken, bookId).then(response => response.json())
+export const putCustomTocCallService = (data, bookDetailsData) => dispatch =>
+   PlaylistApi.doPutCustomTocDetails(data, piToken, bookId).then(response => response.json())
     .then((response) => {
       if (response.status === 'Success') {
         let tocResponse = {};
@@ -141,6 +155,7 @@ export const putCustomTocCallService = data => dispatch =>
       }
       dispatch(gettingTocResponse());
       dispatch(updateTocResponse(response));
+      dispatch(getBookPlayListCallService(bookDetailsData, true));
     });
 
 
