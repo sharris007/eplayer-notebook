@@ -169,11 +169,11 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
       const urlSplit = url.split('prdType=');
       prdType = urlSplit[1];
     }
-    const checkIDCreturnUrl = url.search('returnurl=');
-    if(checkIDCreturnUrl > 0){
-      const IDCreturnUrl = url.split('returnurl=')[1];
-      localStorage.setItem('backUrl',decodeURIComponent(IDCreturnUrl));
-    }
+    // const checkIDCreturnUrl = url.search('returnurl=');
+    // if(checkIDCreturnUrl > 0){
+    //   const IDCreturnUrl = url.split('returnurl=')[1];
+    //   localStorage.setItem('backUrl',decodeURIComponent(IDCreturnUrl));
+    // }
     let studentCheck = resources.constants.zeppelinEnabled;
     let instructorCheck = resources.constants.idcDashboardEnabled;
     if (studentCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access) {
@@ -192,11 +192,16 @@ export const getCourseCallService = data => dispatch => PlaylistApi.doGetCourseD
     if( getsourceUrl === 'bookshelf'){
       getOriginUrl = resources.links.authDomainUrl[domain.getEnvType()]+'/eplayer';
     }
-    else{
+    else if ( getsourceUrl === '' ){
       getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
     }
     localStorage.setItem('sourceUrl', '');
     localStorage.setItem('backUrl',getOriginUrl);
+    const checkIDCreturnUrl = url.search('returnurl=');
+    if(checkIDCreturnUrl > 0){
+      const IDCreturnUrl = url.split('returnurl=')[1];
+      localStorage.setItem('backUrl',decodeURIComponent(IDCreturnUrl));
+    }
     PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
       .then(response => {
         const securl = baseUrl.replace(/^http:\/\//i, 'https://');
