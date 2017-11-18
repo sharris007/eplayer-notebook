@@ -171,7 +171,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
-    localStorage.setItem('backUrl', '');
+    
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
@@ -180,6 +180,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
     bookId = bookDetails.section.sectionId;
 
     if (!isFromCustomToc) {
+      localStorage.setItem('backUrl', '');
       const passportDetails = response.passportPermissionDetail;
       const url = window.location.href;
       const n = url.search('prdType');
