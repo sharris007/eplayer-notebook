@@ -79,8 +79,10 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
   PlaylistApi.doGetPiUserDetails(data).then(response => response.json())
     .then((response) => {
       data.userName = response.UserName;
-      const bookshelfUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
-      localStorage.setItem('backUrl', bookshelfUrl);
+      if (!isFromCustomToc) {
+        const bookshelfUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
+        localStorage.setItem('backUrl', bookshelfUrl);
+      }
       PlaylistApi.doGetBookDetails(data)
         .then(response => response.json())
         .then((response) => {
@@ -183,38 +185,38 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const n = url.search('prdType');
       let prdType = '';
       if (n > 0) {
-      const urlSplit = url.split('prdType=');
-      prdType = urlSplit[1];
-    }
+        const urlSplit = url.split('prdType=');
+        prdType = urlSplit[1];
+      }
       const studentCheck = resources.constants.zeppelinEnabled;
       const instructorCheck = resources.constants.idcDashboardEnabled;
       if (studentCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access) {
-      redirectToZeppelin(bookDetails, passportDetails);
-      return false;
-    }
+        redirectToZeppelin(bookDetails, passportDetails);
+        return false;
+      }
       else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType) {
-      const productType = bookDetails.section.extras.metadata.productModel;
-      const prodType = productType,
+        const productType = bookDetails.section.extras.metadata.productModel;
+        const prodType = productType,
         courseId = bookId;
-      redirectToIDCDashboard(prodType, courseId);
-      return false;
-    }
+        redirectToIDCDashboard(prodType, courseId);
+        return false;
+      }
 
       const getsourceUrl = localStorage.getItem('sourceUrl');
       let getOriginUrl;
       if (getsourceUrl === 'bookshelf') {
-      getOriginUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
-    }
+        getOriginUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
+      }
       else if (getsourceUrl === '') {
-      getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
-    }
+        getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+      }
       localStorage.setItem('sourceUrl', '');
       localStorage.setItem('backUrl', getOriginUrl);
       const checkIDCreturnUrl = url.search('returnurl=');
       if (checkIDCreturnUrl > 0) {
-      const IDCreturnUrl = url.split('returnurl=')[1];
-      localStorage.setItem('backUrl', decodeURIComponent(IDCreturnUrl));
-    }
+        const IDCreturnUrl = url.split('returnurl=')[1];
+        localStorage.setItem('backUrl', decodeURIComponent(IDCreturnUrl));
+      }
     }
 
     PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
