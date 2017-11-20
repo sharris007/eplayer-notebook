@@ -1038,10 +1038,11 @@ handleRegionClick(hotspotID) {
     }
   }
 
- printFunc = () => {
+printFunc = () => {
     var prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
     var pageSrc = prtContent.currentSrc;
     var win = window.open('');
+    win.document.write('<style type="text/css"> @media print { @page { size:auto;margin:0; }}</style>')
     win.document.write('<img src="' + pageSrc + '" onload="window.print();window.close()" />');
     win.focus();
   }
