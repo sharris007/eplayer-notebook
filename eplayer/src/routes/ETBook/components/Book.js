@@ -161,6 +161,7 @@ export class Book extends Component {
     }
     delete this.state.pageDetails.searchText;
     this.setState({ pageDetails: this.state.pageDetails, asynCallLoaded: false });
+    localStorage.setItem('idc_redirected', false);
   }
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
