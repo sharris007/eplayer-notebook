@@ -23,7 +23,7 @@ import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVer
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService } from '../../../actions/playlist';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails } from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
@@ -56,6 +56,7 @@ export class Book extends Component {
     });
     this.environmentCode = '';
     this.personRoleCode = '';
+    this.isTOCUpdated = false;
     this.state = {
       classname: 'headerBar visible',
       viewerContent: true,
@@ -126,17 +127,17 @@ export class Book extends Component {
           });
         }
         const getSecureToken = localStorage.getItem('secureToken');
-        const bookDetailsData = {
+        this.bookDetailsData = {
           context: this.state.urlParams.context,
           piToken: getSecureToken,
           bookId: this.props.params.bookId
         }
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          bookDetailsData.courseId = this.props.params.bookId;
+          this.bookDetailsData.courseId = this.props.params.bookId;
           this.courseBook = true;
-          this.props.dispatch(getCourseCallService(bookDetailsData));
+          this.props.dispatch(getCourseCallService(this.bookDetailsData));
         } else {
-          this.props.dispatch(getBookPlayListCallService(bookDetailsData));
+          this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
       }
       const getPreferenceData = {
@@ -180,6 +181,10 @@ export class Book extends Component {
       }
 
     }
+    if (nextProps.customTocPlaylistReceived) {
+      pageParameters.currentPageURL = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
+      this.onNavChange(pageParameters.currentPageURL);
+    }
     if (typeof nextProps.bookdetailsdata === "object" && nextProps.bookdetailsdata && nextProps.bookdetailsdata.bookDetail && nextProps.bookdetailsdata.bookDetail.metadata && nextProps.bookdetailsdata.bookDetail.metadata.indexId) {
       this.bookIndexId = nextProps.bookdetailsdata.bookDetail.metadata.indexId;
       this.searchUrl = resources.links.etextSearchUrl[domain.getEnvType()] + '/search?indexId=' + this.bookIndexId + '&q=searchText&s=0&n=' + resources.constants.TextSearchLimit;
@@ -213,6 +218,7 @@ export class Book extends Component {
         });
       }
     }
+    //this.props.dispatch(gotCustomPlaylistCompleteDetails());
   }
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
@@ -285,7 +291,7 @@ export class Book extends Component {
       this.props.dispatch(getBookmarkCallService(bookmarksParams));
       // this.props.dispatch(getAnnCallService(this.state.urlParams));
     });
-
+    this.props.dispatch(gotCustomPlaylistCompleteDetails());
   };
 
   onPageChange = (type, data) => {
@@ -368,7 +374,6 @@ export class Book extends Component {
       updatedPageLoadData.activities[0].payload.organizationId = this.state.organizationId;
       updatedPageLoadData.activities[0].payload.environmentCode = this.environmentCode;
       updatedPageLoadData.activities[0].payload.personRoleCode = this.personRoleCode;
-      // console.log("updatedPageLoadData12", updatedPageLoadData);
       const getSecureToken = localStorage.getItem('secureToken');
       loadPageEvent(getSecureToken, updatedPageLoadData);
 
@@ -404,7 +409,6 @@ export class Book extends Component {
       updatedPageUnLoadData.activities[0].payload.organizationId = this.state.organizationId;
       updatedPageUnLoadData.activities[0].payload.environmentCode = this.environmentCode;
       updatedPageUnLoadData.activities[0].payload.personRoleCode = this.personRoleCode;
-      // console.log("updatedPageLoadDataUNLOAD", updatedPageUnLoadData);
       const getSecureToken = localStorage.getItem('secureToken');
       unLoadPageEvent(getSecureToken, updatedPageUnLoadData);
       if (loadFunCall) {
@@ -622,13 +626,13 @@ export class Book extends Component {
     if (currentPage) {
       this.onNavChange(currentPage);
       if (this.props.bookdetailsdata.userCourseSectionDetail !== undefined) {
-         const envCode = {
-            local        :"DEV",
-            dev          :"QA",
-            qa           :"QA",
-            stage        :"STG",
-            prod         :"PRD"
-          }
+        const envCode = {
+          local: "DEV",
+          dev: "QA",
+          qa: "QA",
+          stage: "STG",
+          prod: "PRD"
+        }
         this.environmentCode = envCode[domain.getEnvType()];
         let getAuthType = this.props.bookdetailsdata.userCourseSectionDetail.authgrouptype;
         this.personRoleCode = getAuthType.charAt(0).toUpperCase() + getAuthType.slice(1);
@@ -683,7 +687,7 @@ export class Book extends Component {
       this.props.book.annTotalData = [];
     }
     const getOriginurl = localStorage.getItem('backUrl');
-    if(getOriginurl) {
+    if (getOriginurl) {
       window.location.href = getOriginurl;
     }
     // if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
@@ -798,25 +802,42 @@ export class Book extends Component {
     return scriptSrc;
   };
   closeHeaderPopups = (e) => {
-    const eleSearch = $(e.target).closest('.searchIconBtn');
-    const elepref = $(e.target).closest('.prefIconBtn');
-    const searchContainer = $(e.target).closest('.searchContainer');
-    const prefContainer = $(e.target).closest('.preferences-container');
-    if (eleSearch.length === 0 && elepref.length === 0 && prefContainer.length === 0 && searchContainer.length === 0) {
-      this.setState({ searchOpen: false, prefOpen: false });
-    } else if (eleSearch.length === 0 && searchContainer.length === 0) {
-      this.setState({ searchOpen: false });
-    } else if (elepref.length === 0 && prefContainer.length === 0) {
-      this.setState({ prefOpen: false });
+    if (!this.state.drawerOpen) {
+      const eleSearch = $(e.target).closest('.searchIconBtn');
+      const elepref = $(e.target).closest('.prefIconBtn');
+      const searchContainer = $(e.target).closest('.searchContainer');
+      const prefContainer = $(e.target).closest('.preferences-container');
+      if (eleSearch.length === 0 && elepref.length === 0 && prefContainer.length === 0 && searchContainer.length === 0) {
+        this.setState({ searchOpen: false, prefOpen: false });
+      } else if (eleSearch.length === 0 && searchContainer.length === 0) {
+        this.setState({ searchOpen: false });
+      } else if (elepref.length === 0 && prefContainer.length === 0) {
+        this.setState({ prefOpen: false });
+      }
+      this.handleConfirmMessage();
     }
   };
+  handleConfirmMessage = () => {
+    if(this.isTOCUpdated && !this.props.updatedToc){
+        let closeDrawer = confirm("Are you sure?");
+        if(closeDrawer)
+        {
+          this.setState({ drawerOpen: false });
+        }
+        else
+        {
+          this.setState({ drawerOpen: true });
+        }
+        this.isTOCUpdated = false;
+    }    
+  }
   onPageClick = () => {
     this.setState({ searchOpen: false, prefOpen: false });
   };
   render() {
     const callbacks = {};
     let annJsPath, annCssPath, productData;
-    const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props; 
+    const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props;
     // eslint-disable-line react/prop-types
     this.props.book.annTotalData = annotationTotalData;
     this.props.book.toc = tocData;
@@ -870,6 +891,7 @@ export class Book extends Component {
       tocContents: tocCompData.data.content.list,
       tocLevel: 2,
       dndType: 'TableOfContents',
+      tocHeight:300,
       handlePublish: (changedTocContent) => {
         let tocPayload = [];
         let i = 0;
@@ -901,7 +923,7 @@ export class Book extends Component {
           };
         });
         const tocResponseData = { tocContents: listData };
-        this.props.dispatch(putCustomTocCallService(tocResponseData));
+        this.props.dispatch(putCustomTocCallService(tocResponseData, this.bookDetailsData));
       },
       handleDashBoard: () => {
         if (this.props.book.toc.content !== undefined) {
@@ -910,24 +932,32 @@ export class Book extends Component {
           this.props.book.bookinfo = [];
           this.props.book.annTotalData = [];
         }
-        window.history.back();
+        const getOriginurl = localStorage.getItem('backUrl');
+        if (getOriginurl) {
+          window.location.href = getOriginurl;
+        }
         this.setState({ open: false });
+      },
+      onTocChange: (isChanged) =>{
+        this.isTOCUpdated = isChanged;
+      },
+      showModal: ()=> {
+        this.handleConfirmMessage();
       }
     };
 
     let type = '';
     let message = '';
-    const title = 'Status';
     if (tocResponse) {
-      if (tocResponse.status === 'Success'){
+      if (tocResponse.status === 'Success') {
         type = tocResponse.status;
-        message="The table of contents has been updated!";
-    }
+        message = "The table of contents has been updated!";
+      }
       else {
         type = 'Error';
-        message="Your changes didn't get published. Give us a few moments and try again.";
+        message = "Your changes didn't get published. Give us a few moments and try again.";
       }
-      
+
     }
     const pages = bootstrapParams.pageDetails.playListURL || [];
     const bookmarArr = this.props.book.bookmarks ? this.props.book.bookmarks : [];
@@ -1143,7 +1173,7 @@ export class Book extends Component {
             </div>
           </LearningContextProvider>}
         {
-          updatedToc?<StaticAlert type={type} title={title} message={message} /> : <div></div>
+          updatedToc ? <StaticAlert type={type} title='' message={message} /> : <div></div>
         } </div>
     );
   }
@@ -1186,7 +1216,8 @@ const mapStateToProps = state => {
     gotoPageObj: state.gotopageReducer.gotoPageObj,
     isGoToPageRecived: state.gotopageReducer.isGoToPageRecived,
     bookdetailsdata: state.playlistReducer.bookdetailsdata,
-    getPreferenceData: state.preferenceReducer.preferenceObj
+    getPreferenceData: state.preferenceReducer.preferenceObj,
+    customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived
   }
 }; // eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book); // eslint-disable-line no-class-assign
