@@ -171,7 +171,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
-    
+
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
@@ -195,9 +195,9 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         redirectToZeppelin(bookDetails, passportDetails);
         return false;
       }
-      else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType) {
+      else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType && !localStorage.getItem('idc_redirected')) {
         const productType = bookDetails.section.extras.metadata.productModel;
-        const prodType = productType,
+        const prodType = productType;
         courseId = bookId;
         redirectToIDCDashboard(prodType, courseId);
         return false;
@@ -237,6 +237,7 @@ function redirectToIDCDashboard(prodType, courseId) {
   const idcBaseurl = `${resources.links.idcUrl[domain.getEnvType()]}/idc?`;
   const IdcRelativeURL = `product_type=${prodType}&courseId=${courseId}`;
   const redirectIdcURL = idcBaseurl + IdcRelativeURL;
+  localStorage.setItem('idc_redirected', true);
   window.open(redirectIdcURL, '_self');
 }
 
