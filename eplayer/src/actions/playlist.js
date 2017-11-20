@@ -195,10 +195,10 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         redirectToZeppelin(bookDetails, passportDetails);
         return false;
       }
-      else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType ) {
+      else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType && !localStorage.getItem('idc_redirected')) {
         const productType = bookDetails.section.extras.metadata.productModel;
         const prodType = productType;
-        courseId = bookId;
+        const courseId = bookId;
         redirectToIDCDashboard(prodType, courseId);
         return false;
       }
