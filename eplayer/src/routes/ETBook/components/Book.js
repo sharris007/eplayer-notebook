@@ -23,7 +23,7 @@ import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVer
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails } from '../../../actions/playlist';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails,tocFlag } from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
@@ -221,6 +221,14 @@ export class Book extends Component {
       }
     }
     //this.props.dispatch(gotCustomPlaylistCompleteDetails());
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    // console.log('shouldComponentUpdate');
+    if(this.resetToc){
+      this.resetToc=false;
+      return false;
+    }
+    return true;
   }
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
@@ -684,8 +692,12 @@ export class Book extends Component {
       }
       this.setState({ drawerOpen: false });
       this.viewerContentCallBack(true);
+    }else{
+      this.resetToc=true;
+      this.props.dispatch(tocFlag()).then(()=>{
+        this.handleConfirmMessage();
+       });
     }
-     this.handleConfirmMessage();
   }
 
   handleBookshelfClick = () => {
@@ -833,10 +845,12 @@ export class Book extends Component {
         let closeDrawer = confirm("Your changes have not been saved. Do you want to proceed?");
         if(closeDrawer)
         {
-          this.setState({ drawerOpen: false },()=>{
-            this.setState({ drawerOpen: true });
-          });
-
+          // this.setState({ drawerOpen: false },()=>{
+          //   this.setState({ drawerOpen: true });
+          //});
+          this.isTOCUpdated = false;
+          this.resetToc=false;
+          this.setState({ drawerOpen: true });
   
           
         }
@@ -844,7 +858,7 @@ export class Book extends Component {
         {
           //this.setState({ open: true });
         }
-        
+        // this.isTOCUpdated = false;
     }    
   }
   onPageClick = () => {
@@ -968,11 +982,13 @@ export class Book extends Component {
       if (tocResponse.status === 'Success') {
         type = tocResponse.status;
         message = "The table of contents has been updated!";
+        this.isTOCUpdated=false;
       }
       else {
         type = 'Error';
         message = "Your changes didn't get published. Give us a few moments and try again.";
       }
+
 
     }
     const pages = bootstrapParams.pageDetails.playListURL || [];
@@ -1234,7 +1250,7 @@ const mapStateToProps = state => {
     bookdetailsdata: state.playlistReducer.bookdetailsdata,
     getPreferenceData: state.preferenceReducer.preferenceObj,
     customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived,
-    prodType:state.playlistReducer.prodType
+    prodType:state.playlistReducer.prodType  
   }
 }; // eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book); // eslint-disable-line no-class-assign
