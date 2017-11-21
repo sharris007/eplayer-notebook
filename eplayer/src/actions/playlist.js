@@ -206,7 +206,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         const productType = bookDetails.section.extras.metadata.productModel;
         const prodType = productType;
         const courseId = bookId;
-        dispatch(updateProdType(prodType));
+        dispatch(updateProdType(prdType));
         redirectToIDCDashboard(prodType, courseId);
         return false;
       }
