@@ -1,14 +1,14 @@
-/*******************************************************************************
+/** *****************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
+ *
  *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
- *  * 
+ *  *
  *  * NOTICE:  All information contained herein is, and remains
  *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
  *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
  *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
+ *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 const initalData = {
@@ -20,7 +20,8 @@ const initalData = {
   tocReceived: false,
   bookDetailsRecived: false,
   updatedToc: false,
-  customTocPlaylistReceived:false
+  customTocPlaylistReceived: false,
+  prodType: ''
 };
 export default (state = initalData, action) => {
   switch (action.type) {
@@ -45,7 +46,8 @@ export default (state = initalData, action) => {
         ...state,
         data: [],
         playlistReceived: false,
-        tocReceived: false
+        tocReceived: false,
+        prodType: ''
       };
     }
     case 'GET_TOC': {
@@ -75,16 +77,22 @@ export default (state = initalData, action) => {
         updatedToc: action.updatedToc
       };
     }
-    case 'GET_CUSTOM_PLAYLIST':{
+    case 'GET_CUSTOM_PLAYLIST': {
       return {
         ...state,
         customTocPlaylistReceived: action.customTocPlaylistReceived
       };
     }
-    case 'GOT_CUSTOM_PLAYLIST':{
+    case 'GOT_CUSTOM_PLAYLIST': {
       return {
         ...state,
         customTocPlaylistReceived: action.customTocPlaylistReceived
+      };
+    }
+    case 'UPDATE_PROD_TYPE': {
+      return {
+        ...state,
+        prodType: action.prodType
       };
     }
     default:

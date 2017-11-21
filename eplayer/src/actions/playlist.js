@@ -58,6 +58,11 @@ const gettingTocResponse = () => ({
   updatedToc: false
 });
 
+const updateProdType = prodType => ({
+  type: 'UPDATE_PROD_TYPE',
+  prodType
+});
+
 let tocUrl = '';
 let piToken = '';
 let bookId = '';
@@ -171,7 +176,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
-    
+
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
@@ -180,7 +185,6 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
     bookId = bookDetails.section.sectionId;
 
     if (!isFromCustomToc) {
-      localStorage.setItem('backUrl', '');
       const passportDetails = response.passportPermissionDetail;
       const url = window.location.href;
       const n = url.search('prdType');
@@ -188,6 +192,9 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       if (n > 0) {
         const urlSplit = url.split('prdType=');
         prdType = urlSplit[1];
+      }
+      if (!prdType) {
+        localStorage.setItem('backUrl', '');
       }
       const studentCheck = resources.constants.zeppelinEnabled;
       const instructorCheck = resources.constants.idcDashboardEnabled;
@@ -197,18 +204,19 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       }
       else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType) {
         const productType = bookDetails.section.extras.metadata.productModel;
-        const prodType = productType,
-        courseId = bookId;
+        const prodType = productType;
+        const courseId = bookId;
+        dispatch(updateProdType(prodType));
         redirectToIDCDashboard(prodType, courseId);
         return false;
       }
 
       const getsourceUrl = localStorage.getItem('sourceUrl');
-      let getOriginUrl;
+      let getOriginUrl = localStorage.getItem('backUrl');
       if (getsourceUrl === 'bookshelf') {
         getOriginUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
       }
-      else if (getsourceUrl === '') {
+      else if (getsourceUrl === '' && !prdType) {
         getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
       }
       localStorage.setItem('sourceUrl', '');
