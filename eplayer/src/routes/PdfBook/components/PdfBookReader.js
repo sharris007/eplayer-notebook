@@ -1038,6 +1038,16 @@ handleRegionClick(hotspotID) {
     }
   }
 
+printFunc = () => {
+    var prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
+    var pageSrc = prtContent.currentSrc;
+    var win = window.open('');
+    win.document.write('<style type="text/css"> @media print { @page { size:auto;margin:0; }}</style>')
+    win.document.write('<img src="' + pageSrc + '" onload="window.print();window.close()" />');
+    win.focus();
+  }
+
+
 /* Method for render the component and any change in store data, reload the changes. */
   render() {
     const callbacks = {};

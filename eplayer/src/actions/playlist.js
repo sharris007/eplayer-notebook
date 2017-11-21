@@ -58,6 +58,11 @@ const gettingTocResponse = () => ({
   updatedToc: false
 });
 
+const updateProdType = prodType => ({
+  type: 'UPDATE_PROD_TYPE',
+  prodType
+});
+
 let tocUrl = '';
 let piToken = '';
 let bookId = '';
@@ -180,7 +185,6 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
     bookId = bookDetails.section.sectionId;
 
     if (!isFromCustomToc) {
-      localStorage.setItem('backUrl', '');
       const passportDetails = response.passportPermissionDetail;
       const url = window.location.href;
       const n = url.search('prdType');
@@ -189,26 +193,30 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         const urlSplit = url.split('prdType=');
         prdType = urlSplit[1];
       }
+      if (!prdType) {
+        localStorage.setItem('backUrl', '');
+      }
       const studentCheck = resources.constants.zeppelinEnabled;
       const instructorCheck = resources.constants.idcDashboardEnabled;
       if (studentCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access) {
         redirectToZeppelin(bookDetails, passportDetails);
         return false;
       }
-      else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType && !localStorage.getItem('idc_redirected')) {
+      else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType) {
         const productType = bookDetails.section.extras.metadata.productModel;
         const prodType = productType;
-        courseId = bookId;
+        const courseId = bookId;
+        dispatch(updateProdType(prodType));
         redirectToIDCDashboard(prodType, courseId);
         return false;
       }
 
       const getsourceUrl = localStorage.getItem('sourceUrl');
-      let getOriginUrl;
+      let getOriginUrl = localStorage.getItem('backUrl');
       if (getsourceUrl === 'bookshelf') {
         getOriginUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
       }
-      else if (getsourceUrl === '') {
+      else if (getsourceUrl === '' && !prdType) {
         getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
       }
       localStorage.setItem('sourceUrl', '');
@@ -237,7 +245,6 @@ function redirectToIDCDashboard(prodType, courseId) {
   const idcBaseurl = `${resources.links.idcUrl[domain.getEnvType()]}/idc?`;
   const IdcRelativeURL = `product_type=${prodType}&courseId=${courseId}`;
   const redirectIdcURL = idcBaseurl + IdcRelativeURL;
-  localStorage.setItem('idc_redirected', true);
   window.open(redirectIdcURL, '_self');
 }
 

@@ -161,7 +161,6 @@ export class Book extends Component {
     }
     delete this.state.pageDetails.searchText;
     this.setState({ pageDetails: this.state.pageDetails, asynCallLoaded: false });
-    localStorage.setItem('idc_redirected', false);
   }
   parseDom = () => {
     WidgetManager.loadComponents(this.nodesToUnMount, this.context);
@@ -208,7 +207,9 @@ export class Book extends Component {
         playpageDetails1.tocUpdated = true;
         this.onPageChange("pagescroll", nextProps.gotoPageObj.page.title);
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          browserHistory.replace('/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
+          let url = '/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale;
+          url+=this.props.prodType?'?prodType='+this.props.prodType:'';
+          browserHistory.replace(url);
         } else {
           browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
         }
@@ -283,7 +284,9 @@ export class Book extends Component {
     }, function () {
       // eslint-disable-next-line
       if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-        browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
+        let url = `/eplayer/Course/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale;
+        url+=this.props.prodType?'?prodType='+this.props.prodType:'';
+        browserHistory.replace(url);
       } else {
         browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
       }
@@ -508,7 +511,9 @@ export class Book extends Component {
         drawerOpen: false
       }, () => {
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          browserHistory.replace(`/eplayer/Course/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
+          let url = `/eplayer/Course/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale;
+          url+=this.props.prodType?'?prodType='+this.props.prodType:'';
+          browserHistory.replace(url);
         } else {
           browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
         }
@@ -1218,7 +1223,8 @@ const mapStateToProps = state => {
     isGoToPageRecived: state.gotopageReducer.isGoToPageRecived,
     bookdetailsdata: state.playlistReducer.bookdetailsdata,
     getPreferenceData: state.preferenceReducer.preferenceObj,
-    customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived
+    customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived,
+    prodType:state.playlistReducer.prodType
   }
 }; // eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book); // eslint-disable-line no-class-assign
