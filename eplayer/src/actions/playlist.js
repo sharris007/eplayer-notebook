@@ -206,6 +206,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         const productType = bookDetails.section.extras.metadata.productModel;
         const prodType = productType;
         const courseId = bookId;
+        dispatch(updateProdType(prodType));
         redirectToIDCDashboard(prodType, courseId);
         return false;
       }
@@ -244,7 +245,6 @@ function redirectToIDCDashboard(prodType, courseId) {
   const idcBaseurl = `${resources.links.idcUrl[domain.getEnvType()]}/idc?`;
   const IdcRelativeURL = `product_type=${prodType}&courseId=${courseId}`;
   const redirectIdcURL = idcBaseurl + IdcRelativeURL;
-  dispatch(updateProdType(prodType));
   window.open(redirectIdcURL, '_self');
 }
 
