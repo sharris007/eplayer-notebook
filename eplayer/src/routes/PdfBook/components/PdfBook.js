@@ -66,6 +66,10 @@ export class PdfBook extends Component {
         browserHistory.push('/eplayer/login');
       }
     }
+    // else
+    // {
+    //   browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
+    // }
   }
 /* Async keyword used for independent calling the method, componentWillMount is lifecycle method,
 used for before mounting occurs. */

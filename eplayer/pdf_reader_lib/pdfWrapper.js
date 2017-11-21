@@ -1122,7 +1122,7 @@ function getAssetURLForPDFDownload(config,cb){
             iconDiv.style.backgroundSize = 'cover';
           }
           regionElement.className='hotspot';
-          iconDiv.style.position='absolute';
+          iconDiv.className='hotspotIcon';
           tooltip = document.createElement('span')
           tooltip.className='tooltiptext';
           tooltip.innerHTML = hotspots[i].name;
