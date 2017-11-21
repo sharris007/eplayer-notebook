@@ -571,7 +571,7 @@ export class PdfBookReader extends Component {
     {
       region = 'VIDEO';
     }
-    else if(hotspot.pearsonSmartPlayer == true)
+    else if(hotspot.pearsonSmartPlayer == true && _.startsWith(regionLink,'https://mediaplayer.pearsoncmg.com/assets'))
     {
       region = 'VIDEO';
     }
