@@ -842,7 +842,7 @@ export class Book extends Component {
   };
   handleConfirmMessage = () => {
     if(this.isTOCUpdated && !this.props.updatedToc){
-        let closeDrawer = confirm("Are you sure?");
+        let closeDrawer = confirm("Your changes have not been saved. Do you want to proceed?");
         if(closeDrawer)
         {
           // this.setState({ drawerOpen: false },()=>{
