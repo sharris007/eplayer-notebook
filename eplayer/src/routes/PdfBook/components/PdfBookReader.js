@@ -180,6 +180,8 @@ export class PdfBookReader extends Component {
       {
         try{
           Popup.close();
+          $('#sppDiv').empty();
+          $('#sppDiv').hide();
         }
         catch(e){
         }
@@ -618,17 +620,39 @@ export class PdfBookReader extends Component {
                break;
       case 'VIDEO':
                source=hotspotDetails.linkValue;
-               hotspotData = {
-                title : hotspotDetails.name,
-                src : source,
-                caption : hotspotDetails.description || "",
-                id : hotspotDetails.regionID,
-                thumbnail : {
-                  src : "",
-               },
-               alt : hotspotDetails.name,
-               };
-               regionComponent = <VideoPlayerPreview data={hotspotData}/>;
+               if(hotspotDetails.pearsonSmartPlayer == true && _.startsWith(source,'https://mediaplayer.pearsoncmg.com/assets'))
+               {
+                 var lastIndex = source.lastIndexOf("/");
+                 var videoID = source.slice(lastIndex+1);
+                 var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppDiv/' + videoID;
+                 var sppScript=document.createElement('SCRIPT');
+                 sppScript.src = scriptContent;
+                 document.getElementById('sppDiv').style.height = 300 + 'px';
+                 document.getElementById('sppDiv').style.width = 400 + 'px';
+                 document.getElementById('docViewer_ViewContainer_PageContainer_0').appendChild(sppScript);
+               }
+               else
+               {
+                try
+                {
+                  $('#sppDiv').empty();
+                  $('#sppDiv').hide();
+                }
+                catch(e){
+
+                }
+                 hotspotData = {
+                  title : hotspotDetails.name,
+                  src : source,
+                  caption : hotspotDetails.description || "",
+                  id : hotspotDetails.regionID,
+                  thumbnail : {
+                    src : "",
+                 },
+                 alt : hotspotDetails.name,
+                 };
+                 regionComponent = <VideoPlayerPreview data={hotspotData}/>;
+               }
                break;
       case 'DOCUMENT':
                source=hotspotDetails.linkValue;
@@ -669,6 +693,17 @@ handleRegionClick(hotspotID) {
     if(this.state.regionData)
     {
       this.setState({regionData : null});
+    }
+    if($('#sppDiv').is(':visible'))
+    {
+      try
+      {
+        $('#sppDiv').empty();
+        $('#sppDiv').hide();
+      }
+      catch(e){
+
+      }
     }
     if(this.props.data.book.regions.length > 0 )
     {
@@ -1165,6 +1200,7 @@ printFunc = () => {
           </div>
         </div>
         <div>
+        <div id='sppDiv' className='sppContent' />
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
         <LearningContextProvider 
           contextId = {this.props.data.location.query.bookid}
