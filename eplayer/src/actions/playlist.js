@@ -169,6 +169,14 @@ export const putCustomTocCallService = (data, bookDetailsData) => dispatch =>
     });
 
 
+export const tocFlag = () => dispatch=>{
+    dispatch(gettingTocResponse());
+    return Promise.resolve()
+    }
+
+
+
+
 export const getCourseCallService = (data, isFromCustomToc) => dispatch => PlaylistApi.doGetCourseDetails(data)
   .then(response => response.json())
   .then((response) => {
