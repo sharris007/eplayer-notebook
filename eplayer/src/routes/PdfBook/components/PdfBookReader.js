@@ -180,6 +180,8 @@ export class PdfBookReader extends Component {
       {
         try{
           Popup.close();
+          $('#sppDiv').empty();
+          $('#sppDiv').hide();
         }
         catch(e){
         }
@@ -283,6 +285,17 @@ export class PdfBookReader extends Component {
       __pdfInstance.removeExistingHighlightCornerImages();
       this.setState({ drawerOpen: false,pageLoaded: false,regionData: null,
         popUpCollection: [],highlightList: []});
+      if($('#sppDiv').is(':visible'))
+      {
+        try
+        {
+          $('#sppDiv').empty();
+          $('#sppDiv').hide();
+        }
+        catch(e){
+
+        }
+      }
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
@@ -545,9 +558,9 @@ export class PdfBookReader extends Component {
     }
   }
 /*Method to check hotspot type on the basis of extension*/
-  getHotspotType = (regionLink) => {
+  getHotspotType = (hotspot) => {
     let region = '';
-    regionLink = regionLink.toLowerCase();
+    let regionLink = hotspot.linkValue.toLowerCase();
     if(_.endsWith(regionLink,'.doc') == true || _.endsWith(regionLink,'.xls') == true || _.endsWith(regionLink,'.ppt') == true || 
        _.endsWith(regionLink,'.pdf') == true || _.endsWith(regionLink,'.docx') == true || _.endsWith(regionLink,'.xlsx') == true || 
        _.endsWith(regionLink,'.pptx') == true)
@@ -555,6 +568,10 @@ export class PdfBookReader extends Component {
       region = 'DOCUMENT';
     }
     else if(_.endsWith(regionLink,'.mp4') == true || _.endsWith(regionLink,'.m4v') == true || _.endsWith(regionLink,'.flv') == true)
+    {
+      region = 'VIDEO';
+    }
+    else if(hotspot.pearsonSmartPlayer == true && _.startsWith(regionLink,'https://mediaplayer.pearsoncmg.com/assets'))
     {
       region = 'VIDEO';
     }
@@ -618,17 +635,45 @@ export class PdfBookReader extends Component {
                break;
       case 'VIDEO':
                source=hotspotDetails.linkValue;
-               hotspotData = {
-                title : hotspotDetails.name,
-                src : source,
-                caption : hotspotDetails.description || "",
-                id : hotspotDetails.regionID,
-                thumbnail : {
-                  src : "",
-               },
-               alt : hotspotDetails.name,
-               };
-               regionComponent = <VideoPlayerPreview data={hotspotData}/>;
+               if(hotspotDetails.pearsonSmartPlayer == true && _.startsWith(source,'https://mediaplayer.pearsoncmg.com/assets'))
+               {
+                 var lastIndex = source.lastIndexOf("/");
+                 var videoID = source.slice(lastIndex+1);
+                 var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppDiv/' + videoID;
+                 var sppScript=document.createElement('SCRIPT');
+                 sppScript.src = scriptContent;
+                 document.getElementById('sppDiv').style.height = 400 + 'px';
+                 document.getElementById('sppDiv').style.width = 500 + 'px';
+                 document.getElementById('docViewer_ViewContainer_PageContainer_0').appendChild(sppScript);
+                  try
+                  {
+                    $('#sppDiv').show();
+                  }
+                  catch(e){
+                  }
+               }
+               else
+               {
+                try
+                {
+                  $('#sppDiv').empty();
+                  $('#sppDiv').hide();
+                }
+                catch(e){
+
+                }
+                 hotspotData = {
+                  title : hotspotDetails.name,
+                  src : source,
+                  caption : hotspotDetails.description || "",
+                  id : hotspotDetails.regionID,
+                  thumbnail : {
+                    src : "",
+                 },
+                 alt : hotspotDetails.name,
+                 };
+                 regionComponent = <VideoPlayerPreview data={hotspotData}/>;
+               }
                break;
       case 'DOCUMENT':
                source=hotspotDetails.linkValue;
@@ -669,6 +714,17 @@ handleRegionClick(hotspotID) {
     if(this.state.regionData)
     {
       this.setState({regionData : null});
+    }
+    if($('#sppDiv').is(':visible'))
+    {
+      try
+      {
+        $('#sppDiv').empty();
+        $('#sppDiv').hide();
+      }
+      catch(e){
+
+      }
     }
     if(this.props.data.book.regions.length > 0 )
     {
@@ -739,7 +795,7 @@ handleRegionClick(hotspotID) {
               }
               if(regionDetails.regionTypeID == eT1Contants.RegionType.MEDIA || regionDetails.regionTypeID == eT1Contants.RegionType.URL)
               {
-                regionDetails.hotspotType = this.getHotspotType(regionDetails.linkValue);
+                regionDetails.hotspotType = this.getHotspotType(regionDetails);
               }
               if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || 
                 regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT)
@@ -767,7 +823,7 @@ handleRegionClick(hotspotID) {
               }
               if(regionDetails.regionTypeID == eT1Contants.RegionType.MEDIA || regionDetails.regionTypeID == eT1Contants.RegionType.URL)
               {
-                regionDetails.hotspotType = this.getHotspotType(regionDetails.linkValue);
+                regionDetails.hotspotType = this.getHotspotType(regionDetails);
               }
               if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || 
                 regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT)
@@ -785,7 +841,7 @@ handleRegionClick(hotspotID) {
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.CHROMELESS_URL)
             {
-              regionDetails.hotspotType = this.getHotspotType(regionDetails.linkValue);  
+              regionDetails.hotspotType = this.getHotspotType(regionDetails);  
               if(this.props.data.book.basepaths.chromelessurlpath !== null && this.props.data.book.basepaths.chromelessurlpath !== "" && this.props.data.book.basepaths.chromelessurlpath !== undefined)
               {
                 basepath = this.createHttps(this.props.data.book.basepaths.chromelessurlpath);
@@ -1165,6 +1221,7 @@ printFunc = () => {
           </div>
         </div>
         <div>
+        <div id='sppDiv' className='sppContent' />
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
         <LearningContextProvider 
           contextId = {this.props.data.location.query.bookid}
