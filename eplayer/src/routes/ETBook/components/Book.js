@@ -678,11 +678,14 @@ export class Book extends Component {
   }
 
   hideDrawer = () => {
-    if (this.state.drawerOpen) {
-      document.getElementsByClassName('drawerIconBtn')[0].focus();
+    if(!this.isTOCUpdated){
+      if (this.state.drawerOpen) {
+        document.getElementsByClassName('drawerIconBtn')[0].focus();
+      }
+      this.setState({ drawerOpen: false });
+      this.viewerContentCallBack(true);
     }
-    this.setState({ drawerOpen: false });
-    this.viewerContentCallBack(true);
+     this.handleConfirmMessage();
   }
 
   handleBookshelfClick = () => {
@@ -820,21 +823,28 @@ export class Book extends Component {
       } else if (elepref.length === 0 && prefContainer.length === 0) {
         this.setState({ prefOpen: false });
       }
-      this.handleConfirmMessage();
+      
     }
+   
+    
   };
   handleConfirmMessage = () => {
     if(this.isTOCUpdated && !this.props.updatedToc){
         let closeDrawer = confirm("Are you sure?");
         if(closeDrawer)
         {
-          this.setState({ drawerOpen: false });
+          this.setState({ drawerOpen: false },()=>{
+            this.setState({ drawerOpen: true });
+          });
+
+  
+          
         }
         else
         {
-          this.setState({ drawerOpen: true });
+          //this.setState({ open: true });
         }
-        this.isTOCUpdated = false;
+        
     }    
   }
   onPageClick = () => {
