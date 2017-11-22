@@ -846,7 +846,7 @@ export class Book extends Component {
     this.resetToc=true;
     this.props.dispatch(tocFlag()).then(()=>{
     if(this.isTOCUpdated && !this.props.updatedToc){
-        let closeDrawer = confirm("Are you sure?");
+        let closeDrawer = confirm("Your changes have not been saved. Do you want to proceed?");
         if(closeDrawer)
         {
           this.isTOCUpdated = false;
