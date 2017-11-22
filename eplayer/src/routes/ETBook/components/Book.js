@@ -207,9 +207,9 @@ export class Book extends Component {
         playpageDetails1.tocUpdated = true;
         this.onPageChange("pagescroll", nextProps.gotoPageObj.page.title);
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          let url = '/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale;
+          let url = `/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`;
           url+=this.props.prodType?'?prodType='+this.props.prodType:'';
-          browserHistory.replace(url);
+          browserHistory.replace(url+'?launchLocale=' + window.annotationLocale);
         } else {
           browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
         }
@@ -292,9 +292,9 @@ export class Book extends Component {
     }, function () {
       // eslint-disable-next-line
       if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-        let url = `/eplayer/Course/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale;
+        let url = `/eplayer/Course/${this.props.params.bookId}/page/${data.id}`;
         url+=this.props.prodType?'?prodType='+this.props.prodType:'';
-        browserHistory.replace(url);
+        browserHistory.replace(url+`?launchLocale=` + window.annotationLocale);
       } else {
         browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
       }
@@ -520,9 +520,9 @@ export class Book extends Component {
         drawerOpen: false
       }, () => {
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          let url = `/eplayer/Course/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale;
+          let url = `/eplayer/Course/${this.props.params.bookId}/page/${id}`;
           url+=this.props.prodType?'?prodType='+this.props.prodType:'';
-          browserHistory.replace(url);
+          browserHistory.replace(url+`?launchLocale=` + window.annotationLocale);
         } else {
           browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
         }
