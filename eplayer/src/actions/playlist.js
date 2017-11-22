@@ -200,6 +200,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       if (n > 0) {
         const urlSplit = url.split('prdType=');
         prdType = urlSplit[1];
+        dispatch(updateProdType(prdType));
       }
       if (!prdType) {
         localStorage.setItem('backUrl', '');
@@ -214,7 +215,6 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         const productType = bookDetails.section.extras.metadata.productModel;
         const prodType = productType;
         const courseId = bookId;
-        dispatch(updateProdType(prdType));
         redirectToIDCDashboard(prodType, courseId);
         return false;
       }
