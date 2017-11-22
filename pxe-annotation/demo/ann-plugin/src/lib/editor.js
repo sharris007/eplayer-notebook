@@ -189,6 +189,8 @@ Annotator.Editor = (function(_super) {
     var keycode = e.keyCode;
     if(keycode == 13 || keycode == 32) {
       $(e.target).trigger('click');
+    } else if(e.target.id && e.target.id === "noteContainer" && e.keyCode === 9){
+      e.target.focus();
     }
   }
 
