@@ -169,12 +169,20 @@ export const putCustomTocCallService = (data, bookDetailsData) => dispatch =>
     });
 
 
-export const tocFlag = () => dispatch=>{
-    dispatch(gettingTocResponse());
-    return Promise.resolve()
-    }
+export const tocFlag = () => (dispatch) => {
+  dispatch(gettingTocResponse());
+  return Promise.resolve();
+};
 
-
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+  const results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
 
 
 export const getCourseCallService = (data, isFromCustomToc) => dispatch => PlaylistApi.doGetCourseDetails(data)
@@ -199,7 +207,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       let prdType = '';
       if (n > 0) {
         const urlSplit = url.split('prdType=');
-        prdType = urlSplit[1];
+        prdType = getParameterByName('prdType');
         dispatch(updateProdType(prdType));
       }
       if (!prdType) {
@@ -229,9 +237,12 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       }
       localStorage.setItem('sourceUrl', '');
       localStorage.setItem('backUrl', getOriginUrl);
-      const checkIDCreturnUrl = url.search('returnurl=');
+      let checkIDCreturnUrl = url.search('returnurl=');
+      if (checkIDCreturnUrl === -1) {
+        checkIDCreturnUrl = url.search('returnUrl=');
+      }
       if (checkIDCreturnUrl > 0) {
-        const IDCreturnUrl = url.split('returnurl=')[1];
+        const IDCreturnUrl = getParameterByName('returnurl') || getParameterByName('returnUrl');
         localStorage.setItem('backUrl', decodeURIComponent(IDCreturnUrl));
       }
     }
