@@ -851,6 +851,24 @@ export class Book extends Component {
         {
           this.isTOCUpdated = false;
           this.resetToc=false;
+          this.setState({ drawerOpen: false });
+        }
+        else
+        {
+          //this.setState({ open: true });
+        }
+    }
+    });    
+  }
+  handleBackButtonConfirmMessage = () => {
+    this.resetToc=true;
+    this.props.dispatch(tocFlag()).then(()=>{
+    if(this.isTOCUpdated && !this.props.updatedToc){
+        let closeDrawer = confirm("Your changes have not been saved. Do you want to proceed?");
+        if(closeDrawer)
+        {
+          this.isTOCUpdated = false;
+          this.resetToc=false;
           this.setState({ drawerOpen: true });
         }
         else
@@ -971,7 +989,7 @@ export class Book extends Component {
         this.isTOCUpdated = isChanged;
       },
       showModal: ()=> {
-        this.handleConfirmMessage();
+        this.handleBackButtonConfirmMessage();
       }
     };
 
