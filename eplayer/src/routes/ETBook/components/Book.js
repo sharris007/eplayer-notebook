@@ -396,6 +396,7 @@ export class Book extends Component {
     let updatedPageUnLoadData = this.state.pageUnLoadData;
     if (this.state.pageLoadData.activities[0].payload.timeOnTaskUuid === this.state.timeOnTaskUuid) {
       updatedPageUnLoadData.activities[0].payload.timeOnTaskUuid = this.state.pageLoadData.activities[0].payload.timeOnTaskUuid;
+      updatedPageUnLoadData.activities[0].payload.loadDt = this.state.pageLoadData.activities[0].payload.loadDt;
     }
 
     this.setState({
