@@ -693,10 +693,12 @@ export class Book extends Component {
       this.setState({ drawerOpen: false });
       this.viewerContentCallBack(true);
     }else{
-      this.resetToc=true;
-      this.props.dispatch(tocFlag()).then(()=>{
-        this.handleConfirmMessage();
-       });
+      // this.resetToc=true;
+      // this.props.dispatch(tocFlag()).then(()=>{
+      //   this.handleConfirmMessage();
+      //  });
+      this.handleConfirmMessage();
+
     }
   }
 
@@ -841,25 +843,22 @@ export class Book extends Component {
     
   };
   handleConfirmMessage = () => {
+    this.resetToc=true;
+    this.props.dispatch(tocFlag()).then(()=>{
     if(this.isTOCUpdated && !this.props.updatedToc){
         let closeDrawer = confirm("Are you sure?");
         if(closeDrawer)
         {
-          // this.setState({ drawerOpen: false },()=>{
-          //   this.setState({ drawerOpen: true });
-          //});
           this.isTOCUpdated = false;
           this.resetToc=false;
           this.setState({ drawerOpen: true });
-  
-          
         }
         else
         {
           //this.setState({ open: true });
         }
-        // this.isTOCUpdated = false;
-    }    
+    }
+    });    
   }
   onPageClick = () => {
     this.setState({ searchOpen: false, prefOpen: false });
