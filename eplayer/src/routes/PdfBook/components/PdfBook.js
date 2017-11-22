@@ -61,15 +61,15 @@ export class PdfBook extends Component {
     {
       // Validating ReactPlayerCookie cookie
       const cookieValue = cookies.get('ReactPlayerCookie');
-      if(cookieValue != 'ReactPlayerCookie')
+      if(cookieValue !== undefined && cookieValue != 'ReactPlayerCookie')
       {
         browserHistory.push('/eplayer/login');
       }
     }
-    // else
-    // {
-    //   browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
-    // }
+    else
+    {
+      browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
+    }
   }
 /* Async keyword used for independent calling the method, componentWillMount is lifecycle method,
 used for before mounting occurs. */
@@ -240,9 +240,7 @@ used for before mounting occurs. */
                              this.props.location.query.languageid : undefined;    
     currentbook.ssoKey = authkey;
     await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
-    
   }
-
  /* Multiple methods we have paased in PdfBookReader inside return, fetchTocViewer fot fetching the value of TOC,
    fetchBookmarksUsingReaderApi for fetching the bookmark details, addBookmarkUsingReaderApi is used for adding the bookmark details,
    and so on as methods names are very specific. */
