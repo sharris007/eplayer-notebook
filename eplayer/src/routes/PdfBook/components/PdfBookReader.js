@@ -57,7 +57,9 @@ export class PdfBookReader extends Component {
       totalPagesToHit: '',
       executed: false,
       popUpCollection : [],
-      currZoomLevel: 1
+      currZoomLevel: 1,
+      showHighlight: true,
+      showHotspot: true
     };
     this.nodesToUnMount = [];
     /* Adding the eventListener on the attribute and attaching the method.
@@ -1092,11 +1094,13 @@ handleRegionClick(hotspotID) {
     {
       $(".hotspot").hide();
       $(".hotspotIcon").hide();
+      this.setState({showHotspot:false})
     }
     else
     {
       $(".hotspot").show();
       $(".hotspotIcon").show();
+      this.setState({showHotspot:true})
     }
   }
   /* Method show or hide highlights/notes. */
@@ -1106,6 +1110,7 @@ handleRegionClick(hotspotID) {
     {
       $(".fwr-highlight-annot").hide();
       $(".annotator-handle").hide();
+      this.setState({showHighlight : false})
       // $(".fwr-highlight-annot").remove();
       // $(".annotator-handle").remove();
     }
@@ -1113,6 +1118,7 @@ handleRegionClick(hotspotID) {
     {
       $(".fwr-highlight-annot").show();
       $(".annotator-handle").show();
+      this.setState({showHighlight : true})
     }
   }
   viewerContentCallBack = (viewerCallBack) => {
@@ -1131,7 +1137,6 @@ printFunc = () => {
     win.document.write('<img src="' + pageSrc + '" onload="window.print();window.close()" />');
     win.focus();
   }
-
 
 /* Method for render the component and any change in store data, reload the changes. */
   render() {
@@ -1178,6 +1183,39 @@ printFunc = () => {
         bookFeatures : (this.props.data.book.bookFeatures ? this.props.data.book.bookFeatures : {})
       }
     };
+    /*Creating array of objects containing options info for moreMenu*/
+    let moreMenuData = [];
+    let showHideHighlights = {
+      type : 'menuItem',
+      value : 'showHideHighlights',
+      text : this.state.showHighlight ? messages.hideHighlights ? messages.hideHighlights :'Hide Highlights' 
+                  : messages.showHighlights ? messages.showHighlights : 'Show Highlights',
+      onClick : this.showHideHighlights
+    }
+    let showHideHotspots = {
+      type : 'menuItem',
+      value : 'showHideHotspots',
+      text : this.state.showHotspot ? messages.hideLinks ? messages.hideLinks :'Hide Links' 
+                  : messages.showLinks ? messages.showLinks : 'Show Links',
+      onClick : this.showHideRegions
+    }
+    let printData = {
+      type : 'menuItem',
+      value : 'print',
+      text : messages.print ? messages.print : 'Print',
+      onClick : this.printFunc
+    }
+    let signOutData = {
+      type : 'menuItem',
+      value : 'signOut',
+      text : messages.signOut ? messages.signOut : 'Sign Out',
+    }
+    moreMenuData.push(showHideHighlights);
+    moreMenuData.push(showHideHotspots);
+    moreMenuData.push({type : 'divider'});
+    moreMenuData.push(printData);
+    moreMenuData.push({type : 'divider'});
+    moreMenuData.push(signOutData);
     /* Here we are passing data, pages, goToPageCallback,
        getPrevNextPage method and isET1 flag in ViewerComponent
        which is defined in @pearson-incubator/viewer . */
@@ -1210,6 +1248,7 @@ printFunc = () => {
             currentScenario = {this.props.currentbook.scenario}
             globaluserid = {this.props.currentbook.globaluserid}
             invoketype ={this.props.data.location.query.invoketype}
+            moreMenuData = {moreMenuData}
           />
 
           <div className="eT1viewerContent">
