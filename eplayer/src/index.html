@@ -16,6 +16,22 @@
 
 <head>
   <title>E-Player App</title>
+  <!-- Google Tag Manager -->
+  <script>
+    var hostName = window.location.hostname;
+    var gtmID = 'GTM-PZNRHJ7'; // QA,STG,PPE GTM ID
+    if(hostName === "etext-dev.pearson.com") {
+      gtmID = 'GTM-WL8C46Z';
+    } else if(hostName === "etext.pearson.com") {
+      gtmID = 'GTM-M9RJR7V';
+    }
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',gtmID);
+  </script>
+  <!-- End Google Tag Manager -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="//d12m40tknrppbi.cloudfront.net/cite/css/style.css">
@@ -34,6 +50,10 @@
 </head>
 
 <body style="overflow:visible;">
+    <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M9RJR7V"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <div id="divSVG" style="display:none">  
   </div>
   <script src="https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js"></script>
@@ -91,6 +111,6 @@
   </script>
   <div id="root" style="height: 100%"></div>
 </body>
-<script src="/eplayer/annotation-lib/annotator.js"></script>
+<script src="/annotation-lib/annotator.js"></script>
 
 </html>
