@@ -3612,8 +3612,9 @@ Annotator.Editor = (function(_super) {
     '.annotator-edit-Note-Panel-1-rect click' : 'onEditRectClick',
     '.annotator-edit-Note-Panel-1-circle click' : 'onEditColorChange',
     '#noteContainer click' : 'onNoteContainerClick',
-    '.annotator-select-outer-circle,.annotator-select-rect,.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle,#noteContainer keyup': 'onKeyupClick',
-    '.annotator-select-outer-circle,.annotator-delete-container,.annotator-confirm-delete blur': 'onblurEvent'
+    '.annotator-select-rect,.annotator-confirm-cancel,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle,#noteContainer keyup': 'onKeyupClick',
+    '.annotator-delete-container,.annotator-confirm-delete keydown':'ondeleteKeydownEvent',
+    '.annotator-select-outer-circle keydown': 'oncircleKeydownEvent'
   };
 
   Editor.prototype.classes = {
@@ -3739,7 +3740,7 @@ Annotator.Editor = (function(_super) {
     this.onCancelClick=__bind(this.onCancelClick, this);
     this.onEditClick=__bind(this.onEditClick, this);
     this.onNoteChange=__bind(this.onNoteChange, this);
-    this.onblurEvent=__bind(this.onblurEvent, this);
+    this.ondeleteKeydownEvent=__bind(this.ondeleteKeydownEvent, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
     this.annotation = {};
@@ -3787,11 +3788,11 @@ Annotator.Editor = (function(_super) {
     }
   }
 
-  Editor.prototype.onblurEvent= function(e) {
+  Editor.prototype.ondeleteKeydownEvent= function(e) {
     e.preventDefault();
+    var keycode = e.keyCode;
     var self = this;
-    setTimeout(function(){
-      if ($(e.target).hasClass('annotator-delete-container') || $(e.target).hasClass('annotator-confirm-delete')) {
+    if(keycode == 9) {
         if($('.edit-note-circle').css('display') == 'block' && $('.edit-Note-Panel-1').css('display') == 'inline-block') {
           $('.annotator-edit-Note-Panel-1-circle')[0].focus();
         } else {
@@ -3802,15 +3803,29 @@ Annotator.Editor = (function(_super) {
             $('.annotator-select-outer-circle')[0].focus();
           }
         } 
-      } else if ($(e.target).hasClass('annotator-select-outer-circle') && $(e.target).closest('.annotator-color-select-container').attr('value') == '#FC92CF') {
-        if($('.ann-cancel-delete-confirm-section').css('display') != 'block' && $('.annotator-outer').hasClass('hide-note')) {
-          $('.annotator-select-outer-circle')[0].focus();
-        } else {
-          $('.annotator-delete-container,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
-          $('#annotator-field-0').focus();
+  }
+    if(keycode == 13 || keycode == 32) {
+      $(e.target).trigger('click');
+    } 
+  }
+  
+  Editor.prototype.oncircleKeydownEvent= function(e) {
+    var keycode = e.keyCode;
+    if(keycode == 9) {
+      setTimeout(function() {
+        if ($(e.target).closest('.annotator-color-select-container').attr('value') == '#FC92CF') {
+          if($('.ann-cancel-delete-confirm-section').css('display') != 'block' && $('.annotator-outer').hasClass('hide-note')) {
+            $('.annotator-select-outer-circle')[0].focus();
+          } else {
+            $('.annotator-delete-container,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
+            $('#annotator-field-0').focus();
+          }
         }
-      }
     }, 25);
+  }
+    if(keycode == 13 || keycode == 32) {
+      $(e.target).trigger('click');
+    } 
   }
 
   Editor.prototype.onEditColorChange= function(e) { 
