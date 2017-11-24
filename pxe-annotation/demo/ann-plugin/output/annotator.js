@@ -3612,7 +3612,8 @@ Annotator.Editor = (function(_super) {
     '.annotator-edit-Note-Panel-1-rect click' : 'onEditRectClick',
     '.annotator-edit-Note-Panel-1-circle click' : 'onEditColorChange',
     '#noteContainer click' : 'onNoteContainerClick',
-    '.annotator-select-outer-circle,.annotator-select-rect,.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle,#noteContainer keyup': 'onKeyupClick'
+    '.annotator-select-outer-circle,.annotator-select-rect,.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle,#noteContainer keyup': 'onKeyupClick',
+    '.annotator-select-outer-circle,.annotator-delete-container,.annotator-confirm-delete blur': 'onblurEvent'
   };
 
   Editor.prototype.classes = {
@@ -3634,19 +3635,19 @@ Annotator.Editor = (function(_super) {
                         <div class = "annotator-select-outer-circle positionAbs" tabindex="1"> \
                           <div class = "annotator-select-inner-circle hide" value="#55DF49"></div> \
                         </div> \
-                        <div tabindex="2" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-green">' +locale_data[language]['mainIdeas']+'</div> \
+                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-green">' +locale_data[language]['mainIdeas']+'</div> \
                       </div> \
                       <div class = "annotator-color-select-container" title = "Questions" value="#FFD232"> \
-                        <div class = "annotator-select-outer-circle positionAbs" tabindex="3"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="2"> \
                           <div class = "annotator-select-inner-circle hide" value="#FFD232"></div> \
                         </div> \
-                        <div tabindex="4" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-sepia">' +locale_data[language]['questions']+'</div> \
+                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-sepia">' +locale_data[language]['questions']+'</div> \
                       </div> \
                       <div class = "annotator-color-select-container" title = "Observations" value="#FC92CF"> \
-                        <div class = "annotator-select-outer-circle positionAbs" tabindex="5"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="3"> \
                           <div class = "annotator-select-inner-circle hide" value="#FC92CF"></div> \
                         </div> \
-                        <div tabindex="6" class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-pink">' +locale_data[language]['observations']+'</div> \
+                        <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-pink">' +locale_data[language]['observations']+'</div> \
                       </div> \
                     </div> \
                   </div> \
@@ -3695,7 +3696,7 @@ Annotator.Editor = (function(_super) {
                   </div> \
                   <div class="ann-cancel-delete-confirm-section hide"> \
                     <div class="ann-confirm-section"> \
-                      <label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label> \
+                      <label class="annotator-confirm" tabindex="0">' + locale_data[language]['confirm'] + '?</label> \
                     </div> \
                     <div class = "ann-canceldelete-section"> \
                       <a class="annotator-confirm-cancel" tabindex="0" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a> \
@@ -3738,6 +3739,7 @@ Annotator.Editor = (function(_super) {
     this.onCancelClick=__bind(this.onCancelClick, this);
     this.onEditClick=__bind(this.onEditClick, this);
     this.onNoteChange=__bind(this.onNoteChange, this);
+    this.onblurEvent=__bind(this.onblurEvent, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
     this.annotation = {};
@@ -3771,6 +3773,7 @@ Annotator.Editor = (function(_super) {
     var annotator_editor = $('.annotator-editor')
     annotator_editor.css({ top : annotator_editor.position().top});
     $('.annotator-panel-2').find('textarea').show().css({"pointer-events": "all", "opacity": "1"});
+    $('.annotator-delete-container,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
     $('.annotator-panel-2').find('textarea').focus();
     $(".annotator-panel-triangle").addClass("annotator-panel-triangle1").removeClass("annotator-panel-triangle");
   }
@@ -3782,6 +3785,32 @@ Annotator.Editor = (function(_super) {
     } else if(e.target.id && e.target.id === "noteContainer" && e.keyCode === 9){
       e.target.focus();
     }
+  }
+
+  Editor.prototype.onblurEvent= function(e) {
+    e.preventDefault();
+    var self = this;
+    setTimeout(function(){
+      if ($(e.target).hasClass('annotator-delete-container') || $(e.target).hasClass('annotator-confirm-delete')) {
+        if($('.edit-note-circle').css('display') == 'block' && $('.edit-Note-Panel-1').css('display') == 'inline-block') {
+          $('.annotator-edit-Note-Panel-1-circle')[0].focus();
+        } else {
+          var isEditpanel = $('.annotator-edit-Note-Panel-1-rect[value="'+self.annotation.colorCode+'"]');
+          if(isEditpanel.css('display') == 'block' && $('.edit-Note-Panel-1').css('display') != 'none') {
+            isEditpanel.focus(); 
+          } else {
+            $('.annotator-select-outer-circle')[0].focus();
+          }
+        } 
+      } else if ($(e.target).hasClass('annotator-select-outer-circle') && $(e.target).closest('.annotator-color-select-container').attr('value') == '#FC92CF') {
+        if($('.ann-cancel-delete-confirm-section').css('display') != 'block' && $('.annotator-outer').hasClass('hide-note')) {
+          $('.annotator-select-outer-circle')[0].focus();
+        } else {
+          $('.annotator-delete-container,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
+          $('#annotator-field-0').focus();
+        }
+      }
+    }, 25);
   }
 
   Editor.prototype.onEditColorChange= function(e) { 
@@ -3804,7 +3833,7 @@ Annotator.Editor = (function(_super) {
     editNoteCircleDom.find(("[value=" + "'" + value + "']")).css({ "border": "solid 1px #19a6a4","height": "20px", "width": "20px"}).focus(); // highlight the selected circle
     $(".edit-note-rect").css({"padding" : "0px","margin-top": "-43px","margin-left": "99px"});
     $("#noteContainer").attr("tabindex", "4");
-    $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 5);
+    $('.annotator-delete-container,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 5);
     if(value === "#55DF49") { // Green
 
     } else if(value ==="#FFD232") { // Sepia
@@ -3860,9 +3889,13 @@ Annotator.Editor = (function(_super) {
     this.element.addClass('hide-note')
     return $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
   }
-  Editor.prototype.onDeleteIconClick=function(event) { 
+  Editor.prototype.onDeleteIconClick=function(event) {
+    event.stopImmediatePropagation(); 
     $(event.target).hide(); 
     $('.ann-cancel-delete-confirm-section').removeClass('hide').css({"display": "block"});
+    setTimeout(function() {
+      $('.annotator-confirm').focus(); 
+    }, 50);
     /*var panel1Sec =  this.element.find('.annotator-panel-1'), panel2Sec =  this.element.find('.annotator-panel-2'), panel3Sec =  this.element.find('.annotator-panel-3'), panel4Sec = this.element.find('.annotator-panel-4');
     if($(panel2Sec).find('textarea').val().trim()) {
         panel1Sec.addClass('hide-popup').after(panel4);
@@ -3973,17 +4006,17 @@ Annotator.Editor = (function(_super) {
       $('#annotator-field-0').css({'display':'inline-block', 'pointer-events': 'all','opacity': '1'});
       $('.annotator-edit-container').hide();
     }
+    var annText = this.annotation.text;
+    if(annText && $('#noteContainer').css('display') == 'block') {
+      $('#noteContainer').attr('tabindex', 4);
+      $('.annotator-delete-container,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 5);
+    } else {
+      $('.annotator-delete-container,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete,#noteContainer,#annotator-field-0').attr('tabindex', 0);
+    }
     setTimeout(function() { $('#annotator-field-0').focus(); })  // To enable focus on textarea
     // this.publish('save', [this.annotation]);
     // if(isTopAlign)
     //    $('.annotator-outer.annotator-viewer').triggerHandler.apply($('.annotator-outer.annotator-viewer'), ['delete', [this.annotation]]);
-    var annText = this.annotation.text;
-    if(annText) {
-      $('#noteContainer').attr('tabindex', 4);
-      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 5);
-    } else {
-      $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete,#noteContainer').attr('tabindex', 0);
-    }
   }
 
   Editor.prototype.show = function(event, topPos) {
@@ -4076,6 +4109,7 @@ Annotator.Editor = (function(_super) {
       $(this.element).find('#noteContainer').hide();
     }
     $(".annotator-panel-triangle1").addClass("annotator-panel-triangle").removeClass("annotator-panel-triangle1");
+    $('.annotator-delete-container,#noteContainer,#annotator-field-0,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
     if(this.annotation.colorCode) 
       (this.annotation.colorCode != '#ccf5fd') && $(".annotator-edit-Note-Panel-1-rect[value=" + "'" + this.annotation.colorCode + "']").focus();
     else
@@ -4273,7 +4307,7 @@ Annotator.Editor = (function(_super) {
       // return this.submit();
       event.stopPropagation();
     }
-    $('.annotator-delete-container,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
+    $('.annotator-delete-container,.annotator-confirm,.annotator-confirm-cancel,.annotator-confirm-delete').attr('tabindex', 0);
   };
 
   Editor.prototype.onCancelButtonMouseover = function() {
