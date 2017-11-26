@@ -1024,7 +1024,9 @@ export class Book extends Component {
     const pxeClient = axios.create({
       baseURL: bootstrapParams.pageDetails.baseUrl,
       timeout: 5000,
-      headers: {}
+      headers: {
+        'X-Authorization': '123'
+      }
     });
     this.annHeaders = this.courseBook ? {
       Accept: 'application/json',
