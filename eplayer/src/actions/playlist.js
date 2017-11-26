@@ -249,6 +249,17 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
 
   );
 
+export const getAuthToken = (webToken) => dispatch =>
+   PlaylistApi.doGetAuthToken(webToken).then(response => response.json())
+    .then((response) => {
+        if(response.name && response.value) {
+          const authToken = response.name+"="+response.value+ ";path=/";
+          document.cookie = authToken;
+          //dispatch(getAuthTokenResponse(authToken));
+        }
+        console.log("REsponse Succcess --- AUTHTOKEN")
+    });
+
 function redirectToIDCDashboard(prodType, courseId) {
   const idcBaseurl = `${resources.links.idcUrl[domain.getEnvType()]}/idc?`;
   const IdcRelativeURL = `product_type=${prodType}&courseId=${courseId}`;

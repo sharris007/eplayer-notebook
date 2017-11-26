@@ -23,7 +23,7 @@ import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVer
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails,tocFlag } from '../../../actions/playlist';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken } from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
@@ -121,6 +121,9 @@ export class Book extends Component {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
               const piUserId = piSession.userId();
+              if (!Utils.checkCookie('etext-cdn-token')) {
+                self.props.dispatch(getAuthToken(userToken));
+              }
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }

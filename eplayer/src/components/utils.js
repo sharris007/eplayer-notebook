@@ -34,4 +34,34 @@ export default class Utilities {
     }
     return sortedBookmarkArr;
   }
+
+  /**
+   * Checks the cookie with the name exists
+   * @param cookie name
+   * @returns { true/false }  
+  */
+
+  static checkCookie = (cookieName) => {
+    let name = cookieName + "=";
+    let ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return true;
+        }
+    }
+    return false;
+  }
+
+  static changeBaseUrl = (urlList) => {
+    const updUrlList = [];
+    if (urlList.length > 0) {
+      urlList.forEach((url) => {
+        updUrlList.push(url.replace("",""))
+      });
+    }
+  }
 }
