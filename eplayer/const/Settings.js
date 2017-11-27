@@ -126,6 +126,23 @@ export const resources = {
   }
 };
 
+export const contentUrl : {
+  openClass: {
+    local        :"content.stg-openclass.com",
+    dev          :"content.stg-openclass.com",
+    qa           :"content.stg-openclass.com",
+    stage        :"content.stg-openclass.com",
+    prod         :"content.openclass.com"
+  },
+  SecuredUrl: {
+    local        :"etext-dev.pearson.com",
+    dev          :"etext-dev.pearson.com",
+    qa           :"etext-qa-stg.pearson.com",
+    stage        :"etext-stg.pearson.com",
+    prod         :"etext.pearson.com"
+  }
+};
+
 export const typeConstants = {
 
   GET_TOTALANNOTATION    : 'GET_TOTALANNOTATION',
