@@ -18,6 +18,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
+import find from 'lodash/find';
 // GET Book Details
 export const getPlaylistCompleteDetails = json => ({
   type: typeConstants.GET_PLAYLIST,
@@ -192,7 +193,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
-
+    let courseDetailInfo = response;
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
@@ -255,6 +256,28 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         if (isFromCustomToc) {
           dispatch(getCustomPlaylistCompleteDetails());
         }
+
+        let currentPageInfo = {};
+        if(data.pageId) {
+          currentPageInfo = find(response.content, list => list.id === data.pageId);
+        } else {
+          currentPageInfo = (response.content[0].playOrder == 0) ? response.content[1] : response.content[0];
+        }
+        let bookTitle = ''
+        if(courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
+          bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
+        }
+        let dataLayerObj = {
+          'eventCategory': 'Chapter',
+          'event': 'chapterStarted',
+          'eventAction': 'Chapter Started',
+          'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+          'firstSectionEntered' : currentPageInfo.title,
+          'bookTitle': bookTitle,
+          'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+        }
+        /*Custom dimension for initial Master Play List*/
+        dataLayer.push(dataLayerObj);
       });
   }
 

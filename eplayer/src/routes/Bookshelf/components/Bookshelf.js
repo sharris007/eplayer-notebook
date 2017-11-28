@@ -64,13 +64,13 @@ export default class BookshelfPage extends React.Component {
         piSession.getToken((result, userToken) => {
         if (result === piSession.Success) {
           /*GTM Logic Starts*/
-          const gtmCollectionForLogin = {
+          /*const gtmCollectionForLogin = {
             'event': 'login',
             'eventCategory': 'Login',
             'eventAction': 'Login Attempt',
             'eventLabel': true
           };
-          dataLayer.push(gtmCollectionForLogin);
+          dataLayer.push(gtmCollectionForLogin);*/
           /*GTM Logic ends*/
           localStorage.setItem('secureToken',userToken);
           this.piTokenFlag = true;
