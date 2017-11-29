@@ -845,14 +845,7 @@ handleRegionClick(hotspotID) {
                 }
               if(_.startsWith(regionDetails.linkValue,'https://mediaplayer.pearsoncmg.com/assets'))
               {
-                if(regionDetails.pearsonSmartPlayer == true)
-                {
-                  regionDetails.hotspotType = 'SPPASSET';
-                }
-                else
-                {
-                  regionDetails.hotspotType = 'URL';
-                }
+                regionDetails.hotspotType = 'SPPASSET';
               } 
             }
             /*Checking if the clicked hotspot is Image/Video/Audio/URL and open it in MMI Component */
