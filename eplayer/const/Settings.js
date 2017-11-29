@@ -126,7 +126,7 @@ export const resources = {
   }
 };
 
-export const contentUrl : {
+export const contentUrl = {
   openClass: {
     local        :"content.stg-openclass.com",
     dev          :"content.stg-openclass.com",
