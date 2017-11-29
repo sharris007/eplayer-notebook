@@ -626,6 +626,11 @@ export class Book extends Component {
         bookObj = data;
       }
     });
+    dataLayer.push({   
+     'event':'searchResultClicked',
+      'searchedUrl': pageId.split("OPS")[1].split('*')[0]
+    });
+
     this.goToPageCallback(bookObj.id, '', pageId.split("OPS")[1].split('*')[1].split(','))
   }
 
