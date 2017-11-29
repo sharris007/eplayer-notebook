@@ -94,7 +94,7 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
         .then((response) => {
           dispatch(getBookDetails(response));
           bookId = response.bookDetail.bookId;
-
+          let bookDetailInfo = response;
           tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
           bookDetails = response.bookDetail.metadata;
           piToken = data.piToken;
@@ -104,6 +104,28 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
               if (isFromCustomToc) {
                 dispatch(getCustomPlaylistCompleteDetails());
               }
+
+          let currentPageInfo = {};
+          if(data.pageId) {
+            currentPageInfo = find(response.content, list => list.id === data.pageId);
+          } else {
+            currentPageInfo = (response.content[0].playOrder == 0) ? response.content[1] : response.content[0];
+          }
+          let bookTitle = ''
+          if(bookDetailInfo.bookDetail && bookDetailInfo.bookDetail.metadata && bookDetailInfo.bookDetail.metadata.title) {
+            bookTitle = bookDetailInfo.bookDetail.metadata.title;
+          }
+          let dataLayerObj = {
+            'eventCategory': 'Chapter',
+            'event': 'chapterStarted',
+            'eventAction': 'Chapter Started',
+            'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+            'firstSectionEntered' : currentPageInfo.title,
+            'bookTitle': bookTitle,
+            'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+          }
+          /*Custom dimension for initial Master Play List*/
+          dataLayer.push(dataLayerObj);
             });
         }
         );
