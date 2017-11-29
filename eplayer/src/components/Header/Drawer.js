@@ -77,6 +77,17 @@ class DrawerComponent extends React.Component {
     } else if (this.state.slideIndex === 2) {
       this.onActive('notes');
       rowCount = document.getElementsByClassName('note-link').length;
+      var notesList = document.getElementsByClassName('note-link'); 
+      if(this.props.bookData.bookinfo.book.roleTypeID == 2)
+      {
+        for(var i=0 ; i < rowCount ; i++)
+        {
+          if(notesList[i].children[0].className == 'instructor-icon color-icon')
+          {
+            notesList[i].nextSibling.style.display = 'none';
+          }
+        } 
+      }
             // alert(rowCount);
     }
   }
