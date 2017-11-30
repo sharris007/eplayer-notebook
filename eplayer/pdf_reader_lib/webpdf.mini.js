@@ -1,16 +1,3 @@
-/*******************************************************************************
- * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
- *  *  Copyright © 2017 Pearson Education, Inc.
- *  *  All Rights Reserved.
- *  * 
- *  * NOTICE:  All information contained herein is, and remains
- *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
- *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
- *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
- *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
- *******************************************************************************/
 define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-color.mini", "./Cavans/uupaa-excanvas", "./Environment", "./Support", "./Math/Rect", "./Math/Point", "./Math/JSMap", "./Math/Matrix", "./CommonDialog", "./Tools/Tools", "./DataLevel", "./PDFData/Dest", "./Lang", "./PDFView/MainFrame", "./PDFView/PDFDocView", "./PDFView/PDFPageView", "./ViewLevel", "./PDFView/LayoutInfo", "./PDFView/ProgressiveViewerGenerator", "./PDFView/PDFContinuousView", "./PDFView/PDFSinglePageView", "./PDFView/SinglePageViewLayout", "./Common", "./Event/IMainFrmEventHandler", "./Event/Event", "./Event/IMousePtHander", "./Tools/HandToolHandler", "./MenuItem", "./PDFData/Text/TextManager", "./PDFData/Text/Reader_TextObject", "./PDFData/Text/Reader_TextPage", "./Plugins/Annot/BaseAnnotPlugin", "./Plugins/Annot/AnnotHandleManager", "./ImageEngine/AnnotUIManager", "./ImageEngine/PDFAnnotationLoader", "./Plugins/Annot/MarkupAnnotHandler", "./Plugins/Annot/PopupMousePtHandler", "./PDFData/TypewriterAnnot", "./PDFData/Annot", "./Interface", "./Plugins/Annot/CommentAnnotHandler", "./Plugins/Annot/CommonMarkupAnnotHandler", "./Plugins/Annot/LinkAnnotHandler", "./Plugins/Annot/TextAnnotHandler", "./Plugins/Annot/TypewriterAnnotHandler", "./Plugins/Annot/DrawingAnnotHandler", "./Plugins/Annot/CommentsAnnot", "./Plugins/Annot/AnnotMousePtHandler", "./Plugins/Annot/AnnotSelectionTool", "./Plugins/TextSelection/Reader_TextSelectTool", "./Plugins/TextSelection/Reader_TextPageSelect", "./Plugins/Annot/TextAnnotToolHandler", "./PDFData/AnnotFactory", "./PDFData/MarkupAnnot", "./PDFData/LinkAnnot", "./PDFData/Action", "./PDFData/InkAnnot", "./PDFData/Signature", "./PDFData/InkSign", "./Plugins/Annot/TypewriterAnnotToolHandler", "./Plugins/Annot/CommentAnnotToolHandler", "./Plugins/Annot/DrawingAnnotToolHandler", "./Plugins/Annot/DrawingTools", "./Plugins/Print/PrintConfig", "./Plugins/Bookmark/Bookmark", "./Plugins/Bookmark/PDFBookmark", "./ImageEngine/PDFBookmarkLoader", "./Plugins/FindTool/FindToolPlugin", "./Plugins/FindTool/SearchResult", "./Plugins/DocProperties/DocPropertiesPlugin", "./Plugins/Form/FormPlugin", "./Plugins/Form/ActionJScript", "./Plugins/Form/jshint", "./Plugins/Form/FormXMLParser", "./Plugins/TextSelection/TextSelectionPlugin", "./Plugins/TextSelection/TextSelectionToolHandler", "./Plugins/Menu/MenuPlugin", "./Plugins/Signature/SignaturePlugin", "./Plugins/Signature/SignatureHandleManager", "./ImageEngine/SignatureUIManager", "./Plugins/Signature/NormalSigToolHandler", "./Plugins/Signature/StraddleSigToolHandler", "./Plugins/Signature/SignatureMouseHandler", "./Plugins/InkSign/InkSignPlugin", "./Plugins/InkSign/InkSignHandleManager", "./ImageEngine/InkSignUIManager", "./Plugins/InkSign/InkSignToolHandler", "./ImageEngine/PDFInkSignLoader", "./ImageEngine/DocumentLoader", "./ImageEngine/ImageEngine", "./ImageEngine/PDFDocument", "./ImageEngine/PDFPage", "./ImageEngine/PDFDocProperties", "./ImageEngine/ImagePageViewRender", "./ImageLazyLoad", "./AjaxRetryManager"], function(a, b, c) {
     var d = a("./WebPDF"),
         e = a("./Config"),
@@ -23,7 +10,10 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             j = c.url,
             k = this,
             l = j.indexOf("asserts");
-        c.baseUrl = j.substr(0, l), j.lastIndexOf("/") != j.length - 1 && j.lastIndexOf("\\") != j.length - 1 && (j += "/"), c.url = j, c = $.extend(d.Config.defaults, c), "undefined" == typeof c.readerType && (c.readerType = d.ReaderEngineType.IMAGE);
+        if(!window.foxitAssetURL){
+            c.baseUrl = j.substr(0, l);
+        }
+         j.lastIndexOf("/") != j.length - 1 && j.lastIndexOf("\\") != j.length - 1 && (j += "/"), c.url = j, c = $.extend(d.Config.defaults, c), "undefined" == typeof c.readerType && (c.readerType = d.ReaderEngineType.IMAGE);
         var m = null;
         try {
             var n = $("#" + b),
@@ -4763,6 +4753,9 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                     } else {
                         var f = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/annotations/page" + e;
                     }
+                    if(window.foxitAssetURL){
+                        f = window.foxitAssetURL + "/annotations/page" + e ;
+                    }
                     $.get(f , function(a) {
                         a = JSON.parse(a);
                         var f = 0;
@@ -4782,6 +4775,9 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                     });
                 } else {*/
                     var f = a.getOptions().url + "text/" + e;
+                    if(window.foxitAssetURL){
+                        f = window.foxitAssetURL + "/annotations/page" + e ;
+                    }
                     a.isFormMode() && (f += "?formMode=true");
                     $.ajax({
                         url: f,
@@ -6367,6 +6363,9 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
         function d(a, c, d, e, h, i) {
             if ($.isFunction(h) && $.isFunction(i) || $.error("both 'doneHandler' and 'failedHandler' must be function."), 0 >= f) return console.error("Maximum number of retries exceeded for getAnnotData request."), void i(null);
             var j = c.getOptions().url + "annots/" + e ;
+            if(window.foxitAssetURL){
+                j = window.foxitAssetURL + "/linksannotations/page" + e; 
+            }
             c.isFormMode() && (j += "?formMode=true");
             var k = {
                 password: c.getPDFPassword()
@@ -10729,8 +10728,14 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 } else {
                     g = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/bookmark";
                 }
+                if(window.foxitAssetURL){
+                    g = window.foxitAssetURL + "/bookmark";
+                }
             }else{*/
                 g = c.getOptions().url + "bookmarks";
+                if(window.foxitAssetURL){
+                    g = window.foxitAssetURL + "/bookmark";
+                }
             //}
             c.isFormMode() && (g += "?formMode=true");
             var h = {
@@ -16955,8 +16960,14 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 } else {
                     g = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/manifest";
                 }
+                if(window.foxitAssetURL){
+                    g = window.foxitAssetURL + "/manifest";
+                }
             }else{*/
                 g = a.getOptions().url + "manifest";
+                if(window.foxitAssetURL){
+                    g = window.foxitAssetURL + "/manifest";
+                }
             //} 
                 h = {};
             c ? h.password = c : h.password = "", null != d && (h.isCheckPsd = d), h.form = a.isFormMode(), $.ajax({
@@ -17497,17 +17508,24 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var d = c ? "thumb" : b + "",
                 e = "?password=" + i.getPDFPassword();
                 var f;
-               /* if(window.location.protocol != "file:"){
+                /*if(window.location.protocol != "file:"){
                     var bookid = JSON.parse(localStorage.getItem('bookId'));
                     if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
                         f = "./js/providers/"+bookid+"epub/"+bookid+"/pages/page" + a;
                         return f
                     } else {
                         f = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/pages/page" + a;
+                        if(window.foxitAssetURL){
+                            f = window.foxitAssetURL + "/pages/page" + a + e ;
+                        }
                         return f
-                    }
+                    }                    
                 }else{*/
-                    f = i.getOptions().url + "image/" + a + "/" + d + e;
+                    if(window.foxitAssetURL){
+                        f = window.foxitAssetURL + "/pages/page" + a + e ;
+                    }else{
+                        f = i.getOptions().url + "image/" + a + "/" + d + e;
+                    }
                     return f += "&accessToken=" + "null", i.isFormMode() && (f += "&formMode=true"), f
                 //}
         }, this.getPixelsPerPoint = function() {
@@ -17523,7 +17541,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                         n = m.getVisiblePageRange();
                     if (c <= n.begin - l || c >= n.end + l) return;
                     g[k] = a;
-                    var o = j.getPageImgUrl(c, a.getScale(), false);
+                    var o = j.getPageImgUrl(c, a.getScale(), a.isThumb() || !a.isThumbnailLoaded());
                     new e(o, i, a, function(a, c) {
                         var e = !1,
                             l = c == f.GetImageErrorCode.ERROR_CREATE_IMG_FAILED,
@@ -17542,7 +17560,9 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                             var q = "";
                             q = l ? i.getBaseUrl() + "images/reader/imgFailed.png" : i.getBaseUrl() + "images/reader/imgLimit.png", a.showErrorPage(q)
                         } else{
-                            $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.setPageLoaded(!0);
+                            $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.isThumb() ? a.setPageLoaded(!0) : a.isThumbnailLoaded() ? a.setPageLoaded(!0) : (a.setThumbnailLoaded(!0), setTimeout(function() {
+                            j.renderPage(a, d.defaults.requestRetryCount)
+                            }, 50));    
                         } 
                         
                         !a.isThumb() && a.isPageLoaded() && (a.setPageLoadError(e), $(i).trigger(WebPDF.EventList.PAGE_SHOW_COMPLETE, {

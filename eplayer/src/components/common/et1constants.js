@@ -77,6 +77,7 @@ export const eT1Contants = {
     stage: "https://d205uwuz6t2dy1.cloudfront.net/foxit-webpdf-web/",
     prod : "https://d1ubxfsvhe3rl7.cloudfront.net/foxit-webpdf-web/"
   },
+  foxiAssetBaseUrl : "http://d38l3k3yaet8r2.cloudfront.net/resources/products/epubs/generated-qa/",
   readerApiResponseRecordsLimits: 1000,
   ServerUrls : {
     qa : {

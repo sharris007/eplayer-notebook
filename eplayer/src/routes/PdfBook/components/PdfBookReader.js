@@ -154,7 +154,13 @@ export class PdfBookReader extends Component {
     const pdfPath = currentPage.pdfPath;
     const PDFassetURL = `${serverDetails}/ebookassets`
                 + `/ebook${this.props.data.book.bookinfo.book.globalbookid}/ipadpdfs/${pdfPath}`;
-    this.props.data.actions.loadcurrentPage(this.props.data.location.query.bookid,currentPageIndex,PDFassetURL,'BookPage');
+    let foxitAssetURL;
+    if(currentPage.readerPlusID){
+      foxitAssetURL = eT1Contants.foxiAssetBaseUrl + currentPage.readerPlusID + '/foxit-assets';
+    }else{
+      foxitAssetURL = false;
+    }
+    this.props.data.actions.loadcurrentPage(this.props.data.location.query.bookid,currentPageIndex,PDFassetURL,'BookPage',foxitAssetURL);
     this.setState({ currPageIndex: currentPageIndex });
     sessionStorage.setItem("currentPageOrder",currentPageIndex);
     const data = this.state.data;
