@@ -91,7 +91,7 @@ Annotator.Editor = (function(_super) {
                           <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FC92CF" aria-label="'+locale_data[language]["observations"]+'">' +locale_data[language]['observations']+'</div> \
                         </div> \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" tabindex="0" value="#ccf5fd" aria-label="'+locale_data[language]["instructor"]+'">' +locale_data[language]['instructor']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" tabindex="0" value="#ccf5fd" aria-label="'+locale_data[language]["instructor"]+'">' +locale_data[language]['instructor']+'</div>\
                         </div> \
                       </div> \
                               \
