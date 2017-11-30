@@ -43,19 +43,19 @@ Annotator.Editor = (function(_super) {
                   <div class="annotator-color-container">\
                     <div> \
                       <div class = "annotator-color-select-container yellowColorBtn" title = "Main ideas" value="#55DF49"> \
-                        <div class = "annotator-select-outer-circle positionAbs" tabindex="1"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="1" aria-label="'+locale_data[language]["mainIdeas"]+'"> \
                           <div class = "annotator-select-inner-circle hide" value="#55DF49"></div> \
                         </div> \
                         <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-green">' +locale_data[language]['mainIdeas']+'</div> \
                       </div> \
                       <div class = "annotator-color-select-container" title = "Questions" value="#FFD232"> \
-                        <div class = "annotator-select-outer-circle positionAbs" tabindex="2"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="2" aria-label="'+locale_data[language]["questions"]+'"> \
                           <div class = "annotator-select-inner-circle hide" value="#FFD232"></div> \
                         </div> \
                         <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-sepia">' +locale_data[language]['questions']+'</div> \
                       </div> \
                       <div class = "annotator-color-select-container" title = "Observations" value="#FC92CF"> \
-                        <div class = "annotator-select-outer-circle positionAbs" tabindex="3"> \
+                        <div class = "annotator-select-outer-circle positionAbs" tabindex="3" aria-label="'+locale_data[language]["observations"]+'"> \
                           <div class = "annotator-select-inner-circle hide" value="#FC92CF"></div> \
                         </div> \
                         <div class = "annotator-select-rect positionRel annotator-Rect-Pos annotator-pane1-font annotator-pane1-rect-background-pink">' +locale_data[language]['observations']+'</div> \
@@ -71,27 +71,27 @@ Annotator.Editor = (function(_super) {
                   <div class = "edit-Note-Panel-1">  <!-- Edit Note Panel-->\
                     <div> <!-- Edit Note circle-->\
                       <div class = "edit-note-circle"> \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" tabindex="1" value="#55DF49"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-green" tabindex="1" value="#55DF49" aria-label="'+locale_data[language]["mainIdeas"]+'"> \
                         </div> \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" tabindex="2" value="#FFD232"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-sepia" tabindex="2" value="#FFD232" aria-label="'+locale_data[language]["questions"]+'"> \
                         </div > \
-                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" tabindex="3" value="#FC92CF"> \
+                        <div class= "annotator-edit-Note-Panel-1-circle annotator-edit-Note-Panel-1-circle-pink" tabindex="3" value="#FC92CF" aria-label="'+locale_data[language]["observations"]+'"> \
                         </div > \
                       </div> \
                       <div class = "edit-note-rect"> <!-- Edit Note Rectangle-->\
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-green annotator-edit-Note-Panel-1-rect" tabindex="0" value="#55DF49">' +locale_data[language]['mainIdeas']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-green annotator-edit-Note-Panel-1-rect" tabindex="0" value="#55DF49" aria-label="'+locale_data[language]["mainIdeas"]+'">' +locale_data[language]['mainIdeas']+'</div> \
                         </div> \
                                 \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-sepia annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FFD232">' +locale_data[language]['questions']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-sepia annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FFD232" aria-label="'+locale_data[language]["questions"]+'">' +locale_data[language]['questions']+'</div> \
                         </div> \
                                 \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FC92CF">' +locale_data[language]['observations']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-pink annotator-edit-Note-Panel-1-rect" tabindex="0" value="#FC92CF" aria-label="'+locale_data[language]["observations"]+'">' +locale_data[language]['observations']+'</div> \
                         </div> \
                         <div> \
-                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" tabindex="0" value="#ccf5fd">' +locale_data[language]['instructor']+'</div> \
+                          <div class = "annotator-select-rect hide annotator-pane1-font annotator-pane1-rect-background-blue annotator-edit-Note-Panel-1-rect" tabindex="0" value="#ccf5fd" aria-label="'+locale_data[language]["instructor"]+'">' +locale_data[language]['instructor']+'</div> \
                         </div> \
                       </div> \
                               \
@@ -103,15 +103,15 @@ Annotator.Editor = (function(_super) {
 
   var panel3 ='<div class="annotator-panel-3"> \
                 <div class="annotator-controls"> \
-                  <div class="annotator-delete-container" tabindex="0" title="' + locale_data[language]['delete'] + '"> \
+                  <div class="annotator-delete-container" tabindex="0" title="' + locale_data[language]['delete'] + '" aria-label="'+locale_data[language]["delete"]+'"> \
                   </div> \
                   <div class="ann-cancel-delete-confirm-section hide"> \
                     <div class="ann-confirm-section"> \
-                      <label class="annotator-confirm" tabindex="0">' + locale_data[language]['confirm'] + '?</label> \
+                      <label class="annotator-confirm" tabindex="0" aria-label="'+locale_data[language]["confirm"]+'">' + locale_data[language]['confirm'] + '?</label> \
                     </div> \
                     <div class = "ann-canceldelete-section"> \
-                      <a class="annotator-confirm-cancel" tabindex="0" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a> \
-                      <a class="annotator-confirm-delete" tabindex="0" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a> \
+                      <a class="annotator-confirm-cancel" tabindex="0" title="' + locale_data[language]['cancel'] + '" aria-label="'+locale_data[language]["cancel"]+'">' + locale_data[language]['cancel'] + '</a> \
+                      <a class="annotator-confirm-delete" tabindex="0" title="' + locale_data[language]['delete'] + '" aria-label="'+locale_data[language]["delete"]+'">' + locale_data[language]['delete'] + '</a> \
                     </div> \
                   </div> \
                   <!--div class="ann-share-section"> \
