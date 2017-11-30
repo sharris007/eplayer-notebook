@@ -1391,9 +1391,8 @@ const ACTION_HANDLERS = {
     currentPageInfo : {
       bookId: action.payload.bookId,
       currentPageOrder: action.payload.currentPageOrder,
-      pdfpath: action.payload.pdfpath,
-      pagetype: action.payload.pagetype,
-      foxitAssetURL: action.payload.foxitAssetURL
+      pdfpath: { PDFassetURL: action.payload.pdfpath, foxitAssetURL: action.payload.foxitAssetURL},
+      pagetype: action.payload.pagetype
     }
   })
 };

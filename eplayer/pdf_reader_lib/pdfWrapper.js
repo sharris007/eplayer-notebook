@@ -403,7 +403,7 @@ function initViewer(config) {
   var index = host.lastIndexOf("foxit-webpdf-web");
   var baseUrl = host.substr(0,index + 17);
   //PDF asset path
-  var openFileUrl = config.PDFassetURL;
+  var openFileUrl = config.PDFassetURL.PDFassetURL;
   var zip = config.zip;
   var encpwd = config.encpwd;
   var pdfBookCallback = config.callbackOnPageChange;
@@ -429,7 +429,7 @@ function initViewer(config) {
   // }
   //initWebPDFMini()
   // open the sample file
-  var foxitAssetURL = config.foxitAssetURL;
+  var foxitAssetURL = config.PDFassetURL.foxitAssetURL;
   if(foxitAssetURL){
     window.foxitAssetURL = foxitAssetURL;
     assertUrl = foxitAssetURL;
