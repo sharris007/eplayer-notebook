@@ -1,7 +1,7 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  *   
- *  *  Copyright Â© 2017 Pearson Education, Inc.
+ *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
  *  * 
  *  * NOTICE:  All information contained herein is, and remains
