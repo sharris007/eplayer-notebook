@@ -68,6 +68,12 @@ const searchActions = {
       .then(response => response.json())
       .then((response) => {
         if (response && response.hits && response.wordHits.length > 0 && searchText.length >= 4) {
+          dataLayer.push({   
+           'event':'search',
+           'term':searchText,
+           'numberOfResults':response.hits.length
+          });
+
           let possibleSearchTxt = '';
           response.wordHits.forEach((data) => {
             possibleSearchTxt += `${data},`;
