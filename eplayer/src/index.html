@@ -79,6 +79,7 @@
       piSession.getToken(function (result, userToken) {
         if (result === piSession['Success']) {
           setStorage("secureToken", userToken);
+          deleteCookie("etext-cdn-token");
         } else if (result === 'unknown' || result === 'notoken') {
           piSession.login(redirectPiurl, 10);
         }
@@ -86,6 +87,9 @@
     }, 1500000);
     function setStorage(secureToken, svalue) {
       localStorage.setItem("secureToken", svalue);
+    }
+    function deleteCookie(name) {
+      document.cookie = name + '=;expires=Thu, 01 Jan 2000 00:00:01 GMT;';
     }
   </script>
   <script>

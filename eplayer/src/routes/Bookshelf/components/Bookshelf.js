@@ -31,6 +31,8 @@ import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
 import { eT1Contants } from '../../../components/common/et1constants';
 
+import Utilities from '../../../components/utils';
+
 const envType = domain.getEnvType();
 let languageid;
 const url = window.location.href;
@@ -261,13 +263,15 @@ export default class BookshelfPage extends React.Component {
         /* Book thumbnail Image change*/
         let bookThumbnail = bookRef.thumbnailImageUrl;
         bookThumbnail = bookThumbnail ? bookThumbnail.replace('http:', 'https:'):'';
-        if(envType=='qa' && bookThumbnail){
+        /*if(bookThumbnail){
           if(bookThumbnail.match("etext-dev.pearson.com") ) {
             bookThumbnail = bookThumbnail.replace("etext-dev.pearson.com", "etext-qa-stg.pearson.com");
           }else if(bookThumbnail.match("etext-stg.pearson.com") ){
             bookThumbnail = bookThumbnail.replace("etext-stg.pearson.com", "etext-qa-stg.pearson.com");
           }
-        }
+        }*/
+        
+        bookThumbnail = Utilities.changeContentUrlToSecured(bookThumbnail);
         const book = {
           id: bookRef.bookId,
           author: bookRef.creator || '',
@@ -291,10 +295,13 @@ export default class BookshelfPage extends React.Component {
         booksdata.push(book);
       });
       courseBookArray.forEach((CourseBookData) => {
+        let avatarUrl = CourseBookData.section.avatarUrl;
+        
+        avatarUrl = avatarUrl ? Utilities.changeContentUrlToSecured(avatarUrl) : '';
         const book = {
           id: CourseBookData.section.sectionId,
           author: CourseBookData.id || '',
-          image: CourseBookData.section.avatarUrl ? CourseBookData.section.avatarUrl : '',
+          image: avatarUrl,
           title: CourseBookData.section.sectionTitle || '',
           description: '',
           tocId: '',

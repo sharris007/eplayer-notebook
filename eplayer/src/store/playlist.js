@@ -26,8 +26,8 @@ const initalData = {
 export default (state = initalData, action) => {
   switch (action.type) {
     case 'GET_PLAYLIST': {
-      action.data.baseUrl = action.data.baseUrl.replace("content.stg-openclass.com","etext-dev.pearson.com");
-      action.data.provider = action.data.provider.replace("content.stg-openclass.com","etext-dev.pearson.com");
+      //action.data.baseUrl = action.data.baseUrl.replace("content.stg-openclass.com","etext-dev.pearson.com");
+      //action.data.provider = action.data.provider.replace("content.stg-openclass.com","etext-dev.pearson.com");
       if (action.data.content[0].playOrder === 0) {
         action.data.content.splice(0, 1);
       }

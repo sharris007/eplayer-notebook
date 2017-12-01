@@ -12,6 +12,7 @@ PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  * from Pearson Education, Inc.
 **/
 
+import { domain, contentUrl } from '../../const/Settings';
 
 export default class Utilities {
   /**
@@ -56,12 +57,15 @@ export default class Utilities {
     return false;
   }
 
-  static changeBaseUrl = (urlList) => {
+  static changeContentUrlToSecured = (urlList) => {
     const updUrlList = [];
-    if (urlList.length > 0) {
+    if (typeof(urlList) === "string") {
+      return urlList.replace(contentUrl.openClass[domain.getEnvType()],contentUrl.SecuredUrl[domain.getEnvType()]);
+    } else if (urlList && urlList.length > 0) {
       urlList.forEach((url) => {
-        updUrlList.push(url.replace("",""))
+        updUrlList.push(url.replace(contentUrl.openClass[domain.getEnvType()],contentUrl.SecuredUrl[domain.getEnvType()]));
       });
+      return updUrlList;
     }
   }
 }
