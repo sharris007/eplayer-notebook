@@ -154,7 +154,13 @@ export class PdfBookReader extends Component {
     const pdfPath = currentPage.pdfPath;
     const PDFassetURL = `${serverDetails}/ebookassets`
                 + `/ebook${this.props.data.book.bookinfo.book.globalbookid}/ipadpdfs/${pdfPath}`;
-    this.props.data.actions.loadcurrentPage(this.props.data.location.query.bookid,currentPageIndex,PDFassetURL,'BookPage');
+    let foxitAssetURL;
+    if(currentPage.readerPlusID){
+      foxitAssetURL = eT1Contants.foxiAssetBaseUrl + currentPage.readerPlusID + '/foxit-assets';
+    }else{
+      foxitAssetURL = false;
+    }
+    this.props.data.actions.loadcurrentPage(this.props.data.location.query.bookid,currentPageIndex,PDFassetURL,'BookPage',foxitAssetURL);
     this.setState({ currPageIndex: currentPageIndex });
     sessionStorage.setItem("currentPageOrder",currentPageIndex);
     const data = this.state.data;
@@ -573,10 +579,6 @@ export class PdfBookReader extends Component {
     {
       region = 'VIDEO';
     }
-    else if(hotspot.pearsonSmartPlayer == true && _.startsWith(regionLink,'https://mediaplayer.pearsoncmg.com/assets'))
-    {
-      region = 'VIDEO';
-    }
     else if(_.endsWith(regionLink,'.mp3') == true)
     {
       region = 'AUDIO';
@@ -637,46 +639,35 @@ export class PdfBookReader extends Component {
                break;
       case 'VIDEO':
                source=hotspotDetails.linkValue;
-               if(hotspotDetails.pearsonSmartPlayer == true && _.startsWith(source,'https://mediaplayer.pearsoncmg.com/assets'))
-               {
-                 var lastIndex = source.lastIndexOf("/");
-                 var videoID = source.slice(lastIndex+1);
-                 var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppDiv/' + videoID;
-                 var sppScript=document.createElement('SCRIPT');
-                 sppScript.src = scriptContent;
-                 document.getElementById('sppDiv').style.height = 400 + 'px';
-                 document.getElementById('sppDiv').style.width = 500 + 'px';
-                 document.getElementById('docViewer_ViewContainer_PageContainer_0').appendChild(sppScript);
-                  try
-                  {
-                    $('#sppDiv').show();
-                  }
-                  catch(e){
-                  }
-               }
-               else
-               {
+               hotspotData = {
+                title : hotspotDetails.name,
+                src : source,
+                caption : hotspotDetails.description || "",
+                id : hotspotDetails.regionID,
+                thumbnail : {
+                  src : "",
+               },
+               alt : hotspotDetails.name,
+               };
+               regionComponent = <VideoPlayerPreview data={hotspotData}/>;
+               break;
+      case 'SPPASSET':
+               source = hotspotDetails.linkValue;
+               var lastIndex = source.lastIndexOf("/");
+               var assetID = source.slice(lastIndex+1);
+               var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppDiv/' + assetID;
+               var sppScript=document.createElement('SCRIPT');
+               sppScript.src = scriptContent;
+               document.getElementById('sppDiv').style.height = 400 + 'px';
+               document.getElementById('sppDiv').style.width = 500 + 'px';
+               document.getElementById('docViewer_ViewContainer_PageContainer_0').appendChild(sppScript);
                 try
                 {
-                  $('#sppDiv').empty();
-                  $('#sppDiv').hide();
+                  $('#sppDiv').show();
                 }
                 catch(e){
-
                 }
-                 hotspotData = {
-                  title : hotspotDetails.name,
-                  src : source,
-                  caption : hotspotDetails.description || "",
-                  id : hotspotDetails.regionID,
-                  thumbnail : {
-                    src : "",
-                 },
-                 alt : hotspotDetails.name,
-                 };
-                 regionComponent = <VideoPlayerPreview data={hotspotData}/>;
-               }
-               break;
+                break;
       case 'DOCUMENT':
                source=hotspotDetails.linkValue;
                window.open(source,"_blank");
@@ -857,10 +848,14 @@ handleRegionClick(hotspotID) {
                   {
                     regionDetails.linkValue = basepath + regionDetails.linkValue;
                   }
-                } 
+                }
+              if(_.startsWith(regionDetails.linkValue,'https://mediaplayer.pearsoncmg.com/assets'))
+              {
+                regionDetails.hotspotType = 'SPPASSET';
+              } 
             }
             /*Checking if the clicked hotspot is Image/Video/Audio/URL and open it in MMI Component */
-            if(regionDetails.hotspotType == 'IMAGE' || regionDetails.hotspotType == 'VIDEO' || regionDetails.hotspotType == 'AUDIO' || regionDetails.hotspotType == 'URL')
+            if(regionDetails.hotspotType == 'IMAGE' || regionDetails.hotspotType == 'VIDEO' || regionDetails.hotspotType == 'AUDIO' || regionDetails.hotspotType == 'URL' || regionDetails.hotspotType == 'SPPASSET')
             {
               /*Updating the state to rerender the page with Aquila JS Component*/
               this.setState({regionData : regionDetails});
