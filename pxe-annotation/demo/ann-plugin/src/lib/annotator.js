@@ -307,7 +307,7 @@ Annotator = (function(_super) {
 
   Annotator.prototype.updateAnnotationId = function (annotation) {
      $('.annotator-hl').each(function() {
-      if($(this).data("annotation").createdTimestamp.toString() == annotation.createdTimestamp) {
+      if(Date.parse($(this).data("annotation").createdTimestamp) == annotation.createdTimestamp) {
         $(this).data("annotation").id=annotation.id;
         $(this).attr('data-ann-id', annotation.id);
       }
@@ -415,7 +415,7 @@ Annotator = (function(_super) {
    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
      node = _ref[_i];
      if (!white.test(node.nodeValue)) {
-      if(!$(node).closest('.annotator-handle').length && !$(node).closest('.biblioref').length && !$(node).closest('.annotator-hl[shareable="true"]').length) {
+      if(!$(node).closest('.annotator-handle').length && !$(node).closest('.biblioref').length &&!$(node).closest('.noteref').length &&!$(node).closest('.noteref_footnote').length && !$(node).closest('.annotator-hl[shareable="true"]').length) {
          _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
          if($(node).closest('.pxereaderSearchHighlight').length > 0) {
            $(node).parent().find('.annotator-handle').text(noteText).css('background-color', normedRange.color);
@@ -592,7 +592,7 @@ Annotator = (function(_super) {
     var container, range, _i, _len, _ref;
     this.mouseIsDown = false;
     this.selectedAnnArr=[];
-    this.ignoreMouseup=$(event.target).hasClass('annotator-confirm-delete')?false:this.ignoreMouseup;
+    this.ignoreMouseup=$(event.target).hasClass('annotator-delete-container')?false:this.ignoreMouseup;
     if (this.ignoreMouseup) {
       return;
     }
