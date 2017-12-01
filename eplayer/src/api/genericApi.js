@@ -13,15 +13,17 @@
  *******************************************************************************/
 /* global fetch */
 import { resources, domain } from '../../const/Settings';
+import Utilities from '../components/utils'
 
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
 const pxeService = resources.links.pxeServiceUrl;
+const spectrumService = resources.links.spectrumServiceUrl;
 const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
 
-export const getTotalAnndata = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations?withShared=true`, {
+export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
   method: 'GET',
   headers: data.annHeaders
 });
@@ -56,9 +58,10 @@ export const putAnnData = data => fetch(`${pxeService[envType]}/context/${data.c
 });
 
 export const deleteAnnData = data =>
- fetch(`${pxeService[envType]}/context/${data.context}/annotations/${data.annId}`, {// eslint-disable-line no-undef
+ fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {// eslint-disable-line no-undef
    method: 'DELETE',
-   headers: data.annHeaders
+   headers: data.annHeaders,
+   body: JSON.stringify(data.body)
  });
 
 // ----Play list toc----------------------------------
@@ -104,23 +107,21 @@ export const getCourseDetails = bookDetails =>
    });
 
 // Bookmark Api Total GET Call,
-export const getTotalBookmarkData = data => fetch(`${pxeService[envType]}/context/${data.context}/identities/${data.user}/bookmarks`, {  // eslint-disable-line max-len
+export const getTotalBookmarkData = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX?isBookMark=true`, {  // eslint-disable-line max-len
   method: 'GET',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id': data.user,
     'X-Authorization': data.xAuth
   }
 });
 
 // Bookmark Api GET Call,
-export const getBookmarkData = data => fetch(`${pxeService[envType]}/context/${data.context}/identities/${data.user}/bookmarks?uri=${data.id}`, {  // eslint-disable-line max-len
+export const getBookmarkData = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX?pageId=${data.id}&isBookMark=true`, {  // eslint-disable-line max-len
   method: 'GET',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Identity-Id': data.user,
     'X-Authorization': data.xAuth
   }
 });
@@ -129,26 +130,26 @@ export const getBookmarkData = data => fetch(`${pxeService[envType]}/context/${d
 export const postBookmarkData = postData => {
   let payload = Object.assign({},postData);
   delete payload.xAuth;
-  return fetch(`${pxeService[envType]}/context/${postData.context}/identities/${postData.user}/bookmarks`, {  // eslint-disable-line max-len
+  return fetch(`${spectrumService[envType]}/${postData.context}/identities/${postData.user}/notesX?pageId=${postData.uri}&isBookMark=true`, {  // eslint-disable-line max-len
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Identity-Id': postData.user,
       'X-Authorization': postData.xAuth
     },
-    body: JSON.stringify(payload)
+    body: Utilities.formBookmarkPayload(payload)
   });
 }
 // Bookmark Api Delete Call,
 
-export const deleteBookmarkData = deleteData => fetch(`${pxeService[envType]}/context/${deleteData.context}/identities/${deleteData.user}/bookmarks?uri=${deleteData.uri}`, {  // eslint-disable-line max-len
+export const deleteBookmarkData = deleteData => fetch(`${spectrumService[envType]}/${deleteData.context}/identities/${deleteData.user}/notesX?pageId=${deleteData.uri}&isBookMark=true`, {  // eslint-disable-line max-len
   method: 'DELETE',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-Authorization': deleteData.xAuth
-  }
+  },
+  body: JSON.stringify(deleteData.body)
 });
 
 // Go to page Get call

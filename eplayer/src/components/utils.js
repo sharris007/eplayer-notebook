@@ -34,4 +34,25 @@ export default class Utilities {
     }
     return sortedBookmarkArr;
   }
+
+  static formBookmarkPayload = (reqData) => {
+    const bookmarkData = {
+      clientApp: "ETEXT_WEB",
+      color: "",
+      contextId: reqData.context,
+      data: reqData,
+      isBookMark: true,
+      pageId: reqData.uri,
+      pageNo: "",
+      selectedText: "",
+      sharable: "",
+      status: "",
+      subContextId: "",
+      userId: reqData.user
+    }
+    const reqPayload = {
+      payload : [bookmarkData]
+    }
+    return JSON.stringify(reqPayload);
+  }
 }

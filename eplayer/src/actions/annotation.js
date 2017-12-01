@@ -32,13 +32,13 @@ export const annStructureChange = (annTotalList) => {
   if (annTotalList && annTotalList.length > 0) {
     for (let i = 0; i < annTotalList.length; i++) {
       const setArray = {
-        pageId: annTotalList[i].source.id,
+        pageId: annTotalList[i].data.source.id,
         id: annTotalList[i].id,
-        author: annTotalList[i].user,
-        time: annTotalList[i].createdTimestamp,
-        text: annTotalList[i].quote,
-        comment: annTotalList[i].text || '',
-        color: colorArr[annTotalList[i].colorCode] || 'Green'
+        author: annTotalList[i].data.user,
+        time: annTotalList[i].createdTime,
+        text: annTotalList[i].data.quote,
+        comment: annTotalList[i].data.text || '',
+        color: colorArr[annTotalList[i].data.colorCode] || 'Green'
       };
       annListArray.push(setArray);
     }
@@ -49,8 +49,8 @@ export const annStructureChange = (annTotalList) => {
 export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.dogetTotalAnnotation(filterData)
     .then(response => response.json())
     .then((json) => {
-      if (json.rows && json.rows.length > 0) {
-        const annTotalList = json.rows;
+      if (json.response && json.response.length > 0) {
+        const annTotalList = json.response;
         const annListArray = annStructureChange(annTotalList);
         dispatch(getTotalAnnotationData(annListArray));
       }

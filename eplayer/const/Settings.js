@@ -122,6 +122,14 @@ export const resources = {
       qa           :"https://etext-instructor-qa.pearson.com/idc-api/course",
       stage        :"https://etext-instructor-stg.pearson.com/idc-api/course",
       prod         :"",
+    },
+    spectrumServiceUrl : {
+      local        :"https://spectrum-qa.stg-openclass.com/api/context",
+      dev          :"https://spectrum-qa.stg-openclass.com/api/context",
+      qa           :"https://spectrum-qa.stg-openclass.com/api/context",
+      stage        :"https://spectrum.stg-openclass.com/api/context",
+      PERF         :"https://spectrum-ppe.pearsoned.com/api/context",
+      prod         :"https://spectrum.pearsoned.com/api/context"
     }
   }
 };

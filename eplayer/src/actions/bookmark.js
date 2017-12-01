@@ -26,7 +26,10 @@ export const getBookmarkCallService = filterData => dispatch => BookmarkApi.doGe
         response => response.json()
       )
     .then(
-        json => dispatch(getBookmarkData(json))
+        json => {
+          let res = (json.response && json.response[0].isBookMark) ? { isBookmarked: true, bookmarkId: json.response[0].id } : { isBookmarked : false };
+          dispatch(getBookmarkData(res))
+        }
     );
 
 
@@ -43,27 +46,18 @@ export const getTotalBookmarkData = json => ({
   data: json
 });
 
-const bookmarkStructureChange = (blist) => {
-  const bookmarksDataMap = blist.bookmarks;
-  if (bookmarksDataMap && bookmarksDataMap.length > 0) {
-    for (let i = 0; i < bookmarksDataMap.length; i++) {
-      bookmarksDataMap[i].id = bookmarksDataMap[i].uri;
-    }
-  }
-  return bookmarksDataMap;
-};
-
 export const postBookmarkCallService = filterData => dispatch => BookmarkApi.doPostBookmark(filterData)
     .then(response => response.json())
     .then((json) => {
-      dispatch(postBookmarkData(json));
-      const bookmarks = [];
-      bookmarks.push(json);
-      const bdata = {
-        bookmarks
-      };
-      const bookmarksDataMap = bookmarkStructureChange(bdata);
-      dispatch(getTotalBookmarkData(bookmarksDataMap));
+      const resp = json.response
+      if (resp && resp.length) {
+        resp[0].data.createdTimestamp = resp[0].createdTime;
+        resp[0].data.id = resp[0].id;
+        dispatch(postBookmarkData(resp[0].data));
+        const bookmarks = [];
+        bookmarks.push(resp[0].data);
+        dispatch(getTotalBookmarkData(bookmarks));
+      }
     });
 
  // DELETE call for Bookmark
@@ -85,9 +79,14 @@ export const getTotalBookmarkCallService = filterData => dispatch =>
     BookmarkApi.doTotalBookmark(filterData)
     .then(response => response.json())
     .then((json) => {
-      if (json.bookmarks && json.bookmarks.length) {
-        const bookmarksDataMap = bookmarkStructureChange(json);
-        dispatch(getTotalBookmarkData(bookmarksDataMap));
+      const modRes = [];
+      if (json.response && json.response.length) {
+        for (let i = 0; i < json.response.length; i++) {
+          json.response[i].data.createdTimestamp = json.response[i].createdTime;
+          json.response[i].data.id = json.response[i].id;
+          modRes.push(json.response[i].data);
+        }
+        dispatch(getTotalBookmarkData(modRes));
       }
     }
     );

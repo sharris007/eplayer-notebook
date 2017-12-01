@@ -239,6 +239,7 @@ export class Book extends Component {
   removeAnnotationHandler = (annotationId) => {
     let deleteAnnData = $.extend(this.state.urlParams, { annId: annotationId });
     deleteAnnData.annHeaders = this.annHeaders;
+    deleteAnnData.body = { ids: [annotationId] };
     this.props.dispatch(deleteAnnCallService(deleteAnnData));
 
     let annElement = $('#contentIframe').contents().find('*[data-ann-id=' + annotationId + ']');
@@ -269,10 +270,11 @@ export class Book extends Component {
   };
 
   removeBookmarkHandler = (bookmarkId) => {
-    this.state.urlParams.uri = (bookmarkId ? bookmarkId : this.state.currentPageDetails.id);
+    let id = (bookmarkId ? bookmarkId : this.props.bookmarkedData.bookmarkId);
     this.forceUpdate();
     let bookmarksParams = this.state.urlParams;
     bookmarksParams.xAuth = localStorage.getItem('secureToken');
+    bookmarksParams.body = { ids: [id] };
     this.props.dispatch(deleteBookmarkCallService(bookmarksParams));
   };
 
@@ -328,20 +330,20 @@ export class Book extends Component {
         }
       case typeConstants.ANNOTATION_CREATED:
         {
-          const annList = annStructureChange([data.rows[0]]);
+          let annList = annStructureChange([data.rows[0]]);
           this.props.dispatch(getTotalAnnotationData(annList));
           break;
         }
       case typeConstants.ANNOTATION_UPDATED:
         {
-          const annList = annStructureChange([data.rows[0]]);
+          let annList = annStructureChange([data.rows[0]]);
           this.props.dispatch(deleteAnnotationData(data.rows[0]));
           this.props.dispatch(getTotalAnnotationData(annList));
           break;
         }
       case typeConstants.ANNOTATION_DELETED:
-        {
-          this.props.dispatch(deleteAnnotationData(data.rows[0]));
+        { 
+          this.props.dispatch(deleteAnnotationData(data.rows));
           break;
         }
       case 'pagescroll':
@@ -452,7 +454,7 @@ export class Book extends Component {
   }
 
   isCurrentPageBookmarked = () => {
-    return this.props.isBookmarked;
+    return this.props.bookmarkedData.isBookmarked;
   };
 
   goToTextChange = (goToTextChangeCallBack) => {
@@ -1030,13 +1032,12 @@ export class Book extends Component {
     } :
       {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'idpName': 'SMS',
+        'Content-Type': 'application/json',     //'idpName': 'SMS',
         'X-Authorization': localStorage.getItem('secureToken')
       };
 
     const annotationClient = axios.create({
-      baseURL: `${bootstrapParams.pageDetails.endPoints.services}/context/${this.state.urlParams.context}/annotations`,
+      baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
       headers: this.annHeaders,
       data: {
         context: this.state.urlParams.context,
@@ -1261,7 +1262,7 @@ const mapStateToProps = state => {
     tocResponse: state.playlistReducer.tocresponse,
     updatedToc: state.playlistReducer.updatedToc,
     tocReceived: state.playlistReducer.tocReceived,
-    isBookmarked: state.bookmarkReducer.data.isBookmarked,
+    bookmarkedData: state.bookmarkReducer.data,
     bookMarkData: state.bookmarkReducer.bookmarksData,
     gotoPageObj: state.gotopageReducer.gotoPageObj,
     isGoToPageRecived: state.gotopageReducer.isGoToPageRecived,
