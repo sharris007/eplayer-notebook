@@ -1117,7 +1117,7 @@ function getAssetURLForPDFDownload(config,cb){
             iconDiv.style.height=(hotspots[i].height * heightScale) + 'px';
             iconDiv.style.left= (hotspots[i].x * widthScale)  + 'px';
             iconDiv.style.top= (hotspots[i].y * heightScale) + 'px';
-            iconDiv.style.backgroundImage = 'url('+iconArt+')';
+            iconDiv.style.backgroundImage = 'url(eplayer'+iconArt+')';
             iconDiv.style.opacity = hotspotFeatures.iconhotspotalpha/100;
             iconDiv.style.backgroundSize = 'cover';
           }
