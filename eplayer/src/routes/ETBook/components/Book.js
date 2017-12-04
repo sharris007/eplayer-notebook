@@ -130,8 +130,9 @@ export class Book extends Component {
             }
             else{
               console.log('inside else');
-              function loginCallback(token){
-                console.log('login call back - pitoken: ', token)
+              function loginCallback(result, token){
+                console.log('login call back - pitoken: ', token);
+                console.log('login call back - result: ', result);
               }
               piSession.login(redirectCourseUrl, 10, loginCallback);
             }
