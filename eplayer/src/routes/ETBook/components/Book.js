@@ -133,6 +133,7 @@ export class Book extends Component {
               function loginCallback(result, token){
                 console.log('login call back - pitoken: ', token);
                 console.log('login call back - result: ', result);
+                localStorage.setItem('secureToken', token);
               }
               piSession.login(redirectCourseUrl, 10, loginCallback);
             }
