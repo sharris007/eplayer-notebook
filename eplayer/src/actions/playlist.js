@@ -94,7 +94,7 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
         .then((response) => {
           //Changing content urls to secured url
           response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
-          response.bookDetail.metadata.toc = Utilities.changeContentUrlToSecured(response.bookDetail.metadata.toc);
+          //response.bookDetail.metadata.toc = Utilities.changeContentUrlToSecured(response.bookDetail.metadata.toc);
           
           dispatch(getBookDetails(response));
           bookId = response.bookDetail.bookId;
