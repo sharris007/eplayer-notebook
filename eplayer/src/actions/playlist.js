@@ -195,7 +195,6 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
 
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
-    console.log("serviceCallData", data);
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
     bookDetails = response.userCourseSectionDetail;
     piToken = data.piToken;
