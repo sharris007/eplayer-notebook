@@ -2955,7 +2955,7 @@ Annotator = (function(_super) {
 
   Annotator.prototype.updateAnnotationId = function (annotation) {
      $('.annotator-hl').each(function() {
-      if(Date.parse($(this).data("annotation").createdTimestamp) == annotation.createdTimestamp) {
+      if($(this).data("annotation").createdTimestamp.toString() == annotation.createdTimestamp) {
         $(this).data("annotation").id=annotation.id;
         $(this).attr('data-ann-id', annotation.id);
       }
