@@ -129,6 +129,7 @@ export class Book extends Component {
               clearInterval(IntervalCheck);
             }
             else{
+              console.log('inside else');
               function loginCallback(token){
                 console.log('login call back - pitoken: ', token)
               }
