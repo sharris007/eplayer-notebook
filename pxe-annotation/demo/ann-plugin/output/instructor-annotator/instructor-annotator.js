@@ -2938,7 +2938,7 @@ Annotator = (function(_super) {
 
   Annotator.prototype.updateAnnotationId = function (annotation) {
      $('.annotator-hl').each(function() {
-      if(Date.parse($(this).data("annotation").createdTimestamp) == annotation.createdTimestamp) {
+      if($(this).data("annotation").createdTimestamp.toString() == annotation.createdTimestamp) {
         $(this).data("annotation").id=annotation.id;
         $(this).attr('data-ann-id', annotation.id);
       }
@@ -3277,12 +3277,12 @@ Annotator = (function(_super) {
     var annotations = $(event.target).parents('.annotator-hl').addBack().map(function() {
       return $(this).data("annotation");
     }).toArray();
-    for (_i = 0; _i <annotations.length ; _i++) {
+    /*for (_i = 0; _i <annotations.length ; _i++) {
       if($(annotations)[_i].shareable)
         currAnnPosition = _i;
        if(!($(annotations)[_i].id))
         currAnnPosition++;
-    };
+    };*/
     this.showEditor(annotations[currAnnPosition], Util.mousePosition(event, this.wrapper[0]), false);
  
   }
