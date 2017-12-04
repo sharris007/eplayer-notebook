@@ -66,6 +66,7 @@
       "sessionIdleTimeoutSeconds": "1800"
     };
     piSession.initialize(clientId, jwtSetting);
+    deleteCookie("etext-cdn-token");
     piSession.on(piSession.SessionStateKnownEvent, onSessionStateKnown);
     function onSessionStateKnown() {
       if (piSession.hasValidSession(10) === 'notoken') {
@@ -79,7 +80,6 @@
       piSession.getToken(function (result, userToken) {
         if (result === piSession['Success']) {
           setStorage("secureToken", userToken);
-          deleteCookie("etext-cdn-token");
         } else if (result === 'unknown' || result === 'notoken') {
           piSession.login(redirectPiurl, 10);
         }
@@ -90,6 +90,7 @@
     }
     function deleteCookie(name) {
       document.cookie = name + '=;expires=Thu, 01 Jan 2000 00:00:01 GMT;path=/;';
+      console.log("The Cookiee Deleted ",name + '=;expires=Thu, 01 Jan 2000 00:00:01 GMT;path=/;');
     }
   </script>
   <script>
