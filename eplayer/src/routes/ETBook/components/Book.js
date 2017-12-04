@@ -128,6 +128,12 @@ export class Book extends Component {
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }
+            else{
+              function loginCallback(token){
+                console.log('login call back - pitoken: ', token)
+              }
+              piSession.login(redirectCourseUrl, 10, loginCallback);
+            }
           });
         }
         const getSecureToken = localStorage.getItem('secureToken');
