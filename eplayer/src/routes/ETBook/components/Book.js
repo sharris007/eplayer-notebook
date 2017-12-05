@@ -153,13 +153,14 @@ export class Book extends Component {
         } else {
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
+        const getPreferenceData = {
+          userId: this.state.urlParams.user,
+          bookId: this.state.urlParams.context,
+          piToken: localStorage.getItem('secureToken')
+        }
+        this.props.dispatch(getPreferenceCallService(getPreferenceData));
       }
-      const getPreferenceData = {
-        userId: this.state.urlParams.user,
-        bookId: this.state.urlParams.context,
-        piToken: localStorage.getItem('secureToken')
-      }
-      this.props.dispatch(getPreferenceCallService(getPreferenceData));
+      
     }, 200)
   }
   componentWillUnmount() {
