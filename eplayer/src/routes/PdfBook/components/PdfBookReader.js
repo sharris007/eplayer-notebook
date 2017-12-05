@@ -134,7 +134,7 @@ export class PdfBookReader extends Component {
    loadCoverPage = (pageIndexToLoad) => {
     let currentPageIndex = 0;
     if(isNaN(pageIndexToLoad)){
-     this.goToPage(pageIndexToLoad); 
+     this.goToPage(pageIndexToLoad);
     }
     const PDFassetURL = `${serverDetails}/ebookassets`
                 + `/ebook${this.props.data.book.bookinfo.book.globalbookid}${this.props.data.book.bookinfo.book.pdfCoverArt}`;
@@ -217,7 +217,7 @@ export class PdfBookReader extends Component {
           for(let arr=0;arr < this.props.data.book.regions.length ; arr++)
           {
             if(this.props.data.book.regions[arr].regionTypeID == 5 && this.props.data.book.regions[arr].glossaryEntryID !== null)
-            {       
+            {
               glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + this.props.data.book.regions[arr].glossaryEntryID;
               regionsData.push(this.props.data.book.regions[arr]);
             }
@@ -236,9 +236,9 @@ export class PdfBookReader extends Component {
                     popOverCollection : {
                       popOverDescription : this.props.data.book.glossaryInfoList[i].glossaryDefinition,
                       popOverTitle : this.props.data.book.glossaryInfoList[i].glossaryTerm
-                    }                
+                    }
                   };
-                  glossaryData.push(glossTerm);                
+                  glossaryData.push(glossTerm);
                 }
               }
             }
@@ -276,7 +276,7 @@ export class PdfBookReader extends Component {
           }
         } else if (pageno === 'next') {
           pageIndexToLoad = currPageIndex + 1;
-        } 
+        }
       }
       else
       {
@@ -288,7 +288,7 @@ export class PdfBookReader extends Component {
                   (startpage.pageorder > pageIndexToLoad || endpage.pageorder < pageIndexToLoad))
       {
         this.setState({ drawerOpen: false });
-        return; 
+        return;
       }
       __pdfInstance.removeExistingHighlightCornerImages();
       this.setState({ drawerOpen: false,pageLoaded: false,regionData: null,
@@ -320,7 +320,7 @@ export class PdfBookReader extends Component {
             pages = this.props.data.book.bookinfo.pages;
             localStorage.setItem('pages', JSON.stringify(pages));
           }
-          if(pageno != 'cover' && pageIndexToLoad !== 0) 
+          if(pageno != 'cover' && pageIndexToLoad !== 0)
           {this.loadPdfPage(pageIndexToLoad);}
           else if(pageIndexToLoad === 0){
           this.loadCoverPage(pageIndexToLoad);
@@ -469,9 +469,9 @@ export class PdfBookReader extends Component {
             popOverCollection : {
               popOverDescription : this.props.data.book.glossaryInfoList[i].glossaryDefinition,
               popOverTitle : this.props.data.book.glossaryInfoList[i].glossaryTerm
-            }                
+            }
           };
-          glossaryDataUpdated.push(glossTerm);                
+          glossaryDataUpdated.push(glossTerm);
         }
       }
     }
@@ -539,12 +539,12 @@ export class PdfBookReader extends Component {
     {
       transparentRegion.style.borderBottomColor = this.props.data.book.bookFeatures.underlinehotppothovercolor;;
       transparentRegion.style.borderBottomWidth = this.props.data.book.bookFeatures.underlinehotspotthickness + 'px';
-      transparentRegion.style.borderBottomStyle = 'solid';  
+      transparentRegion.style.borderBottomStyle = 'solid';
     }
     else
     {
       transparentRegion.style.background = convertHexToRgba(this.props.data.book.bookFeatures.hotspotcolor,this.props.data.book.bookFeatures.regionhotspotalpha);
-    } 
+    }
   }
 /*Method to handle mouse out event for transparent hotsopts*/
   handleTransparentRegionUnhover(hotspotID)
@@ -558,7 +558,7 @@ export class PdfBookReader extends Component {
     {
       transparentRegion.style.borderBottomColor = convertHexToRgba(this.props.data.book.bookFeatures.underlinehotspotcolor,0);
       transparentRegion.style.borderBottomWidth = 0 + 'px';
-      transparentRegion.style.borderBottomStyle = 'none';  
+      transparentRegion.style.borderBottomStyle = 'none';
     }
     else
     {
@@ -569,8 +569,8 @@ export class PdfBookReader extends Component {
   getHotspotType = (hotspot) => {
     let region = '';
     let regionLink = hotspot.linkValue.toLowerCase();
-    if(_.endsWith(regionLink,'.doc') == true || _.endsWith(regionLink,'.xls') == true || _.endsWith(regionLink,'.ppt') == true || 
-       _.endsWith(regionLink,'.pdf') == true || _.endsWith(regionLink,'.docx') == true || _.endsWith(regionLink,'.xlsx') == true || 
+    if(_.endsWith(regionLink,'.doc') == true || _.endsWith(regionLink,'.xls') == true || _.endsWith(regionLink,'.ppt') == true ||
+       _.endsWith(regionLink,'.pdf') == true || _.endsWith(regionLink,'.docx') == true || _.endsWith(regionLink,'.xlsx') == true ||
        _.endsWith(regionLink,'.pptx') == true)
     {
       region = 'DOCUMENT';
@@ -586,6 +586,10 @@ export class PdfBookReader extends Component {
     else if(_.endsWith(regionLink,'.jpg') == true || _.endsWith(regionLink,'.jpeg') == true || _.endsWith(regionLink,'.png') == true || _.endsWith(regionLink,'.gif') == true)
     {
       region = 'IMAGE';
+    }
+    else if(_.endsWith(regionLink,'.htm') == true || _.endsWith(regionLink,'.html') == true )
+    {
+      region = 'EXTERNALLINK';
     }
     else
     {
@@ -611,7 +615,7 @@ export class PdfBookReader extends Component {
     let hotspotData,source;
     switch(hotspotDetails.hotspotType) {
       case 'AUDIO':
-                  source=hotspotDetails.linkValue;
+                  source = this.createHttps(hotspotDetails.linkValue);
                   hotspotData = {
                     audioSrc :source,
                     audioTitle :hotspotDetails.name
@@ -626,7 +630,7 @@ export class PdfBookReader extends Component {
                 parent.location = email;
                 break;
       case 'IMAGE':
-               source=hotspotDetails.linkValue;
+               source = this.createHttps(hotspotDetails.linkValue);
                hotspotData = {
                  alt : hotspotDetails.name,
                  src : source,
@@ -638,7 +642,7 @@ export class PdfBookReader extends Component {
                regionComponent = <ImageViewerPreview data={hotspotData}/>;
                break;
       case 'VIDEO':
-               source=hotspotDetails.linkValue;
+               source = this.createHttps(hotspotDetails.linkValue);
                hotspotData = {
                 title : hotspotDetails.name,
                 src : source,
@@ -673,12 +677,16 @@ export class PdfBookReader extends Component {
                window.open(source,"_blank");
                break;
       case 'URL':
-               source=hotspotDetails.linkValue;
+               source = this.createHttps(hotspotDetails.linkValue);
                hotspotData = {
                  title : hotspotDetails.name,
                  src : source
                };
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={this.onHotspotClose}/>;
+               break;
+      case 'EXTERNALLINK':
+               source=hotspotDetails.linkValue;
+               window.open(source,"_blank");
                break;
       case 'LTILINK':
                let courseId;
@@ -727,17 +735,12 @@ handleRegionClick(hotspotID) {
           {
             regionDetails = this.props.data.book.regions[i];
             regionDetails.hotspotType = '';
-            if(regionDetails.linkTypeID !== eT1Contants.LinkType.PAGE_NUMBER || regionDetails.linkTypeID !== eT1Contants.LinkType.EMAIL 
-              || regionDetails.linkTypeID !== eT1Contants.LinkType.LTILINK)
-            {
-              regionDetails.linkValue = this.createHttps(regionDetails.linkValue);
-            }
             if(regionDetails.linkTypeID == eT1Contants.LinkType.IMAGE)
             {
               regionDetails.hotspotType = 'IMAGE';
               if(this.props.data.book.basepaths.imagepath !== null && this.props.data.book.basepaths.imagepath !== "" && this.props.data.book.basepaths.imagepath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.imagepath);
+                basepath = this.props.data.book.basepaths.imagepath;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.FLV)
@@ -745,7 +748,7 @@ handleRegionClick(hotspotID) {
               regionDetails.hotspotType = 'VIDEO';
               if(this.props.data.book.basepaths.flvpath !== null && this.props.data.book.basepaths.flvpath !== "" && this.props.data.book.basepaths.flvpath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.flvpath);
+                basepath = this.props.data.book.basepaths.flvpath;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.MP3 || regionDetails.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
@@ -753,7 +756,7 @@ handleRegionClick(hotspotID) {
               regionDetails.hotspotType = 'AUDIO';
               if(this.props.data.book.basepaths.mp3path !== null && this.props.data.book.basepaths.mp3path !== "" && this.props.data.book.basepaths.mp3path !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.mp3path);
+                basepath = this.props.data.book.basepaths.mp3path;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.PAGE_NUMBER)
@@ -773,7 +776,7 @@ handleRegionClick(hotspotID) {
               regionDetails.hotspotType = 'VIDEO';
               if(this.props.data.book.basepaths.h264path !== null && this.props.data.book.basepaths.h264path !== "" && this.props.data.book.basepaths.h264path !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.h264path);
+                basepath = this.props.data.book.basepaths.h264path;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.URL)
@@ -790,7 +793,7 @@ handleRegionClick(hotspotID) {
               {
                 regionDetails.hotspotType = this.getHotspotType(regionDetails);
               }
-              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || 
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC ||
                 regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT)
               {
                 regionDetails.hotspotType = 'DOCUMENT';
@@ -798,10 +801,10 @@ handleRegionClick(hotspotID) {
               if(regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO)
               {
                 regionDetails.hotspotType = 'VIDEO';
-              }              
+              }
               if(this.props.data.book.basepaths.urlpath !== null && this.props.data.book.basepaths.urlpath !== "" && this.props.data.book.basepaths.urlpath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.urlpath);
+                basepath = this.props.data.book.basepaths.urlpath;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.VIRTUAL_LEARNING_ASSET)
@@ -818,7 +821,7 @@ handleRegionClick(hotspotID) {
               {
                 regionDetails.hotspotType = this.getHotspotType(regionDetails);
               }
-              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || 
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC ||
                 regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT)
               {
                 regionDetails.hotspotType = 'DOCUMENT';
@@ -826,18 +829,18 @@ handleRegionClick(hotspotID) {
               if(regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO)
               {
                 regionDetails.hotspotType = 'VIDEO';
-              }              
+              }
               if(this.props.data.book.basepaths.virtuallearningassetpath !== null && this.props.data.book.basepaths.virtuallearningassetpath !== "" && this.props.data.book.basepaths.virtuallearningassetpath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.virtuallearningassetpath);
+                basepath = this.props.data.book.basepaths.virtuallearningassetpath;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.CHROMELESS_URL)
             {
-              regionDetails.hotspotType = this.getHotspotType(regionDetails);  
+              regionDetails.hotspotType = this.getHotspotType(regionDetails);
               if(this.props.data.book.basepaths.chromelessurlpath !== null && this.props.data.book.basepaths.chromelessurlpath !== "" && this.props.data.book.basepaths.chromelessurlpath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.chromelessurlpath);
+                basepath = this.props.data.book.basepaths.chromelessurlpath;
               }
             }
             if(regionDetails.hotspotType !== 'PAGENUMBER' || regionDetails.hotspotType !== 'EMAIL' || regionDetails.hotspotType !== 'LTILINK')
@@ -849,10 +852,17 @@ handleRegionClick(hotspotID) {
                     regionDetails.linkValue = basepath + regionDetails.linkValue;
                   }
                 }
-              if(_.startsWith(regionDetails.linkValue,'https://mediaplayer.pearsoncmg.com/assets'))
+              if(_.startsWith(regionDetails.linkValue,'https://mediaplayer.pearsoncmg.com/assets') || _.startsWith(regionDetails.linkValue,'http://mediaplayer.pearsoncmg.com/assets'))
               {
                 regionDetails.hotspotType = 'SPPASSET';
-              } 
+              }
+              if(regionDetails.hotspotType != 'SPPASSET')
+              {
+                if(!regionDetails.linkValue.includes('pearson') || _.endsWith(regionDetails.linkValue,".htm") || _.endsWith(regionDetails.linkValue,".html"))
+                {
+                  regionDetails.hotspotType = 'EXTERNALLINK';
+                }
+              }
             }
             /*Checking if the clicked hotspot is Image/Video/Audio/URL and open it in MMI Component */
             if(regionDetails.hotspotType == 'IMAGE' || regionDetails.hotspotType == 'VIDEO' || regionDetails.hotspotType == 'AUDIO' || regionDetails.hotspotType == 'URL' || regionDetails.hotspotType == 'SPPASSET')
@@ -893,7 +903,7 @@ handleRegionClick(hotspotID) {
                 }
                 catch(e){
                 }
-              }     
+              }
               else if(this.state.regionData.hotspotType == 'AUDIO' && this.state.regionData.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
               {
                 try
@@ -913,23 +923,23 @@ handleRegionClick(hotspotID) {
                   jQuery(function(){
                    jQuery('.play-pause').click();
                   });
-                  $.getScript("https://code.jquery.com/ui/1.12.1/jquery-ui.js", function() 
+                  $.getScript("https://code.jquery.com/ui/1.12.1/jquery-ui.js", function()
                   {
                     $( ".aquila-audio-player" ).draggable()
-                  });                  
+                  });
                 }
                 catch(e){
                 }
-              }                    
+              }
             }
             else
             {
-              this.renderHotspot(regionDetails);    
+              this.renderHotspot(regionDetails);
             }
             break;
           }
-      }    
-    }    
+      }
+    }
   }
  /* Method for creating highLight for selected area by user. */
   createHighlight(highlightData) {
@@ -1183,14 +1193,14 @@ printFunc = () => {
     let showHideHighlights = {
       type : 'menuItem',
       value : 'showHideHighlights',
-      text : this.state.showHighlight ? messages.hideHighlights ? messages.hideHighlights :'Hide Highlights' 
+      text : this.state.showHighlight ? messages.hideHighlights ? messages.hideHighlights :'Hide Highlights'
                   : messages.showHighlights ? messages.showHighlights : 'Show Highlights',
       onClick : this.showHideHighlights
     }
     let showHideHotspots = {
       type : 'menuItem',
       value : 'showHideHotspots',
-      text : this.state.showHotspot ? messages.hideLinks ? messages.hideLinks :'Hide Links' 
+      text : this.state.showHotspot ? messages.hideLinks ? messages.hideLinks :'Hide Links'
                   : messages.showLinks ? messages.showLinks : 'Show Links',
       onClick : this.showHideRegions
     }
@@ -1257,7 +1267,7 @@ printFunc = () => {
         <div>
         <div id='sppDiv' className='sppContent' />
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
-        <LearningContextProvider 
+        <LearningContextProvider
           contextId = {this.props.data.location.query.bookid}
           contentType = "PDF"
           metadata = {productData.metaData}
