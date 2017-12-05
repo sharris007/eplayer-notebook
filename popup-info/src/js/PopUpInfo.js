@@ -217,9 +217,9 @@ class PopUpInfo extends Component {
         }
       }
       setTimeout(function() {
-        if(document.getElementsByClassName('accessibility_audio') && document.getElementsByClassName('accessibility_audio').length && document.getElementsByClassName('mm-popup__box') && document.getElementsByClassName('mm-popup__box').length) {
-            document.getElementsByClassName('accessibility_audio')[0].innerHTML = '';
-            document.getElementsByClassName('accessibility_audio')[0].innerHTML = document.getElementsByClassName('mm-popup__box')[0].innerText;
+        if($('.accessibility_audio').length && $('.mm-popup__box').length) {
+            $('.accessibility_audio').text('');
+            $('.accessibility_audio').text($('.mm-popup__box').text());
         }
       }, 500);
     }
