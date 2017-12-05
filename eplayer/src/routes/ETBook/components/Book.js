@@ -118,16 +118,22 @@ export class Book extends Component {
         if (piSession) {
           isSessionLoaded = true;
           piSession.getToken(function (result, userToken) {
+            console.log('userToken', userToken);
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
+              console.log('if part userToken', localStorage.getItem('secureToken'));
               const piUserId = piSession.userId();
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }
             else{
+              console.log('inside else');
               //function for getting current session PiToken
               function loginCallback(result, token){
+                console.log('token', token);
+                console.log('result', result);
                 localStorage.setItem('secureToken', token);
+                console.log('else part userToken', localStorage.getItem('secureToken'));
               }
               piSession.login(redirectCourseUrl, 10, loginCallback);
             }
@@ -721,6 +727,7 @@ export class Book extends Component {
       this.props.book.annTotalData = [];
     }
     const getOriginurl = localStorage.getItem('backUrl');
+    localStorage.setItem('secureToken', undefined);
     if (getOriginurl) {
       window.location.href = getOriginurl;
     }
