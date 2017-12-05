@@ -18,6 +18,7 @@ Annotator.Editor = (function(_super) {
     '.annotator-listing textarea keyup':'onNoteChange',
     '.annotator-delete-container click':'onDeleteIconClick',
     '.annotator-confirm-cancel click':'onCancelClick',
+    '.annotator-edit-container,.annotator-delete-container,.annotator-share,.annotator-save,.annotator-cancel,.annotator-confirm-delete,.annotator-confirm-cancel keydown':'onKeydownSelection',
     'keyup' : 'onKeyupSelection',
     '.annotator-pink keydown' : 'onKeydownPink',
     '.annotator-save,.annotator-share keydown' : 'onKeydownSave',
@@ -70,6 +71,10 @@ Annotator.Editor = (function(_super) {
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
     this.annotation = {};
+  }
+  Editor.prototype.onKeydownSelection = function(event) {
+    if (event.keyCode == 32) 
+      event.preventDefault();
   }
   Editor.prototype.onKeyupSelection = function(event) {
     if (event.keyCode === 32 || event.keyCode === 13) {
