@@ -4746,15 +4746,17 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                     password: a.getPDFPassword()
                 };
                 c[e] = !0
-                /*if(window.location.protocol != "file:"){
+                if(window.location.protocol != "file:"){
                     var bookid = JSON.parse(localStorage.getItem('bookId'));
                     if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
                         var f = "./js/providers/"+bookid+"epub/"+bookid+"/annotations/page" + e;
                     } else {
                         var f = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/annotations/page" + e;
-                    }
-                    if(window.foxitAssetURL){
+                        if(window.foxitAssetURL){
                         f = window.foxitAssetURL + "/annotations/page" + e ;
+                        }else{
+                            f = a.getOptions().url + "text/" + e;
+                        }
                     }
                     $.get(f , function(a) {
                         a = JSON.parse(a);
@@ -4773,7 +4775,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                                 return h.init(""), b[e] = h, c[e] = !1, !1
                             }
                     });
-                } else {*/
+                } else {
                     var f = a.getOptions().url + "text/" + e;
                     if(window.foxitAssetURL){
                         f = window.foxitAssetURL + "/annotations/page" + e ;
@@ -4805,7 +4807,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                             return a.init(""), b[e] = a, c[e] = !1, !1
                         }
                     })
-                //}
+                }
             }
         }, this.ajaxSearchText = function(b, c) {
             if ("" != b) {
@@ -6408,7 +6410,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var i = {
                 password: a.getPDFPassword()
             };
-            $.ajax({
+            /*$.ajax({
                 url: h,
                 dataType: "json",
                 data: i,
@@ -6436,7 +6438,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 error: function() {
                     e(null)
                 }
-            })
+            })*/
         }, this.asyncLoadPDFAnnotation = function(a, b, c, e, f) {
             d(!0, a, b, c, e, f)
         }, this.syncLoadPDFAnnotation = function(a, b, c, e, f) {
@@ -16953,22 +16955,25 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
         }, this.asyncLoadDocument = function(a, c, d, e, f) {
             if (!$.isFunction(e) || !$.isFunction(f)) return void $.error("both 'doneHandler' and 'failedHandler' must be function.");
             var g;
-            /*if(window.location.protocol != "file:"){
+            if(window.location.protocol != "file:"){
                 var bookid = JSON.parse(localStorage.getItem('bookId'));
                 if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
                     g = "./js/providers/"+bookid+"epub/"+bookid+"/manifest";
                 } else {
                     g = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/manifest";
-                }
-                if(window.foxitAssetURL){
+                    if(window.foxitAssetURL){
                     g = window.foxitAssetURL + "/manifest";
+                    }else{
+                       g = a.getOptions().url + "manifest"; 
+                    }
                 }
-            }else{*/
+                
+            }else{
                 g = a.getOptions().url + "manifest";
                 if(window.foxitAssetURL){
                     g = window.foxitAssetURL + "/manifest";
                 }
-            //} 
+            } 
                 h = {};
             c ? h.password = c : h.password = "", null != d && (h.isCheckPsd = d), h.form = a.isFormMode(), $.ajax({
                 url: g,
@@ -17508,7 +17513,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var d = c ? "thumb" : b + "",
                 e = "?password=" + i.getPDFPassword();
                 var f;
-                /*if(window.location.protocol != "file:"){
+                if(window.location.protocol != "file:"){
                     var bookid = JSON.parse(localStorage.getItem('bookId'));
                     if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
                         f = "./js/providers/"+bookid+"epub/"+bookid+"/pages/page" + a;
@@ -17517,17 +17522,19 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                         f = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/pages/page" + a;
                         if(window.foxitAssetURL){
                             f = window.foxitAssetURL + "/pages/page" + a + e ;
+                        }else{
+                            f = i.getOptions().url + "image/" + a + "/" + d + e;
                         }
                         return f
                     }                    
-                }else{*/
+                }else{
                     if(window.foxitAssetURL){
                         f = window.foxitAssetURL + "/pages/page" + a + e ;
                     }else{
                         f = i.getOptions().url + "image/" + a + "/" + d + e;
                     }
                     return f += "&accessToken=" + "null", i.isFormMode() && (f += "&formMode=true"), f
-                //}
+                }
         }, this.getPixelsPerPoint = function() {
             return 96 / 72
         }, this.renderPage = function(a, b) {
@@ -17610,11 +17617,29 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
 }), define("core/ImageLazyLoad", ["core/WebPDF"], function(a, b, c) {
     var d = a("core/WebPDF");
     return d.ImgLazyLoad = function(a, b, c, e, f) {
-       /* if(window.location.protocol != "file:"){
+      if(window.location.protocol != "file:"){
             if(a.indexOf("pages") > -1){
                 e(c);      
+            }else{
+                $.ajax({
+                    url: a,
+                    crossDomain: !0,
+                    ifModified: !0,
+                    error: function(a, b, d) {
+                        $.isFunction(f) && f(c)
+                    },
+                    success: function(a, b, f) {
+                        var g = f.getResponseHeader("content-type") || "";
+                        if (g.indexOf("application/json") > -1) {
+                            var h = a.status.toString();
+                            h != d.ImageEngine.GetImageErrorCode.ERROR_PAGE_DISPLAY_LIMIT.toString() && h != d.ImageEngine.GetImageErrorCode.ERROR_CREATE_IMG_FAILED.toString() && h != d.ImageEngine.GetImageErrorCode.ERROR_INPROGRESS.toString() || "success" != b || e(c, h)
+                        } else {
+                            e(c)
+                        }
+                    }
+                })             
             }
-        }else{*/
+        }else{
             $.ajax({
                 url: a,
                 crossDomain: !0,
@@ -17632,7 +17657,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                     }
                 }
             })            
-        //}        
+        }        
     }, d.ImgLazyLoad
 }), define("core/AjaxRetryManager", ["core/WebPDF"], function(a, b, c) {
     var d = a("core/WebPDF");
