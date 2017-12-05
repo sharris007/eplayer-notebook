@@ -35,7 +35,7 @@ export const getAnndata = data => fetch(`${pxeService[envType]}/context/${data.c
   }
 });// eslint-disable-line
 
-export const getAuthToken = (piToken) => fetch('https://etext-dev.pearson.com/api/nextext-api/v1/api/nextext/eps/authtoken', {
+export const getAuthToken = (piToken) => fetch(`${etextService[envType]}/nextext/eps/authtoken`, {
     method: 'GET',
     headers: { 
       'Content-Type': 'application/json',
