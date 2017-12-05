@@ -16,6 +16,7 @@ import { resources, domain } from '../../const/Settings';
 
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
+const etextServiceUrl = resources.links[etextServiceUrl];
 const pxeService = resources.links.pxeServiceUrl;
 const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
@@ -35,7 +36,7 @@ export const getAnndata = data => fetch(`${pxeService[envType]}/context/${data.c
   }
 });// eslint-disable-line
 
-export const getAuthToken = (piToken) => fetch(`${etextService[envType]}/nextext/eps/authtoken`, {
+export const getAuthToken = (piToken) => fetch(`${etextServiceUrl[envType]}/nextext/eps/authtoken`, {
     method: 'GET',
     headers: { 
       'Content-Type': 'application/json',

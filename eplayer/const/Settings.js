@@ -27,8 +27,8 @@ export const resources = {
     support        : 'https://media.pearsoncmg.com/cmg/NexText/about/support/index.html',
     permissions    : 'https://media.pearsoncmg.com/cmg/NexText/about/permissions/index.html',
     etextServiceUrl: {
-      local        : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
-      dev          : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
+      local        : 'https://etext-dev.pearson.com/api/nextext-api/api',
+      dev          : 'https://etext-dev.pearson.com/api/nextext-api/api',
       qa           : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
       stage        : 'https://etext-stg.pearson.com/api/nextext-api/api',
       prod         : 'https://etext.pearson.com/api/nextext-api/api'
