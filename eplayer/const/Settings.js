@@ -42,7 +42,7 @@ export const resources = {
     },
     courseServiceUrl: {
       local        : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',
-      dev          : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot',
+      dev          : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',                          //stpaperapi.dev-prsn.com
       qa           : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',
       stage        : 'https://stpaperapi.stg-prsn.com/etext/v2/courseboot',
       prod         : 'https://stpaperapi.prsn.com/etext/v2/courseboot'
@@ -180,7 +180,7 @@ export const domain = {
     if (locationOrigin.indexOf('localhost') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('etext-dev.pearson.com') !== -1)
-          { return 'qa'; }
+          { return 'dev'; }
     else if (locationOrigin.indexOf('etext-qa-stg.pearson.com') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('etext-stg.pearson.com') !== -1)
