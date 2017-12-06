@@ -77,6 +77,24 @@ used for before mounting occurs. */
   currentbook = {};
   let bookID = this.props.location.query.bookid;
   let bookData = {};
+
+  if (this.props.location.query.invoketype !== undefined && this.props.location.query.invoketype === 'pi')
+  {
+    var bookshelfhsid = this.props.location.query.hsid;
+    
+    let bookhsid = getmd5('bookid='+bookID+'&invoketype='+this.props.location.query.invoketype+eT1Contants.BOOKSHELF_MD5_SECRET_KEY);
+    
+    if(bookhsid == bookshelfhsid)    
+    {   
+      console.log("hsid match success. Continue to launch the title");
+    }   
+    else    
+    {   
+      console.log("hsid match failure. Show the error page");
+      browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
+    } 
+  }
+
   if ((this.props.location.query.invoketype !== undefined && 
           this.props.location.query.invoketype === 'pi') || (this.props.currentbook.globalUserId !== undefined && this.props.location.query.invoketype !== undefined && 
           this.props.location.query.invoketype === 'et1'))

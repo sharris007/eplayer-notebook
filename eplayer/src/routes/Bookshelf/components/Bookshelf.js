@@ -202,8 +202,17 @@ export default class BookshelfPage extends React.Component {
        const bookObj = _.find(entries, bookData => bookData.bookId == bookId);
        if(!bookObj.expired) {
 
-      browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=${invoketype}`);
-    }
+        if (invoketype === 'pi')
+         {
+            var hsid = getmd5('bookid='+bookId+'&invoketype='+invoketype+eT1Contants.BOOKSHELF_MD5_SECRET_KEY);
+            
+            browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=${invoketype}&hsid=${hsid}`);
+         }
+         else
+         {
+            browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=${invoketype}`);
+         }      
+      }
 
     }  else if( type === 'et2'){
       browserHistory.push(`/eplayer/ETbook/${bookId}`);
