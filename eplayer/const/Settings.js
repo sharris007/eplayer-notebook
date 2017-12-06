@@ -1,7 +1,7 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  *   
- *  *  Copyright © 2017 Pearson Education, Inc.
+ *  *  Copyright ? 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
  *  * 
  *  * NOTICE:  All information contained herein is, and remains
@@ -45,7 +45,7 @@ export const resources = {
       dev          : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',                          //stpaperapi.dev-prsn.com
       qa           : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',
       stage        : 'https://stpaperapi.stg-prsn.com/etext/v2/courseboot',
-      prod         : 'https://stpaperapi.prsn.com/etext/v2/courseboot'
+      prod         : 'https://stpaperapi.prd-prsn.com/etext/v2/courseboot'
     },
     etextSearchUrl: {
       local        : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
@@ -121,7 +121,7 @@ export const resources = {
       dev          :"https://etext-instructor-dev.pearson.com/idc-api/course",
       qa           :"https://etext-instructor-qa.pearson.com/idc-api/course",
       stage        :"https://etext-instructor-stg.pearson.com/idc-api/course",
-      prod         :"",
+      prod         :"https://etext-instructor.pearson.com/idc-api/course",
     },
     spectrumServiceUrl : {
       local        :"https://spectrum-qa.stg-openclass.com/api/context",
