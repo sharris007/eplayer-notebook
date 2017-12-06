@@ -134,7 +134,7 @@ export class PdfBookReader extends Component {
    loadCoverPage = (pageIndexToLoad) => {
     let currentPageIndex = 0;
     if(isNaN(pageIndexToLoad)){
-     this.goToPage(pageIndexToLoad); 
+     this.goToPage(pageIndexToLoad);
     }
     const PDFassetURL = `${serverDetails}/ebookassets`
                 + `/ebook${this.props.data.book.bookinfo.book.globalbookid}${this.props.data.book.bookinfo.book.pdfCoverArt}`;
@@ -154,7 +154,13 @@ export class PdfBookReader extends Component {
     const pdfPath = currentPage.pdfPath;
     const PDFassetURL = `${serverDetails}/ebookassets`
                 + `/ebook${this.props.data.book.bookinfo.book.globalbookid}/ipadpdfs/${pdfPath}`;
-    this.props.data.actions.loadcurrentPage(this.props.data.location.query.bookid,currentPageIndex,PDFassetURL,'BookPage');
+    let foxitAssetURL;
+    if(currentPage.readerPlusID){
+      foxitAssetURL = eT1Contants.foxiAssetBaseUrl + currentPage.readerPlusID + '/foxit-assets';
+    }else{
+      foxitAssetURL = false;
+    }
+    this.props.data.actions.loadcurrentPage(this.props.data.location.query.bookid,currentPageIndex,PDFassetURL,'BookPage',foxitAssetURL);
     this.setState({ currPageIndex: currentPageIndex });
     sessionStorage.setItem("currentPageOrder",currentPageIndex);
     const data = this.state.data;
@@ -211,7 +217,7 @@ export class PdfBookReader extends Component {
           for(let arr=0;arr < this.props.data.book.regions.length ; arr++)
           {
             if(this.props.data.book.regions[arr].regionTypeID == 5 && this.props.data.book.regions[arr].glossaryEntryID !== null)
-            {       
+            {
               glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + this.props.data.book.regions[arr].glossaryEntryID;
               regionsData.push(this.props.data.book.regions[arr]);
             }
@@ -230,9 +236,9 @@ export class PdfBookReader extends Component {
                     popOverCollection : {
                       popOverDescription : this.props.data.book.glossaryInfoList[i].glossaryDefinition,
                       popOverTitle : this.props.data.book.glossaryInfoList[i].glossaryTerm
-                    }                
+                    }
                   };
-                  glossaryData.push(glossTerm);                
+                  glossaryData.push(glossTerm);
                 }
               }
             }
@@ -248,9 +254,9 @@ export class PdfBookReader extends Component {
     try
     {
       Popup.close();
+      $(".fwr-highlight-annot").hide();
     }
-    catch(e){
-    }
+    catch(e){}
     const currPageIndex = this.state.currPageIndex;
     // If we are navigating to current page then do nothing
     if (pageno !== currPageIndex)
@@ -270,7 +276,7 @@ export class PdfBookReader extends Component {
           }
         } else if (pageno === 'next') {
           pageIndexToLoad = currPageIndex + 1;
-        } 
+        }
       }
       else
       {
@@ -282,7 +288,7 @@ export class PdfBookReader extends Component {
                   (startpage.pageorder > pageIndexToLoad || endpage.pageorder < pageIndexToLoad))
       {
         this.setState({ drawerOpen: false });
-        return; 
+        return;
       }
       __pdfInstance.removeExistingHighlightCornerImages();
       this.setState({ drawerOpen: false,pageLoaded: false,regionData: null,
@@ -294,9 +300,7 @@ export class PdfBookReader extends Component {
           $('#sppDiv').empty();
           $('#sppDiv').hide();
         }
-        catch(e){
-
-        }
+        catch(e){}
       }
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
       this.setState({ totalPagesToHit });
@@ -314,7 +318,7 @@ export class PdfBookReader extends Component {
             pages = this.props.data.book.bookinfo.pages;
             localStorage.setItem('pages', JSON.stringify(pages));
           }
-          if(pageno != 'cover' && pageIndexToLoad !== 0) 
+          if(pageno != 'cover' && pageIndexToLoad !== 0)
           {this.loadPdfPage(pageIndexToLoad);}
           else if(pageIndexToLoad === 0){
           this.loadCoverPage(pageIndexToLoad);
@@ -463,9 +467,9 @@ export class PdfBookReader extends Component {
             popOverCollection : {
               popOverDescription : this.props.data.book.glossaryInfoList[i].glossaryDefinition,
               popOverTitle : this.props.data.book.glossaryInfoList[i].glossaryTerm
-            }                
+            }
           };
-          glossaryDataUpdated.push(glossTerm);                
+          glossaryDataUpdated.push(glossTerm);
         }
       }
     }
@@ -533,12 +537,12 @@ export class PdfBookReader extends Component {
     {
       transparentRegion.style.borderBottomColor = this.props.data.book.bookFeatures.underlinehotppothovercolor;;
       transparentRegion.style.borderBottomWidth = this.props.data.book.bookFeatures.underlinehotspotthickness + 'px';
-      transparentRegion.style.borderBottomStyle = 'solid';  
+      transparentRegion.style.borderBottomStyle = 'solid';
     }
     else
     {
       transparentRegion.style.background = convertHexToRgba(this.props.data.book.bookFeatures.hotspotcolor,this.props.data.book.bookFeatures.regionhotspotalpha);
-    } 
+    }
   }
 /*Method to handle mouse out event for transparent hotsopts*/
   handleTransparentRegionUnhover(hotspotID)
@@ -552,7 +556,7 @@ export class PdfBookReader extends Component {
     {
       transparentRegion.style.borderBottomColor = convertHexToRgba(this.props.data.book.bookFeatures.underlinehotspotcolor,0);
       transparentRegion.style.borderBottomWidth = 0 + 'px';
-      transparentRegion.style.borderBottomStyle = 'none';  
+      transparentRegion.style.borderBottomStyle = 'none';
     }
     else
     {
@@ -563,17 +567,13 @@ export class PdfBookReader extends Component {
   getHotspotType = (hotspot) => {
     let region = '';
     let regionLink = hotspot.linkValue.toLowerCase();
-    if(_.endsWith(regionLink,'.doc') == true || _.endsWith(regionLink,'.xls') == true || _.endsWith(regionLink,'.ppt') == true || 
-       _.endsWith(regionLink,'.pdf') == true || _.endsWith(regionLink,'.docx') == true || _.endsWith(regionLink,'.xlsx') == true || 
+    if(_.endsWith(regionLink,'.doc') == true || _.endsWith(regionLink,'.xls') == true || _.endsWith(regionLink,'.ppt') == true ||
+       _.endsWith(regionLink,'.pdf') == true || _.endsWith(regionLink,'.docx') == true || _.endsWith(regionLink,'.xlsx') == true ||
        _.endsWith(regionLink,'.pptx') == true)
     {
       region = 'DOCUMENT';
     }
     else if(_.endsWith(regionLink,'.mp4') == true || _.endsWith(regionLink,'.m4v') == true || _.endsWith(regionLink,'.flv') == true)
-    {
-      region = 'VIDEO';
-    }
-    else if(hotspot.pearsonSmartPlayer == true && _.startsWith(regionLink,'https://mediaplayer.pearsoncmg.com/assets'))
     {
       region = 'VIDEO';
     }
@@ -584,6 +584,10 @@ export class PdfBookReader extends Component {
     else if(_.endsWith(regionLink,'.jpg') == true || _.endsWith(regionLink,'.jpeg') == true || _.endsWith(regionLink,'.png') == true || _.endsWith(regionLink,'.gif') == true)
     {
       region = 'IMAGE';
+    }
+    else if(_.endsWith(regionLink,'.htm') == true || _.endsWith(regionLink,'.html') == true )
+    {
+      region = 'EXTERNALLINK';
     }
     else
     {
@@ -609,7 +613,7 @@ export class PdfBookReader extends Component {
     let hotspotData,source;
     switch(hotspotDetails.hotspotType) {
       case 'AUDIO':
-                  source=hotspotDetails.linkValue;
+                  source = this.createHttps(hotspotDetails.linkValue);
                   hotspotData = {
                     audioSrc :source,
                     audioTitle :hotspotDetails.name
@@ -624,7 +628,7 @@ export class PdfBookReader extends Component {
                 parent.location = email;
                 break;
       case 'IMAGE':
-               source=hotspotDetails.linkValue;
+               source = this.createHttps(hotspotDetails.linkValue);
                hotspotData = {
                  alt : hotspotDetails.name,
                  src : source,
@@ -636,58 +640,51 @@ export class PdfBookReader extends Component {
                regionComponent = <ImageViewerPreview data={hotspotData}/>;
                break;
       case 'VIDEO':
-               source=hotspotDetails.linkValue;
-               if(hotspotDetails.pearsonSmartPlayer == true && _.startsWith(source,'https://mediaplayer.pearsoncmg.com/assets'))
-               {
-                 var lastIndex = source.lastIndexOf("/");
-                 var videoID = source.slice(lastIndex+1);
-                 var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppDiv/' + videoID;
-                 var sppScript=document.createElement('SCRIPT');
-                 sppScript.src = scriptContent;
-                 document.getElementById('sppDiv').style.height = 400 + 'px';
-                 document.getElementById('sppDiv').style.width = 500 + 'px';
-                 document.getElementById('docViewer_ViewContainer_PageContainer_0').appendChild(sppScript);
-                  try
-                  {
-                    $('#sppDiv').show();
-                  }
-                  catch(e){
-                  }
-               }
-               else
-               {
+               source = this.createHttps(hotspotDetails.linkValue);
+               hotspotData = {
+                title : hotspotDetails.name,
+                src : source,
+                caption : hotspotDetails.description || "",
+                id : hotspotDetails.regionID,
+                thumbnail : {
+                  src : "",
+               },
+               alt : hotspotDetails.name,
+               };
+               regionComponent = <VideoPlayerPreview data={hotspotData}/>;
+               break;
+      case 'SPPASSET':
+               source = hotspotDetails.linkValue;
+               var lastIndex = source.lastIndexOf("/");
+               var assetID = source.slice(lastIndex+1);
+               var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppDiv/' + assetID;
+               var sppScript=document.createElement('SCRIPT');
+               sppScript.src = scriptContent;
+               document.getElementById('sppDiv').style.height = 400 + 'px';
+               document.getElementById('sppDiv').style.width = 500 + 'px';
+               document.getElementById('docViewer_ViewContainer_PageContainer_0').appendChild(sppScript);
                 try
                 {
-                  $('#sppDiv').empty();
-                  $('#sppDiv').hide();
+                  $('#sppDiv').show();
                 }
                 catch(e){
-
                 }
-                 hotspotData = {
-                  title : hotspotDetails.name,
-                  src : source,
-                  caption : hotspotDetails.description || "",
-                  id : hotspotDetails.regionID,
-                  thumbnail : {
-                    src : "",
-                 },
-                 alt : hotspotDetails.name,
-                 };
-                 regionComponent = <VideoPlayerPreview data={hotspotData}/>;
-               }
-               break;
+                break;
       case 'DOCUMENT':
                source=hotspotDetails.linkValue;
                window.open(source,"_blank");
                break;
       case 'URL':
-               source=hotspotDetails.linkValue;
+               source = this.createHttps(hotspotDetails.linkValue);
                hotspotData = {
                  title : hotspotDetails.name,
                  src : source
                };
                regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={this.onHotspotClose}/>;
+               break;
+      case 'EXTERNALLINK':
+               source=hotspotDetails.linkValue;
+               window.open(source,"_blank");
                break;
       case 'LTILINK':
                let courseId;
@@ -736,17 +733,12 @@ handleRegionClick(hotspotID) {
           {
             regionDetails = this.props.data.book.regions[i];
             regionDetails.hotspotType = '';
-            if(regionDetails.linkTypeID !== eT1Contants.LinkType.PAGE_NUMBER || regionDetails.linkTypeID !== eT1Contants.LinkType.EMAIL 
-              || regionDetails.linkTypeID !== eT1Contants.LinkType.LTILINK)
-            {
-              regionDetails.linkValue = this.createHttps(regionDetails.linkValue);
-            }
             if(regionDetails.linkTypeID == eT1Contants.LinkType.IMAGE)
             {
               regionDetails.hotspotType = 'IMAGE';
               if(this.props.data.book.basepaths.imagepath !== null && this.props.data.book.basepaths.imagepath !== "" && this.props.data.book.basepaths.imagepath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.imagepath);
+                basepath = this.props.data.book.basepaths.imagepath;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.FLV)
@@ -754,7 +746,7 @@ handleRegionClick(hotspotID) {
               regionDetails.hotspotType = 'VIDEO';
               if(this.props.data.book.basepaths.flvpath !== null && this.props.data.book.basepaths.flvpath !== "" && this.props.data.book.basepaths.flvpath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.flvpath);
+                basepath = this.props.data.book.basepaths.flvpath;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.MP3 || regionDetails.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
@@ -762,7 +754,7 @@ handleRegionClick(hotspotID) {
               regionDetails.hotspotType = 'AUDIO';
               if(this.props.data.book.basepaths.mp3path !== null && this.props.data.book.basepaths.mp3path !== "" && this.props.data.book.basepaths.mp3path !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.mp3path);
+                basepath = this.props.data.book.basepaths.mp3path;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.PAGE_NUMBER)
@@ -782,7 +774,7 @@ handleRegionClick(hotspotID) {
               regionDetails.hotspotType = 'VIDEO';
               if(this.props.data.book.basepaths.h264path !== null && this.props.data.book.basepaths.h264path !== "" && this.props.data.book.basepaths.h264path !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.h264path);
+                basepath = this.props.data.book.basepaths.h264path;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.URL)
@@ -799,7 +791,7 @@ handleRegionClick(hotspotID) {
               {
                 regionDetails.hotspotType = this.getHotspotType(regionDetails);
               }
-              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || 
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC ||
                 regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT)
               {
                 regionDetails.hotspotType = 'DOCUMENT';
@@ -807,10 +799,10 @@ handleRegionClick(hotspotID) {
               if(regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO)
               {
                 regionDetails.hotspotType = 'VIDEO';
-              }              
+              }
               if(this.props.data.book.basepaths.urlpath !== null && this.props.data.book.basepaths.urlpath !== "" && this.props.data.book.basepaths.urlpath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.urlpath);
+                basepath = this.props.data.book.basepaths.urlpath;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.VIRTUAL_LEARNING_ASSET)
@@ -827,7 +819,7 @@ handleRegionClick(hotspotID) {
               {
                 regionDetails.hotspotType = this.getHotspotType(regionDetails);
               }
-              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC || 
+              if(regionDetails.regionTypeID == eT1Contants.RegionType.PDF || regionDetails.regionTypeID == eT1Contants.RegionType.WORD_DOC ||
                 regionDetails.regionTypeID == eT1Contants.RegionType.EXCEL || regionDetails.regionTypeID == eT1Contants.RegionType.POWERPOINT)
               {
                 regionDetails.hotspotType = 'DOCUMENT';
@@ -835,18 +827,18 @@ handleRegionClick(hotspotID) {
               if(regionDetails.regionTypeID == eT1Contants.RegionType.VIDEO)
               {
                 regionDetails.hotspotType = 'VIDEO';
-              }              
+              }
               if(this.props.data.book.basepaths.virtuallearningassetpath !== null && this.props.data.book.basepaths.virtuallearningassetpath !== "" && this.props.data.book.basepaths.virtuallearningassetpath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.virtuallearningassetpath);
+                basepath = this.props.data.book.basepaths.virtuallearningassetpath;
               }
             }
             else if(regionDetails.linkTypeID == eT1Contants.LinkType.CHROMELESS_URL)
             {
-              regionDetails.hotspotType = this.getHotspotType(regionDetails);  
+              regionDetails.hotspotType = this.getHotspotType(regionDetails);
               if(this.props.data.book.basepaths.chromelessurlpath !== null && this.props.data.book.basepaths.chromelessurlpath !== "" && this.props.data.book.basepaths.chromelessurlpath !== undefined)
               {
-                basepath = this.createHttps(this.props.data.book.basepaths.chromelessurlpath);
+                basepath = this.props.data.book.basepaths.chromelessurlpath;
               }
             }
             if(regionDetails.hotspotType !== 'PAGENUMBER' || regionDetails.hotspotType !== 'EMAIL' || regionDetails.hotspotType !== 'LTILINK')
@@ -857,10 +849,21 @@ handleRegionClick(hotspotID) {
                   {
                     regionDetails.linkValue = basepath + regionDetails.linkValue;
                   }
-                } 
+                }
+              if(_.startsWith(regionDetails.linkValue,'https://mediaplayer.pearsoncmg.com/assets') || _.startsWith(regionDetails.linkValue,'http://mediaplayer.pearsoncmg.com/assets'))
+              {
+                regionDetails.hotspotType = 'SPPASSET';
+              }
+              if(regionDetails.hotspotType != 'SPPASSET')
+              {
+                if(!regionDetails.linkValue.includes('pearson') || _.endsWith(regionDetails.linkValue,".htm") || _.endsWith(regionDetails.linkValue,".html"))
+                {
+                  regionDetails.hotspotType = 'EXTERNALLINK';
+                }
+              }
             }
             /*Checking if the clicked hotspot is Image/Video/Audio/URL and open it in MMI Component */
-            if(regionDetails.hotspotType == 'IMAGE' || regionDetails.hotspotType == 'VIDEO' || regionDetails.hotspotType == 'AUDIO' || regionDetails.hotspotType == 'URL')
+            if(regionDetails.hotspotType == 'IMAGE' || regionDetails.hotspotType == 'VIDEO' || regionDetails.hotspotType == 'AUDIO' || regionDetails.hotspotType == 'URL' || regionDetails.hotspotType == 'SPPASSET')
             {
               /*Updating the state to rerender the page with Aquila JS Component*/
               this.setState({regionData : regionDetails});
@@ -898,7 +901,7 @@ handleRegionClick(hotspotID) {
                 }
                 catch(e){
                 }
-              }     
+              }
               else if(this.state.regionData.hotspotType == 'AUDIO' && this.state.regionData.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
               {
                 try
@@ -918,23 +921,23 @@ handleRegionClick(hotspotID) {
                   jQuery(function(){
                    jQuery('.play-pause').click();
                   });
-                  $.getScript("https://code.jquery.com/ui/1.12.1/jquery-ui.js", function() 
+                  $.getScript("https://code.jquery.com/ui/1.12.1/jquery-ui.js", function()
                   {
                     $( ".aquila-audio-player" ).draggable()
-                  });                  
+                  });
                 }
                 catch(e){
                 }
-              }                    
+              }
             }
             else
             {
-              this.renderHotspot(regionDetails);    
+              this.renderHotspot(regionDetails);
             }
             break;
           }
-      }    
-    }    
+      }
+    }
   }
  /* Method for creating highLight for selected area by user. */
   createHighlight(highlightData) {
@@ -1079,6 +1082,15 @@ handleRegionClick(hotspotID) {
     __pdfInstance.restoreHighlights(highlightList, this.deleteHighlight);
     __pdfInstance.reRenderHighlightCornerImages(noteIconsList);
     this.setState({ highlightList:highlightList });
+    if(this.state.showHighlight == false)
+    {
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","hidden");
+        this.setState({showHighlight : false});
+      }
+      catch(e){}
+    }
   }
   /* Method for delete Highlight via passing the id of selected area. */
   deleteHighlight = (id) => {
@@ -1103,22 +1115,39 @@ handleRegionClick(hotspotID) {
       this.setState({showHotspot:true})
     }
   }
+  getPreference = () => {
+    let isAnnHide = this.state.showHighlight;
+    const prefData = {
+      'value': {
+        theme: 'White',
+        orientation: 'horizontal',
+        zoom: this.state.currZoomLevel,
+        isAnnotationHide: isAnnHide,
+        enableShowHide: true
+      }
+    };
+    const promiseVal = Promise.resolve(prefData);
+    return promiseVal;
+  }
   /* Method show or hide highlights/notes. */
-  showHideHighlights = () => {
-    let highlightList = document.getElementsByClassName('fwr-highlight-annot');
-    if(highlightList.length > 0 && highlightList[0].style.display !== "none")
+  showHideHighlights = (prefObject) => {
+    if(prefObject.isAnnotationHide == false)
     {
-      $(".fwr-highlight-annot").hide();
-      $(".annotator-handle").hide();
-      this.setState({showHighlight : false})
-      // $(".fwr-highlight-annot").remove();
-      // $(".annotator-handle").remove();
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","hidden");
+        this.setState({showHighlight : false})
+      }
+      catch(e){}
     }
     else
     {
-      $(".fwr-highlight-annot").show();
-      $(".annotator-handle").show();
-      this.setState({showHighlight : true})
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","visible");
+        this.setState({showHighlight : true})
+      }
+      catch(e){}
     }
   }
   viewerContentCallBack = (viewerCallBack) => {
@@ -1185,17 +1214,10 @@ printFunc = () => {
     };
     /*Creating array of objects containing options info for moreMenu*/
     let moreMenuData = [];
-    let showHideHighlights = {
-      type : 'menuItem',
-      value : 'showHideHighlights',
-      text : this.state.showHighlight ? messages.hideHighlights ? messages.hideHighlights :'Hide Highlights' 
-                  : messages.showHighlights ? messages.showHighlights : 'Show Highlights',
-      onClick : this.showHideHighlights
-    }
     let showHideHotspots = {
       type : 'menuItem',
       value : 'showHideHotspots',
-      text : this.state.showHotspot ? messages.hideLinks ? messages.hideLinks :'Hide Links' 
+      text : this.state.showHotspot ? messages.hideLinks ? messages.hideLinks :'Hide Links'
                   : messages.showLinks ? messages.showLinks : 'Show Links',
       onClick : this.showHideRegions
     }
@@ -1210,7 +1232,6 @@ printFunc = () => {
       value : 'signOut',
       text : messages.signOut ? messages.signOut : 'Sign Out',
     }
-    moreMenuData.push(showHideHighlights);
     moreMenuData.push(showHideHotspots);
     moreMenuData.push({type : 'divider'});
     moreMenuData.push(printData);
@@ -1249,6 +1270,8 @@ printFunc = () => {
             globaluserid = {this.props.currentbook.globaluserid}
             invoketype ={this.props.data.location.query.invoketype}
             moreMenuData = {moreMenuData}
+            preferenceUpdate = {this.showHideHighlights}
+            getPreference = {this.getPreference}
           />
 
           <div className="eT1viewerContent">
@@ -1262,7 +1285,7 @@ printFunc = () => {
         <div>
         <div id='sppDiv' className='sppContent' />
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
-        <LearningContextProvider 
+        <LearningContextProvider
           contextId = {this.props.data.location.query.bookid}
           contentType = "PDF"
           metadata = {productData.metaData}

@@ -13,6 +13,7 @@
  *******************************************************************************/
 import {resources , domain ,typeConstants} from './Settings';
 const pxeServiceUrl = resources.links.pxeServiceUrl[domain.getEnvType()];
+const spectrumServiceUrl = resources.links.spectrumServiceUrl[domain.getEnvType()];
 export const pageDetails = {
   renderId: 'pxeViewer',
   locale: 'en-us',
@@ -42,6 +43,7 @@ export const pageDetails = {
   isAnnotationHide: false,
   endPoints: {
     services: pxeServiceUrl,
+    spectrumServices: spectrumServiceUrl,
     search: 'https://content-service.dev-prsn.com/csg',
     pi: '',
     ingest: 'http://dragonfly.dev-openclass.com/pxereader-cm/api/cm'

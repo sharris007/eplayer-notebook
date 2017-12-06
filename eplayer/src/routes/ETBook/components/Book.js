@@ -118,8 +118,10 @@ export class Book extends Component {
         if (piSession) {
           isSessionLoaded = true;
           piSession.getToken(function (result, userToken) {
+            console.log('userToken', userToken);
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
+              console.log('if part userToken', localStorage.getItem('secureToken'));
               const piUserId = piSession.userId();
               if (!Utils.checkCookie('etext-cdn-token')) {
                 self.props.dispatch(getAuthToken(userToken));
@@ -127,9 +129,21 @@ export class Book extends Component {
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }
+            else{
+              console.log('inside else');
+              //function for getting current session PiToken
+              function loginCallback(result, token){
+                console.log('token', token);
+                console.log('result', result);
+                localStorage.setItem('secureToken', token);
+                console.log('else part userToken', localStorage.getItem('secureToken'));
+              }
+              piSession.login(redirectCourseUrl, 10, loginCallback);
+            }
           });
         }
         const getSecureToken = localStorage.getItem('secureToken');
+        console.log('getSecureToken', getSecureToken);
         this.bookDetailsData = {
           context: this.state.urlParams.context,
           piToken: getSecureToken,
@@ -142,13 +156,14 @@ export class Book extends Component {
         } else {
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
+        const getPreferenceData = {
+          userId: this.state.urlParams.user,
+          bookId: this.state.urlParams.context,
+          piToken: localStorage.getItem('secureToken')
+        }
+        this.props.dispatch(getPreferenceCallService(getPreferenceData));
       }
-      const getPreferenceData = {
-        userId: this.state.urlParams.user,
-        bookId: this.state.urlParams.context,
-        piToken: localStorage.getItem('secureToken')
-      }
-      this.props.dispatch(getPreferenceCallService(getPreferenceData));
+      
     }, 200)
   }
   componentWillUnmount() {
@@ -211,8 +226,8 @@ export class Book extends Component {
         this.onPageChange("pagescroll", nextProps.gotoPageObj.page.title);
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
           let url = `/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`;
-          url+=this.props.prodType?'?prodType='+this.props.prodType:'';
-          browserHistory.replace(url+'?launchLocale=' + window.annotationLocale);
+          url+=this.props.prodType?'?prdType='+this.props.prodType+'&':'?';
+          browserHistory.replace(url+'launchLocale=' + window.annotationLocale);
         } else {
           browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
         }
@@ -242,6 +257,7 @@ export class Book extends Component {
   removeAnnotationHandler = (annotationId) => {
     let deleteAnnData = $.extend(this.state.urlParams, { annId: annotationId });
     deleteAnnData.annHeaders = this.annHeaders;
+    deleteAnnData.body = { ids: [annotationId] };
     this.props.dispatch(deleteAnnCallService(deleteAnnData));
 
     let annElement = $('#contentIframe').contents().find('*[data-ann-id=' + annotationId + ']');
@@ -272,10 +288,11 @@ export class Book extends Component {
   };
 
   removeBookmarkHandler = (bookmarkId) => {
-    this.state.urlParams.uri = (bookmarkId ? bookmarkId : this.state.currentPageDetails.id);
+    let id = (bookmarkId ? bookmarkId : this.props.bookmarkedData.bookmarkId);
     this.forceUpdate();
     let bookmarksParams = this.state.urlParams;
     bookmarksParams.xAuth = localStorage.getItem('secureToken');
+    bookmarksParams.body = { ids: [id] };
     this.props.dispatch(deleteBookmarkCallService(bookmarksParams));
   };
 
@@ -296,8 +313,8 @@ export class Book extends Component {
       // eslint-disable-next-line
       if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
         let url = `/eplayer/Course/${this.props.params.bookId}/page/${data.id}`;
-        url+=this.props.prodType?'?prodType='+this.props.prodType:'';
-        browserHistory.replace(url+`?launchLocale=` + window.annotationLocale);
+        url+=this.props.prodType?'?prdType='+this.props.prodType+'&':'?';
+        browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
       } else {
         browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
       }
@@ -331,20 +348,20 @@ export class Book extends Component {
         }
       case typeConstants.ANNOTATION_CREATED:
         {
-          const annList = annStructureChange([data.rows[0]]);
+          let annList = annStructureChange([data.rows[0]]);
           this.props.dispatch(getTotalAnnotationData(annList));
           break;
         }
       case typeConstants.ANNOTATION_UPDATED:
         {
-          const annList = annStructureChange([data.rows[0]]);
+          let annList = annStructureChange([data.rows[0]]);
           this.props.dispatch(deleteAnnotationData(data.rows[0]));
           this.props.dispatch(getTotalAnnotationData(annList));
           break;
         }
       case typeConstants.ANNOTATION_DELETED:
-        {
-          this.props.dispatch(deleteAnnotationData(data.rows[0]));
+        { 
+          this.props.dispatch(deleteAnnotationData(data.rows));
           break;
         }
       case 'pagescroll':
@@ -455,7 +472,7 @@ export class Book extends Component {
   }
 
   isCurrentPageBookmarked = () => {
-    return this.props.isBookmarked;
+    return this.props.bookmarkedData.isBookmarked;
   };
 
   goToTextChange = (goToTextChangeCallBack) => {
@@ -524,8 +541,8 @@ export class Book extends Component {
       }, () => {
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
           let url = `/eplayer/Course/${this.props.params.bookId}/page/${id}`;
-          url+=this.props.prodType?'?prodType='+this.props.prodType:'';
-          browserHistory.replace(url+`?launchLocale=` + window.annotationLocale);
+          url+=this.props.prodType?'?prdType='+this.props.prodType+'&':'?';
+          browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
         } else {
           browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
         }
@@ -714,6 +731,7 @@ export class Book extends Component {
       this.props.book.annTotalData = [];
     }
     const getOriginurl = localStorage.getItem('backUrl');
+    localStorage.setItem('secureToken', undefined);
     if (getOriginurl) {
       window.location.href = getOriginurl;
     }
@@ -1033,13 +1051,12 @@ export class Book extends Component {
     } :
       {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'idpName': 'SMS',
+        'Content-Type': 'application/json',     //'idpName': 'SMS',
         'X-Authorization': localStorage.getItem('secureToken')
       };
 
     const annotationClient = axios.create({
-      baseURL: `${bootstrapParams.pageDetails.endPoints.services}/context/${this.state.urlParams.context}/annotations`,
+      baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
       headers: this.annHeaders,
       data: {
         context: this.state.urlParams.context,
@@ -1264,7 +1281,7 @@ const mapStateToProps = state => {
     tocResponse: state.playlistReducer.tocresponse,
     updatedToc: state.playlistReducer.updatedToc,
     tocReceived: state.playlistReducer.tocReceived,
-    isBookmarked: state.bookmarkReducer.data.isBookmarked,
+    bookmarkedData: state.bookmarkReducer.data,
     bookMarkData: state.bookmarkReducer.bookmarksData,
     gotoPageObj: state.gotopageReducer.gotoPageObj,
     isGoToPageRecived: state.gotopageReducer.isGoToPageRecived,

@@ -15,7 +15,8 @@
 const initialData = {
   bookmarksData: [],
   data: {
-    isBookmarked: false
+    isBookmarked: false,
+    bookmarkId: ''
   }
 };
 export default (state = initialData, action) => {
@@ -36,18 +37,19 @@ export default (state = initialData, action) => {
     case 'POST_BOOKMARK': {
       const actionData = action.data;
       actionData.isBookmarked = true;
+      actionData.bookmarkId = actionData.id;
       return {
         ...state,
         data: actionData
       };
     }
     case 'DELETE_BOOKMARK': {
-      const pageId = action.data.uri[0];
-      const getDeletedbookmark = state.bookmarksData.filter(bookmark => bookmark.uri !== pageId);
+      const bookmarkId = action.data.successItems ? action.data.successItems[0] : '';
+      const getDeletedbookmark = state.bookmarksData.filter(bookmark => bookmark.id !== bookmarkId);
       return {
         ...state,
         bookmarksData: getDeletedbookmark,
-        data: action.data
+        data: bookmarkId ? { isBookmarked: false } : state.data.isBookmarked
       };
     }
     case 'CLEAR_BOOKMARKS': {

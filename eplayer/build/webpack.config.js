@@ -39,7 +39,11 @@ const webpackConfig = {
     root: paths.client(),
     extensions: ['', '.js', '.jsx', '.json']
   },
-  module: {}
+  module: {},
+  stylus: {
+    use: [require('nib')()],
+    import: ['~nib/lib/nib/index.styl']
+  }
 };
 // ------------------------------------
 // Entry Points
@@ -142,6 +146,10 @@ webpackConfig.module.loaders = [{
 {
   test: /\.json$/,
   loader: 'json'
+},
+{
+  test: /\.styl$/,
+  loader: 'style-loader!css-loader!stylus-loader'
 }];
 
 // ------------------------------------

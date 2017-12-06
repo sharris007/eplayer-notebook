@@ -1318,7 +1318,7 @@ pointer-events: none;
 pointer-events: all;
 }
 
-.biblioref {
+.biblioref .noteref .noteref_footnote{
    -webkit-user-select: none; 
    -moz-user-select: none; 
    -ms-user-select: none; 
