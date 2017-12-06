@@ -145,8 +145,8 @@ export const contentUrl = {
   SecuredUrl: {
     local        :"etext-dev.pearson.com",
     dev          :"etext-dev.pearson.com",
-    qa           :"etext-qa-stg.pearson.com",
-    stage        :"etext-qa-stg.pearson.com",
+    qa           :"content.stg-openclass.com",  //etext-qa-stg.pearson.com
+    stage        :"content.stg-openclass.com", //etext-qa-stg.pearson.com
     prod         :"etext.pearson.com"
   }
 };
