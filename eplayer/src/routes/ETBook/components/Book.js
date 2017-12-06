@@ -114,6 +114,7 @@ export class Book extends Component {
       // deeper code
       if (!isSessionLoaded) {
         let redirectCourseUrl = window.location.href;
+        let getTokenValue;
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
@@ -121,7 +122,7 @@ export class Book extends Component {
             console.log('userToken', userToken);
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
-              console.log('if part userToken', localStorage.getItem('secureToken'));
+              getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
               const piUserId = piSession.userId();
               if (!Utils.checkCookie('etext-cdn-token')) {
                 self.props.dispatch(getAuthToken(userToken));
@@ -136,32 +137,36 @@ export class Book extends Component {
                 console.log('token', token);
                 console.log('result', result);
                 localStorage.setItem('secureToken', token);
+                getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
                 console.log('else part userToken', localStorage.getItem('secureToken'));
               }
               piSession.login(redirectCourseUrl, 10, loginCallback);
             }
           });
         }
-        const getSecureToken = localStorage.getItem('secureToken');
-        console.log('getSecureToken', getSecureToken);
-        this.bookDetailsData = {
-          context: this.state.urlParams.context,
-          piToken: getSecureToken,
-          bookId: this.props.params.bookId
-        }
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          this.bookDetailsData.courseId = this.props.params.bookId;
-          this.courseBook = true;
-          this.props.dispatch(getCourseCallService(this.bookDetailsData));
-        } else {
-          this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
-        }
-        const getPreferenceData = {
-          userId: this.state.urlParams.user,
-          bookId: this.state.urlParams.context,
-          piToken: localStorage.getItem('secureToken')
-        }
-        this.props.dispatch(getPreferenceCallService(getPreferenceData));
+        getTokenValue.then((value) => {
+          const getSecureToken = localStorage.getItem('secureToken');
+          console.log('getSecureToken', getSecureToken);
+          this.bookDetailsData = {
+            context: this.state.urlParams.context,
+            piToken: getSecureToken,
+            bookId: this.props.params.bookId
+          }
+          if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+            this.bookDetailsData.courseId = this.props.params.bookId;
+            this.courseBook = true;
+            this.props.dispatch(getCourseCallService(this.bookDetailsData));
+          } else {
+            this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
+          }
+          const getPreferenceData = {
+            userId: this.state.urlParams.user,
+            bookId: this.state.urlParams.context,
+            piToken: localStorage.getItem('secureToken')
+          }
+          this.props.dispatch(getPreferenceCallService(getPreferenceData));
+          });
+        
       }
       
     }, 200)
