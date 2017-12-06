@@ -56,7 +56,7 @@ export const resources = {
     },
     pxeServiceUrl: {
       local        : 'https://pxe-services-dev.pearson.com/services-api/api/3.2',
-      dev          : 'https://pxe-services-dev.pearson.com/services-api/api/3.2',
+      dev          : 'https://pxe-services-qa.pearson.com/services-api/api/3.2',
       qa           : 'https://pxe-services-qa-stg.pearson.com/services-api/api/3.2',
       stage        : 'https://pxe-services-stg.pearson.com/services-api/api/3.2',
       prod         : 'https://pxe-services.pearson.com/services-api/api/3.2'

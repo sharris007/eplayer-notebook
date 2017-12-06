@@ -13,11 +13,12 @@
  *******************************************************************************/
 /* global $ */
 import PlaylistApi from '../api/playlistApi';
-import { resources, domain, typeConstants } from '../../const/Settings';
+import { resources, domain, typeConstants, contentUrl } from '../../const/Settings';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
+import Utilities from '../components/utils';
 // GET Book Details
 export const getPlaylistCompleteDetails = json => ({
   type: typeConstants.GET_PLAYLIST,
@@ -91,14 +92,27 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
       PlaylistApi.doGetBookDetails(data)
         .then(response => response.json())
         .then((response) => {
+          //Changing content urls to secured url
+          response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+          response.bookDetail.metadata.toc = Utilities.changeContentUrlToSecured(response.bookDetail.metadata.toc);
+          
           dispatch(getBookDetails(response));
           bookId = response.bookDetail.bookId;
 
           tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
+
+          if (domain.getEnvType() === 'dev') {
+            tocUrl = tocUrl.replace(contentUrl.SecuredUrl['dev'],contentUrl.SecuredUrl['qa']);
+          }
+
           bookDetails = response.bookDetail.metadata;
           piToken = data.piToken;
           PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
             .then((response) => {
+              //Changing content urls to secured url
+              response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+              response.provider = Utilities.changeContentUrlToSecured(response.provider);
+
               dispatch(getPlaylistCompleteDetails(response));
               if (isFromCustomToc) {
                 dispatch(getCustomPlaylistCompleteDetails());
@@ -112,6 +126,10 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
 export const getBookTocCallService = data => dispatch =>
   PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
     .then((response) => {
+      //Changing content urls to secured url
+      response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+      response.provider = Utilities.changeContentUrlToSecured(response.provider);
+            
       const tocResponse = response.content;
       tocResponse.mainTitle = bookDetails.title;
       tocResponse.author = bookDetails.creator;
@@ -192,10 +210,19 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
-
+     //Changing content urls to secured url
+    response.userCourseSectionDetail.baseUrl = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.baseUrl);
+    response.userCourseSectionDetail.bookCoverImageUrl = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.bookCoverImageUrl);
+    response.userCourseSectionDetail.toc = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.toc);    
+    
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
+
+    if (domain.getEnvType() === 'dev') {
+      tocUrl = tocUrl.replace(contentUrl.SecuredUrl['dev'],contentUrl.SecuredUrl['qa']);
+    }
+
     bookDetails = response.userCourseSectionDetail;
     piToken = data.piToken;
     bookId = bookDetails.section.sectionId;
@@ -251,6 +278,11 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       .then((response) => {
         const securl = baseUrl.replace(/^http:\/\//i, 'https://');
         response.baseUrl = securl;
+
+        //Changing content urls to secured url
+        response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+        response.provider = Utilities.changeContentUrlToSecured(response.provider);
+                
         dispatch(getPlaylistCompleteDetails(response));
         if (isFromCustomToc) {
           dispatch(getCustomPlaylistCompleteDetails());
@@ -259,6 +291,16 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
   }
 
   );
+
+export const getAuthToken = (webToken) => dispatch =>
+   PlaylistApi.doGetAuthToken(webToken).then(response => response.json())
+    .then((response) => {
+        if(response.name && response.value) {
+          const authToken = response.name+"="+response.value+ ";path=/";
+          document.cookie = authToken;
+          //dispatch(getAuthTokenResponse(authToken));
+        }
+    });
 
 function redirectToIDCDashboard(prodType, courseId) {
   const idcBaseurl = `${resources.links.idcUrl[domain.getEnvType()]}/idc?`;
