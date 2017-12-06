@@ -104,7 +104,7 @@
     "@pearson-incubator/bookshelf": "0.1.36",
     "@pearson-incubator/notebook": "0.0.x",
     "@pearson-incubator/notes": "0.1.39",
-    "@pearson-incubator/popup-info": "*",
+    "@pearson-incubator/popup-info": "2.0.20",
     "@pearson-incubator/preferences": "0.1.37",
     "@pearson-incubator/pxe-annotation": "1.0.40",
     "@pearson-incubator/pxe-printpage": "*",
