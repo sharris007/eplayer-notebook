@@ -13,7 +13,7 @@
  *******************************************************************************/
 /* global $ */
 import PlaylistApi from '../api/playlistApi';
-import { resources, domain, typeConstants } from '../../const/Settings';
+import { resources, domain, typeConstants, contentUrl } from '../../const/Settings';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -100,6 +100,11 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
           bookId = response.bookDetail.bookId;
 
           tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
+
+          if (domain.getEnvType() === 'dev') {
+            tocUrl = tocUrl.replace(contentUrl.SecuredUrl['dev'],contentUrl.SecuredUrl['qa']);
+          }
+
           bookDetails = response.bookDetail.metadata;
           piToken = data.piToken;
           PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
@@ -124,7 +129,7 @@ export const getBookTocCallService = data => dispatch =>
       //Changing content urls to secured url
       response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
       response.provider = Utilities.changeContentUrlToSecured(response.provider);
-
+            
       const tocResponse = response.content;
       tocResponse.mainTitle = bookDetails.title;
       tocResponse.author = bookDetails.creator;
@@ -202,6 +207,11 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
+
+    if (domain.getEnvType() === 'dev') {
+      tocUrl = tocUrl.replace(contentUrl.SecuredUrl['dev'],contentUrl.SecuredUrl['qa']);
+    }
+
     bookDetails = response.userCourseSectionDetail;
     piToken = data.piToken;
     bookId = bookDetails.section.sectionId;
@@ -258,7 +268,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         //Changing content urls to secured url
         response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
         response.provider = Utilities.changeContentUrlToSecured(response.provider);
-
+                
         dispatch(getPlaylistCompleteDetails(response));
         if (isFromCustomToc) {
           dispatch(getCustomPlaylistCompleteDetails());
