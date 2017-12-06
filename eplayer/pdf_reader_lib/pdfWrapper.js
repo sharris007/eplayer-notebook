@@ -416,7 +416,7 @@ function initViewer(config) {
   acceptLanguage = config.requestheaderParams.acceptLanguage || "";
   }
   var cdnURL = config.cdnURL;
-  var uStr = localStorage.getItem('userInformation');
+  //var uStr = localStorage.getItem('userInformation');
   var uObj = {};
   // if(uStr) 
   // {
@@ -438,11 +438,11 @@ function initViewer(config) {
     assertUrl = openFile(baseUrl,openFileUrl, config.headerParams, cdnURL);
   }
   if (assertUrl == null) return;
-  if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
+  /*if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
                 WebPDF.ViewerInstance.openFile(assertUrl);
                
-            }
+            }*/
   seajs.use(['webpdf.mini.js'], function (init) {
     var options = {
         language: language,
@@ -563,13 +563,13 @@ function openFile(baseUrl,fileUrl,headerParams,cdnURL, callback) {
             }
 
             url = cdnURL + "asserts\/" + curID;
-            /*if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
+            if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
                 WebPDF.ViewerInstance.openFile(url);
                 if(callback != null) {
                     callback();
                 }
-            }*/
+            }
 
         },
         error: function() {
@@ -1103,7 +1103,7 @@ function getAssetURLForPDFDownload(config,cb){
           }
           else
           {
-            iconArt = 'eplayer'+this.resetSwfIcons(hotspots[i],lodashFunction);
+            iconArt = this.resetSwfIcons(hotspots[i],lodashFunction);
           }
           regionElement=document.createElement('div');
           regionElement.setAttribute('id','region' + hotspots[i].regionID);
