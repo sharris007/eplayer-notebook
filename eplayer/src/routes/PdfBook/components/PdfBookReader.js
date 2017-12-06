@@ -863,7 +863,7 @@ handleRegionClick(hotspotID) {
               }
             }
             /*Checking if the clicked hotspot is Image/Video/Audio/URL and open it in MMI Component */
-            if(regionDetails.hotspotType == 'IMAGE' || regionDetails.hotspotType == 'VIDEO' || regionDetails.hotspotType == 'AUDIO' || regionDetails.hotspotType == 'URL' || regionDetails.hotspotType == 'SPPASSET')
+            if(regionDetails.hotspotType == 'IMAGE' || regionDetails.hotspotType == 'VIDEO' || regionDetails.hotspotType == 'AUDIO' || regionDetails.hotspotType == 'URL')
             {
               /*Updating the state to rerender the page with Aquila JS Component*/
               this.setState({regionData : regionDetails});
