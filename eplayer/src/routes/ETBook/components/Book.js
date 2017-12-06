@@ -137,14 +137,14 @@ export class Book extends Component {
                 console.log('token', token);
                 console.log('result', result);
                 localStorage.setItem('secureToken', token);
-                getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
                 console.log('else part userToken', localStorage.getItem('secureToken'));
               }
-              piSession.login(redirectCourseUrl, 10, loginCallback);
+              getTokenValue = Promise.resolve(piSession.login(redirectCourseUrl, 10, loginCallback));
             }
           });
         }
         getTokenValue.then((value) => {
+          console.log("value", value);
           const getSecureToken = localStorage.getItem('secureToken');
           console.log('getSecureToken', getSecureToken);
           this.bookDetailsData = {
