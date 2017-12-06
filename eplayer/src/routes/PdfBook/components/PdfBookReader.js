@@ -254,9 +254,9 @@ export class PdfBookReader extends Component {
     try
     {
       Popup.close();
+      $(".fwr-highlight-annot").hide();
     }
-    catch(e){
-    }
+    catch(e){}
     const currPageIndex = this.state.currPageIndex;
     // If we are navigating to current page then do nothing
     if (pageno !== currPageIndex)
@@ -300,9 +300,7 @@ export class PdfBookReader extends Component {
           $('#sppDiv').empty();
           $('#sppDiv').hide();
         }
-        catch(e){
-
-        }
+        catch(e){}
       }
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
       this.setState({ totalPagesToHit });
@@ -1084,6 +1082,15 @@ handleRegionClick(hotspotID) {
     __pdfInstance.restoreHighlights(highlightList, this.deleteHighlight);
     __pdfInstance.reRenderHighlightCornerImages(noteIconsList);
     this.setState({ highlightList:highlightList });
+    if(this.state.showHighlight == false)
+    {
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","hidden");
+        this.setState({showHighlight : false});
+      }
+      catch(e){}
+    }
   }
   /* Method for delete Highlight via passing the id of selected area. */
   deleteHighlight = (id) => {
@@ -1108,22 +1115,39 @@ handleRegionClick(hotspotID) {
       this.setState({showHotspot:true})
     }
   }
+  getPreference = () => {
+    let isAnnHide = this.state.showHighlight;
+    const prefData = {
+      'value': {
+        theme: 'White',
+        orientation: 'horizontal',
+        zoom: this.state.currZoomLevel,
+        isAnnotationHide: isAnnHide,
+        enableShowHide: true
+      }
+    };
+    const promiseVal = Promise.resolve(prefData);
+    return promiseVal;
+  }
   /* Method show or hide highlights/notes. */
-  showHideHighlights = () => {
-    let highlightList = document.getElementsByClassName('fwr-highlight-annot');
-    if(highlightList.length > 0 && highlightList[0].style.display !== "none")
+  showHideHighlights = (prefObject) => {
+    if(prefObject.isAnnotationHide == false)
     {
-      $(".fwr-highlight-annot").hide();
-      $(".annotator-handle").hide();
-      this.setState({showHighlight : false})
-      // $(".fwr-highlight-annot").remove();
-      // $(".annotator-handle").remove();
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","hidden");
+        this.setState({showHighlight : false})
+      }
+      catch(e){}
     }
     else
     {
-      $(".fwr-highlight-annot").show();
-      $(".annotator-handle").show();
-      this.setState({showHighlight : true})
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","visible");
+        this.setState({showHighlight : true})
+      }
+      catch(e){}
     }
   }
   viewerContentCallBack = (viewerCallBack) => {
@@ -1190,13 +1214,6 @@ printFunc = () => {
     };
     /*Creating array of objects containing options info for moreMenu*/
     let moreMenuData = [];
-    let showHideHighlights = {
-      type : 'menuItem',
-      value : 'showHideHighlights',
-      text : this.state.showHighlight ? messages.hideHighlights ? messages.hideHighlights :'Hide Highlights'
-                  : messages.showHighlights ? messages.showHighlights : 'Show Highlights',
-      onClick : this.showHideHighlights
-    }
     let showHideHotspots = {
       type : 'menuItem',
       value : 'showHideHotspots',
@@ -1215,7 +1232,6 @@ printFunc = () => {
       value : 'signOut',
       text : messages.signOut ? messages.signOut : 'Sign Out',
     }
-    moreMenuData.push(showHideHighlights);
     moreMenuData.push(showHideHotspots);
     moreMenuData.push({type : 'divider'});
     moreMenuData.push(printData);
@@ -1254,6 +1270,8 @@ printFunc = () => {
             globaluserid = {this.props.currentbook.globaluserid}
             invoketype ={this.props.data.location.query.invoketype}
             moreMenuData = {moreMenuData}
+            preferenceUpdate = {this.showHideHighlights}
+            getPreference = {this.getPreference}
           />
 
           <div className="eT1viewerContent">
