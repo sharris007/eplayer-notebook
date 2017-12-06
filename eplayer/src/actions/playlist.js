@@ -187,10 +187,21 @@ export const putCustomTocCallService = (data, bookDetailsData) => dispatch =>
     });
 
 
-export const tocFlag = () => dispatch=>{
-    dispatch(gettingTocResponse());
-    return Promise.resolve()
-    }
+
+export const tocFlag = () => (dispatch) => {
+  dispatch(gettingTocResponse());
+  return Promise.resolve();
+};
+
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+  const results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
 
 export const getCourseCallService = (data, isFromCustomToc) => dispatch => PlaylistApi.doGetCourseDetails(data)
   .then(response => response.json())
