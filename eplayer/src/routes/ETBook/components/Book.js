@@ -114,11 +114,12 @@ export class Book extends Component {
       // deeper code
       if (!isSessionLoaded) {
         let redirectCourseUrl = window.location.href;
-        let getTokenValue;
+        
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
           piSession.getToken(function (result, userToken) {
+            let getTokenValue;
             console.log('userToken', userToken);
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
@@ -145,34 +146,34 @@ export class Book extends Component {
               }
               piSession.login(redirectCourseUrl, 10, loginCallback);
             }
-          });
-        }
+          
         //if(getTokenValue){
         getTokenValue.then((value) => {
           console.log("value", value);
           const getSecureToken = localStorage.getItem('secureToken');
           console.log('getSecureToken', getSecureToken);
-          this.bookDetailsData = {
-            context: this.state.urlParams.context,
+          self.bookDetailsData = {
+            context: self.state.urlParams.context,
             piToken: getSecureToken,
-            bookId: this.props.params.bookId
+            bookId: self.props.params.bookId
           }
           if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-            this.bookDetailsData.courseId = this.props.params.bookId;
-            this.courseBook = true;
-            this.props.dispatch(getCourseCallService(this.bookDetailsData));
+            self.bookDetailsData.courseId = self.props.params.bookId;
+            self.courseBook = true;
+            self.props.dispatch(getCourseCallService(self.bookDetailsData));
           } else {
-            this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
+            self.props.dispatch(getBookPlayListCallService(self.bookDetailsData));
           }
           const getPreferenceData = {
-            userId: this.state.urlParams.user,
-            bookId: this.state.urlParams.context,
+            userId: self.state.urlParams.user,
+            bookId: self.state.urlParams.context,
             piToken: localStorage.getItem('secureToken')
           }
-          this.props.dispatch(getPreferenceCallService(getPreferenceData));
+          self.props.dispatch(getPreferenceCallService(getPreferenceData));
           });
     //  }
-        
+        });
+        }
       }
       
     }, 200)
