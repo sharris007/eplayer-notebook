@@ -255,6 +255,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const url = window.location.href;
       const n = url.search('prdType');
       let prdType = '';
+      let iseSource = '';
+      const checkSource = url.search('etext-ise');
       if (n > 0) {
         const urlSplit = url.split('prdType=');
         prdType = getParameterByName('prdType');
@@ -263,10 +265,13 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       if (!prdType) {
         localStorage.setItem('backUrl', '');
       }
+      if (checkSource > 0){
+        iseSource = true;
+      }
       const studentCheck = resources.constants.zeppelinEnabled;
       const instructorCheck = resources.constants.idcDashboardEnabled;
-      if (studentCheck && bookDetails.authgrouptype == 'student') {
-        // redirectToZeppelin(bookDetails, passportDetails);
+      if (studentCheck && bookDetails.authgrouptype == 'student' && !iseSource) {
+         //redirectToZeppelin(bookDetails, passportDetails);
         redirectToIse(bookId);
         return false;
       }
