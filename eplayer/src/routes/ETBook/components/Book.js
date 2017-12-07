@@ -110,11 +110,12 @@ export class Book extends Component {
   componentWillMount = () => {
     let isSessionLoaded = false;
     let self = this;
+    let getTokenValue;
     const IntervalCheck = setInterval(() => {
       // deeper code
       if (!isSessionLoaded) {
         let redirectCourseUrl = window.location.href;
-        let getTokenValue;
+        
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
@@ -123,6 +124,7 @@ export class Book extends Component {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
               getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
+              console.log("ifgetTokenValue", getTokenValue);
               const piUserId = piSession.userId();
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
@@ -133,10 +135,11 @@ export class Book extends Component {
               function loginCallback(result, token){
                 console.log('token', token);
                 console.log('result', result);
-                localStorage.setItem('secureToken', token);
                 console.log('else part userToken', localStorage.getItem('secureToken'));
               }
               getTokenValue = Promise.resolve(piSession.login(redirectCourseUrl, 10, loginCallback));
+              localStorage.setItem('secureToken', getTokenValue);
+              console.log("elsegetTokenValue", getTokenValue);
             }
           });
         }
