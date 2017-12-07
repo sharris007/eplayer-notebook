@@ -120,24 +120,19 @@ export class Book extends Component {
           isSessionLoaded = true;
           piSession.getToken(function (result, userToken) {
             let getTokenValue;
-            console.log('userToken', userToken);
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
               getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
-              console.log("ifgetTokenValue", getTokenValue);
               const piUserId = piSession.userId();
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }
             else{
-              console.log('inside else');
               //function for getting current session PiToken
               function loginCallback(result, token){
-                console.log('token', token);
                 console.log('result', result);
                 if( result === 'success'){
                   localStorage.setItem('secureToken', token);
-                  console.log('else part userToken', localStorage.getItem('secureToken'));
                   getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
                 }
               }
@@ -146,9 +141,8 @@ export class Book extends Component {
           
         //if(getTokenValue){
         getTokenValue.then((value) => {
-          console.log("value", value);
+          console.log("promise value");
           const getSecureToken = localStorage.getItem('secureToken');
-          console.log('getSecureToken', getSecureToken);
           self.bookDetailsData = {
             context: self.state.urlParams.context,
             piToken: getSecureToken,
