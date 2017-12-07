@@ -152,7 +152,7 @@ export class Book extends Component {
             context: self.state.urlParams.context,
             piToken: getSecureToken,
             bookId: self.props.params.bookId,
-            pageId: this.props.params.pageId ? this.props.params.pageId :''
+            pageId: self.props.params.pageId ? self.props.params.pageId :''
           }
           if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
             self.bookDetailsData.courseId = self.props.params.bookId;
