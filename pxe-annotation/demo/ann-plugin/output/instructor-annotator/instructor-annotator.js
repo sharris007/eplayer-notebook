@@ -2648,7 +2648,7 @@ var Annotator, g, _Annotator, _ref,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 _Annotator = this.Annotator;
-var language = window.annotationLocale || 'en-US';
+var language = window.annotationLocale || 'en-US', isDisableAnnotation = window.parent.window.isDisableAnnotation || false;
 Annotator = (function(_super) {
   __extends(Annotator, _super);
 
@@ -3635,7 +3635,7 @@ Annotator.Editor = (function(_super) {
       event.preventDefault();
   }
   Editor.prototype.onKeyupSelection = function(event) {
-    if (event.keyCode === 32 || event.keyCode === 13) {
+    if ((event.keyCode === 32 || event.keyCode === 13) && !disableAnnotation) {
       $(event.target).trigger('click');
     }
   }
@@ -3770,6 +3770,8 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onColorChange=function(event) {
+    if(isDisableAnnotation)
+      return;
     window.getSelection().removeAllRanges();
     this.element.removeClass('hide-note');
     var checkoverlap = $('.annotator-editor').hasClass('overlapingpopup');
@@ -3891,6 +3893,16 @@ Annotator.Editor = (function(_super) {
       $('.annotator-edit-container').focus();
     else
       $('.annotator-color[value="'+this.annotation.colorCode+'"]').focus();
+
+    if(isDisableAnnotation) {
+      this.element.find('.annotator-widget').addClass('disableAnnotation');
+      this.element.find('.annotator-color,.annotator-share,.annotator-edit-container,.annotator-delete-container,#annotator-field-0,.annotator-cancel,.annotator-save').addClass('disable_element');
+      this.element.find('#annotator-field-0').attr('readonly','readonly');
+    } else {
+      this.element.find('.annotator-widget').removeClass('disableAnnotation');
+      this.element.find('.annotator-color,.annotator-share,.annotator-edit-container,.annotator-delete-container,#annotator-field-0,.annotator-cancel,.annotator-save').removeClass('disable_element');
+      this.element.find('#annotator-field-0').removeAttr('readonly');
+    }
     return this.publish('show');
   };
 

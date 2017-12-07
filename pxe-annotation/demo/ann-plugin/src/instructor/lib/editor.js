@@ -77,7 +77,7 @@ Annotator.Editor = (function(_super) {
       event.preventDefault();
   }
   Editor.prototype.onKeyupSelection = function(event) {
-    if (event.keyCode === 32 || event.keyCode === 13) {
+    if ((event.keyCode === 32 || event.keyCode === 13) && !disableAnnotation) {
       $(event.target).trigger('click');
     }
   }
@@ -212,6 +212,8 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onColorChange=function(event) {
+    if(isDisableAnnotation)
+      return;
     window.getSelection().removeAllRanges();
     this.element.removeClass('hide-note');
     var checkoverlap = $('.annotator-editor').hasClass('overlapingpopup');
@@ -333,6 +335,16 @@ Annotator.Editor = (function(_super) {
       $('.annotator-edit-container').focus();
     else
       $('.annotator-color[value="'+this.annotation.colorCode+'"]').focus();
+
+    if(isDisableAnnotation) {
+      this.element.find('.annotator-widget').addClass('disableAnnotation');
+      this.element.find('.annotator-color,.annotator-share,.annotator-edit-container,.annotator-delete-container,#annotator-field-0,.annotator-cancel,.annotator-save').addClass('disable_element');
+      this.element.find('#annotator-field-0').attr('readonly','readonly');
+    } else {
+      this.element.find('.annotator-widget').removeClass('disableAnnotation');
+      this.element.find('.annotator-color,.annotator-share,.annotator-edit-container,.annotator-delete-container,#annotator-field-0,.annotator-cancel,.annotator-save').removeClass('disable_element');
+      this.element.find('#annotator-field-0').removeAttr('readonly');
+    }
     return this.publish('show');
   };
 

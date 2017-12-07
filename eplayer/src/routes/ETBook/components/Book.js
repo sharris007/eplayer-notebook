@@ -106,6 +106,7 @@ export class Book extends Component {
       this.state.urlParams.user = userId;
     }
     this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
+    window.isDisableAnnotation = resources.constants.isDisableAnnotation;
   }
   componentWillMount = () => {
     let isSessionLoaded = false;

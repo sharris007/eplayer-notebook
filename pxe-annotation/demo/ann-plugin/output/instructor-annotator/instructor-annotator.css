@@ -1147,3 +1147,7 @@ pointer-events: none;
    -ms-user-select: none; 
    user-select: none;
 }
+.disable_element {
+	pointer-events: none !important;
+	opacity:0.3 !important;
+}
