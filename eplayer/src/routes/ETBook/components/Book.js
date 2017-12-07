@@ -123,6 +123,7 @@ export class Book extends Component {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
               getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
+              console.log("ifgetTokenValue", getTokenValue);
               const piUserId = piSession.userId();
               if (!Utils.checkCookie('etext-cdn-token')) {
                 self.props.dispatch(getAuthToken(userToken));
@@ -136,13 +137,17 @@ export class Book extends Component {
               function loginCallback(result, token){
                 console.log('token', token);
                 console.log('result', result);
-                localStorage.setItem('secureToken', token);
-                console.log('else part userToken', localStorage.getItem('secureToken'));
+                if( result === 'success'){
+                  localStorage.setItem('secureToken', token);
+                  console.log('else part userToken', localStorage.getItem('secureToken'));
+                  getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
+                }
               }
-              getTokenValue = Promise.resolve(piSession.login(redirectCourseUrl, 10, loginCallback));
+              piSession.login(redirectCourseUrl, 10, loginCallback);
             }
           });
         }
+        //if(getTokenValue){
         getTokenValue.then((value) => {
           console.log("value", value);
           const getSecureToken = localStorage.getItem('secureToken');
@@ -166,6 +171,7 @@ export class Book extends Component {
           }
           this.props.dispatch(getPreferenceCallService(getPreferenceData));
           });
+    //  }
         
       }
       
