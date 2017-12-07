@@ -98,6 +98,7 @@ export class Book extends Component {
       this.nodesToUnMount = [];
     this.bookIndexId = {};
     this.searchUrl = '';
+    this.isAnnotationHide = false;
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
     this.state.pageDetails.currentPageURL = '';
@@ -150,7 +151,8 @@ export class Book extends Component {
           this.bookDetailsData = {
             context: this.state.urlParams.context,
             piToken: getSecureToken,
-            bookId: this.props.params.bookId
+            bookId: this.props.params.bookId,
+            pageId: this.props.params.pageId ? this.props.params.pageId :''
           }
           if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
             this.bookDetailsData.courseId = this.props.params.bookId;
@@ -633,6 +635,13 @@ export class Book extends Component {
     pageDetails.bgColor = pref.theme;
     pageDetails.isAnnotationHide = annHide;
     this.setState({ pageDetails: pageDetails });
+    if(this.isAnnotationHide !== pref.isAnnotationHide) {
+      this.isAnnotationHide = pref.isAnnotationHide;
+       dataLayer.push({   
+       'event':'highlightVisibilityChange',
+       'hightlightVisibility':pref.isAnnotationHide
+      });
+    }
   }
 
   goToPage = (pageId) => {
@@ -1136,7 +1145,7 @@ export class Book extends Component {
         }
       };
     }
-
+    this.isAnnotationHide = bootstrapParams.pageDetails.isAnnotationHide;
     const isInstructor = userType === 'instructor' ? true : false;
     let isconfigTocData = false;
     if (isInstructor) {
