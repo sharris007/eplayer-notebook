@@ -215,8 +215,9 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       }
       const studentCheck = resources.constants.zeppelinEnabled;
       const instructorCheck = resources.constants.idcDashboardEnabled;
-      if (studentCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access) {
-        redirectToZeppelin(bookDetails, passportDetails);
+      if (studentCheck && bookDetails.authgrouptype == 'student') {
+        // redirectToZeppelin(bookDetails, passportDetails);
+        redirectToIse(bookId);
         return false;
       }
       else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType) {
@@ -265,6 +266,12 @@ function redirectToIDCDashboard(prodType, courseId) {
   const IdcRelativeURL = `product_type=${prodType}&courseId=${courseId}`;
   const redirectIdcURL = idcBaseurl + IdcRelativeURL;
   window.open(redirectIdcURL, '_self');
+}
+
+function redirectToIse(courseId) {
+  const iseBaseurl = `${resources.links.iseUrl[domain.getEnvType()]}/courses/${courseId}/materials`;
+  console.log('iseBaseurl', iseBaseurl);
+  window.open(iseBaseurl, '_self');
 }
 
 function redirectToZeppelin(bookDetails, passportDetails) {
