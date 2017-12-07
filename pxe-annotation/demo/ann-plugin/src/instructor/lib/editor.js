@@ -77,7 +77,7 @@ Annotator.Editor = (function(_super) {
       event.preventDefault();
   }
   Editor.prototype.onKeyupSelection = function(event) {
-    if ((event.keyCode === 32 || event.keyCode === 13) && !disableAnnotation) {
+    if ((event.keyCode === 32 || event.keyCode === 13) && !isDisableAnnotation) {
       $(event.target).trigger('click');
     }
   }
