@@ -131,6 +131,13 @@ export const resources = {
       stage        :"https://spectrum.stg-openclass.com/api/context",
       PERF         :"https://spectrum-ppe.pearsoned.com/api/context",
       prod         :"https://spectrum.pearsoned.com/api/context"
+    },
+    iseUrl : {
+      local        :"https://etext-ise-qa.pearson.com",
+      dev          :"https://etext-ise-qa.pearson.com",
+      qa           :"https://etext-ise-qa.pearson.com",
+      stage        :"https://etext-ise-stg.pearson.com",
+      prod         :"https://etext-ise.pearson.com"
     }
   }
 };
