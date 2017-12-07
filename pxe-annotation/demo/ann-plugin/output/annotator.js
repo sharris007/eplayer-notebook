@@ -2653,7 +2653,7 @@ var Annotator, g, _Annotator, _ref,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 _Annotator = this.Annotator;
-var language = window.annotationLocale || 'en-US';
+var language = window.annotationLocale || 'en-US', isDisableAnnotation = window.parent.window.isDisableAnnotation || false;
 Annotator = (function(_super) {
   __extends(Annotator, _super);
 
@@ -3614,7 +3614,8 @@ Annotator.Editor = (function(_super) {
     '#noteContainer click' : 'onNoteContainerClick',
     '.annotator-select-rect,.annotator-confirm-cancel,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle,#noteContainer keyup': 'onKeyupClick',
     '.annotator-delete-container,.annotator-confirm-delete keydown':'ondeleteKeydownEvent',
-    '.annotator-select-outer-circle keydown': 'oncircleKeydownEvent'
+    '.annotator-select-outer-circle keydown': 'oncircleKeydownEvent',
+    '.annotator-edit-Note-Panel-1-circle,.annotator-edit-Note-Panel-1-rect,.annotator-select-outer-circle,.annotator-confirm-cancel keydown' : 'onkeydownSelection'
   };
 
   Editor.prototype.classes = {
@@ -3749,6 +3750,8 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.onAnnotatorColorChange = function(e) {
     var title = '';
     var dom;
+    if(isDisableAnnotation)
+      return;
     if(e.target.parentElement.getAttribute('title')) {
       title = e.target.parentElement.getAttribute('title')
       dom = e.target.parentElement;
@@ -3768,7 +3771,7 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onNoteContainerClick= function(e) { 
-    if ($('.annotator-widget').hasClass("instructorNote"))
+    if ($('.annotator-widget').hasClass("instructorNote") || $('.annotator-widget').hasClass("disableAnnotation"))
       return;
     $("#noteContainer").hide();
     var annotator_editor = $('.annotator-editor')
@@ -3781,11 +3784,16 @@ Annotator.Editor = (function(_super) {
 
   Editor.prototype.onKeyupClick= function(e) { 
     var keycode = e.keyCode;
-    if(keycode == 13 || keycode == 32) {
+    if((keycode == 13 || keycode == 32) && !isDisableAnnotation) {
       $(e.target).trigger('click');
     } else if(e.target.id && e.target.id === "noteContainer" && e.keyCode === 9){
       e.target.focus();
     }
+  }
+
+  Editor.prototype.onkeydownSelection = function(event) {
+    if (event.keyCode == 32) 
+      event.preventDefault();
   }
 
   Editor.prototype.ondeleteKeydownEvent= function(e) {
@@ -3804,7 +3812,7 @@ Annotator.Editor = (function(_super) {
           }
         } 
   }
-    if(keycode == 13 || keycode == 32) {
+    if((keycode == 13 || keycode == 32) && !isDisableAnnotation) {
       $(e.target).trigger('click');
     } 
   }
@@ -3823,7 +3831,7 @@ Annotator.Editor = (function(_super) {
         }
     }, 25);
   }
-    if(keycode == 13 || keycode == 32) {
+    if((keycode == 13 || keycode == 32) && !isDisableAnnotation) {
       $(e.target).trigger('click');
     } 
   }
@@ -4129,6 +4137,13 @@ Annotator.Editor = (function(_super) {
       (this.annotation.colorCode != '#ccf5fd') && $(".annotator-edit-Note-Panel-1-rect[value=" + "'" + this.annotation.colorCode + "']").focus();
     else
       $('.annotator-select-outer-circle')[0].focus();
+    if(isDisableAnnotation) {
+      this.element.find('.annotator-widget').addClass('disableAnnotation');
+      this.element.find('.annotator-select-rect,.annotator-delete-container,#annotator-field-0').addClass('disable_element');
+    } else {
+      this.element.find('.annotator-widget').removeClass('disableAnnotation');
+      this.element.find('.annotator-select-rect,.annotator-delete-container,#annotator-field-0').removeClass('disable_element');
+    }
     return this.publish('show');
   };
 
