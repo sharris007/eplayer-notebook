@@ -110,12 +110,11 @@ export class Book extends Component {
   componentWillMount = () => {
     let isSessionLoaded = false;
     let self = this;
-    let getTokenValue;
     const IntervalCheck = setInterval(() => {
       // deeper code
       if (!isSessionLoaded) {
         let redirectCourseUrl = window.location.href;
-        
+        let getTokenValue;
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
@@ -135,14 +134,17 @@ export class Book extends Component {
               function loginCallback(result, token){
                 console.log('token', token);
                 console.log('result', result);
-                console.log('else part userToken', localStorage.getItem('secureToken'));
+                if( result === 'success'){
+                  localStorage.setItem('secureToken', token);
+                  console.log('else part userToken', localStorage.getItem('secureToken'));
+                }
               }
               getTokenValue = Promise.resolve(piSession.login(redirectCourseUrl, 10, loginCallback));
-              localStorage.setItem('secureToken', getTokenValue);
               console.log("elsegetTokenValue", getTokenValue);
             }
           });
         }
+        //if(getTokenValue){
         getTokenValue.then((value) => {
           console.log("value", value);
           const getSecureToken = localStorage.getItem('secureToken');
@@ -166,6 +168,7 @@ export class Book extends Component {
           }
           this.props.dispatch(getPreferenceCallService(getPreferenceData));
           });
+    //  }
         
       }
       
