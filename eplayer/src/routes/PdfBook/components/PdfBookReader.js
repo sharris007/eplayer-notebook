@@ -856,7 +856,7 @@ handleRegionClick(hotspotID) {
               }
               if(regionDetails.hotspotType != 'SPPASSET')
               {
-                if(!regionDetails.linkValue.includes('pearson') || _.endsWith(regionDetails.linkValue,".htm") || _.endsWith(regionDetails.linkValue,".html"))
+                if((regionDetails.linkValue).indexOf('pearson')== -1 || _.endsWith(regionDetails.linkValue,".htm") || _.endsWith(regionDetails.linkValue,".html"))
                 {
                   regionDetails.hotspotType = 'EXTERNALLINK';
                 }
