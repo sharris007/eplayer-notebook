@@ -120,7 +120,7 @@ export class Book extends Component {
           isSessionLoaded = true;
           piSession.getToken(function (result, userToken) {
             console.log('userToken', userToken);
-            if (result === piSession['Success']) {
+            if (result === '') {
               localStorage.setItem('secureToken', userToken);
               getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
               console.log("ifgetTokenValue", getTokenValue);
@@ -137,11 +137,11 @@ export class Book extends Component {
                 if( result === 'success'){
                   localStorage.setItem('secureToken', token);
                   console.log('else part userToken', localStorage.getItem('secureToken'));
+                  getTokenValue = Promise.resolve(locationlStorage.getItem('secureToken'));
                 }
               }
-              getTokenValue = Promise.resolve(piSession.login(redirectCourseUrl, 10, loginCallback));
-              console.log("elsegetTokenValue", getTokenValue);
-            }
+              piSession.login(redirectCourseUrl, 10, loginCallback);
+            } 
           });
         }
         //if(getTokenValue){
