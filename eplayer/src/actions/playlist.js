@@ -161,6 +161,7 @@ export const putCustomTocCallService = (data, bookDetailsData) => dispatch =>
       }
       dispatch(gettingTocResponse());
       dispatch(updateTocResponse(response));
+      return response;
       if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
         dispatch(getCourseCallService(bookDetailsData, true));
       } else {
