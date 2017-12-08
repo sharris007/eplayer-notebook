@@ -73,7 +73,7 @@ class NoteBookContainer extends React.Component {
     } else if (msg === 'SAVE') {
       const index = _.findIndex(this.state.notes, note => note.id === data.id);
       const note = this.state.notes[index];
-      note.data.quote = data.title;
+      note.data.quote = data.highLightText;
       note.data.text = data.content;
       note.data.updatedTimestamp = data.changeDate;
       const payload = { payload: [note] };
