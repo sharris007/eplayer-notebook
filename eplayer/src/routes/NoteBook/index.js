@@ -13,8 +13,8 @@
  *******************************************************************************/
 // import { injectReducer } from '../../store/reducers';
 
-export default () => ({
-  path: '/eplayer/NoteBook',
+export default store => ({
+  path: '/eplayer/NoteBook/:bookId',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
@@ -25,7 +25,7 @@ export default () => ({
       const NoteBook = require('./containers/NoteBookContainer').default;
       // const reducer = require('./modules/ErrorReducer').default;
 
-      // injectReducer(store, { key: 'error', reducer });
+      // injectReducer(store, { key: 'notebook', reducer });
 
 
       /*  Return getComponent   */
