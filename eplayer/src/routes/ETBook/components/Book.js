@@ -39,6 +39,8 @@ import { resources, domain, typeConstants } from '../../../../const/Settings';
 import Search from '../../../components/search/containers/searchContainer';
 import Utils from '../../../components/utils';
 import { StaticAlert } from 'pearson-compounds';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 export class Book extends Component {
   constructor(props) {
@@ -89,7 +91,10 @@ export class Book extends Component {
       organizationId: '',
       prefOpen: false,
       searchOpen: false,
-      headerExists: false
+      headerExists: false,
+      alertOpen:false,
+      idc:false,
+      publishedToc:false
     };
     this.divGlossaryRef = '';
     this.wrapper = '';
@@ -249,14 +254,16 @@ export class Book extends Component {
     }
     //this.props.dispatch(gotCustomPlaylistCompleteDetails());
   }
-  shouldComponentUpdate(nextProps, nextState){
-    // console.log('shouldComponentUpdate');
-    if(this.resetToc){
-      this.resetToc=false;
-      return false;
-    }
-    return true;
-  }
+  // shouldComponentUpdate(nextProps, nextState){
+  //   // console.log('shouldComponentUpdate');
+  //   if(this.resetToc){
+  //     this.resetToc=false;
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+
   navChanged = () => {
     WidgetManager.navChanged(this.nodesToUnMount);
     this.nodesToUnMount = [];
@@ -718,7 +725,7 @@ export class Book extends Component {
   }
 
   handleDrawer = () => {
-    this.setState({ drawerOpen: true });
+    this.setState({ drawerOpen: true,idc: false,publishedToc:false});
     this.viewerContentCallBack(false);
   }
 
@@ -730,11 +737,7 @@ export class Book extends Component {
       this.setState({ drawerOpen: false });
       this.viewerContentCallBack(true);
     }else{
-      // this.resetToc=true;
-      // this.props.dispatch(tocFlag()).then(()=>{
-      //   this.handleConfirmMessage();
-      //  });
-      this.handleConfirmMessage();
+      this.handleAlertOpen();
 
     }
   }
@@ -875,47 +878,39 @@ export class Book extends Component {
       } else if (elepref.length === 0 && prefContainer.length === 0) {
         this.setState({ prefOpen: false });
       }
-      
-    }
-   
-    
+    } 
   };
   handleConfirmMessage = () => {
-    this.resetToc=true;
-    this.props.dispatch(tocFlag()).then(()=>{
-    if(this.isTOCUpdated && !this.props.updatedToc){
-        let closeDrawer = confirm("Your changes have not been saved. Do you want to proceed?");
-        if(closeDrawer)
-        {
           this.isTOCUpdated = false;
-          this.resetToc=false;
-          this.setState({ drawerOpen: false });
-        }
-        else
-        {
-          //this.setState({ open: true });
-        }
-    }
-    });    
+          this.setState({idc:false});
+          if(this.backAlert){
+            this.backAlert=false;
+            this.setState({drawerOpen: true},
+              ()=>{this.setState({alertOpen: false}) });
+           }
+          else{
+            this.setState({drawerOpen: false},
+              ()=>{this.setState({alertOpen: false}) });
+           }
+          
   }
-  handleBackButtonConfirmMessage = () => {
-    this.resetToc=true;
-    this.props.dispatch(tocFlag()).then(()=>{
-    if(this.isTOCUpdated && !this.props.updatedToc){
-        let closeDrawer = confirm("Your changes have not been saved. Do you want to proceed?");
-        if(closeDrawer)
-        {
-          this.isTOCUpdated = false;
-          this.resetToc=false;
-          this.setState({ drawerOpen: true });
-        }
-        else
-        {
-          //this.setState({ open: true });
-        }
-    }
-    });    
-  }
+
+  handleAlertOpen = () => {
+    this.setState({idc:true},()=>{
+      this.props.dispatch(tocFlag()).then(()=>{
+      if(this.isTOCUpdated && !this.props.updatedToc){
+        this.setState({alertOpen: true});
+      }
+      });
+    })
+  };
+
+  handleAlertClose = () => {
+      this.backAlert=false;
+      this.setState({alertOpen: false});
+  };
+
+
   onPageClick = () => {
     this.setState({ searchOpen: false, prefOpen: false });
   };
@@ -971,6 +966,9 @@ export class Book extends Component {
       isTocWrapperRequired: false
     };
 
+    let type = '';
+    let message = '';
+
     let configTocData = {
       dropLevelType: 'WITH_IN_SAME_LEVEL',
       tocContents: tocCompData.data.content.list,
@@ -1008,7 +1006,27 @@ export class Book extends Component {
           };
         });
         const tocResponseData = { tocContents: listData };
-        this.props.dispatch(putCustomTocCallService(tocResponseData, this.bookDetailsData));
+        this.setState({idc:true});
+        this.props.dispatch(putCustomTocCallService(tocResponseData, this.bookDetailsData)).then((response)=>{
+          //console.log(response);
+          if (response) {
+            if (response.status === 'Success') {
+              this.setState({publishedToc:true})
+              this.type = response.status;
+              this.message = "The table of contents has been updated!";
+              this.isTOCUpdated=false;
+              this.setState({
+                idc:false
+              });
+            }
+            else {
+              this.type = 'Error';
+              this.message = "Your changes didn't get published. Give us a few moments and try again.";
+              this.setState({publishedToc:true})
+            }
+            
+          }
+        });
       },
       handleDashBoard: () => {
         if (this.props.book.toc.content !== undefined) {
@@ -1027,25 +1045,12 @@ export class Book extends Component {
         this.isTOCUpdated = isChanged;
       },
       showModal: ()=> {
-        this.handleBackButtonConfirmMessage();
-      }
+        this.backAlert=true;
+        this.handleAlertOpen();
+      },
+      listenBrowserEvents: true
     };
 
-    let type = '';
-    let message = '';
-    if (tocResponse) {
-      if (tocResponse.status === 'Success') {
-        type = tocResponse.status;
-        message = "The table of contents has been updated!";
-        this.isTOCUpdated=false;
-      }
-      else {
-        type = 'Error';
-        message = "Your changes didn't get published. Give us a few moments and try again.";
-      }
-
-
-    }
     const pages = bootstrapParams.pageDetails.playListURL || [];
     const bookmarArr = this.props.book.bookmarks ? this.props.book.bookmarks : [];
     const bookmarkCompData = {
@@ -1154,6 +1159,21 @@ export class Book extends Component {
       isconfigTocData = true;
     }
 
+     const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleAlertClose.bind(this)}
+        key = "1"
+      />,
+      <FlatButton
+        label="OK"
+        primary={true}
+        onClick={this.handleConfirmMessage.bind(this)}
+        key = "2"
+      />,
+    ];
+
     const locale = bootstrapParams.pageDetails.locale ? bootstrapParams.pageDetails.locale : 'en';
     const headerTitleData = {
       params: this.props.params,
@@ -1214,6 +1234,7 @@ export class Book extends Component {
                     intl={this.props.intl}
                     configureTocData={configTocData}
                     isConfigurableToc={isconfigTocData}
+                    idcToc={this.state.idc}
                   />
                 }
 
@@ -1259,8 +1280,20 @@ export class Book extends Component {
             </div>
           </LearningContextProvider>}
         {
-          updatedToc ? <StaticAlert type={type} title='' message={message} /> : <div></div>
-        } </div>
+          (updatedToc && this.state.publishedToc) ? <StaticAlert type={this.type} title='' message={this.message} /> : <div></div>
+        }
+        <div>
+        <Dialog
+          actions={actions}
+          modal={false}
+          open={this.state.alertOpen}
+          onRequestClose={this.handleAlertClose}
+        >
+          Your changes have not been saved. Do you want to proceed?
+        </Dialog>
+        </div>
+
+         </div>
     );
   }
 }
