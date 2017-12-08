@@ -37,13 +37,21 @@ export class BindMoreInfoCallBacks {
             }
             break;
           }
+          
+          case 'a.noteref_footnote' : {
+            if (moreInfoIconDOM.querySelector('a.noteref_footnote')) {
+              hrefId = moreInfoIconDOM.querySelector('a.noteref_footnote').href.split('#')[1];
+            }
+            break;
+          }
+           
           case 'a.noteref.noteref_footnote_symboled' : {
             hrefId = (moreInfoIconDOM.children[0] && moreInfoIconDOM.children[0].href) ? moreInfoIconDOM.children[0].href.split('#')[1]: '';
             break;
           }           
           }
           if (hrefId) {
-            const popOverDescription = bookDiv.getElementById(hrefId).getElementsByTagName('p');
+            const popOverDescription = bookDiv.getElementById(hrefId) ? bookDiv.getElementById(hrefId).getElementsByTagName('p') : '';
             popOverCollection.popOverDescription = popOverDescription.length > 0 ?  popOverDescription[0].innerHTML : '';
           } else {
             popOverCollection.popOverDescription = moreInfoIconDOM.children[0].innerHTML;
