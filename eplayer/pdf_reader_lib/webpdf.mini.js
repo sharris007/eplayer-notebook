@@ -17567,9 +17567,18 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                             var q = "";
                             q = l ? i.getBaseUrl() + "images/reader/imgFailed.png" : i.getBaseUrl() + "images/reader/imgLimit.png", a.showErrorPage(q)
                         } else{
-                            $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.isThumb() ? a.setPageLoaded(!0) : a.isThumbnailLoaded() ? a.setPageLoaded(!0) : (a.setThumbnailLoaded(!0), setTimeout(function() {
-                            j.renderPage(a, d.defaults.requestRetryCount)
-                            }, 50));    
+                            if(window.foxitAssetURL){
+                                $("#" + a.getPageBackgroundImgID()).attr("src", o).load(function(){
+                                  a.show(), a.setPageLoaded(!0);
+                                    !a.isThumb() && a.isPageLoaded() && (a.setPageLoadError(e), $(i).trigger(WebPDF.EventList.PAGE_SHOW_COMPLETE, {
+                                        pageView: a
+                                    })) 
+                                })
+                            }else{
+                                $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.isThumb() ? a.setPageLoaded(!0) : a.isThumbnailLoaded() ? a.setPageLoaded(!0) : (a.setThumbnailLoaded(!0), setTimeout(function() {
+                                j.renderPage(a, d.defaults.requestRetryCount)
+                                }, 50));   
+                            } 
                         } 
                         
                         !a.isThumb() && a.isPageLoaded() && (a.setPageLoadError(e), $(i).trigger(WebPDF.EventList.PAGE_SHOW_COMPLETE, {
