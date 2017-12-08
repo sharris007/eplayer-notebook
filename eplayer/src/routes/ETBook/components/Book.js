@@ -23,7 +23,7 @@ import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVer
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails,tocFlag } from '../../../actions/playlist';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken } from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
@@ -103,6 +103,7 @@ export class Book extends Component {
       this.nodesToUnMount = [];
     this.bookIndexId = {};
     this.searchUrl = '';
+    this.isAnnotationHide = false;
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
     this.state.pageDetails.currentPageURL = '';
@@ -111,6 +112,7 @@ export class Book extends Component {
       this.state.urlParams.user = userId;
     }
     this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
+    window.isDisableAnnotation = resources.constants.isDisableAnnotation;
   }
   componentWillMount = () => {
     let isSessionLoaded = false;
@@ -119,38 +121,63 @@ export class Book extends Component {
       // deeper code
       if (!isSessionLoaded) {
         let redirectCourseUrl = window.location.href;
+        
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
           piSession.getToken(function (result, userToken) {
+            let getTokenValue;
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
+              getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
               const piUserId = piSession.userId();
+              if (!Utils.checkCookie('etext-cdn-token')) {
+                self.props.dispatch(getAuthToken(userToken));
+              }
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }
+            else{
+              //function for getting current session PiToken
+              function loginCallback(result, token){
+                console.log('result', result);
+                if( result === 'success'){
+                  localStorage.setItem('secureToken', token);
+                  getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
+                }
+              }
+              piSession.login(redirectCourseUrl, 10, loginCallback);
+            }
+          
+        //if(getTokenValue){
+        getTokenValue.then((value) => {
+          console.log("promise value");
+          const getSecureToken = localStorage.getItem('secureToken');
+          self.bookDetailsData = {
+            context: self.state.urlParams.context,
+            piToken: getSecureToken,
+            bookId: self.props.params.bookId,
+            pageId: self.props.params.pageId ? self.props.params.pageId :''
+          }
+          if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+            self.bookDetailsData.courseId = self.props.params.bookId;
+            self.courseBook = true;
+            self.props.dispatch(getCourseCallService(self.bookDetailsData));
+          } else {
+            self.props.dispatch(getBookPlayListCallService(self.bookDetailsData));
+          }
+          const getPreferenceData = {
+            userId: self.state.urlParams.user,
+            bookId: self.state.urlParams.context,
+            piToken: localStorage.getItem('secureToken')
+          }
+          self.props.dispatch(getPreferenceCallService(getPreferenceData));
           });
-        }
-        const getSecureToken = localStorage.getItem('secureToken');
-        this.bookDetailsData = {
-          context: this.state.urlParams.context,
-          piToken: getSecureToken,
-          bookId: this.props.params.bookId
-        }
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          this.bookDetailsData.courseId = this.props.params.bookId;
-          this.courseBook = true;
-          this.props.dispatch(getCourseCallService(this.bookDetailsData));
-        } else {
-          this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
+    //  }
+        });
         }
       }
-      const getPreferenceData = {
-        userId: this.state.urlParams.user,
-        bookId: this.state.urlParams.context,
-        piToken: localStorage.getItem('secureToken')
-      }
-      this.props.dispatch(getPreferenceCallService(getPreferenceData));
+      
     }, 200)
   }
   componentWillUnmount() {
@@ -246,6 +273,7 @@ export class Book extends Component {
   removeAnnotationHandler = (annotationId) => {
     let deleteAnnData = $.extend(this.state.urlParams, { annId: annotationId });
     deleteAnnData.annHeaders = this.annHeaders;
+    deleteAnnData.body = { ids: [annotationId] };
     this.props.dispatch(deleteAnnCallService(deleteAnnData));
 
     let annElement = $('#contentIframe').contents().find('*[data-ann-id=' + annotationId + ']');
@@ -276,10 +304,11 @@ export class Book extends Component {
   };
 
   removeBookmarkHandler = (bookmarkId) => {
-    this.state.urlParams.uri = (bookmarkId ? bookmarkId : this.state.currentPageDetails.id);
+    let id = (bookmarkId ? bookmarkId : this.props.bookmarkedData.bookmarkId);
     this.forceUpdate();
     let bookmarksParams = this.state.urlParams;
     bookmarksParams.xAuth = localStorage.getItem('secureToken');
+    bookmarksParams.body = { ids: [id] };
     this.props.dispatch(deleteBookmarkCallService(bookmarksParams));
   };
 
@@ -335,20 +364,20 @@ export class Book extends Component {
         }
       case typeConstants.ANNOTATION_CREATED:
         {
-          const annList = annStructureChange([data.rows[0]]);
+          let annList = annStructureChange([data.rows[0]]);
           this.props.dispatch(getTotalAnnotationData(annList));
           break;
         }
       case typeConstants.ANNOTATION_UPDATED:
         {
-          const annList = annStructureChange([data.rows[0]]);
+          let annList = annStructureChange([data.rows[0]]);
           this.props.dispatch(deleteAnnotationData(data.rows[0]));
           this.props.dispatch(getTotalAnnotationData(annList));
           break;
         }
       case typeConstants.ANNOTATION_DELETED:
-        {
-          this.props.dispatch(deleteAnnotationData(data.rows[0]));
+        { 
+          this.props.dispatch(deleteAnnotationData(data.rows));
           break;
         }
       case 'pagescroll':
@@ -459,7 +488,7 @@ export class Book extends Component {
   }
 
   isCurrentPageBookmarked = () => {
-    return this.props.isBookmarked;
+    return this.props.bookmarkedData.isBookmarked;
   };
 
   goToTextChange = (goToTextChangeCallBack) => {
@@ -615,6 +644,13 @@ export class Book extends Component {
     pageDetails.bgColor = pref.theme;
     pageDetails.isAnnotationHide = annHide;
     this.setState({ pageDetails: pageDetails });
+    if(this.isAnnotationHide !== pref.isAnnotationHide) {
+      this.isAnnotationHide = pref.isAnnotationHide;
+       dataLayer.push({   
+       'event':'highlightVisibilityChange',
+       'hightlightVisibility':pref.isAnnotationHide
+      });
+  }
   }
 
   goToPage = (pageId) => {
@@ -714,6 +750,7 @@ export class Book extends Component {
       this.props.book.annTotalData = [];
     }
     const getOriginurl = localStorage.getItem('backUrl');
+    localStorage.setItem('secureToken', undefined);
     if (getOriginurl) {
       window.location.href = getOriginurl;
     }
@@ -1035,13 +1072,12 @@ export class Book extends Component {
     } :
       {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'idpName': 'SMS',
+        'Content-Type': 'application/json',     //'idpName': 'SMS',
         'X-Authorization': localStorage.getItem('secureToken')
       };
 
     const annotationClient = axios.create({
-      baseURL: `${bootstrapParams.pageDetails.endPoints.services}/context/${this.state.urlParams.context}/annotations`,
+      baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
       headers: this.annHeaders,
       data: {
         context: this.state.urlParams.context,
@@ -1116,7 +1152,7 @@ export class Book extends Component {
         }
       };
     }
-
+    this.isAnnotationHide = bootstrapParams.pageDetails.isAnnotationHide;
     const isInstructor = userType === 'instructor' ? true : false;
     let isconfigTocData = false;
     if (isInstructor) {
@@ -1294,7 +1330,7 @@ const mapStateToProps = state => {
     tocResponse: state.playlistReducer.tocresponse,
     updatedToc: state.playlistReducer.updatedToc,
     tocReceived: state.playlistReducer.tocReceived,
-    isBookmarked: state.bookmarkReducer.data.isBookmarked,
+    bookmarkedData: state.bookmarkReducer.data,
     bookMarkData: state.bookmarkReducer.bookmarksData,
     gotoPageObj: state.gotopageReducer.gotoPageObj,
     isGoToPageRecived: state.gotopageReducer.isGoToPageRecived,

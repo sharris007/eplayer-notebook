@@ -18,6 +18,7 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Divider from 'material-ui/Divider';
 import reducer from '../modules/moreMenuReducers';
 import { injectReducer } from '../../../store/reducers';
 import Cookies from 'universal-cookie';
@@ -34,7 +35,8 @@ class MoreMenuComponent extends React.Component {
   delete_cookie = (name) => {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
-    handleClick = () => {
+  
+  onBookHeaderLogout = () => {
     sessionStorage.clear();
     const langQuery = localStorage.getItem('bookshelfLang');
     const cookies = new Cookies();
@@ -112,21 +114,37 @@ class MoreMenuComponent extends React.Component {
     }
     this.props.logoutUserSession(this.props.userid, this.props.ssoKey, this.props.sceanrio, this.props.serverDetails); // eslint-disable-line
   }
+
   render() {
     const style = {
       moreIcons: {
         color: '#6a7070'
+      },
+      menuItem: {
+        fontSize: '14px',
+        fontWeight: 'normal'
+      },
+      divider: {
+        marginLeft: '16px',
+        marginRight : '16px'
       }
     };
-
-    return (<IconMenu
+    const menuList = this.props.menuItem.map((menu, index) => {
+    if (menu.type === 'divider') {
+      return <Divider key={index} style={style.divider}/>;
+    }
+    if(menu.value === 'signOut'){
+      return <MenuItem key={index} value={menu.value} primaryText={menu.text} onClick = {this.onBookHeaderLogout} style={style.menuItem}/>;
+    }
+    return <MenuItem key={index} value={menu.value} primaryText={menu.text} onClick = {menu.onClick} style={style.menuItem}/>;
+  });
+  return (<IconMenu
       iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
       iconStyle={style.moreIcons}
-      onItemTouchTap={this.handleClick}
       anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
       targetOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
-      <MenuItem id="signOutButton" primaryText={this.props.messages !== undefined ? this.props.messages.signOutBtn : 'Sign Out'} />
+    {menuList}
     </IconMenu>
     );
   }

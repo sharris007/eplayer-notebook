@@ -61,10 +61,14 @@ export class PdfBook extends Component {
     {
       // Validating ReactPlayerCookie cookie
       const cookieValue = cookies.get('ReactPlayerCookie');
-      if(cookieValue != 'ReactPlayerCookie')
+      if(cookieValue !== undefined && cookieValue != 'ReactPlayerCookie')
       {
         browserHistory.push('/eplayer/login');
       }
+    }
+    else
+    {
+      browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
     }
   }
 /* Async keyword used for independent calling the method, componentWillMount is lifecycle method,
@@ -73,6 +77,24 @@ used for before mounting occurs. */
   currentbook = {};
   let bookID = this.props.location.query.bookid;
   let bookData = {};
+
+  if (this.props.location.query.invoketype !== undefined && this.props.location.query.invoketype === 'pi')
+  {
+    var bookshelfhsid = this.props.location.query.hsid;
+    
+    let bookhsid = getmd5('bookid='+bookID+'&invoketype='+this.props.location.query.invoketype+eT1Contants.BOOKSHELF_MD5_SECRET_KEY);
+    
+    if(bookhsid == bookshelfhsid)    
+    {   
+      console.log("hsid match success. Continue to launch the title");
+    }   
+    else    
+    {   
+      console.log("hsid match failure. Show the error page");
+      browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
+    } 
+  }
+
   if ((this.props.location.query.invoketype !== undefined && 
           this.props.location.query.invoketype === 'pi') || (this.props.currentbook.globalUserId !== undefined && this.props.location.query.invoketype !== undefined && 
           this.props.location.query.invoketype === 'et1'))
@@ -236,9 +258,7 @@ used for before mounting occurs. */
                              this.props.location.query.languageid : undefined;    
     currentbook.ssoKey = authkey;
     await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
-    
   }
-
  /* Multiple methods we have paased in PdfBookReader inside return, fetchTocViewer fot fetching the value of TOC,
    fetchBookmarksUsingReaderApi for fetching the bookmark details, addBookmarkUsingReaderApi is used for adding the bookmark details,
    and so on as methods names are very specific. */

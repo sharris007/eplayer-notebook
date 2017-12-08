@@ -18,7 +18,11 @@ Annotator.Editor = (function(_super) {
     '.annotator-listing textarea keyup':'onNoteChange',
     '.annotator-delete-container click':'onDeleteIconClick',
     '.annotator-confirm-cancel click':'onCancelClick',
-    'keyup' : 'onKeyupSelection'
+    '.annotator-edit-container,.annotator-delete-container,.annotator-share,.annotator-save,.annotator-cancel,.annotator-confirm-delete,.annotator-confirm-cancel keydown':'onKeydownSelection',
+    'keyup' : 'onKeyupSelection',
+    '.annotator-pink keydown' : 'onKeydownPink',
+    '.annotator-save,.annotator-share keydown' : 'onKeydownSave',
+    '.annotator-confirm-delete keydown' : 'onKeydownDelete'
   };
 
   Editor.prototype.classes = {
@@ -33,13 +37,13 @@ Annotator.Editor = (function(_super) {
     characters :3000
   }
   var language = window.annotationLocale || 'en-US';
-  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" tabindex="1" class="annotator-color annotator-yellow" title="' + locale_data[language]['yellow'] + '" value="#FFD232"/><input type="button" tabindex="2" class="annotator-color annotator-green" title="' + locale_data[language]['green'] + '" value="#55DF49"/><input type="button" tabindex="3" class="annotator-color annotator-pink" title="' + locale_data[language]['pink'] + '" value="#FC92CF"/></div><div tabindex="5" class="annotator-delete-container" title="' + locale_data[language]['delete'] + '"></div><div class="annotator-edit-container" tabindex="4" title="' + locale_data[language]['edit'] + '"></div></div>'
+  var panel1 = '<div class="annotator-panel-1 annotator-panel-triangle"><div class="annotator-color-container"><input type="button" tabindex="1" class="annotator-color annotator-yellow" aria-label="' + locale_data[language]['yellow'] + '" title="' + locale_data[language]['yellow'] + '" value="#FFD232"/><input type="button" tabindex="2" class="annotator-color annotator-green" aria-label="' + locale_data[language]['green'] + '" title="' + locale_data[language]['green'] + '" value="#55DF49"/><input type="button" tabindex="3" class="annotator-color annotator-pink" aria-label="' + locale_data[language]['pink'] + '" title="' + locale_data[language]['pink'] + '" value="#FC92CF"/></div><div tabindex="5" class="annotator-delete-container" aria-label="' + locale_data[language]['delete'] + '" title="' + locale_data[language]['delete'] + '"></div><div class="annotator-edit-container" tabindex="4" aria-label="' + locale_data[language]['edit'] + '" title="' + locale_data[language]['edit'] + '"></div></div>'
 
   var panel2 ='<div class="annotator-panel-2"><ul class="annotator-listing"></ul></div>';
 
-  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share" tabindex="9" title="' + locale_data[language]['share'] + '"></div></div><div class="ann-cancelsave-section"><a tabindex="7" class="annotator-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a><a tabindex="8" class="annotator-save annotator-focus" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a></div></div></div>';
+  var panel3 ='<div class="annotator-panel-3"><div class="annotator-controls"><div class="ann-share-section"><label class="annotator-share-text">' + locale_data[language]['share'] + '</label><div class="annotator-share" tabindex="9" aria-label="' + locale_data[language]['share'] + '" title="' + locale_data[language]['share'] + '"></div></div><div class="ann-cancelsave-section"><a tabindex="7" class="annotator-cancel" aria-label="' + locale_data[language]['cancel'] + '" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a><a tabindex="8" class="annotator-save annotator-focus" aria-label="' + locale_data[language]['save'] + '" title="' + locale_data[language]['save'] + '">' + locale_data[language]['save'] + '</a></div></div></div>';
 
-  var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a tabindex="2" class="annotator-confirm-delete" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a><a tabindex="1" class="annotator-confirm-cancel" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a></div></div></div>';
+  var panel4 ='<div class="annotator-panel-4 annotator-panel-triangle"><div class="ann-confirm-section"><label class="annotator-confirm">' + locale_data[language]['confirm'] + '?</label></div><div class="ann-canceldelete-section"><a tabindex="2" class="annotator-confirm-delete" aria-label="' + locale_data[language]['delete'] + '" title="' + locale_data[language]['delete'] + '">' + locale_data[language]['delete'] + '</a><a tabindex="1" class="annotator-confirm-cancel" aria-label="' + locale_data[language]['cancel'] + '" title="' + locale_data[language]['cancel'] + '">' + locale_data[language]['cancel'] + '</a></div></div></div>';
 
   var panel5 ='<li style="display:none"; class="characters-left"><span id="letter-count">'+(Editor.prototype.const.characters)+'</span id="letter-text">  ' + locale_data[language]['charleft'] + '<span><span></li>';
 
@@ -68,11 +72,40 @@ Annotator.Editor = (function(_super) {
     this.fields = [];
     this.annotation = {};
   }
+  Editor.prototype.onKeydownSelection = function(event) {
+    if (event.keyCode == 32) 
+      event.preventDefault();
+  }
   Editor.prototype.onKeyupSelection = function(event) {
-    if (event.keyCode === 32 || event.keyCode === 13) {
+    if ((event.keyCode === 32 || event.keyCode === 13) && !isDisableAnnotation) {
       $(event.target).trigger('click');
     }
   }
+
+  Editor.prototype.onKeydownPink = function(e) {
+    if (e.keyCode == 9 && $('.annotator-outer').hasClass('hide-note')) {
+      e.preventDefault();
+        $('.annotator-yellow').focus();
+    }
+  }
+
+  Editor.prototype.onKeydownSave = function(e) {
+    if (e.keyCode == 9) {
+      e.preventDefault();
+      if($('.annotator-color-container').hasClass('disabled-save'))
+        $('.annotator-edit-container').focus();
+      else
+        $('.annotator-yellow').focus();
+    }
+  }
+
+  Editor.prototype.onKeydownDelete = function(e) {
+    if (e.keyCode == 9) {
+      e.preventDefault();
+        $('.annotator-confirm-cancel').focus();
+    }
+  }
+  
   Editor.prototype.unShareAnnotation=function() {
      this.annotation.colorCode=this.annotation.lastColor;
      var i=1;
@@ -179,6 +212,8 @@ Annotator.Editor = (function(_super) {
   }
 
   Editor.prototype.onColorChange=function(event) {
+    if(isDisableAnnotation)
+      return;
     window.getSelection().removeAllRanges();
     this.element.removeClass('hide-note');
     var checkoverlap = $('.annotator-editor').hasClass('overlapingpopup');
@@ -300,6 +335,16 @@ Annotator.Editor = (function(_super) {
       $('.annotator-edit-container').focus();
     else
       $('.annotator-color[value="'+this.annotation.colorCode+'"]').focus();
+
+    if(isDisableAnnotation) {
+      this.element.find('.annotator-widget').addClass('disableAnnotation');
+      this.element.find('.annotator-color,.annotator-share,.annotator-edit-container,.annotator-delete-container,#annotator-field-0,.annotator-cancel,.annotator-save').addClass('disable_element');
+      this.element.find('#annotator-field-0').attr('readonly','readonly');
+    } else {
+      this.element.find('.annotator-widget').removeClass('disableAnnotation');
+      this.element.find('.annotator-color,.annotator-share,.annotator-edit-container,.annotator-delete-container,#annotator-field-0,.annotator-cancel,.annotator-save').removeClass('disable_element');
+      this.element.find('#annotator-field-0').removeAttr('readonly');
+    }
     return this.publish('show');
   };
 

@@ -1141,9 +1141,13 @@
 pointer-events: none;
 }
 
-.biblioref {
+.biblioref .noteref .noteref_footnote{
    -webkit-user-select: none; 
    -moz-user-select: none; 
    -ms-user-select: none; 
    user-select: none;
+}
+.disable_element {
+	pointer-events: none !important;
+	opacity:0.3 !important;
 }

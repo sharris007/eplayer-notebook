@@ -1,6 +1,6 @@
 /**
 PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *  Copyright © 2017 Pearson Education, Inc.
+ *  Copyright Â© 2017 Pearson Education, Inc.
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -12,6 +12,7 @@ PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  * from Pearson Education, Inc.
 **/
 
+import { domain, contentUrl } from '../../const/Settings';
 
 export default class Utilities {
   /**
@@ -33,5 +34,59 @@ export default class Utilities {
       });
     }
     return sortedBookmarkArr;
+  }
+
+  static formBookmarkPayload = (reqData) => {
+    const bookmarkData = {
+      clientApp: "ETEXT_WEB",
+      color: "",
+      contextId: reqData.context,
+      data: reqData,
+      isBookMark: true,
+      pageId: reqData.uri,
+      pageNo: "",
+      selectedText: "",
+      sharable: "",
+      status: "",
+      subContextId: "",
+      userId: reqData.user
+    }
+    const reqPayload = {
+      payload : [bookmarkData]
+    }
+    return JSON.stringify(reqPayload);
+  }
+
+  /**
+   * Checks the cookie with the name exists
+   * @param cookie name
+   * @returns { true/false }  
+  */
+
+  static checkCookie = (cookieName) => {
+    let name = cookieName + "=";
+    let ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return true;
+        }
+    }
+    return false;
+  }
+
+  static changeContentUrlToSecured = (urlList) => {
+    const updUrlList = [];
+    if (typeof(urlList) === "string") {
+      return urlList.replace(contentUrl.openClass[domain.getEnvType()],contentUrl.SecuredUrl[domain.getEnvType()]);
+    } else if (urlList && urlList.length > 0) {
+      urlList.forEach((url) => {
+        updUrlList.push(url.replace(contentUrl.openClass[domain.getEnvType()],contentUrl.SecuredUrl[domain.getEnvType()]));
+      });
+      return updUrlList;
+    }
   }
 }

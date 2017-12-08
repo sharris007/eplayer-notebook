@@ -1,14 +1,14 @@
-/*******************************************************************************
+/** *****************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
+ *
  *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
- *  * 
+ *  *
  *  * NOTICE:  All information contained herein is, and remains
  *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
  *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
  *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
+ *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 import AnnotationApi from '../api/annotationApi';
@@ -20,7 +20,10 @@ export const getTotalAnnotationData = json => ({
   totalAnndata: json,
   annTotalDataloaded: true
 });
-
+const gotNotes = notes => ({
+  type: 'GOT_NOTES',
+  notesList: notes
+});
 export const annStructureChange = (annTotalList) => {
   const colorArr = {
     '#55DF49': 'Green',
@@ -32,13 +35,13 @@ export const annStructureChange = (annTotalList) => {
   if (annTotalList && annTotalList.length > 0) {
     for (let i = 0; i < annTotalList.length; i++) {
       const setArray = {
-        pageId: annTotalList[i].source.id,
+        pageId: annTotalList[i].data.source.id,
         id: annTotalList[i].id,
-        author: annTotalList[i].user,
-        time: annTotalList[i].createdTimestamp,
-        text: annTotalList[i].quote,
-        comment: annTotalList[i].text || '',
-        color: colorArr[annTotalList[i].colorCode] || 'Green'
+        author: annTotalList[i].data.user,
+        time: annTotalList[i].createdTime,
+        text: annTotalList[i].data.quote,
+        comment: annTotalList[i].data.text || '',
+        color: colorArr[annTotalList[i].data.colorCode] || 'Green'
       };
       annListArray.push(setArray);
     }
@@ -49,10 +52,11 @@ export const annStructureChange = (annTotalList) => {
 export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.dogetTotalAnnotation(filterData)
     .then(response => response.json())
     .then((json) => {
-      if (json.rows && json.rows.length > 0) {
-        const annTotalList = json.rows;
+      if (json.response && json.response.length > 0) {
+        const annTotalList = json.response;
         const annListArray = annStructureChange(annTotalList);
         dispatch(getTotalAnnotationData(annListArray));
+        dispatch(gotNotes(annTotalList));
       }
     });
 

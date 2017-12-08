@@ -1,7 +1,7 @@
 /** *****************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  *
- *  *  Copyright © 2017 Pearson Education, Inc.
+ *  *  Copyright Â© 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
  *  *
  *  * NOTICE:  All information contained herein is, and remains
@@ -13,11 +13,13 @@
  *******************************************************************************/
 /* global $ */
 import PlaylistApi from '../api/playlistApi';
-import { resources, domain, typeConstants } from '../../const/Settings';
+import { resources, domain, typeConstants, contentUrl } from '../../const/Settings';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
+import find from 'lodash/find';
+import Utilities from '../components/utils';
 // GET Book Details
 export const getPlaylistCompleteDetails = json => ({
   type: typeConstants.GET_PLAYLIST,
@@ -91,18 +93,52 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
       PlaylistApi.doGetBookDetails(data)
         .then(response => response.json())
         .then((response) => {
+          //Changing content urls to secured url
+          response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+          response.bookDetail.metadata.toc = Utilities.changeContentUrlToSecured(response.bookDetail.metadata.toc);
+          
           dispatch(getBookDetails(response));
           bookId = response.bookDetail.bookId;
-
+          let bookDetailInfo = response;
           tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
+
+          if (domain.getEnvType() === 'dev') {
+            tocUrl = tocUrl.replace(contentUrl.SecuredUrl['dev'],contentUrl.SecuredUrl['qa']);
+          }
+
           bookDetails = response.bookDetail.metadata;
           piToken = data.piToken;
           PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
             .then((response) => {
+              //Changing content urls to secured url
+              response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+              response.provider = Utilities.changeContentUrlToSecured(response.provider);
+
               dispatch(getPlaylistCompleteDetails(response));
               if (isFromCustomToc) {
                 dispatch(getCustomPlaylistCompleteDetails());
               }
+              let currentPageInfo = {};
+              if(data.pageId) {
+                currentPageInfo = find(response.content, list => list.id === data.pageId);
+              } else {
+                currentPageInfo = (response.content[0].playOrder == 0) ? response.content[1] : response.content[0];
+              }
+              let bookTitle = ''
+              if(bookDetailInfo.bookDetail && bookDetailInfo.bookDetail.metadata && bookDetailInfo.bookDetail.metadata.title) {
+                bookTitle = bookDetailInfo.bookDetail.metadata.title;
+              }
+              let dataLayerObj = {
+                'eventCategory': 'Chapter',
+                'event': 'chapterStarted',
+                'eventAction': 'Chapter Started',
+                'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+                'firstSectionEntered' : currentPageInfo.title,
+                'bookTitle': bookTitle,
+                'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+              }
+              /*Custom dimension for initial Master Play List*/
+              dataLayer.push(dataLayerObj);
             });
         }
         );
@@ -112,6 +148,10 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
 export const getBookTocCallService = data => dispatch =>
   PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
     .then((response) => {
+      //Changing content urls to secured url
+      response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+      response.provider = Utilities.changeContentUrlToSecured(response.provider);
+            
       const tocResponse = response.content;
       tocResponse.mainTitle = bookDetails.title;
       tocResponse.author = bookDetails.creator;
@@ -193,10 +233,20 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
-
+    let courseDetailInfo = response;
+     //Changing content urls to secured url
+    response.userCourseSectionDetail.baseUrl = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.baseUrl);
+    response.userCourseSectionDetail.bookCoverImageUrl = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.bookCoverImageUrl);
+    response.userCourseSectionDetail.toc = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.toc);    
+    
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
+
+    if (domain.getEnvType() === 'dev') {
+      tocUrl = tocUrl.replace(contentUrl.SecuredUrl['dev'],contentUrl.SecuredUrl['qa']);
+    }
+
     bookDetails = response.userCourseSectionDetail;
     piToken = data.piToken;
     bookId = bookDetails.section.sectionId;
@@ -206,6 +256,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const url = window.location.href;
       const n = url.search('prdType');
       let prdType = '';
+      let iseSource = '';
+      const checkSource = url.search('etext-ise');
       if (n > 0) {
         const urlSplit = url.split('prdType=');
         prdType = getParameterByName('prdType');
@@ -214,10 +266,14 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       if (!prdType) {
         localStorage.setItem('backUrl', '');
       }
+      if (checkSource > 0){
+        iseSource = true;
+      }
       const studentCheck = resources.constants.zeppelinEnabled;
       const instructorCheck = resources.constants.idcDashboardEnabled;
-      if (studentCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access) {
-        redirectToZeppelin(bookDetails, passportDetails);
+      if (studentCheck && bookDetails.authgrouptype == 'student' && !iseSource) {
+         //redirectToZeppelin(bookDetails, passportDetails);
+        redirectToIse(bookId);
         return false;
       }
       else if (instructorCheck && bookDetails.authgrouptype == 'instructor' && !prdType) {
@@ -252,20 +308,63 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       .then((response) => {
         const securl = baseUrl.replace(/^http:\/\//i, 'https://');
         response.baseUrl = securl;
+
+        //Changing content urls to secured url
+        response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+        response.provider = Utilities.changeContentUrlToSecured(response.provider);
+                
         dispatch(getPlaylistCompleteDetails(response));
         if (isFromCustomToc) {
           dispatch(getCustomPlaylistCompleteDetails());
         }
+
+        let currentPageInfo = {};
+        if(data.pageId) {
+          currentPageInfo = find(response.content, list => list.id === data.pageId);
+        } else {
+          currentPageInfo = (response.content[0].playOrder == 0) ? response.content[1] : response.content[0];
+        }
+        let bookTitle = ''
+        if(courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
+          bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
+        }
+        let dataLayerObj = {
+          'eventCategory': 'Chapter',
+          'event': 'chapterStarted',
+          'eventAction': 'Chapter Started',
+          'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+          'firstSectionEntered' : currentPageInfo.title,
+          'bookTitle': bookTitle,
+          'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+        }
+        /*Custom dimension for initial Master Play List*/
+        dataLayer.push(dataLayerObj);
       });
   }
 
   );
+
+export const getAuthToken = (webToken) => dispatch =>
+   PlaylistApi.doGetAuthToken(webToken).then(response => response.json())
+    .then((response) => {
+        if(response.name && response.value) {
+          const authToken = response.name+"="+response.value+ ";path=/";
+          document.cookie = authToken;
+          //dispatch(getAuthTokenResponse(authToken));
+        }
+    });
 
 function redirectToIDCDashboard(prodType, courseId) {
   const idcBaseurl = `${resources.links.idcUrl[domain.getEnvType()]}/idc?`;
   const IdcRelativeURL = `product_type=${prodType}&courseId=${courseId}`;
   const redirectIdcURL = idcBaseurl + IdcRelativeURL;
   window.open(redirectIdcURL, '_self');
+}
+
+function redirectToIse(courseId) {
+  const iseBaseurl = `${resources.links.iseUrl[domain.getEnvType()]}/courses/${courseId}/materials`;
+  console.log('iseBaseurl', iseBaseurl);
+  window.open(iseBaseurl, '_self');
 }
 
 function redirectToZeppelin(bookDetails, passportDetails) {

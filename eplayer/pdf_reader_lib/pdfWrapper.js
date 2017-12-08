@@ -2,6 +2,30 @@
  * Initialize the bookmark panel.
  */
 var eventMap = [];
+window.loadAccessibilityContent = function(){
+  try{
+    var currentPage = WebPDF.ViewerInstance.getCurPageIndex();
+    if(currentPage != window.currentPage){
+      var divElement = $('.screenReaderText');
+      if(divElement.length == 0){
+        divElement = document.createElement('div');
+        divElement.className = "screenReaderText";
+        divElement.setAttribute('tabindex', 1);
+      }else{
+        divElement = divElement[0];
+      }
+      var textForElement = '';
+      textForElement = WebPDF.ViewerInstance.getCurToolHandler().getTextSelectTool().getTextPage(currentPage).textPage.getPageAllText();
+      divElement.innerText = textForElement;
+      var docViewerElement = $('#mainContainer');
+      var firstChild = docViewerElement[0].firstChild;
+      if($('.screenReaderText').length == 0){
+        docViewerElement[0].insertBefore(divElement, firstChild);
+      }
+      window.currentPage = currentPage;
+    }
+  }catch(e){}
+}
 function initBookmark(baseUrl,options){
 
   //_initbmPanel();
@@ -370,6 +394,7 @@ function getWatermarkConfigs() {
  */
 var compBaseURL, compBaseOptions, tocObj, toolBar;
 function initViewer(config) {
+  setInterval(window.loadAccessibilityContent, 1000)
   //initPDFTool();
   var language = "en-US";
   var assetid="",deviceid="",appversion = "" ,authorization = "",acceptLanguage="";
@@ -378,7 +403,7 @@ function initViewer(config) {
   var index = host.lastIndexOf("foxit-webpdf-web");
   var baseUrl = host.substr(0,index + 17);
   //PDF asset path
-  var openFileUrl = config.PDFassetURL;
+  var openFileUrl = config.PDFassetURL.PDFassetURL;
   var zip = config.zip;
   var encpwd = config.encpwd;
   var pdfBookCallback = config.callbackOnPageChange;
@@ -404,8 +429,14 @@ function initViewer(config) {
   // }
   //initWebPDFMini()
   // open the sample file
-   if(assertUrl === '')
-  { assertUrl = openFile(baseUrl,openFileUrl, config.headerParams, cdnURL);}
+  var foxitAssetURL = config.PDFassetURL.foxitAssetURL;
+  if(foxitAssetURL){
+    window.foxitAssetURL = foxitAssetURL;
+    assertUrl = foxitAssetURL;
+  }else{
+    window.foxitAssetURL = false;
+    assertUrl = openFile(baseUrl,openFileUrl, config.headerParams, cdnURL);
+  }
   if (assertUrl == null) return;
   if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
@@ -420,12 +451,14 @@ function initViewer(config) {
     };
     compBaseOptions = options;
     var pos = assertUrl.indexOf("asserts");
+    if(pos = -1){
+      options.baseUrl = config.cdnURL;
+    }
     var baseUrl = assertUrl.substr(0, pos);
     compBaseURL = baseUrl;
     WebPDF.createViewer("docViewer", options);
     WebPDF.ViewerInstance.on(WebPDF.EventList.DOCUMENT_LOADED, function (event, data) {
          createPDFEvent('wrdocLoaded');
-        
     });
     WebPDF.ViewerInstance.on(WebPDF.EventList.PAGE_VISIBLE, function (event, data) {
         createPDFEvent('pageVisible');
@@ -530,7 +563,7 @@ function openFile(baseUrl,fileUrl,headerParams,cdnURL, callback) {
             }
 
             url = cdnURL + "asserts\/" + curID;
-           /* if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
+            /*if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
                 WebPDF.ViewerInstance.openFile(url);
                 if(callback != null) {
@@ -1122,7 +1155,7 @@ function getAssetURLForPDFDownload(config,cb){
             iconDiv.style.backgroundSize = 'cover';
           }
           regionElement.className='hotspot';
-          iconDiv.style.position='absolute';
+          iconDiv.className='hotspotIcon';
           tooltip = document.createElement('span')
           tooltip.className='tooltiptext';
           tooltip.innerHTML = hotspots[i].name;

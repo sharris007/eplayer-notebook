@@ -575,6 +575,7 @@ export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
             pageObj.chaptername = page.chapterName;
             pageObj.isbookmark = page.isBookmark;
             pageObj.pdfPath = page.pdfPath;
+            pageObj.readerPlusID = page.readerPlusID;
             bookState.bookInfo.pages.push(pageObj);
           });
         });
@@ -620,6 +621,7 @@ export function fetchPageInfo(userid, bookid, bookeditionid,
             pageObj.chaptername = page.chapterName;
             pageObj.isbookmark = page.isBookmark;
             pageObj.pdfPath = page.pdfPath;
+            pageObj.readerPlusID = page.readerPlusID;
             bookState.bookInfo.pages.push(pageObj);
           });
         });
@@ -1073,12 +1075,12 @@ export function getlocaluserID(bookServerURL,globaluserid,type)
 }
 
 // Load the current page details in redux store
-export function loadcurrentPage(bookId,currentPageOrder,pdfpath,pagetype)
+export function loadcurrentPage(bookId,currentPageOrder,pdfpath,pagetype,foxitAssetURL)
 {
   let currentPage = {} ;
   if(pdfpath){
     currentPage = {
-    bookId,currentPageOrder,pdfpath,pagetype
+    bookId,currentPageOrder,pdfpath,pagetype,foxitAssetURL
     };
   }
   return {
@@ -1389,7 +1391,7 @@ const ACTION_HANDLERS = {
     currentPageInfo : {
       bookId: action.payload.bookId,
       currentPageOrder: action.payload.currentPageOrder,
-      pdfpath: action.payload.pdfpath,
+      pdfpath: { PDFassetURL: action.payload.pdfpath, foxitAssetURL: action.payload.foxitAssetURL},
       pagetype: action.payload.pagetype
     }
   })

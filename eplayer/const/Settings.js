@@ -19,7 +19,8 @@ export const resources = {
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
     idcDashboardEnabled : true,
-    zeppelinEnabled     : true
+    zeppelinEnabled     : true,
+    isDisableAnnotation : false
   },
   links: {
     legalNotice    : 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
@@ -27,8 +28,8 @@ export const resources = {
     support        : 'https://media.pearsoncmg.com/cmg/NexText/about/support/index.html',
     permissions    : 'https://media.pearsoncmg.com/cmg/NexText/about/permissions/index.html',
     etextServiceUrl: {
-      local        : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
-      dev          : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
+      local        : 'https://etext-dev.pearson.com/api/nextext-api/api',
+      dev          : 'https://etext-dev.pearson.com/api/nextext-api/api',
       qa           : 'https://etext-qa-stg.pearson.com/api/nextext-api/api',
       stage        : 'https://etext-stg.pearson.com/api/nextext-api/api',
       prod         : 'https://etext.pearson.com/api/nextext-api/api'
@@ -42,7 +43,7 @@ export const resources = {
     },
     courseServiceUrl: {
       local        : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',
-      dev          : 'https://stpaperapi.dev-prsn.com/etext/v2/courseboot',
+      dev          : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',                          //stpaperapi.dev-prsn.com
       qa           : 'https://stpaperapiqa.stg-prsn.com/etext/v2/courseboot',
       stage        : 'https://stpaperapi.stg-prsn.com/etext/v2/courseboot',
       prod         : 'https://stpaperapi.prd-prsn.com/etext/v2/courseboot'
@@ -56,7 +57,7 @@ export const resources = {
     },
     pxeServiceUrl: {
       local        : 'https://pxe-services-dev.pearson.com/services-api/api/3.2',
-      dev          : 'https://pxe-services-dev.pearson.com/services-api/api/3.2',
+      dev          : 'https://pxe-services-qa.pearson.com/services-api/api/3.2',
       qa           : 'https://pxe-services-qa-stg.pearson.com/services-api/api/3.2',
       stage        : 'https://pxe-services-stg.pearson.com/services-api/api/3.2',
       prod         : 'https://pxe-services.pearson.com/services-api/api/3.2'
@@ -122,7 +123,39 @@ export const resources = {
       qa           :"https://etext-instructor-qa.pearson.com/idc-api/course",
       stage        :"https://etext-instructor-stg.pearson.com/idc-api/course",
       prod         :"https://etext-instructor.pearson.com/idc-api/course",
+    },
+    spectrumServiceUrl : {
+      local        :"https://spectrum-qa.stg-openclass.com/api/context",
+      dev          :"https://spectrum-qa.stg-openclass.com/api/context",
+      qa           :"https://spectrum-qa.stg-openclass.com/api/context",
+      stage        :"https://spectrum.stg-openclass.com/api/context",
+      PERF         :"https://spectrum-ppe.pearsoned.com/api/context",
+      prod         :"https://spectrum.pearsoned.com/api/context"
+    },
+    iseUrl : {
+      local        :"https://etext-ise-qa.pearson.com",
+      dev          :"https://etext-ise-qa.pearson.com",
+      qa           :"https://etext-ise-qa.pearson.com",
+      stage        :"https://etext-ise-stg.pearson.com",
+      prod         :"https://etext-ise.pearson.com"
     }
+  }
+};
+
+export const contentUrl = {
+  openClass: {
+    local        :"content.stg-openclass.com",
+    dev          :"content.stg-openclass.com",
+    qa           :"content.stg-openclass.com",
+    stage        :"content.stg-openclass.com",
+    prod         :"content.openclass.com"
+  },
+  SecuredUrl: {
+    local        :"etext-dev.pearson.com",
+    dev          :"etext-dev.pearson.com",
+    qa           :"content.stg-openclass.com",  //etext-qa-stg.pearson.com
+    stage        :"content.stg-openclass.com", //etext-qa-stg.pearson.com
+    prod         :"etext.pearson.com"
   }
 };
 
@@ -163,7 +196,7 @@ export const domain = {
     if (locationOrigin.indexOf('localhost') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('etext-dev.pearson.com') !== -1)
-          { return 'qa'; }
+          { return 'dev'; }
     else if (locationOrigin.indexOf('etext-qa-stg.pearson.com') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('etext-stg.pearson.com') !== -1)

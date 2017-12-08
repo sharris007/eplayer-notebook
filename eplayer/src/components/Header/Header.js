@@ -373,7 +373,7 @@ export class Header extends React.Component {
                 <Icon name="font-setting-24" />
               </div>
             }
-              {this.props.isET1 ? <div className="preferences-container-eT1">{this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} disableBackgroundColor={this.props.disableBackgroundColor} /></div> : <div className="empty" />} </div>
+              {this.props.isET1 ? <div className="preferences-container-eT1">{this.state.prefOpen ? <div className="content"><PreferencesComponent isET1={this.props.isET1} setCurrentZoomLevel={this.props.setCurrentZoomLevel} disableBackgroundColor={this.props.disableBackgroundColor} preferenceUpdate={this.props.preferenceUpdate} fetch={this.props.getPreference}/></div> : <div className="empty" />} </div>
        : <div className="preferences-container">{this.state.prefOpen ? <div className="content"><PreferencesComponent fetch={this.props.getPreference} preferenceUpdate={this.props.updatePreference}
          disableBackgroundColor={false} locale="en" /></div> : <div className="empty" />} </div>}
          {this.props.isET1 === 'Y' && !this.props.bookData.bookFeatures.hassearchbutton ?
@@ -395,7 +395,7 @@ export class Header extends React.Component {
                 {this.state.searchOpen ? <Search locale={locale} store={this.props.store} ssoKey={this.props.ssoKey} globalBookId={this.props.globalBookId} bookId={this.props.bookId} serverDetails={this.props.serverDetails} goToPage={pageId => this.goToPage(pageId)} indexId={this.props.indexId} listClick={this.props.listClick} isET1="Y" /> : <div className="empty" />}
               </div>
               <div className="moreIcon" onClick={this.handleMoreMenuClick}>
-                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} sceanrio={this.props.currentScenario} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages} />
+                <MoreMenuComponent store={this.props.store} userid={this.props.userid} ssoKey={this.props.ssoKey} sceanrio={this.props.currentScenario} serverDetails={this.props.serverDetails} locale={this.props.locale} messages={messages} menuItem = {this.props.moreMenuData} />
               </div>
             </div>}
         />

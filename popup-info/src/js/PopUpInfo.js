@@ -216,6 +216,12 @@ class PopUpInfo extends Component {
           }
         }
       }
+      setTimeout(function() {
+        if($('.accessibility_audio').length && $('.mm-popup__box').length) {
+            $('.accessibility_audio').text('');
+            $('.accessibility_audio').text($('.mm-popup__box').text());
+        }
+      }, 500);
     }
   }
 

@@ -72,3 +72,12 @@ $cont-padding-bottom: 85px;
 .alert-Error, .alert-Information, .alert-Success{
   z-index:10000 !important;
 }
+
+.accessibility_readonly {
+    position: absolute;
+    left: -999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}

@@ -16,6 +16,22 @@
 
 <head>
   <title>E-Player App</title>
+  <!-- Google Tag Manager -->
+  <script>
+    var hostName = window.location.hostname;
+    var gtmID = 'GTM-PZNRHJ7'; // QA,STG,PPE GTM ID
+    if(hostName === "etext-dev.pearson.com") {
+      gtmID = 'GTM-WL8C46Z';
+    } else if(hostName === "etext.pearson.com") {
+      gtmID = 'GTM-M9RJR7V';
+    }
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer',gtmID);
+  </script>
+  <!-- End Google Tag Manager -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="//d12m40tknrppbi.cloudfront.net/cite/css/style.css">
@@ -34,18 +50,23 @@
 </head>
 
 <body style="overflow:visible;">
+    <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M9RJR7V"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <div id="divSVG" style="display:none">  
   </div>
-  <script src="https://pi.pearsoned.com/v1/piapi/login/js/session.js"></script>
+  <script src="https://pi-int.pearsoned.com/v1/piapi-int/login/js/session.js"></script>
   <script type="text/javascript">
     var redirectPiurl = window.location.href;
     redirectPiurl = decodeURIComponent(redirectPiurl).replace(/\s/g, "+").replace(/%20/g, "+");
-    var clientId = 'mmiGVm0apwEdyZzZieOY5q5su06Ch0kN';
+    var clientId = 'I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU';
     var jwtSetting = {
       "useJwt": true, "checkSessionMilliseconds": "6000",
       "sessionIdleTimeoutSeconds": "1800"
     };
     piSession.initialize(clientId, jwtSetting);
+    deleteCookie("etext-cdn-token");
     piSession.on(piSession.SessionStateKnownEvent, onSessionStateKnown);
     function onSessionStateKnown() {
       if (piSession.hasValidSession(10) === 'notoken') {
@@ -66,6 +87,10 @@
     }, 1500000);
     function setStorage(secureToken, svalue) {
       localStorage.setItem("secureToken", svalue);
+    }
+    function deleteCookie(name) {
+      document.cookie = name + '=;expires=Thu, 01 Jan 2000 00:00:01 GMT;path=/;';
+      console.log("The Cookiee Deleted ",name + '=;expires=Thu, 01 Jan 2000 00:00:01 GMT;path=/;');
     }
   </script>
   <script>
@@ -90,6 +115,7 @@
     }
   </script>
   <div id="root" style="height: 100%"></div>
+  <div id="accessibility_audio" class="accessibility_audio accessibility_readonly" aria-live="assertive"></div>
 </body>
 <script src="/eplayer/annotation-lib/annotator.js"></script>
 
