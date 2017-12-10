@@ -49,11 +49,11 @@ export const resources = {
       prod         : 'https://stpaperapi.prd-prsn.com/etext/v2/courseboot'
     },
     etextSearchUrl: {
-      local        : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
-      dev          : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
-      qa           : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
-      stage        : 'https://content-service.stg-prsn.com/csg/api/cm',
-      prod         : 'https://content-service.prd-prsn.com/csg/api/cm'
+      local        : 'https://content-service.dev-prsn.com/csg/api/v3/autoComplete',
+      dev          : 'https://content-service.dev-prsn.com/csg/api/v3/autoComplete',
+      qa           : 'https://content-service-qa.stg-prsn.com/csg/api/v3/autoComplete',
+      stage        : 'https://content-service.stg-prsn.com/csg/api/v3/autoComplete',
+      prod         : 'https://content-service.prd-prsn.com/csg/api/v3/autoComplete'
     },
     pxeServiceUrl: {
       local        : 'https://pxe-services-dev.pearson.com/services-api/api/3.2',

@@ -16,6 +16,7 @@ import { fetchAnnotations, addAnnotation, removeAnnotation,
          fetchBookmarks, addBookmark, removeBookmark,
          fetchPreferences,
          fetchTocAndViewer, goToPage, fetchBookDetails } from '../modules/book';
+import searchActions from '../modules/searchActions';
 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -38,7 +39,9 @@ const mapDispatchToProps = {
   fetchPreferences,
   fetchTocAndViewer,
   goToPage,
-  fetchBookDetails
+  fetchBookDetails,
+  search: searchActions.search,
+  autoComplete: searchActions.autoComplete
 };
 
 const mapStateToProps = state => ({

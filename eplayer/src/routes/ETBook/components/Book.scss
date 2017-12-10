@@ -54,10 +54,6 @@ $cont-padding-bottom: 85px;
     }
   }
 .searchContainer {
-  position: fixed !important;
-  z-index: 10001 !important;
-  top: 33px !important;
-  right: initial !important;
   .triangle-up {
     border-bottom: 20px solid #f2f2f2 !important;
     &.fixHeader {
