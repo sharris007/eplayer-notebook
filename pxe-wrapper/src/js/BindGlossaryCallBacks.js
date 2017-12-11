@@ -93,14 +93,16 @@ export class BindGlossaryCallBacks {
               glossaryDesc = glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML;
             } else if (glossaryNode && glossaryNode.nextElementSibling) {
               glossaryDesc = glossaryNode.nextElementSibling.innerHTML;
-            }
+            } 
             popOverCollection.popOverDescription = glossaryDesc;
             if (popOverCollection.popOverTitle && popOverCollection.popOverDescription) {
               this.glossaryCollection.push({ popOverCollection, item: bookDivQuerySelectorClasses[i] });
             } else {
               popOverCollection.popOverTitle = bookDivQuerySelectorClasses[i].innerHTML;
               popOverCollection.popOverDescription = glossaryDesc || '';
-              this.glossaryCollection.push({ popOverCollection, item: bookDivQuerySelectorClasses[i] });
+              if(glossaryDesc) {
+                this.glossaryCollection.push({ popOverCollection, item: bookDivQuerySelectorClasses[i] });
+              }              
             }
           }
         });

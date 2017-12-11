@@ -43,24 +43,28 @@ export class BindMoreInfoCallBacks {
               hrefId = moreInfoIconDOM.querySelector('a.noteref_footnote').href.split('#')[1];
             }
             break;
-          }
-           
+          } 
+                     
           case 'a.noteref.noteref_footnote_symboled' : {
             hrefId = (moreInfoIconDOM.children[0] && moreInfoIconDOM.children[0].href) ? moreInfoIconDOM.children[0].href.split('#')[1]: '';
             break;
           }           
           }
+          
           if (hrefId) {
-            const popOverDescription = bookDiv.getElementById(hrefId) ? bookDiv.getElementById(hrefId).getElementsByTagName('p') : '';
-            popOverCollection.popOverDescription = popOverDescription.length > 0 ?  popOverDescription[0].innerHTML : '';
+            if(bookDiv.getElementById(hrefId) && bookDiv.getElementById(hrefId).getElementsByTagName('p').length) {
+              const popOverDescription = bookDiv.getElementById(hrefId).getElementsByTagName('p');
+              popOverCollection.popOverDescription = popOverDescription.length > 0 ?  popOverDescription[0].innerHTML.trim() : '';
+            } else {
+              popOverCollection.popOverDescription = bookDiv.getElementById(hrefId) ? bookDiv.getElementById(hrefId).innerHTML.trim() : '';
+            }
           } else {
-            popOverCollection.popOverDescription = moreInfoIconDOM.children[0].innerHTML;
+            popOverCollection.popOverDescription = moreInfoIconDOM.children[0].innerHTML.trim();
           }
           this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
         }
         //});
       });
-      console.log(this.popUpCollection)
       window.renderPopUp(this.popUpCollection);
     }
 }
