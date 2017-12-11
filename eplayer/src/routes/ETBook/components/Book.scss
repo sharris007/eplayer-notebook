@@ -53,16 +53,18 @@ $cont-padding-bottom: 85px;
       }
     }
   }
-.headerBar .searchContainer {
-  position: initial !important; 
-  right: initial !important; 
-  top: initial !important; 
+.searchContainer {
   .triangle-up {
     border-bottom: 20px solid #f2f2f2 !important;
     &.fixHeader {
       border-bottom: 20px solid #f2f2f2 !important;
     }
   }
+}
+.headerBar .searchContainer {
+  position: initial !important; 
+  right: initial !important; 
+  top: initial !important; 
 }
 .navigation .section .contentWrapper .content {
   line-height: 1.3;
