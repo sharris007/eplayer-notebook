@@ -294,6 +294,25 @@ export class Book extends Component {
         handleAnn.remove();
       }
     }
+    const deletedAnnotationData = find(this.props.book.annTotalData, note => note.id === annotationId);
+    let sectionInfo = {};
+    let chapterInfo = {};
+    this.props.tocData.content.list.forEach((chapter, i)=>{
+      sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedAnnotationData.pageId);
+      if(sectionInfo && !chapterInfo.title) {
+        chapterInfo = chapter;
+      }
+    })
+    let dataLayerObj = {
+      'eventAction': 'Removing Notes',
+      'event': 'annotationDelete',
+      'eventCategory': 'Notes',
+      'text': deletedAnnotationData.text,
+      'selectedText': deletedAnnotationData.comment,
+      'chapterTitle': chapterInfo.title,
+      'sectionTitle': sectionInfo.title
+    }
+    dataLayer.push(dataLayerObj);
   };
 
   addBookmarkHandler = () => {
@@ -319,6 +338,24 @@ export class Book extends Component {
     bookmarksParams.xAuth = localStorage.getItem('secureToken');
     bookmarksParams.body = { ids: [id] };
     this.props.dispatch(deleteBookmarkCallService(bookmarksParams));
+
+    const deletedBookmarkData = find(this.props.book.bookmarks, bookmark => bookmark.id === bookmarkId);
+    let sectionInfo = {};
+    let chapterInfo = {};
+    this.props.tocData.content.list.forEach((chapter, i)=>{
+      sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedBookmarkData.uri);
+      if(sectionInfo && !chapterInfo.title) {
+        chapterInfo = chapter;
+      }
+    })
+    let dataLayerObj = {
+      'eventAction': 'Deleting BookMark',
+      'event': 'bookmarkDelete',
+      'eventCategory': 'Bookmarks',
+      'chapterTitle': chapterInfo.title,
+      'sectionTitle': sectionInfo.title
+    }
+    dataLayer.push(dataLayerObj);
   };
 
   onNavChange = (data) => {
@@ -949,9 +986,9 @@ export class Book extends Component {
     this.props.book.tocReceived = tocReceived;
     this.props.book.bookmarks = bookMarkData;
 
-    callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
+    callbacks.removeAnnotationHandler = this.removeAnnotationHandler.bind(this);
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
-    callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
+    callbacks.removeBookmarkHandler = this.removeBookmarkHandler.bind(this);
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.goToPageCallback = this.goToPageCallback;
 
