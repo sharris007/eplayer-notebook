@@ -16,6 +16,13 @@ window.loadAccessibilityContent = function(){
     var textForElement = '';
     textForElement = WebPDF.ViewerInstance.getCurToolHandler().getTextSelectTool().getTextPage(currentPage).textPage.getPageAllText();
     if(textForElement != window.textForElement){
+		  try{
+			var docViewerElement = $('.docViewer')
+			var firstElement = docViewerElement[0];
+			firstElement.setAttribute('aria-label',textForElement);
+			firstElement.setAttribute('tabindex', 1);
+		}catch(e){console.log("Error setting screenreader text");
+  }
       divElement.innerText = textForElement;
       var docViewerElement = $('#mainContainer');
       var firstChild = docViewerElement[0].firstChild;
