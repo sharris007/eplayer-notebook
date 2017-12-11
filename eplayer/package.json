@@ -111,7 +111,7 @@
     "@pearson-incubator/pxe-wrapper": "1.0.6",
     "@pearson-incubator/search": "0.1.38",
     "@pearson-incubator/toc": "0.1.60",
-    "@pearson-incubator/vega-core": "0.0.88",
+    "@pearson-incubator/vega-core": "0.0.91",
     "@pearson-incubator/vega-viewer": "0.0.71",
     "@pearson-incubator/viewer": "0.1.44",
     "axios": "^0.15.3",

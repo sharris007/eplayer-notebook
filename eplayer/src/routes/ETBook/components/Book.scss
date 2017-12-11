@@ -61,6 +61,16 @@ $cont-padding-bottom: 85px;
     }
   }
 }
+.headerBar {
+  .bookmarkIcon {
+      float: initial !important;
+  }
+  .searchContainer {
+    position: relative !important; 
+    right: initial !important; 
+    top: initial !important; 
+  }
+}
 .navigation .section .contentWrapper .content {
   line-height: 1.3;
 }
