@@ -3938,8 +3938,8 @@ Annotator.Editor = (function(_super) {
     this.currentAnnotation = this.textareaHeight = null;
     if(this.annotation.colorCode && this.annotation.colorCode.length)
       this.publish('save', [this.annotation]);
-    if(this.annotation.highlights && this.annotation.text)
-      $(this.annotation.highlights)[(this.annotation.text.length)?'addClass':'removeClass']('highlight-note');
+    if(this.annotation.highlights)
+      $(this.annotation.highlights)[(this.annotation.text && this.annotation.text.length)?'addClass':'removeClass']('highlight-note');
     return this.publish('hide');
   };
   Editor.prototype.hasClass=function(element, className) {
