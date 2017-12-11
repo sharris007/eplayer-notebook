@@ -11,7 +11,7 @@ class NoteBookContainer extends React.Component {
     super(props);
     const params = {
       context: props.params.bookId,
-      user: 'ffffffff59b8c629e4b09efb34405de7', // piSession.userId(),
+      user: 'ffffffff57a9f814e4b00d0a20bf6029', // piSession.userId(),
       xAuth: localStorage.getItem('secureToken'),
       annHeaders: {
         Accept: 'application/json',
@@ -104,7 +104,7 @@ class NoteBookContainer extends React.Component {
       // console.log('Navigation', data);
       const index = _.findIndex(this.state.notes, note => note.id === data.id);
       const note = this.state.notes[index];
-      browserHistory.push(`/eplayer/Course/${this.props.params.bookId}/page/${note.pageId}`);
+      browserHistory.push(`/eplayer/Course/${this.props.params.bookId}/page/${note.pageId}?annotationId=${data.annotationId}`);
     }
   }
   render() {
