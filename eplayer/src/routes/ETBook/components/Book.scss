@@ -77,3 +77,14 @@ $cont-padding-bottom: 85px;
     height: 1px;
     overflow: hidden;
 }
+
+//For custom TOC
+.ConfigureToc {
+    width: 380px !important;
+    .tocContents {
+            width:100% !important;
+        .publishContainer {
+      margin-right:20px !important;
+      }
+    }
+  }
