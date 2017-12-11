@@ -19,7 +19,7 @@ export const resources = {
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
     idcDashboardEnabled : true,
-    zeppelinEnabled     : false,
+    zeppelinEnabled     : true,
     isDisableAnnotation : false
   },
   links: {
@@ -152,7 +152,7 @@ export const contentUrl = {
   },
   SecuredUrl: {
     local        :"etext-dev.pearson.com",
-    dev          :"etext-dev.pearson.com",
+    dev          :"content.stg-openclass.com", //etext-dev.pearson.com
     qa           :"content.stg-openclass.com",  //etext-qa-stg.pearson.com
     stage        :"content.stg-openclass.com", //etext-qa-stg.pearson.com
     prod         :"etext.pearson.com"

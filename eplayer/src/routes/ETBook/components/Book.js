@@ -41,6 +41,7 @@ import Utils from '../../../components/utils';
 import { StaticAlert } from 'pearson-compounds';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+const queryString = require('query-string');
 
 export class Book extends Component {
   constructor(props) {
@@ -110,7 +111,13 @@ export class Book extends Component {
     this.state.pageDetails.currentPageURL = '';
     if (piSession) {
       const userId = piSession.userId();
+      // const queryParams = this.props.location.query;
+      const annotationId = queryString.parse(this.props.location.search).annotationId;
+      console.log('annotationId: ', annotationId);
       this.state.urlParams.user = userId;
+      if (annotationId !== undefined || annotationId !== '') {
+        this.state.pageDetails.annId = annotationId;
+      }
     }
     this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
     window.isDisableAnnotation = resources.constants.isDisableAnnotation;
