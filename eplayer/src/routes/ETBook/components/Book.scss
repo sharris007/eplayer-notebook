@@ -61,6 +61,16 @@ $cont-padding-bottom: 85px;
     }
   }
 }
+.headerBar {
+  .bookmarkIcon {
+      float: initial !important;
+  }
+  .searchContainer {
+    position: relative !important; 
+    right: initial !important; 
+    top: initial !important; 
+  }
+}
 .navigation .section .contentWrapper .content {
   line-height: 1.3;
 }
@@ -77,3 +87,14 @@ $cont-padding-bottom: 85px;
     height: 1px;
     overflow: hidden;
 }
+
+//For custom TOC
+.ConfigureToc {
+    width: 380px !important;
+    .tocContents {
+            width:100% !important;
+        .publishContainer {
+      margin-right:20px !important;
+      }
+    }
+  }

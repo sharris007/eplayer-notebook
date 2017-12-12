@@ -10,10 +10,12 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             j = c.url,
             k = this,
             l = j.indexOf("asserts");
-        if(!window.foxitAssetURL){
-            c.baseUrl = j.substr(0, l);
-        }
-         j.lastIndexOf("/") != j.length - 1 && j.lastIndexOf("\\") != j.length - 1 && (j += "/"), c.url = j, c = $.extend(d.Config.defaults, c), "undefined" == typeof c.readerType && (c.readerType = d.ReaderEngineType.IMAGE);
+            if(!window.foxitAssetURL){
+                c.baseUrl = j.substr(0, l);
+            }
+            j.lastIndexOf("/") != j.length - 1 && j.lastIndexOf("\\") != j.length - 1 && (j += "/"), c.
+            url = j, c = $.extend(d.Config.defaults, c), "undefined" == typeof c.readerType && (c.readerType = d
+            .ReaderEngineType.IMAGE);
         var m = null;
         try {
             var n = $("#" + b),
@@ -55,18 +57,9 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 var a = {
                     uuid: this.getFileID
                 };
-                $.ajax({
-                    url: c.baseUrl + "api/config/plugins",
-                    type: "GET",
-                    data: a,
-                    success: function(a) {
-                        var b = $.parseJSON(a.result);
+                a = {"result":"{\"disablePrint\":false,\"readOnly\":false,\"disableDownload\":false,\"plugin\":991}"};
+                var b = $.parseJSON(a.result);
                         m.setPlugin(b.plugin), m.setReadOnlyFlag(b.readOnly), m.setPrintFlag(b.disablePrint), m.setDisableDownloadFlag(b.disableDownload), m.registerBaseModule(), m.initInstance()
-                    },
-                    error: function() {
-                        m.setPlugin(1023), m.registerBaseModule(), m.initInstance()
-                    }
-                })
             } catch (b) {
                 console.error(b)
             }
@@ -922,16 +915,8 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
         }, this.getTextManager = function() {
             return null == ka && (ka = new e.PDFData.Text.TextManager(la)), ka
         }, this.initInstance = function() {
-            e.destructorDlg(), x = F.getDocId(), J = x.split("/")[x.split("/").length - 2], $.ajax({
-                type: "GET",
-                url: m.baseUrl + "api/file/info",
-                data: {
-                    fileId: J
-                },
-                success: function(a) {
-                    y = a.fname, null != a.userName && "undefined" != a.userName && (z = a.userName)
-                }
-            }), $(la).trigger(e.EventList.APP_READY, {}), e.waiting(la, {}), oa = g.defaults.maxManifestRetryCount, t(null, !1)
+            e.destructorDlg(), x = F.getDocId(), J = x.split("/")[x.split("/").length - 2], 
+            $(la).trigger(e.EventList.APP_READY, {}), e.waiting(la, {}), oa = g.defaults.maxManifestRetryCount, t(null, !1)
         }, this.addMenuItem = function(a) {
             if (null == a) return !1;
             var b = new j(a);
@@ -4753,7 +4738,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                     } else {
                         var f = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/annotations/page" + e;
                         if(window.foxitAssetURL){
-                        f = window.foxitAssetURL + "/annotations/page" + e ;
+                            f = window.foxitAssetURL + "/annotations/page" + e ;
                         }else{
                             f = a.getOptions().url + "text/" + e;
                         }
@@ -6410,35 +6395,35 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var i = {
                 password: a.getPDFPassword()
             };
-            /*$.ajax({
-                url: h,
-                dataType: "json",
-                data: i,
-                success: function(h) {
-                    if (null == h) return console.warn("Get annot data error: response is null"), void e(h);
-                    var i = h.error;
-                    if (0 != i) {
-                        if (WebPDF.Common.isNeedRetry(h.status)) {
-                            var j = WebPDF.AjaxRetryManager.getNextAnnotDataRequestInterval(a.getMainView().getDocView().getPageCount());
-                            return f--, void setTimeout(function() {
-                                g.asyncLoadUserAnnotation(a, b, d, e)
-                            }, j)
-                        }
-                        return void e(h)
-                    }
-                    try {
-                        var k = h.data;
-                        if ("undefined" == typeof k || null == k) return void d();
-                        var l = $.parseJSON(k);
-                        null != l && c(b, l), d()
-                    } catch (m) {
-                        return console.error(m), e(h), !1
-                    }
-                },
-                error: function() {
-                    e(null)
-                }
-            })*/
+            // $.ajax({
+            //     url: h,
+            //     dataType: "json",
+            //     data: i,
+            //     success: function(h) {
+            //         if (null == h) return console.warn("Get annot data error: response is null"), void e(h);
+            //         var i = h.error;
+            //         if (0 != i) {
+            //             if (WebPDF.Common.isNeedRetry(h.status)) {
+            //                 var j = WebPDF.AjaxRetryManager.getNextAnnotDataRequestInterval(a.getMainView().getDocView().getPageCount());
+            //                 return f--, void setTimeout(function() {
+            //                     g.asyncLoadUserAnnotation(a, b, d, e)
+            //                 }, j)
+            //             }
+            //             return void e(h)
+            //         }
+            //         try {
+            //             var k = h.data;
+            //             if ("undefined" == typeof k || null == k) return void d();
+            //             var l = $.parseJSON(k);
+            //             null != l && c(b, l), d()
+            //         } catch (m) {
+            //             return console.error(m), e(h), !1
+            //         }
+            //     },
+            //     error: function() {
+            //         e(null)
+            //     }
+            // })
         }, this.asyncLoadPDFAnnotation = function(a, b, c, e, f) {
             d(!0, a, b, c, e, f)
         }, this.syncLoadPDFAnnotation = function(a, b, c, e, f) {
@@ -10723,27 +10708,28 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
         this.asyncLoadPDFBookmark = function(c, d, e, f) {
             if ($.isFunction(e) && $.isFunction(f) || $.error("both 'doneHandler' and 'failedHandler' must be function."), 0 >= a) return console.error("Maximum number of retries exceeded for getBookmarkData request."), void f(null);
             var g;
-            /*if(window.location.protocol != "file:"){
+            if(window.location.protocol != "file:"){
                 var bookid = JSON.parse(localStorage.getItem('bookId'));
                 if(bookid == '56f24a41226b031530f1a836' || bookid == '57923dc2d26763694cfe8497' || bookid == '575960e0e76d21070f66f9bc'){
                     g = "./js/providers/"+bookid+"epub/"+bookid+"/bookmark";
                 } else {
                     g = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/bookmark";
                 }
-                if(window.foxitAssetURL){
-                    g = window.foxitAssetURL + "/bookmark";
-                }
-            }else{*/
                 g = c.getOptions().url + "bookmarks";
                 if(window.foxitAssetURL){
                     g = window.foxitAssetURL + "/bookmark";
                 }
-            //}
+            }else{
+                g = c.getOptions().url + "bookmarks";
+                if(window.foxitAssetURL){
+                    g = window.foxitAssetURL + "/bookmark";
+                }
+            }
             c.isFormMode() && (g += "?formMode=true");
             var h = {
                 password: c.getPDFPassword()
             };
-            /*$.ajax({
+            $.ajax({
                 url: g,
                 dataType: "json",
                 data: h,
@@ -10768,7 +10754,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                 error: function() {
                     f(null)
                 }
-            })*/
+            })
         }
     }
 }), define("core/Plugins/FindTool/FindToolPlugin", ["core/Plugins/FindTool/SearchResult"], function(a, b, c) {
@@ -16961,13 +16947,11 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                     g = "./js/providers/"+bookid+"epub/"+bookid+"/manifest";
                 } else {
                     g = "./js/providers/temp/"+JSON.parse(localStorage.getItem('bookId'))+"/manifest";
-                    if(window.foxitAssetURL){
-                    g = window.foxitAssetURL + "/manifest";
-                    }else{
-                       g = a.getOptions().url + "manifest"; 
-                    }
                 }
-                
+                g = a.getOptions().url + "manifest";
+                if(window.foxitAssetURL){
+                    g = window.foxitAssetURL + "/manifest";
+                }
             }else{
                 g = a.getOptions().url + "manifest";
                 if(window.foxitAssetURL){
@@ -17578,7 +17562,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                                 $("#" + a.getPageBackgroundImgID()).attr("src", o), a.show(), a.isThumb() ? a.setPageLoaded(!0) : a.isThumbnailLoaded() ? a.setPageLoaded(!0) : (a.setThumbnailLoaded(!0), setTimeout(function() {
                                 j.renderPage(a, d.defaults.requestRetryCount)
                                 }, 50));   
-                            } 
+                            }   
                         } 
                         
                         !a.isThumb() && a.isPageLoaded() && (a.setPageLoadError(e), $(i).trigger(WebPDF.EventList.PAGE_SHOW_COMPLETE, {
@@ -17626,7 +17610,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
 }), define("core/ImageLazyLoad", ["core/WebPDF"], function(a, b, c) {
     var d = a("core/WebPDF");
     return d.ImgLazyLoad = function(a, b, c, e, f) {
-      if(window.location.protocol != "file:"){
+        if(window.location.protocol != "file:"){
             if(a.indexOf("pages") > -1){
                 e(c);      
             }else{
@@ -17646,7 +17630,7 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
                             e(c)
                         }
                     }
-                })             
+                }) 
             }
         }else{
             $.ajax({

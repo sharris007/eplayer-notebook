@@ -5,24 +5,31 @@ var eventMap = [];
 window.loadAccessibilityContent = function(){
   try{
     var currentPage = WebPDF.ViewerInstance.getCurPageIndex();
-    if(currentPage != window.currentPage){
-      var divElement = $('.screenReaderText');
-      if(divElement.length == 0){
-        divElement = document.createElement('div');
-        divElement.className = "screenReaderText";
-        divElement.setAttribute('tabindex', 1);
-      }else{
-        divElement = divElement[0];
-      }
-      var textForElement = '';
-      textForElement = WebPDF.ViewerInstance.getCurToolHandler().getTextSelectTool().getTextPage(currentPage).textPage.getPageAllText();
+    var divElement = $('.screenReaderText');
+    if(divElement.length == 0){
+      divElement = document.createElement('div');
+      divElement.className = "screenReaderText";
+      divElement.setAttribute('tabindex', 1);
+    }else{
+      divElement = divElement[0];
+    }
+    var textForElement = '';
+    textForElement = WebPDF.ViewerInstance.getCurToolHandler().getTextSelectTool().getTextPage(currentPage).textPage.getPageAllText();
+    if(textForElement != window.textForElement){
+		  try{
+			var docViewerElement = $('.docViewer')
+			var firstElement = docViewerElement[0];
+			firstElement.setAttribute('aria-label',textForElement);
+			firstElement.setAttribute('tabindex', 1);
+		}catch(e){console.log("Error setting screenreader text");
+  }
       divElement.innerText = textForElement;
       var docViewerElement = $('#mainContainer');
       var firstChild = docViewerElement[0].firstChild;
       if($('.screenReaderText').length == 0){
         docViewerElement[0].insertBefore(divElement, firstChild);
       }
-      window.currentPage = currentPage;
+      window.textForElement = textForElement;
     }
   }catch(e){}
 }
@@ -416,7 +423,7 @@ function initViewer(config) {
   acceptLanguage = config.requestheaderParams.acceptLanguage || "";
   }
   var cdnURL = config.cdnURL;
-  var uStr = localStorage.getItem('userInformation');
+  // var uStr = localStorage.getItem('userInformation');
   var uObj = {};
   // if(uStr) 
   // {
@@ -429,7 +436,7 @@ function initViewer(config) {
   // }
   //initWebPDFMini()
   // open the sample file
-  var foxitAssetURL = config.PDFassetURL.foxitAssetURL;
+  var foxitAssetURL = config.PDFassetURL.foxitAssetURL;;
   if(foxitAssetURL){
     window.foxitAssetURL = foxitAssetURL;
     assertUrl = foxitAssetURL;
@@ -438,7 +445,7 @@ function initViewer(config) {
     assertUrl = openFile(baseUrl,openFileUrl, config.headerParams, cdnURL);
   }
   if (assertUrl == null) return;
-  if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
+ if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
                 WebPDF.ViewerInstance.openFile(assertUrl);
                
@@ -451,9 +458,6 @@ function initViewer(config) {
     };
     compBaseOptions = options;
     var pos = assertUrl.indexOf("asserts");
-    if(pos = -1){
-      options.baseUrl = config.cdnURL;
-    }
     var baseUrl = assertUrl.substr(0, pos);
     compBaseURL = baseUrl;
     WebPDF.createViewer("docViewer", options);
@@ -497,18 +501,24 @@ function createPDFEvent(eventName) {
 
 function getIP(baseUrl) {
   var ip = "";
-  $.ajax({
-    url: baseUrl + "asserts/ip",
-    type: "GET",
-    async: false,
-    success: function(data) {
-      ip = data.result;
-    },
-    error: function() {
-      alert("Failed to get IP.");
-    }
-  });
-  return ip;
+  var clientIP = window.clientIP;
+  if(clientIP){
+    return clientIP;
+  }else{
+    $.ajax({
+      url: baseUrl + "asserts/ip",
+      type: "GET",
+      async: false,
+      success: function(data) {
+        window.clientIP = data.result;
+        ip = data.result;
+      },
+      error: function() {
+        alert("Failed to get IP.");
+      }
+    });
+    return ip;
+  }
 }
 
 /**
@@ -522,7 +532,7 @@ function openFile(baseUrl,fileUrl,headerParams,cdnURL, callback) {
     fileUrl = fileUrl.replace(/^\s*/g, "").replace(/\s*$/g, ""); // trim string
     // User information can be get from custom user system.
     // It can be set at this place,and also can be set by SPI plugin implement.
-    //var user = getIP(baseUrl);
+    var user = getIP(baseUrl);
     var tempURL = "";
     for(var i in headerParams) {
       tempURL = tempURL + i.toString() + "=" + headerParams[i].toString() + '&';
@@ -563,7 +573,7 @@ function openFile(baseUrl,fileUrl,headerParams,cdnURL, callback) {
             }
 
             url = cdnURL + "asserts\/" + curID;
-            /*if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
+           /* if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
                 WebPDF.ViewerInstance.openFile(url);
                 if(callback != null) {
@@ -1155,7 +1165,7 @@ function getAssetURLForPDFDownload(config,cb){
             iconDiv.style.backgroundSize = 'cover';
           }
           regionElement.className='hotspot';
-          iconDiv.className='hotspotIcon';
+           iconDiv.className='hotspotIcon';
           tooltip = document.createElement('span')
           tooltip.className='tooltiptext';
           tooltip.innerHTML = hotspots[i].name;
