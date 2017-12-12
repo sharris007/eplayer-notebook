@@ -86,9 +86,9 @@ export class PdfBookReader extends Component {
       courseId = -1;
     }
     /* Method for getting the bookmarks details which is already in book. */
-    this.props.data.actions.fetchBookmarksUsingReaderApi(this.props.data.location.query.bookid,
-      this.props.data.book.userInfo.userid, this.props.PdfbookMessages.PageMsg, this.props.data.book.bookinfo.book.roleTypeID, courseId);
-    this.props.data.actions.fetchHighlightUsingReaderApi(this.props.data.location.query.bookid,courseId,this.props.data.book.userInfo.userid,this.props.data.book.bookinfo.book.roleTypeID);
+    this.props.data.actions.fetchBookmarksUsingSpectrumApi(this.props.data.location.query.bookid,
+      this.props.data.book.userInfo.userid, this.props.PdfbookMessages.PageMsg, this.props.data.book.bookinfo.book.roleTypeID, courseId, this.getpiSessionKey());
+    this.props.data.actions.fetchHighlightUsingSpectrumApi(this.props.data.location.query.bookid,courseId,this.props.data.book.userInfo.userid,this.props.data.book.bookinfo.book.roleTypeID,this.getpiSessionKey());
     this.props.data.actions.fetchBasepaths(this.props.data.location.query.bookid,ssoKey,this.props.data.book.userInfo.userid,serverDetails,this.props.data.book.bookinfo.book.roleTypeID);
 
     if ((this.props.currentbook.scenario == 1 || this.props.currentbook.scenario == 3
@@ -416,10 +416,10 @@ export class PdfBookReader extends Component {
     if (courseId === undefined || courseId === '' || courseId === null) {
       courseId = -1;
     }
-    this.props.data.actions.addBookmarkUsingReaderApi(_.toString(this.props.data.book.userInfo.userid),
+    this.props.data.actions.addBookmarkUsingSpectrumApi(_.toString(this.props.data.book.userInfo.userid),
       _.toString(this.props.data.location.query.bookid), _.toString(currentPage.pageid),
       _.toString(currentPage.pagenumber), _.toString(currentPage.pageorder),
-      _.toString(courseId), false, this.props.PdfbookMessages.PageMsg);
+      _.toString(courseId), false, this.props.PdfbookMessages.PageMsg, this.props.data.book.bookinfo.book.roleTypeID, this.getpiSessionKey());
   }
   /* created removeBookmarkHandler method for removing bookmark for selected Page, after clicking on bookmark button. */
   removeBookmarkHandler = (bookmarkId) => {
@@ -431,7 +431,8 @@ export class PdfBookReader extends Component {
     }
     const targetBookmark = find(this.props.data.book.bookmarks, bookmark => bookmark.uri === currentPageId);
     const targetBookmarkId = targetBookmark.bkmarkId;
-    this.props.data.actions.removeBookmarkUsingReaderApi(targetBookmarkId);
+    this.props.data.actions.removeBookmarkUsingSpectrumApi(targetBookmarkId,_.toString(this.props.data.book.userInfo.userid)
+           ,_.toString(this.props.data.location.query.bookid),this.getpiSessionKey());
   };
 
 /* Checking the particular page you are trying to set bookmark already a bookmark or not. */
@@ -1012,24 +1013,34 @@ handleRegionClick(hotspotID) {
       bookeditionid: _.toString(this.props.data.book.bookinfo.book.bookeditionid),
       roletypeid: _.toString(this.props.data.book.bookinfo.book.roleTypeID),
       colorcode: highLightMetadata.currHighlightColorCode,
-      author: authorName
+      author: authorName,
+      highlightHash: currentHighlight.highlightHash,
+      note
     };
     const selectedText = currentHighlight.selection;
     const isShared = highLightMetadata.isShared;
     const currentPage = find(pages, page => page.pageorder === currentPageId);
-    this.props.data.actions.saveHighlightUsingReaderApi(_.toString(this.props.data.book.userInfo.userid),
-      _.toString(this.props.data.location.query.bookid), _.toString(currentPage.pageid),
-      _.toString(currentPage.pagenumber), _.toString(courseId), isShared, currentHighlight.highlightHash,
-      note, selectedText, highLightMetadata.currHighlightColor,
-      meta, _.toString(currentPageId)).then((newHighlight) => {
+    this.props.data.actions.saveHighlightUsingSpectrumApi(_.toString(this.props.data.book.userInfo.userid),
+      _.toString(this.props.data.location.query.bookid),_.toString(currentPage.pagenumber), _.toString(courseId), isShared,
+      selectedText, highLightMetadata.currHighlightColor,
+      meta, _.toString(currentPageId),_.toString(this.props.data.book.bookinfo.book.roleTypeID),this.getpiSessionKey()).then((newHighlight) => {
         pdfAnnotatorInstance.setCurrentHighlight(newHighlight);
         this.displayHighlight();
       });
   }
 
   editHighlight = (id, highLightMetadata) => {
-    this.props.data.actions.editHighlightUsingReaderApi(id, highLightMetadata.noteText,
-      highLightMetadata.currHighlightColor, highLightMetadata.isShared).then(() => {
+    const currentPageId = this.state.currPageIndex;
+    let highlightToEdit = find(this.state.highlightList, highlight => highlight.id === id);
+    const note = highLightMetadata.noteText !== undefined ? highLightMetadata.noteText : highlightToEdit.comment;
+    const color = highLightMetadata.currHighlightColor !== undefined ? highLightMetadata.currHighlightColor : highlightToEdit.color;
+    const isShared = highLightMetadata.isShared !== undefined ? highLightMetadata.isShared : highlightToEdit.shared;
+    this.props.data.actions.editHighlightUsingSpectrumApi(id, note,
+      color, isShared,_.toString(this.props.data.book.userInfo.userid),
+      _.toString(this.props.data.location.query.bookid),_.toString(highlightToEdit.pageNo),
+      _.toString(highlightToEdit.courseId),_.toString(highlightToEdit.text),_.toString(this.props.data.book.bookinfo.book.roleTypeID),
+      highlightToEdit.meta,currentPageId,
+      this.getpiSessionKey()).then(() => {
         this.displayHighlight();
       });
   }
@@ -1095,7 +1106,8 @@ handleRegionClick(hotspotID) {
   /* Method for delete Highlight via passing the id of selected area. */
   deleteHighlight = (id) => {
     __pdfInstance.removeHighlightElement(id);
-    this.props.data.actions.removeHighlightUsingReaderApi(id).then(() => {
+    this.props.data.actions.removeHighlightUsingSpectrumApi(id,_.toString(this.props.data.book.userInfo.userid),
+      _.toString(this.props.data.location.query.bookid),this.getpiSessionKey()).then(() => {
       this.displayHighlight();
     });
   }
@@ -1165,6 +1177,19 @@ printFunc = () => {
     win.document.write('<style type="text/css"> @media print { @page { size:auto;margin:0; }}</style>')
     win.document.write('<img src="' + pageSrc + '" onload="window.print();window.close()" />');
     win.focus();
+  }
+  getpiSessionKey = () => {
+    let piSessionKey;
+    piSession.getToken(function(result, userToken){
+          if(result === 'success'){
+            piSessionKey = userToken;
+          }
+    });
+    if(piSessionKey === undefined)
+    {
+      piSessionKey = localStorage.getItem('secureToken');
+    }
+    return piSessionKey;
   }
 
 /* Method for render the component and any change in store data, reload the changes. */
@@ -1312,13 +1337,13 @@ printFunc = () => {
 PdfBookReader.propTypes = {
   locale: React.PropTypes.string,
   fetchTocAndViewer: React.PropTypes.func,
-  addBookmarkUsingReaderApi: React.PropTypes.func,
-  removeBookmarkUsingReaderApi: React.PropTypes.func,
-  fetchBookmarksUsingReaderApi: React.PropTypes.func,
-  fetchHighlightUsingReaderApi: React.PropTypes.func,
-  saveHighlightUsingReaderApi: React.PropTypes.func,
-  removeHighlightUsingReaderApi: React.PropTypes.func,
-  editHighlightUsingReaderApi: React.PropTypes.func,
+  addBookmarkUsingSpectrumApi: React.PropTypes.func,
+  removeBookmarkUsingSpectrumApi: React.PropTypes.func,
+  fetchBookmarksUsingSpectrumApi: React.PropTypes.func,
+  fetchHighlightUsingSpectrumApi: React.PropTypes.func,
+  saveHighlightUsingSpectrumApi: React.PropTypes.func,
+  removeHighlightUsingSpectrumApi: React.PropTypes.func,
+  editHighlightUsingSpectrumApi: React.PropTypes.func,
   PdfbookMessages: React.PropTypes.object,
   fetchPageInfo: React.PropTypes.func,
   book: React.PropTypes.object,

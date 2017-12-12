@@ -137,7 +137,7 @@ function createAuthorizationToken(relativeURL, method) {
 }
 
 /* Method for fetching the bookmarks from Redaer Api by passing the below parameters. */
-export function fetchBookmarksUsingReaderApi(bookId, userId, Page, roletypeid, courseId) {
+export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid, courseId, piSessionKey) {
   const bookState = {
     bookmarks: [],
     isFetching: {
@@ -145,15 +145,16 @@ export function fetchBookmarksUsingReaderApi(bookId, userId, Page, roletypeid, c
     }
   };
   let queryString;
-  if (roletypeid == 2)
+/*  if (roletypeid == 2)
   {
     queryString = `/bookmark?limit=${eT1Contants.readerApiResponseRecordsLimits}&userId=${userId}&bookId=${bookId}`;
   }
   else
   {
     queryString = `/bookmark?limit=${eT1Contants.readerApiResponseRecordsLimits}&userId=${userId}&bookId=${bookId}&courseId=${courseId}`;
-  }
-  const authorizationHeaderVal = createAuthorizationToken(queryString, 'GET');
+  }*/
+  queryString = '/api/context/'+bookId+'/identities/'+userId+'/notesX?isBookMark=true';
+  // const authorizationHeaderVal = createAuthorizationToken(queryString, 'GET');
 
   /* Dispatch is part of middleware used to dispatch the action, usually used in Asynchronous Ajax call.*/
   return (dispatch) => {
@@ -161,35 +162,43 @@ export function fetchBookmarksUsingReaderApi(bookId, userId, Page, roletypeid, c
 
     return clients.readerApi[envType].get(queryString, {
         headers: {
-          Accept: 'application/json',
-          Authorization: authorizationHeaderVal
+        'X-Authorization': piSessionKey,
+        'Content-Type': 'application/json'
         }
       }).then((response) => {
         if (response.status >= 400) {
           bookState.isFetching.bookmarks = false;
           return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
         }
-        return response.data;
+        return response.data.response;
       })
-    .then((bookmarkResponse) => {
-      if (bookmarkResponse.data.length) {
-        bookmarkResponse.data.forEach((bookmark) => {
+    .then((bookmarkResponseList) => {
+      if (bookmarkResponseList.length) {
+        bookmarkResponseList.forEach((bookmark) => {
           const date = new Date(bookmark.updatedTime * 1000);
-          const extID = Number(bookmark.externalId);
+          const extID = Number(bookmark.pageId);
 
           const bmObj = {
             id: extID,
             bkmarkId: bookmark.id,
             userId: bookmark.userId,
             bookId: bookmark.bookId,
-            pageId: bookmark.pageId,
+            pageId: bookmark.data.pageId,
             pageNo: bookmark.pageNo,
+            roleTypeId: bookmark.role,
             createdTimestamp: date,
             title: `${Page} ${bookmark.pageNo}`,
             uri: extID,
             externalId: extID
           };
-          bookState.bookmarks.push(bmObj);
+          if (roletypeid == 3 && bookmark.subContextId == courseId)
+          {
+            bookState.bookmarks.push(bmObj);
+          }
+          else
+          {
+            bookState.bookmarks.push(bmObj);
+          }
         });
       }
       bookState.bookmarks.sort((bkm1, bkm2) => bkm1.uri - bkm2.uri);
@@ -200,20 +209,22 @@ export function fetchBookmarksUsingReaderApi(bookId, userId, Page, roletypeid, c
 }
 
 
-/* Created action creator for addBookmarkUsingReaderApi. */
-export function addBookmarkUsingReaderApi(userId, bookId, pageId, pageNo, externalId, courseId, shared, Page) {
-  const authorizationHeaderVal = createAuthorizationToken('/bookmark', 'POST');
-
-  clients.readerApi[envType].defaults.headers.Authorization = authorizationHeaderVal;
-
+/* Created action creator for addBookmarkUsingSpectrumApi. */
+export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, externalId, courseId, shared, Page, roleTypeId, piSessionKey) {
+  clients.readerApi[envType].defaults.headers =  {'X-Authorization':piSessionKey,'Content-Type': 'application/json'};
   const data = {
+    clientApp: 'ET1_WEB',
+    isBookMark:true,
     userId,
-    bookId,
-    pageId,
+    data: {
+      pageId
+    },
+    role:roleTypeId,
+    contextId: bookId,
+    pageId: externalId,
     pageNo,
-    courseId,
-    shared,
-    externalId
+    subContextId: courseId,
+    sharable: shared
   };
 
   let bmObj;
@@ -221,45 +232,50 @@ export function addBookmarkUsingReaderApi(userId, bookId, pageId, pageNo, extern
   return (dispatch) => {
     dispatch(request('bookmarks'));
 
-    return clients.readerApi[envType].post('/bookmark', data)
+    return clients.readerApi[envType].post('/api/context/'+bookId+'/identities/'+userId+'/notesX', {"payload":[data]})
     .then((response) => {
       if (response.status >= 400) {
         // console.log(`Add bookmark error: ${response.statusText}`);
       }
-      return response.data;
-    }).then((bookmarkResponse) => {
-      if (bookmarkResponse !== undefined) {
-        const date = new Date(bookmarkResponse.updatedTime * 1000);
-        const extID = Number(bookmarkResponse.externalId);
-
+      return response.data.response;
+    }).then((bookmarkResponseList) => {
+      let bookmarkList = [];
+      if (bookmarkResponseList !== undefined) {
+        bookmarkResponseList.forEach((bookmark) => {
+        const date = new Date(bookmark.updatedTime * 1000);
+        const extID = Number(bookmark.pageId);
         bmObj = {
           id: extID,
-          bkmarkId: bookmarkResponse.id,
-          userId: bookmarkResponse.userId,
-          bookId: bookmarkResponse.bookId,
-          pageId: bookmarkResponse.pageId,
-          pageNo: bookmarkResponse.pageNo,
+          bkmarkId: bookmark.id,
+          userId: bookmark.userId,
+          bookId: bookmark.contextId,
+          pageId: bookmark.data.pageId,
+          pageNo: bookmark.pageNo,
+          roleTypeId: bookmark.role,
           createdTimestamp: date,
-          title: `${Page} ${bookmarkResponse.pageNo}`,
+          title: `${Page} ${bookmark.pageNo}`,
           uri: extID,
           externalId: extID
-        };
+         };
+         bookmarkList.push(bmObj);
+        })
       }
-      return dispatch({ type: ADD_BOOKMARK, bmObj });
+      return dispatch({ type: ADD_BOOKMARK, bookmarkList });
     });
   };
 }
 
 
 /* Method for deleting the selected bookmark. */
-export function removeBookmarkUsingReaderApi(bookmarkId) {
-  const authorizationHeaderVal = createAuthorizationToken(`/bookmark/${bookmarkId}`, 'DELETE');
+export function removeBookmarkUsingSpectrumApi(bookmarkId, userId, bookId, piSessionKey) {
   return (dispatch) => {
     dispatch(request('bookmarks'));
-    return clients.readerApi[envType].delete(`/bookmark/${bookmarkId}`, {
+    return clients.readerApi[envType].delete('/api/context/'+bookId+'/identities/'+userId+'/notesX?isBookMark=true', {
       headers: {
-        Authorization: authorizationHeaderVal
-      }
+        'X-Authorization': piSessionKey,
+        'Content-Type': 'application/json'
+      },
+      data:{"ids":[bookmarkId]}
     }).then((response) => {
       if (response.status >= 400) {
          // console.log(`Error in remove bookmark: ${response.statusText}`)
@@ -797,7 +813,7 @@ export function fetchUserInfo(globaluserid, bookid, uid, ubd, ubsd, sessionKey, 
 }
 
 /* Created Action creator for feching highlight details from Reader Api. */
-export function fetchHighlightUsingReaderApi(bookId, courseId, userid, roletypeid) {
+export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletypeid, piSessionKey) {
   const bookState = {
     highlights: [],
     isFetching: {
@@ -807,56 +823,58 @@ export function fetchHighlightUsingReaderApi(bookId, courseId, userid, roletypei
   let queryString;
   if (roletypeid == 2)
   {
-    queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}`;
+    queryString = '/api/context/'+bookId+'/identities/'+userid+'/notesX?isBookMark=false&withShared=true';
+    // queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}`;
   }
   else
   {
-    queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}&courseId=${courseId}&userId=${userid}`;
+    queryString = '/api/context/'+bookId+'/identities/'+userid+'/notesX?isBookMark=false';
+    // queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}&courseId=${courseId}&userId=${userid}`;
   }
-  const authorizationHeaderVal = createAuthorizationToken(queryString, 'GET');
   return (dispatch) => {
     dispatch(request('highlights'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     return clients.readerApi[envType].get(queryString, {
         headers: {
-          Authorization: authorizationHeaderVal
+          'X-Authorization':piSessionKey
         }
       }).then((response) => {
         if (response.status >= 400) {
           bookState.isFetching.highlights = false;
           return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
         }
-        return response.data;
-      }).then((response) => {
-        if (response.data.length) {
-          response.data.forEach((highlight) => {
+        return response.data.response;
+      }).then((highlightResponseList) => {
+        if (highlightResponseList.length) {
+          highlightResponseList.forEach((highlight) => {
             const hlObj = {
 
             };
             const time = new Date(highlight.updatedTime * 1000);
             const pageid = Number(highlight.pageId);
             hlObj.userId = highlight.userId;
-            hlObj.bookId = highlight.bookId;
+            hlObj.bookId = highlight.contextId;
             hlObj.pageId = pageid;
-            hlObj.courseId = highlight.courseId;
-            hlObj.shared = highlight.shared;
-            hlObj.highlightHash = highlight.highlightHash;
-            hlObj.comment = highlight.note;
+            hlObj.courseId = highlight.subContextId;
+            hlObj.shared = highlight.sharable;
+            hlObj.highlightHash = highlight.data.highlightHash;
+            hlObj.comment = highlight.data.note;
             hlObj.text = highlight.selectedText;
-            hlObj.color = highlight.colour;
-            hlObj.originalColor = highlight.colour;
+            hlObj.color = highlight.color;
+            hlObj.originalColor = highlight.color;
             hlObj.id = highlight.id;
-            hlObj.pageNo = highlight.pageNumber;
-            hlObj.meta = highlight.meta;
-            hlObj.author = highlight.meta.author;
-            hlObj.creationTime = highlight.creationTime;
+            hlObj.pageNo = highlight.pageNo;
+            hlObj.roleTypeId = highlight.role;
+            hlObj.meta = highlight.data;
+            hlObj.author = highlight.data.author;
+            hlObj.creationTime = highlight.createdTime;
             hlObj.time = time;
             hlObj.pageIndex = 1;        // For Foxit
             if ((_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
-                  && (_.toString(hlObj.userId) === _.toString(userid))) {
+                  && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId) {
               hlObj.isHighlightOnly = false;
               bookState.highlights.push(hlObj);
-            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3 && hlObj.courseId == courseId) {
+            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3) {
               if(hlObj.shared)
               {
                hlObj.isHighlightOnly = false;
@@ -876,81 +894,74 @@ export function fetchHighlightUsingReaderApi(bookId, courseId, userid, roletypei
   };
 }
 /* Method for saving the highLight selected by user. */
-export function saveHighlightUsingReaderApi(userId, bookId, pageId, pageNo,
-  courseId, shared, highlightHash, note, selectedText, colour, meta, currentPageId) {
-  const authorizationHeaderVal = createAuthorizationToken('/highlight', 'POST');
+export function saveHighlightUsingSpectrumApi(userId, bookId, pageNo,
+  courseId, shared, selectedText, color, meta, currentPageId,roleTypeId, piSessionId) {
+  // const authorizationHeaderVal = createAuthorizationToken('/highlight', 'POST');
   const axiosInstance = clients.readerApi[envType];
-  axiosInstance.defaults.headers.Authorization = authorizationHeaderVal;
+  axiosInstance.defaults.headers = {'X-Authorization':piSessionId,'Content-Type': 'application/json'};
   const data = {
-    userId,
-    bookId,
+    clientApp: 'ET1_WEB',
+    color,
+    contextId: bookId,
+    role:roleTypeId,
+    data: meta,
+    isBookMark:false,
     pageId: currentPageId,
     pageNo,
-    courseId,
-    shared,
-    highlightHash,
-    note,
     selectedText,
-    colour,
-    meta,
-    highlightEngine: 'eT1PDFPlayer'
+    sharable: shared,
+    subContextId: courseId,
+    userId
   };
   return (dispatch) => {
     dispatch(request('highlights'));
-    return axiosInstance.post('/highlight', data).then((response) => {
+    return axiosInstance.post('/api/context/'+bookId+'/identities/'+userId+'/notesX', {"payload":[data]}).then((response) => {
       if (response.status >= 400) {
         // console.log(`error: ${response.statusText}`);
       }
-      return response.data;
-    }).then((highlightResponse) => {
-      let hlObj;
-      if (highlightResponse !== undefined) {
-        const time = new Date(highlightResponse.updatedTime * 1000);
-        // const extID = Number(highlightResponse.externalId);
-        const pageid = Number(highlightResponse.pageId);
-        hlObj = {
-          userId: highlightResponse.userId,
-          bookId: highlightResponse.bookId,
+      return response.data.response;
+    }).then((highlightResponseList) => {
+      let highlightList = []; 
+      if (highlightResponseList !== undefined) {
+        highlightResponseList.forEach((highlight) => {
+        const time = new Date(highlight.updatedTime * 1000);
+        const pageid = Number(highlight.pageId);
+        let hlObj = {
+          userId: highlight.userId,
+          bookId: highlight.contextId,
           pageId: pageid,
-          courseId: highlightResponse.courseId,
-          shared: highlightResponse.shared,
-          highlightHash: highlightResponse.highlightHash,
-          comment: highlightResponse.note,
-          text: highlightResponse.selectedText,
-          color: highlightResponse.colour,
-          originalColor: highlightResponse.colour,
-          id: highlightResponse.id,
-          pageNo: highlightResponse.pageNo,
-          meta: highlightResponse.meta,
-          author: highlightResponse.meta.author,
-          creationTime: highlightResponse.creationTime,
+          roleTypeId: highlight.role,
+          courseId: highlight.subContextId,
+          shared: highlight.sharable,
+          highlightHash: highlight.data.highlightHash,
+          comment: highlight.data.note,
+          text: highlight.selectedText,
+          color: highlight.color,
+          originalColor: highlight.color,
+          id: highlight.id,
+          pageNo: highlight.pageNo,
+          meta: highlight.data,
+          author: highlight.data.author,
+          creationTime: highlight.createdTime,
           time,
           pageIndex: 1       // For Foxit
         };
+        highlightList.push(hlObj);
+       });
       }
-      dispatch({ type: 'SAVE_HIGHLIGHT', hlObj });
-      return hlObj;
+      dispatch({ type: 'SAVE_HIGHLIGHT', highlightList });
+      return highlightList[0];
     });
   };
 }
 /* Removing highLight from the page for selected area. */
-export function removeHighlightUsingReaderApi(id) {
-  const authorizationHeaderVal = createAuthorizationToken(`/highlight/${id}`, 'DELETE');
+export function removeHighlightUsingSpectrumApi(id, userId, bookId, authorizationHeaderVal) {
+  const axiosInstance = clients.readerApi[envType];
+  axiosInstance.defaults.headers = {'X-Authorization':authorizationHeaderVal,'Content-Type': 'application/json'};
   return (dispatch) => {
     dispatch(request('highlights'));
-    // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-   /* return axios({
-      method : 'delete',
-      url : 'https://api-sandbox.readerplatform.pearson-intl.com/highlight/'+id,
-      headers : {
-        Accept : 'application/json',
-        Authorization : authorizationHeaderVal
-      }
-    })*/return clients.readerApi[envType].delete(`/highlight/${id}`, {
-      headers: {
-        Authorization: authorizationHeaderVal
-      }
-    }).then((response) => {
+      return axiosInstance.delete('/api/context/'+bookId+'/identities/'+userId+'/notesX?isBookMark=false',
+    {data:{"ids":[id]}}).then((response) => {
       if (response.status >= 400) {
         // console.log(`Error in remove highlight: ${response.statusText}`)
       }
@@ -959,32 +970,38 @@ export function removeHighlightUsingReaderApi(id) {
   };
 }
 
-export function editHighlightUsingReaderApi(id, note, colour, isShared) {
-  const editHightlightURI = `/highlight/${id}`;
-  const data = {
-
+export function editHighlightUsingSpectrumApi(id, note, color, isShared, userId, bookId,
+   pageNo, courseId, selectedText, roleTypeId, meta, currentPageId, authorizationHeaderVal) {
+  const editHightlightURI = '/api/context/'+bookId+'/identities/'+userId+'/notesX';
+  const payloadData = {
+    id,
+    clientApp: 'ET1_WEB',
+    color,
+    contextId: bookId,
+    data: meta,
+    isBookMark:false,
+    pageId: currentPageId,
+    pageNo,
+    role:roleTypeId,
+    selectedText,
+    sharable: isShared,
+    subContextId: courseId,
+    userId
   };
   if (note !== undefined) {
-    data.note = note;
+    payloadData.data.note = note;
   }
-  if (colour !== undefined) {
-    data.colour = colour;
-  }
-  if (isShared !== undefined) {
-    data.shared = isShared;
-  }
-  const authorizationHeaderVal = createAuthorizationToken(editHightlightURI, 'PUT');
+
+  const axiosInstance = clients.readerApi[envType];
+  axiosInstance.defaults.headers = {'X-Authorization':authorizationHeaderVal,'Content-Type': 'application/json'};
+  // const authorizationHeaderVal = createAuthorizationToken(editHightlightURI, 'PUT');
   return (dispatch) => {
     dispatch(request('highlights'));
-    return clients.readerApi[envType].put(editHightlightURI, data, {
-      headers: {
-        Authorization: authorizationHeaderVal
-      }
-    }).then((response) => {
+    return axiosInstance.put(editHightlightURI, {"payload":[payloadData]}).then((response) => {
       if (response.status >= 400) {
         // console.log(`Error in edit highlight: ${response.statusText}`);
       }
-      return response.data;
+      return response.data.response[0];
     }).then((highlightResponse) => {
       let highlightObj;
       if (highlightResponse !== undefined) {
@@ -992,20 +1009,21 @@ export function editHighlightUsingReaderApi(id, note, colour, isShared) {
         const pageid = Number(highlightResponse.pageId);
         highlightObj = {
           userId: highlightResponse.userId,
-          bookId: highlightResponse.bookId,
+          bookId: highlightResponse.contextId,
           pageId: pageid,
-          courseId: highlightResponse.courseId,
-          shared: highlightResponse.shared,
-          highlightHash: highlightResponse.highlightHash,
-          comment: highlightResponse.note,
+          roleTypeId: highlightResponse.role, 
+          courseId: highlightResponse.subContextId,
+          shared: highlightResponse.sharable,
+          highlightHash: highlightResponse.data.highlightHash,
+          comment: highlightResponse.data.note,
           text: highlightResponse.selectedText,
-          color: highlightResponse.colour,
-          originalColor: highlightResponse.colour,
+          color: highlightResponse.color,
+          originalColor: highlightResponse.color,
           id: highlightResponse.id,
           pageNo: highlightResponse.pageNo,
-          meta: highlightResponse.meta,
-          author: highlightResponse.meta.author,
-          creationTime: highlightResponse.creationTime,
+          meta: highlightResponse.data,
+          author: highlightResponse.data.author,
+          creationTime: highlightResponse.createdTime,
           time,
           pageIndex: 1
         };
@@ -1112,17 +1130,8 @@ const ACTION_HANDLERS = {
   [ADD_BOOKMARK]: (state, action) => ({
     ...state,
     bookmarks: [
-      ...state.bookmarks,
-      {
-        id: action.bmObj.id,
-        uri: action.bmObj.uri,
-        title: action.bmObj.title,
-        pageID: action.bmObj.pageId,
-        createdTimestamp: action.bmObj.createdTimestamp,
-        externalId: action.bmObj.externalId,
-        bkmarkId: action.bmObj.bkmarkId
-      }
-    ].sort((bkm1, bkm2) => bkm1.uri - bkm2.uri),
+      ...state.bookmarks
+    ].concat(action.bookmarkList).sort((bkm1, bkm2) => bkm1.uri - bkm2.uri),
     isFetching: {
       ...state.isFetching,
       bookmarks: false
@@ -1162,27 +1171,8 @@ const ACTION_HANDLERS = {
   [SAVE_HIGHLIGHT]: (state, action) => ({
     ...state,
     annTotalData: [
-      ...state.annTotalData,
-      {
-        userId: action.hlObj.userId,
-        bookId: action.hlObj.bookId,
-        pageId: action.hlObj.pageId,
-        author: action.hlObj.author,
-        courseId: action.hlObj.courseId,
-        shared: action.hlObj.shared,
-        highlightHash: action.hlObj.highlightHash,
-        comment: action.hlObj.comment,
-        text: action.hlObj.text,
-        color: action.hlObj.color,
-        originalColor: action.hlObj.originalColor,
-        id: action.hlObj.id,
-        pageNo: action.hlObj.pageNo,
-        meta: action.hlObj.meta,
-        creationTime: action.hlObj.creationTime,
-        time: action.hlObj.time,
-        pageIndex: action.hlObj.pageIndex
-      }
-    ].sort((hl1, hl2) => hl2.time - hl1.time),
+      ...state.annTotalData
+    ].concat(action.highlightList).sort((hl1, hl2) => hl2.time - hl1.time),
     isFetching: {
       ...state.isFetching,
       highlights: false

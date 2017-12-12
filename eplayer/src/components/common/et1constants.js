@@ -67,10 +67,10 @@ export const eT1Contants = {
     stage: 'http://foxit-poc.gls.pearson-intl.com/foxit-webpdf-web/pc/',
     prod: 'https://foxit-prod.gls.pearson-intl.com/foxit-webpdf-web/pc/'
   },
-  readerApiBaseUrls : {
-    QA : 'https://api-sandbox.readerplatform.pearson-intl.com',
-    STAGE : 'https://api-sandbox.readerplatform.pearson-intl.com',
-    PROD : 'https://api-prod.readerplatform.pearson-intl.com'
+  spectrumApiBaseUrls : {
+    QA : 'https://spectrum-qa.stg-openclass.com',
+    STAGE : 'https://spectrum.stg-openclass.com',
+    PROD : 'https://spectrum.pearsoned.com'
   },
   foxitCDNUrl : {
     qa : "https://drlngevdyobo7.cloudfront.net/foxit-webpdf-web/",
