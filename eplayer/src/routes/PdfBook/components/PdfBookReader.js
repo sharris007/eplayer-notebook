@@ -254,13 +254,16 @@ export class PdfBookReader extends Component {
     try
     {
       Popup.close();
-      $(".fwr-highlight-annot").hide();
     }
     catch(e){}
     const currPageIndex = this.state.currPageIndex;
     // If we are navigating to current page then do nothing
     if (pageno !== currPageIndex)
     {
+      try{
+        $(".fwr-highlight-annot").hide();
+      }
+      catch(e){}
       let startpage = find(pages,page => page.pagenumber == this.props.currentbook.startpage);
       let endpage = find(pages,page => page.pagenumber == this.props.currentbook.endpage);
       // pageIndexToLoad initialized with 1 to avoid loading invalid pages
@@ -586,10 +589,6 @@ export class PdfBookReader extends Component {
     {
       region = 'IMAGE';
     }
-    else if(_.endsWith(regionLink,'.htm') == true || _.endsWith(regionLink,'.html') == true )
-    {
-      region = 'EXTERNALLINK';
-    }
     else
     {
       region = 'URL';
@@ -711,6 +710,7 @@ export class PdfBookReader extends Component {
 /*Method to handle the action to be performed when a region is clicked.*/
 handleRegionClick(hotspotID) {
   let regionDetails,basepath;
+  var youtubeRegex= /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/;
     if(this.state.regionData)
     {
       this.setState({regionData : null});
@@ -855,11 +855,19 @@ handleRegionClick(hotspotID) {
               {
                 regionDetails.hotspotType = 'SPPASSET';
               }
-              if(regionDetails.hotspotType != 'SPPASSET')
+              if(regionDetails.hotspotType == 'URL')
               {
-                if((regionDetails.linkValue).indexOf('pearson')== -1 || _.endsWith(regionDetails.linkValue,".htm") || _.endsWith(regionDetails.linkValue,".html"))
+                if((regionDetails.linkValue).indexOf('pearson')== -1)
                 {
                   regionDetails.hotspotType = 'EXTERNALLINK';
+                }
+                else if((regionDetails.linkValue).indexOf('pearson') !== -1 && (_.endsWith(regionDetails.linkValue,".htm") || _.endsWith(regionDetails.linkValue,".html")))
+                {
+                  regionDetails.hotspotType = 'EXTERNALLINK';
+                }
+                if(youtubeRegex.test(regionDetails.linkValue))
+                {
+                  regionDetails.hotspotType = 'VIDEO';
                 }
               }
             }
