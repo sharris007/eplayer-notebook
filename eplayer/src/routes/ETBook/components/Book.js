@@ -207,6 +207,10 @@ export class Book extends Component {
   };
   componentWillReceiveProps(nextProps) {
     const playlistData = nextProps.playlistData;
+    localStorage.playlistData = JSON.stringify(playlistData);
+    if(nextProps.tocData && nextProps.tocData.content) {
+      localStorage.tocData = JSON.stringify(nextProps.tocData.content);
+    }
     const pageParameters = this.state.pageDetails;
     if (nextProps.playlistReceived) {
 
