@@ -224,7 +224,7 @@ export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, exte
     pageId: externalId,
     pageNo,
     subContextId: courseId,
-    sharable: shared
+    shareable: shared
   };
 
   let bmObj;
@@ -856,7 +856,7 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
             hlObj.bookId = highlight.contextId;
             hlObj.pageId = pageid;
             hlObj.courseId = highlight.subContextId;
-            hlObj.shared = highlight.sharable;
+            hlObj.shared = highlight.shareable;
             hlObj.highlightHash = highlight.data.highlightHash;
             hlObj.comment = highlight.data.note;
             hlObj.text = highlight.selectedText;
@@ -909,7 +909,7 @@ export function saveHighlightUsingSpectrumApi(userId, bookId, pageNo,
     pageId: currentPageId,
     pageNo,
     selectedText,
-    sharable: shared,
+    shareable: shared,
     subContextId: courseId,
     userId
   };
@@ -932,7 +932,7 @@ export function saveHighlightUsingSpectrumApi(userId, bookId, pageNo,
           pageId: pageid,
           roleTypeId: highlight.role,
           courseId: highlight.subContextId,
-          shared: highlight.sharable,
+          shared: highlight.shareable,
           highlightHash: highlight.data.highlightHash,
           comment: highlight.data.note,
           text: highlight.selectedText,
@@ -984,7 +984,7 @@ export function editHighlightUsingSpectrumApi(id, note, color, isShared, userId,
     pageNo,
     role:roleTypeId,
     selectedText,
-    sharable: isShared,
+    shareable: isShared,
     subContextId: courseId,
     userId
   };
@@ -1013,7 +1013,7 @@ export function editHighlightUsingSpectrumApi(id, note, color, isShared, userId,
           pageId: pageid,
           roleTypeId: highlightResponse.role, 
           courseId: highlightResponse.subContextId,
-          shared: highlightResponse.sharable,
+          shared: highlightResponse.shareable,
           highlightHash: highlightResponse.data.highlightHash,
           comment: highlightResponse.data.note,
           text: highlightResponse.selectedText,
