@@ -38,9 +38,10 @@ export default class Utilities {
 
   static formBookmarkPayload = (reqData) => {
     const bookmarkData = {
-      clientApp: "ETEXT_WEB",
+      clientApp: "ETEXT2_WEB",
       color: "",
       contextId: reqData.context,
+      productModel: "SAeT",
       data: reqData,
       isBookMark: true,
       pageId: reqData.uri,
