@@ -175,18 +175,18 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
     .then((bookmarkResponseList) => {
       if (bookmarkResponseList.length) {
         bookmarkResponseList.forEach((bookmark) => {
-          const date = new Date(bookmark.updatedTime * 1000);
+          // const date = new Date(bookmark.updatedTime * 1000);
           const extID = Number(bookmark.pageId);
 
           const bmObj = {
             id: extID,
             bkmarkId: bookmark.id,
             userId: bookmark.userId,
-            bookId: bookmark.bookId,
+            bookId: bookmark.contextId,
             pageId: bookmark.data.pageId,
             pageNo: bookmark.pageNo,
             roleTypeId: bookmark.role,
-            createdTimestamp: date,
+            createdTimestamp: bookmark.updatedTime,
             title: `${Page} ${bookmark.pageNo}`,
             uri: extID,
             externalId: extID
@@ -213,7 +213,7 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
 export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, externalId, courseId, shared, Page, roleTypeId, piSessionKey) {
   clients.readerApi[envType].defaults.headers =  {'X-Authorization':piSessionKey,'Content-Type': 'application/json'};
   const data = {
-    clientApp: 'ET1_WEB',
+    clientApp: 'ETEXT1_WEB',
     isBookMark:true,
     userId,
     data: {
@@ -242,7 +242,7 @@ export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, exte
       let bookmarkList = [];
       if (bookmarkResponseList !== undefined) {
         bookmarkResponseList.forEach((bookmark) => {
-        const date = new Date(bookmark.updatedTime * 1000);
+        // const date = new Date(bookmark.updatedTime * 1000);
         const extID = Number(bookmark.pageId);
         bmObj = {
           id: extID,
@@ -252,7 +252,7 @@ export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, exte
           pageId: bookmark.data.pageId,
           pageNo: bookmark.pageNo,
           roleTypeId: bookmark.role,
-          createdTimestamp: date,
+          createdTimestamp: bookmark.updatedTime,
           title: `${Page} ${bookmark.pageNo}`,
           uri: extID,
           externalId: extID
@@ -850,7 +850,7 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
             const hlObj = {
 
             };
-            const time = new Date(highlight.updatedTime * 1000);
+            // const time = new Date(highlight.updatedTime * 1000);
             const pageid = Number(highlight.pageId);
             hlObj.userId = highlight.userId;
             hlObj.bookId = highlight.contextId;
@@ -868,7 +868,7 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
             hlObj.meta = highlight.data;
             hlObj.author = highlight.data.author;
             hlObj.creationTime = highlight.createdTime;
-            hlObj.time = time;
+            hlObj.time = highlight.updatedTime;
             hlObj.pageIndex = 1;        // For Foxit
             if ((_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
                   && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId) {
@@ -900,7 +900,7 @@ export function saveHighlightUsingSpectrumApi(userId, bookId, pageNo,
   const axiosInstance = clients.readerApi[envType];
   axiosInstance.defaults.headers = {'X-Authorization':piSessionId,'Content-Type': 'application/json'};
   const data = {
-    clientApp: 'ET1_WEB',
+    clientApp: 'ETEXT1_WEB',
     color,
     contextId: bookId,
     role:roleTypeId,
@@ -924,7 +924,7 @@ export function saveHighlightUsingSpectrumApi(userId, bookId, pageNo,
       let highlightList = []; 
       if (highlightResponseList !== undefined) {
         highlightResponseList.forEach((highlight) => {
-        const time = new Date(highlight.updatedTime * 1000);
+        // const time = new Date(highlight.updatedTime * 1000);
         const pageid = Number(highlight.pageId);
         let hlObj = {
           userId: highlight.userId,
@@ -943,7 +943,7 @@ export function saveHighlightUsingSpectrumApi(userId, bookId, pageNo,
           meta: highlight.data,
           author: highlight.data.author,
           creationTime: highlight.createdTime,
-          time,
+          time: highlight.updatedTime,
           pageIndex: 1       // For Foxit
         };
         highlightList.push(hlObj);
@@ -975,7 +975,7 @@ export function editHighlightUsingSpectrumApi(id, note, color, isShared, userId,
   const editHightlightURI = '/api/context/'+bookId+'/identities/'+userId+'/notesX';
   const payloadData = {
     id,
-    clientApp: 'ET1_WEB',
+    clientApp: 'ETEXT1_WEB',
     color,
     contextId: bookId,
     data: meta,
@@ -1005,7 +1005,7 @@ export function editHighlightUsingSpectrumApi(id, note, color, isShared, userId,
     }).then((highlightResponse) => {
       let highlightObj;
       if (highlightResponse !== undefined) {
-        const time = new Date(highlightResponse.updatedTime * 1000);
+        // const time = new Date(highlightResponse.updatedTime * 1000);
         const pageid = Number(highlightResponse.pageId);
         highlightObj = {
           userId: highlightResponse.userId,
@@ -1024,7 +1024,7 @@ export function editHighlightUsingSpectrumApi(id, note, color, isShared, userId,
           meta: highlightResponse.data,
           author: highlightResponse.data.author,
           creationTime: highlightResponse.createdTime,
-          time,
+          time: highlightResponse.updatedTime,
           pageIndex: 1
         };
       }
