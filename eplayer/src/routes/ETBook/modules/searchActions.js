@@ -29,6 +29,7 @@ function getSearchFormat(response) {
   //const response = JSON.parse(localStorage.searchData);
   const titles = message;
   if (response.searchResults && response.searchResults.length > 0) {
+    let searchResultLength = 0;
     response.searchResults.forEach((result) => {
       let results = [];
       result.productsList.forEach((product) => {
@@ -45,6 +46,8 @@ function getSearchFormat(response) {
         };
         obj.content = obj.content.replace('[', '').replace(']', '');
         results.push(obj);
+        if(obj.content)
+          searchResultLength++;
       });
       let searchObj = {
         category : result.key in titles ? searchTitle(titles, result.key) : result.key,
@@ -52,16 +55,28 @@ function getSearchFormat(response) {
       }
       searchResults.push(searchObj);
     });
+    pushSearchInfoToDataLayer(payLoad.queryString,searchResultLength);
     return searchResults;
   }
+  pushSearchInfoToDataLayer(payLoad.queryString,0);
   return searchResults;
+}
+
+function pushSearchInfoToDataLayer(queryString,searchResultslength) {
+  let obj = {
+      'event': 'searchResult',
+      'term': queryString,
+      'numberOfResults': searchResultslength
+  };
+  dataLayer.push(obj);
+  console.log(obj);
 }
 
 function fetchSearchInfo(searchcontent, handleResults, payLoad) {
   payLoad.queryString = searchcontent;
   payLoad.filter=[];
   payLoad.filter.push("indexid:"+window.localStorage.getItem('searchIndexId'));
-  console.log(resources.links.etextSearchUrl[domain.getEnvType()],payLoad)
+  console.log(resources.links.etextSearchUrl[domain.getEnvType()],payLoad);
   fetch(resources.links.etextSearchUrl[domain.getEnvType()], 
     {
       method: 'POST',
