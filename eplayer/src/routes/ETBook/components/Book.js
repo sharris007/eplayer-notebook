@@ -207,6 +207,10 @@ export class Book extends Component {
   };
   componentWillReceiveProps(nextProps) {
     const playlistData = nextProps.playlistData;
+    window.playlistData = playlistData;
+    if(nextProps.tocData && nextProps.tocData.content) {
+      window.tocData = nextProps.tocData.content;
+    }
     const pageParameters = this.state.pageDetails;
     if (nextProps.playlistReceived) {
 
@@ -307,8 +311,8 @@ export class Book extends Component {
       'eventAction': 'Removing Notes',
       'event': 'annotationDelete',
       'eventCategory': 'Notes',
-      'text': deletedAnnotationData.text,
-      'selectedText': deletedAnnotationData.comment,
+      'selectedText': deletedAnnotationData.text,
+      'text': deletedAnnotationData.comment,
       'chapterTitle': chapterInfo.title,
       'sectionTitle': sectionInfo.title
     }
@@ -974,6 +978,11 @@ export class Book extends Component {
       }
     });
     this.goToPageCallback(bookObj.id, '', [searchInfo.split('*')[1]]);
+    let obj = {};
+    obj.event = "searchResultClicked";
+    obj.term = searchInfo.split('*')[1];
+    obj.target = this.state.pageDetails.baseUrl +'OPS'+ searchHref;
+    dataLayer.push(obj);
   }
 
   render() {
@@ -1080,11 +1089,19 @@ export class Book extends Component {
               this.setState({
                 idc:false
               });
+              let obj = {};
+              obj.event = "tocPublishSuccess";
+              obj.term = 'TOC published sucessfully';
+              dataLayer.push(obj);
             }
             else {
               this.type = 'Error';
               this.message = "Your changes didn't get published. Give us a few moments and try again.";
-              this.setState({publishedToc:true})
+              this.setState({publishedToc:true});
+              let obj = {};
+              obj.event = "tocPublishError";
+              obj.term = 'Error in TOC publish';
+              dataLayer.push(obj);
             }
             
           }
