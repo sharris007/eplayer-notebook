@@ -93,8 +93,21 @@ $cont-padding-bottom: 85px;
     width: 380px !important;
     .tocContents {
             width:100% !important;
-        .publishContainer {
-      margin-right:20px !important;
-      }
+    }
+    .publishContainer{
+        float:right !important;
     }
   }
+
+.ConfigureToc .publishContainer{
+  float:right !important;
+}
+
+// .ConfigureToc {
+//     width: 380px !important;
+//     .publishContainer {
+//       margin-right:0px !important;
+//       margin-left:265px !important;
+//       }
+//   }
+
