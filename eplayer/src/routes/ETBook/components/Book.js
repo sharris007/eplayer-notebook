@@ -96,7 +96,8 @@ export class Book extends Component {
       alertOpen:false,
       idc:false,
       publishedToc:false,
-      rederPage : true
+      rederPage : true,
+      headerDataloaded: false
     };
     this.divGlossaryRef = '';
     this.wrapper = '';
@@ -385,6 +386,7 @@ export class Book extends Component {
       this.props.dispatch(getBookmarkCallService(bookmarksParams));
       // this.props.dispatch(getAnnCallService(this.state.urlParams));
     });
+    this.state.headerDataloaded = true;
     this.props.dispatch(gotCustomPlaylistCompleteDetails());
   };
 
@@ -1137,17 +1139,18 @@ export class Book extends Component {
         'Content-Type': 'application/json',     //'idpName': 'SMS',
         'X-Authorization': localStorage.getItem('secureToken')
       };
-
-    const annotationClient = axios.create({
-      baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
-      headers: this.annHeaders,
-      data: {
-        context: this.state.urlParams.context,
-        user: this.state.urlParams.user
-      }
-    });
-
-    let userType;
+      
+    let annotationClient;
+    let userType,headerTitleData={ params: '', classname: '', chapterTitle: '', pageTitle: '', isChapterOpener: '' };
+    if (this.state.headerDataloaded) {
+      headerTitleData = {
+      params: this.props.params,
+      classname: this.state.classname,
+      chapterTitle: this.state.currentPageTitle,
+      pageTitle: this.state.currentPageTitle,
+      isChapterOpener: true
+      };
+    }
     if (playlistReceived && bookdetailsdata) {
       const getMathjaxJs = this.loadMathjax();
       let i;
@@ -1159,6 +1162,15 @@ export class Book extends Component {
             userType = 'instructor';
         }
       }
+      annotationClient = axios.create({
+        baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
+        headers: this.annHeaders,
+        data: {
+          context: this.state.urlParams.context,
+          user: this.state.urlParams.user,
+          userType: userType == 'instructor' ? 'Instructor' : 'Student'
+        }
+      });
       if (userType === 'instructor') {
         annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
         annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
@@ -1237,13 +1249,6 @@ export class Book extends Component {
     ];
 
     const locale = bootstrapParams.pageDetails.locale ? bootstrapParams.pageDetails.locale : 'en';
-    const headerTitleData = {
-      params: this.props.params,
-      classname: this.state.classname,
-      chapterTitle: this.state.currentPageTitle,
-      pageTitle: this.state.currentPageTitle,
-      isChapterOpener: true
-    };
     const hideIcons = {
       backNav: false,
       hamburger: false,
