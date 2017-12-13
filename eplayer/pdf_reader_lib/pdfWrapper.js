@@ -1112,7 +1112,7 @@ function getAssetURLForPDFDownload(config,cb){
           }
           else
           {
-            iconArt =  'eplayer'+this.resetSwfIcons(hotspots[i],lodashFunction);
+            iconArt = this.resetSwfIcons(hotspots[i],lodashFunction);
           }
           regionElement=document.createElement('div');
           regionElement.setAttribute('id','region' + hotspots[i].regionID);
