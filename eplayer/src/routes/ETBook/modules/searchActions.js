@@ -19,6 +19,7 @@ const payLoad = {
 };
 
 let searchResults = [];
+let searchResultLength = 0;
 
 function keyIndex(arr, key) {
   return arr.findIndex(item => (key === item.category));
@@ -29,9 +30,9 @@ function searchTitle(titles, key) {
 function getSearchFormat(response) {
   //const response = JSON.parse(localStorage.searchData);
   const titles = message;
+  searchResults = [];
+  searchResultLength = 0;
   if (response.searchResults && response.searchResults.length > 0) {
-    let searchResultLength = 0;
-    searchResults = [];
     response.searchResults.forEach((result) => {
       let results = [];
       result.productsList.forEach((product) => {
@@ -117,10 +118,12 @@ function fetchMoreResults(searchcontent,handleResults) {
                 id: `${data.url.split("OPS")[1]}##${possibleSearchTxt}`
               };
               searchMoreResults.push(obj);
+              searchResultLength++;
             });
             searchObj.results = searchMoreResults;
             searchResults.push(searchObj);
             handleResults(searchResults);
+            pushSearchInfoToDataLayer(searchcontent,searchResultLength);
           }
         }   
       });
