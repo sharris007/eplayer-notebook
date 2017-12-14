@@ -265,7 +265,7 @@ Annotator = (function(_super) {
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
     $(annotation.highlights).attr('data-ann-id', annotation.id);
     $(annotation.highlights).attr('shareable', annotation.shareable);
-    annotation.createdTimestamp = new Date().toISOString();
+    annotation.createdTimestamp = Date.parse(new Date().toISOString());
     return annotation;
   };
 

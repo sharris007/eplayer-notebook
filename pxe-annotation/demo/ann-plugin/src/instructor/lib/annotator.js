@@ -257,7 +257,7 @@ Annotator = (function(_super) {
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
     $(annotation.highlights).attr('data-ann-id', annotation.id);
     $(annotation.highlights).attr('shareable', annotation.shareable);
-    annotation.createdTimestamp = new Date().toISOString();
+    annotation.createdTimestamp = Date.parse(new Date().toISOString());
     return annotation;
   };
 
@@ -350,7 +350,7 @@ Annotator = (function(_super) {
     }
   };
   Annotator.prototype.alignMathMlNote =function(){
-    $('.MathJax .annotator-handle').each(function(){
+    /*$('.MathJax .annotator-handle').each(function(){
         var bookContainerWidth=$('#book-container').width();
       var annLeft=$(this).offset().left;
       var bookContainerLeft=$('#book-container').offset().left;
@@ -358,7 +358,7 @@ Annotator = (function(_super) {
         var rightAlign=(bookContainerWidth-(annLeft-(bookContainerWidth-bookContainerLeft)))+15;
         $(this).css('right',-rightAlign +'px');
       }
-    });
+    });*/
   };
   Annotator.prototype.alignNotes = function() {
     var notes=document.getElementsByClassName('annotator-handle');

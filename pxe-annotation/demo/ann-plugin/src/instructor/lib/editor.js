@@ -445,6 +445,9 @@ Annotator.Editor = (function(_super) {
       field = _ref[_i];
       field.submit(field.element, this.annotation);
     }
+    if (this.annotation.id) {
+      this.annotation.updatedTimestamp = Date.parse(new Date().toISOString());
+    }
     currentSelection = $(this.annotation.highlights); 
     for(_i=0; _i<currentSelection.length; _i++) {
       if($(currentSelection[_i]).find('.annotator-handle').length>0)
