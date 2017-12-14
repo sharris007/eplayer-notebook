@@ -9,6 +9,7 @@
 import React, {PropTypes} from 'react';
 
 import Annotation from './Annotation';
+import DemoBookViewer from '../../demo/DemoBookViewer'
 
 class ComponentOwner extends React.Component {
 
@@ -25,6 +26,37 @@ class ComponentOwner extends React.Component {
   };
   constructor(props) {
     super(props);
+    this.state = {
+      bookHTML: '',
+      isBookLoaded : false
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.isFromComponent) {
+      let base = {}; 
+      base = document.createElement('base');
+      base.href = this.props.bookUrl;
+      document.getElementsByTagName('head')[0].appendChild(base);
+      this.init();
+    }
+  }
+
+  init() {
+    const request = new Request(this.props.bookUrl, { headers: new Headers({'Content-Type': 'text/plain'}) });
+    return fetch(request, {
+      method: 'get'
+    }).then((response) => {
+      return response.text();
+    }).then((text) => {
+      this.setState({bookHTML : text});
+    }).catch((err) => {
+      console.debug(err);
+    });
+  }
+
+  onBookLoad () {
+    this.setState({isBookLoaded : true});
   }
 
   //
@@ -37,9 +69,14 @@ class ComponentOwner extends React.Component {
     const { contentId, annotationData, shareableAnnotations, annotationEventHandler, currentPageDetails, annAttributes} = this.props;
     return (
       <div>
-        <Annotation contentId={contentId} annotationData={annotationData} 
+
+        {this.state.isBookLoaded ? <Annotation pxeFrameRef= {document.getElementById('contentIframe')} annotationData={annotationData} 
                     shareableAnnotations={shareableAnnotations} annotationEventHandler={annotationEventHandler} 
-                    currentPageDetails={currentPageDetails} annAttributes={annAttributes} isComponent = {true}/>
+                    currentPageDetails={currentPageDetails} annAttributes={annAttributes} isComponent = {true} annState = 'initial'/> : ''}
+
+        {this.state.bookHTML ? <DemoBookViewer bookHTML = {this.state.bookHTML} onBookLoad = {this.onBookLoad.bind(this)} basePath={this.props.bookUrl} ref={(e)=>{this.bookViewerRef=e;}} /> : ''}
+
+        
       </div>
     );
   };  
