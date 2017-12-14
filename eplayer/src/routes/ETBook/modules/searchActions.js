@@ -18,6 +18,8 @@ const payLoad = {
   "groupBy":["_index"]
 };
 
+let searchResults = [];
+
 function keyIndex(arr, key) {
   return arr.findIndex(item => (key === item.category));
 }
@@ -25,11 +27,11 @@ function searchTitle(titles, key) {
   return titles[key].id === key ? titles[key].defaultMessage : key;
 }
 function getSearchFormat(response) {
-  const searchResults = [];
   //const response = JSON.parse(localStorage.searchData);
   const titles = message;
   if (response.searchResults && response.searchResults.length > 0) {
     let searchResultLength = 0;
+    searchResults = [];
     response.searchResults.forEach((result) => {
       let results = [];
       result.productsList.forEach((product) => {
@@ -56,6 +58,7 @@ function getSearchFormat(response) {
       searchResults.push(searchObj);
     });
     pushSearchInfoToDataLayer(payLoad.queryString,searchResultLength);
+    console.log(searchResults);
     return searchResults;
   }
   pushSearchInfoToDataLayer(payLoad.queryString,0);
@@ -92,11 +95,41 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
    });
 }
 
+function fetchMoreResults(searchcontent,handleResults) {
+  let searchUrl= resources.links.etextSearchMoreResults[domain.getEnvType()] + '/search?indexId=' + window.localStorage.getItem('searchIndexId') + '&q='+searchcontent+'&s=0&n=' + resources.constants.TextSearchLimit;
+  fetch(searchUrl)
+      .then(response => response.json())
+      .then((response) => {
+        if(response) {
+          let searchObj = {};
+          let possibleSearchTxt = '';
+          if(response.wordHits) {
+            response.wordHits.forEach((data) => {
+              possibleSearchTxt += `${data},`;
+            });
+          }
+          if(response.hits.length > 0) {
+            let searchMoreResults = [];
+            searchObj.category = 'More results'
+            response.hits.forEach((data, i) => {
+              const obj = {
+                content: data.contentPreview,
+                id: `${data.url.split("OPS")[1]}##${possibleSearchTxt}`
+              };
+              searchMoreResults.push(obj);
+            });
+            searchObj.results = searchMoreResults;
+            searchResults.push(searchObj);
+            handleResults(searchResults);
+          }
+        }   
+      });
+}
+
 const searchActions = {
 
-  search(searchcontent, handleResults) {
-    payLoad.responseSize = 100;
-    fetchSearchInfo(searchcontent, handleResults, payLoad);
+  search(searchcontent, handleResults) {    
+    fetchMoreResults(searchcontent,handleResults);
   },
   autoComplete(searchcontent, handleResults) {
     payLoad.responseSize = 6;
