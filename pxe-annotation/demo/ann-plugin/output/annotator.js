@@ -2913,7 +2913,7 @@ Annotator = (function(_super) {
     $(annotation.highlights).attr('data-annotation-id', annotation.id);
     $(annotation.highlights).attr('data-ann-id', annotation.id);
     $(annotation.highlights).attr('shareable', annotation.shareable);
-    annotation.createdTimestamp = new Date().toISOString();
+    annotation.createdTimestamp = Date.parse(new Date().toISOString());
     return annotation;
   };
 
@@ -4266,6 +4266,9 @@ Annotator.Editor = (function(_super) {
     for(_i=0; _i<currentSelection.length; _i++) {
       if($(currentSelection[_i]).find('.annotator-handle').length>0)
         break;
+    }
+    if (this.annotation.id) {
+      this.annotation.updatedTimestamp = Date.parse(new Date().toISOString());
     }
     if(_i == currentSelection.length)
           $(currentSelection[0]).prepend("<span class='annotator-handle'></span>")

@@ -677,6 +677,9 @@ Annotator.Editor = (function(_super) {
       if($(currentSelection[_i]).find('.annotator-handle').length>0)
         break;
     }
+    if (this.annotation.id) {
+      this.annotation.updatedTimestamp = Date.parse(new Date().toISOString());
+    }
     if(_i == currentSelection.length)
           $(currentSelection[0]).prepend("<span class='annotator-handle'></span>")
     $(this.annotation.highlights)[(this.element.find('textarea').val().length)?'addClass':'removeClass']('highlight-note');
