@@ -120,6 +120,16 @@ export class PdfBookReader extends Component {
           {
           __pdfInstance.displayRegions(that.props.data.book.regions,that.props.data.book.bookFeatures,_);
           }
+          if(this.state.showHotspot !== true)
+          {
+            try
+            {
+              $(".hotspot").hide();
+              $(".hotspotIcon").hide();
+              this.setState({showHotspot:false})
+            }
+            catch(e){}
+          }
       })
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
@@ -212,6 +222,16 @@ export class PdfBookReader extends Component {
         if(this.props.data.book.regions.length > 0 )
         {
           __pdfInstance.displayRegions(this.props.data.book.regions,this.props.data.book.bookFeatures,_);
+          if(this.state.showHotspot !== true)
+          {
+            try
+            {
+              $(".hotspot").hide();
+              $(".hotspotIcon").hide();
+              this.setState({showHotspot:false})
+            }
+            catch(e){}
+          }
           let regionsData = [];
           let glossaryEntryIDsToFetch = '';
           for(let arr=0;arr < this.props.data.book.regions.length ; arr++)
@@ -457,6 +477,16 @@ export class PdfBookReader extends Component {
     if(this.props.data.book.regions.length > 0 )
     {
       __pdfInstance.displayRegions(this.props.data.book.regions,this.props.data.book.bookFeatures,_);
+    }
+    if(this.state.showHotspot !== true)
+    {
+      try
+      {
+        $(".hotspot").hide();
+        $(".hotspotIcon").hide();
+        this.setState({showHotspot:false})
+      }
+      catch(e){}
     }
     let glossaryDataUpdated = [];
     for(let i=0;i<this.props.data.book.glossaryInfoList.length;i++)
