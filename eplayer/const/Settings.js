@@ -159,10 +159,10 @@ export const contentUrl = {
   },
   SecuredUrl: {
     local        :"etext-dev.pearson.com",
-    dev          :"content.stg-openclass.com", //etext-dev.pearson.com
-    qa           :"content.stg-openclass.com",  //etext-qa-stg.pearson.com
-    stage        :"content.stg-openclass.com", //etext-qa-stg.pearson.com
-    prod         :"etext.pearson.com"
+    dev          :"etext-dev.pearson.com", //etext-dev.pearson.com
+    qa           :"etext-qa-stg.pearson.com",  //etext-qa-stg.pearson.com
+    stage        :"etext-stg.pearson.com", //etext-qa-stg.pearson.com
+    prod         :"content.openclass.com" //etext.pearson.com
   }
 };
 
