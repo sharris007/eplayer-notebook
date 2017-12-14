@@ -972,17 +972,25 @@ export class Book extends Component {
       this.setState({rederPage:true})
     });
     let bookObj = {};
-    const searchHref = searchInfo.split('*')[0];
+    let searchHref = ''; let searchCombination = []
+    if(searchInfo.split('##')[1]) {
+      searchHref = searchInfo.split('##')[0]; // For search SVC
+      searchCombination=searchInfo.split('##')[1].split(',')
+    } else {
+      searchHref = searchInfo.split('*')[0];// For Auto complete search SVC
+      searchCombination = [searchInfo.split('*')[1]];
+    }
+    
     this.state.pageDetails.playListURL.forEach(function(page, i) {
       if(page.href && page.href.match(searchHref)) {
         bookObj = page;
         console.log("onSearchResultClick : ", page, i);
       }
     });
-    this.goToPageCallback(bookObj.id, '', [searchInfo.split('*')[1]]);
+    this.goToPageCallback(bookObj.id, '', searchCombination);
     let obj = {};
     obj.event = "searchResultClicked";
-    obj.term = searchInfo.split('*')[1];
+    obj.term = searchCombination.toString();
     obj.target = this.state.pageDetails.baseUrl +'OPS'+ searchHref;
     dataLayer.push(obj);
   }
