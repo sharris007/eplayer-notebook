@@ -55,6 +55,13 @@ export const resources = {
       stage        : 'https://content-service.stg-prsn.com/csg/api/v3/autoComplete',
       prod         : 'https://content-service.prd-prsn.com/csg/api/v3/autoComplete'
     },
+    etextSearchMoreResults: {
+      local        : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
+      dev          : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
+      qa           : 'https://etext-qa-stg.pearson.com/search/pxereader-cm/api/2.1/cm',
+      stage        : 'https://content-service.stg-prsn.com/csg/api/cm',
+      prod         : 'https://content-service.prd-prsn.com/csg/api/cm'
+    },
     pxeServiceUrl: {
       local        : 'https://pxe-services-dev.pearson.com/services-api/api/3.2',
       dev          : 'https://pxe-services-qa.pearson.com/services-api/api/3.2',
