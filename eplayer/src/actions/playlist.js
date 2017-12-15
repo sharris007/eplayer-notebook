@@ -177,7 +177,8 @@ export const getBookTocCallService = data => dispatch =>
           title: itemObj.title,
           coPage: itemObj.coPage,
           playOrder: itemObj.playOrder,
-          children: subItems
+          children: subItems,
+          href: itemObj.href
         };
       });
       tocResponse.list = listData;
@@ -216,7 +217,7 @@ export const tocFlag = () => (dispatch) => {
 };
 
 function getParameterByName(name, url) {
-  if (!url) url = 'https://etext-qa-stg.pearson.com/eplayer/Course/59cc897ee4b0f389a4688b90/?prdType=idc&returnUrl=https%3A%2F%2Fetext-instructor-qa.pearson.com%2Fidc%3Fproduct_type%3DETEXT2_PXE%26courseId%3D59cc897ee4b0f389a4688b90';
+  if (!url) url = window.location.href;
   name = name.replace(/[\[\]]/g, '\\$&');
   const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
   const results = regex.exec(url);
@@ -253,7 +254,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
 
     if (!isFromCustomToc) {
       const passportDetails = response.passportPermissionDetail;
-      const url = 'https://etext-qa-stg.pearson.com/eplayer/Course/59cc897ee4b0f389a4688b90/?prdType=idc&returnUrl=https%3A%2F%2Fetext-instructor-qa.pearson.com%2Fidc%3Fproduct_type%3DETEXT2_PXE%26courseId%3D59cc897ee4b0f389a4688b90';
+      const url = window.location.href;
       const n = url.search('prdType');
       let prdType = '';
       let iseSource = '';

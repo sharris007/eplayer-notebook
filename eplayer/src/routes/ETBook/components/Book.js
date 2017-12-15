@@ -1102,7 +1102,8 @@ export class Book extends Component {
             title: itemObj.title,
             coPage: itemObj.coPage,
             playOrder: itemObj.playOrder,
-            children: subItems
+            children: subItems,
+            href: itemObj.href
           };
         });
         const tocResponseData = { tocContents: listData };
