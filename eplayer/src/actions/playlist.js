@@ -216,7 +216,7 @@ export const tocFlag = () => (dispatch) => {
 };
 
 function getParameterByName(name, url) {
-  if (!url) url = window.location.href;
+  if (!url) url = 'https://etext-qa-stg.pearson.com/eplayer/Course/59cc897ee4b0f389a4688b90/?prdType=idc&returnUrl=https%3A%2F%2Fetext-instructor-qa.pearson.com%2Fidc%3Fproduct_type%3DETEXT2_PXE%26courseId%3D59cc897ee4b0f389a4688b90';
   name = name.replace(/[\[\]]/g, '\\$&');
   const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
   const results = regex.exec(url);
@@ -253,21 +253,23 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
 
     if (!isFromCustomToc) {
       const passportDetails = response.passportPermissionDetail;
-      const url = window.location.href;
+      const url = 'https://etext-qa-stg.pearson.com/eplayer/Course/59cc897ee4b0f389a4688b90/?prdType=idc&returnUrl=https%3A%2F%2Fetext-instructor-qa.pearson.com%2Fidc%3Fproduct_type%3DETEXT2_PXE%26courseId%3D59cc897ee4b0f389a4688b90';
       const n = url.search('prdType');
       let prdType = '';
       let iseSource = '';
-      const checkSource = url.search('etext-ise');
+      const checkSource = url.search('Source=');
       if (n > 0) {
         const urlSplit = url.split('prdType=');
         prdType = getParameterByName('prdType');
         dispatch(updateProdType(prdType));
       }
-      if (!prdType) {
-        localStorage.setItem('backUrl', '');
-      }
       if (checkSource > 0){
+        const getIseSource = getParameterByName('Source');
+        dispatch(updateProdType(getIseSource));
         iseSource = true;
+      }
+      if (!prdType && !iseSource) {
+        localStorage.setItem('backUrl', '');
       }
       const studentCheck = resources.constants.zeppelinEnabled;
       const instructorCheck = resources.constants.idcDashboardEnabled;
