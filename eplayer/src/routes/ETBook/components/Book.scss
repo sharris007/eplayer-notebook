@@ -73,6 +73,9 @@ $cont-padding-bottom: 85px;
   .headerTitle {
     font-family: "Open Sans" !important;
   }
+  .SearchinputBar input[type=text] {
+      margin: 0 !important;
+  }
 }
 .navigation .section .contentWrapper .content {
   line-height: 1.3;

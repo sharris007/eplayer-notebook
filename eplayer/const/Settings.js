@@ -19,7 +19,7 @@ export const resources = {
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
     idcDashboardEnabled : true,
-    zeppelinEnabled     : false,
+    zeppelinEnabled     : true,
     isDisableAnnotation : false
   },
   links: {
@@ -137,7 +137,7 @@ export const resources = {
       qa           :"https://spectrum-qa.stg-openclass.com/api/context",
       stage        :"https://spectrum.stg-openclass.com/api/context",
       PERF         :"https://spectrum-ppe.pearsoned.com/api/context",
-      prod         :"https://spectrum.pearsoned.com/api/context"
+      prod         :"https://spectrum.openclass.com/api/context"
     },
     iseUrl : {
       local        :"https://etext-ise-qa.pearson.com",
