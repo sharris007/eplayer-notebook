@@ -177,7 +177,8 @@ export const getBookTocCallService = data => dispatch =>
           title: itemObj.title,
           coPage: itemObj.coPage,
           playOrder: itemObj.playOrder,
-          children: subItems
+          children: subItems,
+          href: itemObj.href
         };
       });
       tocResponse.list = listData;
