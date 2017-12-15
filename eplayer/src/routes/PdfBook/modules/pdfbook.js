@@ -874,7 +874,7 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
                   && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId) {
               hlObj.isHighlightOnly = false;
               bookState.highlights.push(hlObj);
-            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3) {
+            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3 && hlObj.courseId == courseId) {
               if(hlObj.shared)
               {
                hlObj.isHighlightOnly = false;
