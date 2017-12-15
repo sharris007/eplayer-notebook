@@ -292,7 +292,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       if (getsourceUrl === 'bookshelf') {
         getOriginUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
       }
-      else if (!getsourceUrl && !prdType) {
+      else if (!getsourceUrl && !prdType && !iseSource) {
         getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
       }
       localStorage.setItem('sourceUrl', '');
