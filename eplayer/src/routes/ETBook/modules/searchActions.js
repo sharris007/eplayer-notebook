@@ -42,10 +42,20 @@ function getSearchFormat(response) {
           const startPos = searchContent.indexOf('<em>') +4;
           boldTxt = searchContent.substring(startPos, searchContent.indexOf('</em>',startPos));
         }
-        
+        let content = '';let id='';
+        content = product.matchedFields['term'] || product.matchedFields['chaptertitle'];
+        id = product.source && product.source.url ? `${product.source.url.split("OPS")[1]}*${boldTxt}` : '';
+        if(result.key === "glossaryTerms" && product.source) {
+          if(product.source.meaning) {
+            content = content + '<br/>' + product.source.meaning;
+          }
+          if(product.source.key) {
+            id = `${id}*key=${product.source.key}`;
+          }
+        }
         let obj = {
-          content : product.matchedFields['term'] || product.matchedFields['chaptertitle'],
-          id: product.source && product.source.url ? product.source.url.split("OPS")[1] + '*' + boldTxt : '' 
+          content,
+          id 
         };
         obj.content = obj.content.replace('[', '').replace(']', '');
         results.push(obj);

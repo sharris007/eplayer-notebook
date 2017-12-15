@@ -978,15 +978,19 @@ export class Book extends Component {
       searchCombination=searchInfo.split('##')[1].split(',')
     } else {
       searchHref = searchInfo.split('*')[0];// For Auto complete search SVC
-      searchCombination = [searchInfo.split('*')[1]];
-    }
-    
+      if(searchInfo.split('*')[2] && searchInfo.split('*')[2].match('key')) {
+        searchCombination = [`${searchInfo.split('*')[1]}*${searchInfo.split('*')[2]}`];
+      } else{
+        searchCombination = [searchInfo.split('*')[1]];
+      }     
+    }    
     this.state.pageDetails.playListURL.forEach(function(page, i) {
       if(page.href && page.href.match(searchHref)) {
         bookObj = page;
         console.log("onSearchResultClick : ", page, i);
       }
     });
+    //bookObj = this.state.pageDetails.playListURL[306];
     this.goToPageCallback(bookObj.id, '', searchCombination);
     let obj = {};
     obj.event = "searchResultClicked";
