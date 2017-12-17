@@ -16,13 +16,12 @@ window.loadAccessibilityContent = function(){
     var textForElement = '';
     textForElement = WebPDF.ViewerInstance.getCurToolHandler().getTextSelectTool().getTextPage(currentPage).textPage.getPageAllText();
     if(textForElement != window.textForElement){
-		  try{
-			var docViewerElement = $('.docViewer')
-			var firstElement = docViewerElement[0];
-			firstElement.setAttribute('aria-label',textForElement);
-			firstElement.setAttribute('tabindex', 1);
-		}catch(e){console.log("Error setting screenreader text");
-  }
+      try{
+        var docViewer = $('.docViewer');
+        var firstElement = docViewer[0];
+        firstElement.setAttribute('aria-label', textForElement);
+        firstElement.setAttribute('tabindex', '1');
+      }catch(e){}
       divElement.innerText = textForElement;
       var docViewerElement = $('#mainContainer');
       var firstChild = docViewerElement[0].firstChild;
@@ -436,7 +435,7 @@ function initViewer(config) {
   // }
   //initWebPDFMini()
   // open the sample file
-  var foxitAssetURL = config.PDFassetURL.foxitAssetURL;;
+  var foxitAssetURL = config.PDFassetURL.foxitAssetURL;
   if(foxitAssetURL){
     window.foxitAssetURL = foxitAssetURL;
     assertUrl = foxitAssetURL;
@@ -445,7 +444,7 @@ function initViewer(config) {
     assertUrl = openFile(baseUrl,openFileUrl, config.headerParams, cdnURL);
   }
   if (assertUrl == null) return;
- if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
+  if(typeof(WebPDF) != 'undefined' && WebPDF.ViewerInstance != null) {
               // open current file
                 WebPDF.ViewerInstance.openFile(assertUrl);
                
@@ -532,7 +531,7 @@ function openFile(baseUrl,fileUrl,headerParams,cdnURL, callback) {
     fileUrl = fileUrl.replace(/^\s*/g, "").replace(/\s*$/g, ""); // trim string
     // User information can be get from custom user system.
     // It can be set at this place,and also can be set by SPI plugin implement.
-    var user = getIP(baseUrl);
+    //var user = getIP(baseUrl);
     var tempURL = "";
     for(var i in headerParams) {
       tempURL = tempURL + i.toString() + "=" + headerParams[i].toString() + '&';
@@ -1165,7 +1164,7 @@ function getAssetURLForPDFDownload(config,cb){
             iconDiv.style.backgroundSize = 'cover';
           }
           regionElement.className='hotspot';
-           iconDiv.className='hotspotIcon';
+          iconDiv.className='hotspotIcon';
           tooltip = document.createElement('span')
           tooltip.className='tooltiptext';
           tooltip.innerHTML = hotspots[i].name;
