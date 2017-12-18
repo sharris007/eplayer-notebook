@@ -107,6 +107,7 @@ export class Book extends Component {
     this.bookIndexId = {};
     this.searchUrl = '';
     this.isAnnotationHide = false;
+    this.productType = '';
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
     this.state.pageDetails.currentPageURL = '';
@@ -253,8 +254,14 @@ export class Book extends Component {
         playpageDetails1.tocUpdated = true;
         this.onPageChange("pagescroll", nextProps.gotoPageObj.page.title);
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+          if(this.props.prodType === 'idc'){
+            this.productType = 'prdType';
+          }
+          else{
+            this.productType = 'Source';
+          }
           let url = `/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`;
-          url+=this.props.prodType?'?prdType='+this.props.prodType+'&':'?';
+          url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+'launchLocale=' + window.annotationLocale);
         } else {
           browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
@@ -379,8 +386,14 @@ export class Book extends Component {
     }, function () {
       // eslint-disable-next-line
       if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if(this.props.prodType === 'idc'){
+          this.productType = 'prdType';
+        }
+        else{
+          this.productType = 'Source';
+        }
         let url = `/eplayer/Course/${this.props.params.bookId}/page/${data.id}`;
-        url+=this.props.prodType?'?prdType='+this.props.prodType+'&':'?';
+        url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
         browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
       } else {
         browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
@@ -608,8 +621,14 @@ export class Book extends Component {
         drawerOpen: false
       }, () => {
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+          if(this.props.prodType === 'idc'){
+            this.productType = 'prdType';
+          }
+          else{
+            this.productType = 'Source';
+          }
           let url = `/eplayer/Course/${this.props.params.bookId}/page/${id}`;
-          url+=this.props.prodType?'?prdType='+this.props.prodType+'&':'?';
+          url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
         } else {
           browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
@@ -978,15 +997,19 @@ export class Book extends Component {
       searchCombination=searchInfo.split('##')[1].split(',')
     } else {
       searchHref = searchInfo.split('*')[0];// For Auto complete search SVC
-      searchCombination = [searchInfo.split('*')[1]];
-    }
-    
+      if(searchInfo.split('*')[2] && searchInfo.split('*')[2].match('key')) {
+        searchCombination = [`${searchInfo.split('*')[1]}*${searchInfo.split('*')[2]}`];
+      } else{
+        searchCombination = [searchInfo.split('*')[1]];
+      }     
+    }    
     this.state.pageDetails.playListURL.forEach(function(page, i) {
       if(page.href && page.href.match(searchHref)) {
         bookObj = page;
         console.log("onSearchResultClick : ", page, i);
       }
     });
+    //bookObj = this.state.pageDetails.playListURL[306];
     this.goToPageCallback(bookObj.id, '', searchCombination);
     let obj = {};
     obj.event = "searchResultClicked";
@@ -1083,7 +1106,8 @@ export class Book extends Component {
             title: itemObj.title,
             coPage: itemObj.coPage,
             playOrder: itemObj.playOrder,
-            children: subItems
+            children: subItems,
+            href:itemObj.href
           };
         });
         const tocResponseData = { tocContents: listData };

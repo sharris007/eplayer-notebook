@@ -177,7 +177,8 @@ export const getBookTocCallService = data => dispatch =>
           title: itemObj.title,
           coPage: itemObj.coPage,
           playOrder: itemObj.playOrder,
-          children: subItems
+          children: subItems,
+          href: itemObj.href
         };
       });
       tocResponse.list = listData;
@@ -257,17 +258,19 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const n = url.search('prdType');
       let prdType = '';
       let iseSource = '';
-      const checkSource = url.search('etext-ise');
+      const checkSource = url.search('Source=');
       if (n > 0) {
         const urlSplit = url.split('prdType=');
         prdType = getParameterByName('prdType');
         dispatch(updateProdType(prdType));
       }
-      if (!prdType) {
-        localStorage.setItem('backUrl', '');
-      }
       if (checkSource > 0){
+        const getIseSource = getParameterByName('Source');
+        dispatch(updateProdType(getIseSource));
         iseSource = true;
+      }
+      if (!prdType && !iseSource) {
+        localStorage.setItem('backUrl', '');
       }
       const studentCheck = resources.constants.zeppelinEnabled;
       const instructorCheck = resources.constants.idcDashboardEnabled;
@@ -289,7 +292,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       if (getsourceUrl === 'bookshelf') {
         getOriginUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
       }
-      else if (!getsourceUrl && !prdType) {
+      else if (!getsourceUrl && !prdType && !iseSource) {
         getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
       }
       localStorage.setItem('sourceUrl', '');
