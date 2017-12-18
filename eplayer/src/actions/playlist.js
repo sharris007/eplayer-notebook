@@ -108,41 +108,105 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
 
           bookDetails = response.bookDetail.metadata;
           piToken = data.piToken;
-          PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
-            .then((response) => {
-              //Changing content urls to secured url
-              response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
-              response.provider = Utilities.changeContentUrlToSecured(response.provider);
 
-              dispatch(getPlaylistCompleteDetails(response));
-              if (isFromCustomToc) {
-                dispatch(getCustomPlaylistCompleteDetails());
+          PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
+          .then((response) => {
+            //Changing content urls to secured url
+            response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+            response.provider = Utilities.changeContentUrlToSecured(response.provider);
+                  
+            const tocResponse = response.content;
+            tocResponse.mainTitle = bookDetails.title;
+            tocResponse.author = bookDetails.creator;
+            tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
+
+
+            tocResponse.list = [];
+            const tocItems = tocResponse.items;
+            let subItems = [];
+            const listData = tocItems.map((itemObj) => {
+              if (itemObj.items) {
+                subItems = itemObj.items.map(n => ({
+                  urn: n.id,
+                  href: n.href,
+                  id: n.id,
+                  playOrder: n.playOrder,
+                  title: n.title
+                }));
               }
-              let currentPageInfo = {};
-              if(data.pageId) {
-                currentPageInfo = find(response.content, list => list.id === data.pageId);
-              } else {
-                currentPageInfo = (response.content[0].playOrder == 0) ? response.content[1] : response.content[0];
-              }
-              let bookTitle = ''
-              if(bookDetailInfo.bookDetail && bookDetailInfo.bookDetail.metadata && bookDetailInfo.bookDetail.metadata.title) {
-                bookTitle = bookDetailInfo.bookDetail.metadata.title;
-              }
-              let dataLayerObj = {
-                'eventCategory': 'Chapter',
-                'event': 'chapterStarted',
-                'eventAction': 'Chapter Started',
-                'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
-                'firstSectionEntered' : currentPageInfo.title,
-                'bookTitle': bookTitle,
-                'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
-              }
-              /*Custom dimension for initial Master Play List*/
-              dataLayer.push(dataLayerObj);
+              return {
+                id: itemObj.id,
+                urn: itemObj.id,
+                title: itemObj.title,
+                coPage: itemObj.coPage,
+                playOrder: itemObj.playOrder,
+                children: subItems,
+                href: itemObj.href
+              };
             });
-        }
-        );
+            tocResponse.list = listData;
+            delete tocResponse.items;
+            const tocFinalModifiedData = { content: tocResponse, bookDetails };
+            dispatch(getTocCompleteDetails(tocFinalModifiedData));
+            const result = [];
+            const resultAttr = ['id','title','href'];
+            const playlistData = {};
+            function prepareFlatten(items) {
+              _.forEach(items, (item) => {
+                if (item.children && item.children.length) {
+                  const newItem = {
+                    chapterHeading: true,
+                    type: 'page'
+                  };
+                _.forEach(resultAttr, (attr) =>{ 
+                  newItem[attr] = item[attr] 
+                });
+                  result.push(newItem);
+                  prepareFlatten(item.children);
+                } else {
+                  const newItem = {
+                    type: 'page'
+                  };
+                  _.forEach(resultAttr, (attr) => {
+                    newItem[attr]=item[attr] 
+                    });
+                  result.push(newItem);
+                }
+              });
+            }
+            prepareFlatten(tocFinalModifiedData.content.list);
+            //  Changing content urls to secured url
+            playlistData.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+            playlistData.provider = Utilities.changeContentUrlToSecured(response.provider);
+            playlistData.content = result;         
+            dispatch(getPlaylistCompleteDetails(playlistData));
+            if (isFromCustomToc) {
+              dispatch(getCustomPlaylistCompleteDetails());
+            }
 
+            let currentPageInfo = {};
+            if(data.pageId) {
+              currentPageInfo = find(playlistData.content, list => list.id === data.pageId);
+            } else {
+              currentPageInfo = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
+            }
+            let bookTitle = ''
+            if(courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
+              bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
+            }
+            let dataLayerObj = {
+              'eventCategory': 'Chapter',
+              'event': 'chapterStarted',
+              'eventAction': 'Chapter Started',
+              'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+              'firstSectionEntered' : currentPageInfo.title,
+              'bookTitle': bookTitle,
+              'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+            }
+              //Custom dimension for initial Master Play List
+            dataLayer.push(dataLayerObj);
+          });
+        });
     });
 
 export const getBookTocCallService = data => dispatch =>
@@ -306,46 +370,108 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         localStorage.setItem('backUrl', decodeURIComponent(IDCreturnUrl));
       }
     }
+    
+    PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
+    .then((response) => {
+      //Changing content urls to secured url
+      response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+      response.provider = Utilities.changeContentUrlToSecured(response.provider);
+            
+      const tocResponse = response.content;
+      tocResponse.mainTitle = bookDetails.title;
+      tocResponse.author = bookDetails.creator;
+      tocResponse.thumbnail = bookDetails.thumbnailImageUrl;
 
-    PlaylistApi.doGetPlaylistDetails(bookId, tocUrl, piToken).then(response => response.json())
-      .then((response) => {
-        const securl = baseUrl.replace(/^http:\/\//i, 'https://');
-        response.baseUrl = securl;
+
+      tocResponse.list = [];
+      const tocItems = tocResponse.items;
+      let subItems = [];
+      const listData = tocItems.map((itemObj) => {
+        if (itemObj.items) {
+          subItems = itemObj.items.map(n => ({
+            urn: n.id,
+            href: n.href,
+            id: n.id,
+            playOrder: n.playOrder,
+            title: n.title
+          }));
+        }
+        return {
+          id: itemObj.id,
+          urn: itemObj.id,
+          title: itemObj.title,
+          coPage: itemObj.coPage,
+          playOrder: itemObj.playOrder,
+          children: subItems,
+          href: itemObj.href
+        };
+      });
+      tocResponse.list = listData;
+      delete tocResponse.items;
+      const tocFinalModifiedData = { content: tocResponse, bookDetails };
+      dispatch(getTocCompleteDetails(tocFinalModifiedData));
+      const result = [];
+      const resultAttr = ['id','title','href'];
+      const playlistData={};
+      function prepareFlatten(items) {
+        _.forEach(items, (item) => {
+          if (item.children && item.children.length) {
+            const newItem = {
+              chapterHeading: true,
+              type: 'page'
+            };
+           _.forEach(resultAttr, (attr) =>{ 
+             newItem[attr] = item[attr] 
+           });
+            result.push(newItem);
+            prepareFlatten(item.children);
+          } else {
+            const newItem = {
+              type: 'page'
+            };
+            _.forEach(resultAttr, (attr) => {
+              newItem[attr]=item[attr] 
+              });
+            result.push(newItem);
+          }
+        });
+      }
+      prepareFlatten(tocFinalModifiedData.content.list);
+      const securl = baseUrl.replace(/^http:\/\//i, 'https://');
+      playlistData.baseUrl = securl;
 
         //Changing content urls to secured url
-        response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
-        response.provider = Utilities.changeContentUrlToSecured(response.provider);
-                
-        dispatch(getPlaylistCompleteDetails(response));
-        if (isFromCustomToc) {
-          dispatch(getCustomPlaylistCompleteDetails());
-        }
+      playlistData.baseUrl = Utilities.changeContentUrlToSecured(playlistData.baseUrl);
+      playlistData.provider = Utilities.changeContentUrlToSecured(response.provider);
+      playlistData.content = result;         
+      dispatch(getPlaylistCompleteDetails(playlistData));
+      if (isFromCustomToc) {
+        dispatch(getCustomPlaylistCompleteDetails());
+      }
 
-        let currentPageInfo = {};
-        if(data.pageId) {
-          currentPageInfo = find(response.content, list => list.id === data.pageId);
-        } else {
-          currentPageInfo = (response.content[0].playOrder == 0) ? response.content[1] : response.content[0];
-        }
-        let bookTitle = ''
-        if(courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
-          bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
-        }
-        let dataLayerObj = {
-          'eventCategory': 'Chapter',
-          'event': 'chapterStarted',
-          'eventAction': 'Chapter Started',
-          'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
-          'firstSectionEntered' : currentPageInfo.title,
-          'bookTitle': bookTitle,
-          'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
-        }
-        /*Custom dimension for initial Master Play List*/
-        dataLayer.push(dataLayerObj);
-      });
-  }
-
-  );
+      let currentPageInfo = {};
+      if(data.pageId) {
+        currentPageInfo = find(playlistData.content, list => list.id === data.pageId);
+      } else {
+        currentPageInfo = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
+      }
+      let bookTitle = ''
+      if(courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
+         bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
+      }
+      let dataLayerObj = {
+        'eventCategory': 'Chapter',
+        'event': 'chapterStarted',
+        'eventAction': 'Chapter Started',
+        'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+        'firstSectionEntered' : currentPageInfo.title,
+        'bookTitle': bookTitle,
+        'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+      }
+        //Custom dimension for initial Master Play List
+      dataLayer.push(dataLayerObj);
+    });
+  });
 
 export const getAuthToken = (webToken) => dispatch =>
    PlaylistApi.doGetAuthToken(webToken).then(response => response.json())

@@ -215,20 +215,25 @@ export class Book extends Component {
     }
     const pageParameters = this.state.pageDetails;
     if (nextProps.playlistReceived) {
-
-      const filteredData = find(playlistData.content, list => list.id === nextProps.params.pageId);
+      let filteredData = find(playlistData.content, list => list.id === nextProps.params.pageId);
       pageParameters.baseUrl = playlistData.baseUrl;
       if (pageParameters.currentPageURL === "") {
-        pageParameters.currentPageURL = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
+        pageParameters.currentPageURL = (playlistData.content[0].chapterHeading) ? playlistData.content[1] : playlistData.content[0];
       }
       pageParameters.playListURL = playlistData.content;
-      if (nextProps.params.pageId) {
-        pageParameters.currentPageURL = filteredData;
+      if (nextProps.params.pageId && filteredData) {
+        if(!filteredData.chapterHeading){
+          pageParameters.currentPageURL = filteredData;
+        }else{
+          const chapterIndex = playlistData.content.findIndex((ele)=>ele.id === filteredData.id);
+          filteredData=playlistData.content[chapterIndex+1];
+          pageParameters.currentPageURL = filteredData;
+        }
       }
 
     }
     if (nextProps.customTocPlaylistReceived) {
-      pageParameters.currentPageURL = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
+      pageParameters.currentPageURL = (playlistData.content[0].chapterHeading) ? playlistData.content[1] : playlistData.content[0];
       this.onNavChange(pageParameters.currentPageURL);
     }
     if (typeof nextProps.bookdetailsdata === "object" && nextProps.bookdetailsdata && nextProps.bookdetailsdata.bookDetail && nextProps.bookdetailsdata.bookDetail.metadata && nextProps.bookdetailsdata.bookDetail.metadata.indexId) {
@@ -582,7 +587,7 @@ export class Book extends Component {
         if (!this.state.asynCallLoaded) {
           let params = this.state.urlParams;
           params.xAuth = localStorage.getItem('secureToken');
-          this.props.dispatch(getBookTocCallService());
+          // this.props.dispatch(getBookTocCallService());
           this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
           params.annHeaders = this.annHeaders;
           this.props.dispatch(getTotalAnnCallService(params));
@@ -1387,7 +1392,7 @@ export class Book extends Component {
                   />
                   <Navigation
                     onPageRequest={this.onPageRequest}
-                    pagePlayList={bootstrapParams.pageDetails.playListURL}
+                    pagePlayList={this.props.playListWithOutDuplicates}
                     currentPageId={bootstrapParams.pageDetails.currentPageURL.id}
                   />
                 </div> : <div></div>
@@ -1452,7 +1457,8 @@ const mapStateToProps = state => {
     bookdetailsdata: state.playlistReducer.bookdetailsdata,
     getPreferenceData: state.preferenceReducer.preferenceObj,
     customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived,
-    prodType:state.playlistReducer.prodType  
+    prodType:state.playlistReducer.prodType  ,
+    playListWithOutDuplicates:state.playlistReducer.playListWithOutDuplicates
   }
 }; // eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book); // eslint-disable-line no-class-assign

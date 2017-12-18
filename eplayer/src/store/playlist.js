@@ -11,6 +11,8 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
+import _ from 'lodash';
+
 const initalData = {
   data: [],
   bookdetailsdata: [],
@@ -21,13 +23,14 @@ const initalData = {
   bookDetailsRecived: false,
   updatedToc: false,
   customTocPlaylistReceived: false,
-  prodType: ''
+  prodType: '',
+  playListWithOutDuplicates:[]
 };
 export default (state = initalData, action) => {
   switch (action.type) {
     case 'GET_PLAYLIST': {
-      //action.data.baseUrl = action.data.baseUrl.replace("content.stg-openclass.com","etext-dev.pearson.com");
-      //action.data.provider = action.data.provider.replace("content.stg-openclass.com","etext-dev.pearson.com");
+      // action.data.baseUrl = action.data.baseUrl.replace("content.stg-openclass.com","etext-dev.pearson.com");
+      // action.data.provider = action.data.provider.replace("content.stg-openclass.com","etext-dev.pearson.com");
       if (action.data.content[0].playOrder === 0) {
         action.data.content.splice(0, 1);
       }
@@ -40,6 +43,7 @@ export default (state = initalData, action) => {
       return {
         ...state,
         data: action.data,
+        playListWithOutDuplicates:_.remove([...action.data.content], item => !item.chapterHeading),
         playlistReceived: action.playlistReceived
       };
     }
