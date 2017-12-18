@@ -137,7 +137,7 @@ export const resources = {
       qa           :"https://spectrum-qa.stg-openclass.com/api/context",
       stage        :"https://spectrum.stg-openclass.com/api/context",
       PERF         :"https://spectrum-ppe.pearsoned.com/api/context",
-      prod         :"https://spectrum.pearsoned.com/api/context"
+      prod         :"https://spectrum.openclass.com/api/context"
     },
     iseUrl : {
       local        :"https://etext-ise-qa.pearson.com",
