@@ -113,7 +113,7 @@
     "@pearson-incubator/toc": "0.1.60",
 
     "@pearson-incubator/vega-core": "0.0.94",
-    "@pearson-incubator/vega-viewer": "0.0.75",
+    "@pearson-incubator/vega-viewer": "0.0.76",
     "@pearson-incubator/viewer": "0.1.44",
     "axios": "^0.15.3",
     "babel-loader": "^6.2.5",
