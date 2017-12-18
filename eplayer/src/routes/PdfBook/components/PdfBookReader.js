@@ -120,13 +120,13 @@ export class PdfBookReader extends Component {
           {
           __pdfInstance.displayRegions(that.props.data.book.regions,that.props.data.book.bookFeatures,_);
           }
-          if(this.state.showHotspot !== true)
+          if(that.state.showHotspot !== true)
           {
             try
             {
               $(".hotspot").hide();
               $(".hotspotIcon").hide();
-              this.setState({showHotspot:false})
+              that.setState({showHotspot:false})
             }
             catch(e){}
           }
@@ -1297,8 +1297,11 @@ printFunc = () => {
     }
     moreMenuData.push(showHideHotspots);
     moreMenuData.push({type : 'divider'});
-    moreMenuData.push(printData);
-    moreMenuData.push({type : 'divider'});
+    if(this.props.data.book.bookFeatures.hasPrintLink == true)
+    {
+      moreMenuData.push(printData);
+      moreMenuData.push({type : 'divider'});
+    }
     moreMenuData.push(signOutData);
     /* Here we are passing data, pages, goToPageCallback,
        getPrevNextPage method and isET1 flag in ViewerComponent
