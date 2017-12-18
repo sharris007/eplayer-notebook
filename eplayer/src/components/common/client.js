@@ -19,21 +19,21 @@ import eT1Contants from './et1constants';
 export const clients = {
   readerApi: {
     qa: axios.create({
-      baseURL: eT1Contants.readerApiBaseUrls.QA,
+      baseURL: eT1Contants.spectrumApiBaseUrls.QA,
       timeout: 20000,
       headers: {
         'Content-Type': 'application/json'
       }
     }),
     stage: axios.create({
-      baseURL: eT1Contants.readerApiBaseUrls.STAGE,
+      baseURL: eT1Contants.spectrumApiBaseUrls.STAGE,
       timeout: 20000,
       headers: {
         'Content-Type': 'application/json'
       }
     }),
     prod: axios.create({
-      baseURL: eT1Contants.readerApiBaseUrls.PROD,
+      baseURL: eT1Contants.spectrumApiBaseUrls.PROD,
       timeout: 20000,
       headers: {
         'Content-Type': 'application/json'

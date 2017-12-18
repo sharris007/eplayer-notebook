@@ -449,11 +449,10 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             }
         }), this.bind = function() {
             return f.mobile ? void c() : ($(document).keyup(function(a) {
-                //Commented to resolve ETEXT-3916
-                /*if (27 == a.keyCode) {
-                    var b = h.getToolHandlerByName(e.Tools.TOOL_NAME_HAND);
-                    h.setCurToolHandler(b)
-                }*/
+                // if (27 == a.keyCode) {
+                //     var b = h.getToolHandlerByName(e.Tools.TOOL_NAME_HAND);
+                //     h.setCurToolHandler(b)
+                // }
             }), $(document).bind("mouseup", function(a) {
                 i && d.trigger("mouseup")
             }), d.off("mousedown").on("mousedown", function(a) {
@@ -726,14 +725,15 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             E = a
         }, this.setOptions = function(a) {
             D = a
-        }, $.ajax({
-            url: m.baseUrl + "asserts/ip",
-            type: "GET",
-            async: !1,
-            success: function(a) {
-                I = a.result
-            }
-        });
+        };
+        // $.ajax({
+        //     url: m.baseUrl + "asserts/ip",
+        //     type: "GET",
+        //     async: !1,
+        //     success: function(a) {
+        //         I = a.result
+        //     }
+        // });
         var U = new Date,
             V = function() {
                 var a = function(a) {
@@ -10729,32 +10729,33 @@ define("core/Viewer", ["./WebPDF", "./Config", "./ReaderApp", "./Cavans/uupaa-co
             var h = {
                 password: c.getPDFPassword()
             };
-            $.ajax({
-                url: g,
-                dataType: "json",
-                data: h,
-                success: function(g) {
-                    if (null == g) return console.warn("Getting bookmark date returns null"), void f(g);
-                    var h = g.error;
-                    if (0 != h) {
-                        if (WebPDF.Common.isNeedRetry(g.status)) {
-                            var i = WebPDF.AjaxRetryManager.getNextBookmarkDataRequestInterval(c.getMainView().getDocView().getPageCount());
-                            return a--, void setTimeout(function() {
-                                b.asyncLoadPDFBookmark(c, d, e, f)
-                            }, i)
-                        }
-                        return console.error("Get bookmark data error:" + h), void f(g)
-                    }
-                    try {
-                        e($.parseJSON(g.BookmarkInfo))
-                    } catch (j) {
-                        return console.error(j), f(g), !1
-                    }
-                },
-                error: function() {
-                    f(null)
-                }
-            })
+            f(null);
+            // $.ajax({
+            //     url: g,
+            //     dataType: "json",
+            //     data: h,
+            //     success: function(g) {
+            //         if (null == g) return console.warn("Getting bookmark date returns null"), void f(g);
+            //         var h = g.error;
+            //         if (0 != h) {
+            //             if (WebPDF.Common.isNeedRetry(g.status)) {
+            //                 var i = WebPDF.AjaxRetryManager.getNextBookmarkDataRequestInterval(c.getMainView().getDocView().getPageCount());
+            //                 return a--, void setTimeout(function() {
+            //                     b.asyncLoadPDFBookmark(c, d, e, f)
+            //                 }, i)
+            //             }
+            //             return console.error("Get bookmark data error:" + h), void f(g)
+            //         }
+            //         try {
+            //             e($.parseJSON(g.BookmarkInfo))
+            //         } catch (j) {
+            //             return console.error(j), f(g), !1
+            //         }
+            //     },
+            //     error: function() {
+            //         f(null)
+            //     }
+            // })
         }
     }
 }), define("core/Plugins/FindTool/FindToolPlugin", ["core/Plugins/FindTool/SearchResult"], function(a, b, c) {
