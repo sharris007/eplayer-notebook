@@ -1209,13 +1209,18 @@ handleRegionClick(hotspotID) {
   }
 
 printFunc = () => {
+    let date = new Date();
+    let currDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
+    let copyrightInfo = `Printed by ${this.props.currentbook.firstName} ${this.props.currentbook.firstName} on ${currDate} autorized to use until ${this.props.currentbook.expirationDate}. 
+    Use beyond the authorized user or valid subscription date represents copyright violation.`;
     var prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
     var pageSrc = prtContent.currentSrc;
     var win = window.open('');
-    win.document.write('<style type="text/css"> @media print { @page { size:auto;margin:0; }}</style>')
-    win.document.write('<img src="' + pageSrc + '" onload="window.print();window.close()" />');
+    win.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:auto; } #footer{ display:block; bottom: 0 }}</style>')
+    win.document.write('<div><img src="' + pageSrc + '" onload="window.print();window.close()" ><div id=footer>'+copyrightInfo+'</div></img></div>');
     win.focus();
   }
+
   getpiSessionKey = () => {
     let piSessionKey;
     piSession.getToken(function(result, userToken){
