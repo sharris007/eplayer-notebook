@@ -1071,7 +1071,7 @@ function getAssetURLForPDFDownload(config,cb){
     {
       icon = '/hotspot_icons/default.png';
     }
-  return icon;
+  return ('/eplayer' + icon);
   }
 /*Function to render regions/hotspots on the page*/
   displayRegions = function(hotspots,hotspotFeatures,lodashFunction) {

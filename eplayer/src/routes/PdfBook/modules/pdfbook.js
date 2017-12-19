@@ -538,7 +538,7 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
         bookObj.hastocflatten= response.data[0].userBookTOList[0].hastocflatten,
         bookObj.languageid= response.data[0].userBookTOList[0].languageID,
         bookObj.roleTypeID= response.data[0].userBookTOList[0].roleTypeID,
-        bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseID,
+        bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseActivityID,
         bookObj.version= response.data[0].userBookTOList[0].version,
         bookObj.author=author,
         bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt,
