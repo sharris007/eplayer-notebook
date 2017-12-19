@@ -1211,7 +1211,9 @@ handleRegionClick(hotspotID) {
 printFunc = () => {
     let date = new Date();
     let currDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
-    let copyrightInfo = `Printed by ${this.props.currentbook.firstName} ${this.props.currentbook.firstName} on ${currDate} autorized to use until ${this.props.currentbook.expirationDate}. 
+    date = new Date(this.props.currentbook.expirationDate);
+    let expirationDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
+    let copyrightInfo = `Printed by ${this.props.currentbook.firstName} ${this.props.currentbook.firstName} on ${currDate} autorized to use until ${expirationDate}. 
     Use beyond the authorized user or valid subscription date represents copyright violation.`;
     var prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
     var pageSrc = prtContent.currentSrc;
