@@ -50,7 +50,7 @@ class ComponentOwner extends React.Component {
         'popUpCollection':popUpCollection
       });
     }
-    this.Wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : 'bookDiv', node:this.bookViewerRef.frame});
+    this.Wrapper = new Wrapper({'divGlossaryRef' : this.divGlossaryRef, 'basePath' : this.props.bookUrl, 'bookDiv' : 'bookDiv', node:this.bookViewerRef.frame});
     this.Wrapper.bindPopUpCallBacks();    
   }
 

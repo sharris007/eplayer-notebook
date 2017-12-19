@@ -25,6 +25,8 @@ export class BindMoreInfoCallBacks {
             popOverCollection.popOverTitle = bookDiv.getElementById(hrefId).getElementsByTagName('h2')[0].innerHTML;
             break;
           }
+          case 'a.noteref.noteref_rearnote' :
+          case 'a.noteref.noteref_opener' :
           case 'a.noteref.noteref_footnote' : {
             if (moreInfoIconDOM.href) {
               hrefId = moreInfoIconDOM.href.split('#')[1];
