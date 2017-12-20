@@ -131,62 +131,40 @@ export class Book extends Component {
       // deeper code
       if (!isSessionLoaded) {
         let redirectCourseUrl = window.location.href;
-        
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
           piSession.getToken(function (result, userToken) {
-            let getTokenValue;
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
-              getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
               const piUserId = piSession.userId();
-              if (!Utils.checkCookie('etext-cdn-token')) {
-                self.props.dispatch(getAuthToken(userToken));
-              }
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }
-            else{
-              //function for getting current session PiToken
-              function loginCallback(result, token){
-                console.log('result', result);
-                if( result === 'success'){
-                  localStorage.setItem('secureToken', token);
-                  getTokenValue = Promise.resolve(localStorage.getItem('secureToken'));
-                }
-              }
-              piSession.login(redirectCourseUrl, 10, loginCallback);
-            }
-          
-        //if(getTokenValue){
-        getTokenValue.then((value) => {
-          console.log("promise value");
-          const getSecureToken = localStorage.getItem('secureToken');
-          self.bookDetailsData = {
-            context: self.state.urlParams.context,
-            piToken: getSecureToken,
-            bookId: self.props.params.bookId,
-            pageId: self.props.params.pageId ? self.props.params.pageId :''
-          }
-          if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-            self.bookDetailsData.courseId = self.props.params.bookId;
-            self.courseBook = true;
-            self.props.dispatch(getCourseCallService(self.bookDetailsData));
-          } else {
-            self.props.dispatch(getBookPlayListCallService(self.bookDetailsData));
-          }
-          const getPreferenceData = {
-            userId: self.state.urlParams.user,
-            bookId: self.state.urlParams.context,
-            piToken: localStorage.getItem('secureToken')
-          }
-          self.props.dispatch(getPreferenceCallService(getPreferenceData));
           });
-    //  }
-        });
+        }
+         
+        const getSecureToken = localStorage.getItem('secureToken');
+        this.bookDetailsData = {
+          context: this.state.urlParams.context,
+          piToken: getSecureToken,
+          bookId: this.props.params.bookId,
+          pageId: this.props.params.pageId ? this.props.params.pageId :''
+        }
+        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+          this.bookDetailsData.courseId = this.props.params.bookId;
+          this.courseBook = true;
+          this.props.dispatch(getCourseCallService(this.bookDetailsData));
+        } else {
+          this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
       }
+      const getPreferenceData = {
+        userId: this.state.urlParams.user,
+        bookId: this.state.urlParams.context,
+        piToken: localStorage.getItem('secureToken')
+      }
+      this.props.dispatch(getPreferenceCallService(getPreferenceData));
       
     }, 200)
   }
