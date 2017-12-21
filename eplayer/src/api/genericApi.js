@@ -114,7 +114,17 @@ export const getCourseDetails = bookDetails =>
        'X-Authorization': bookDetails.piToken
      }
    });
-
+ export const getCourseRedirctionDetails = bookDetails =>
+ fetch(`${courseServiceUrl[envType]}/courses/${bookDetails.courseId}/sectionDetails/?toc=false&passport=false`,
+   {
+     method: 'GET',
+     headers: {
+       Accept: 'application/json',
+       'Content-Type': 'application/json',
+       'X-Authorization': bookDetails.piToken
+     }
+   });
+ 
 // Bookmark Api Total GET Call,
 export const getTotalBookmarkData = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX?isBookMark=true`, {  // eslint-disable-line max-len
   method: 'GET',
