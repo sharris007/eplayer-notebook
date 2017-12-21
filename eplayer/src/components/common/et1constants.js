@@ -130,6 +130,16 @@ export const eT1Contants = {
       S88 : '15107'
     }
   },
+  piClientIDs : {
+    qa : 'NN51cdFbZPDcQFpTp7pwjv2vJpo8cDdW',
+    stage: 'NN51cdFbZPDcQFpTp7pwjv2vJpo8cDdW',
+    prod : 'tE6ovBdWPCqqHPeRpT3ZsEXFAgsfgyOE'
+  },
+  piEnvUrls: {
+      qa           : 'https://tst-piapi.dev-openclass.com/v1/piapi-test/login/',
+      stage        : 'https://pi-int.pearsoned.com/v1/piapi-int/login/',
+      prod         : 'https://pi.pearsoned.com/v1/piapi/login/'
+  },
   ErrorCodeMessages : {
     Error_1 :'Either you have entered an incorrect username/password, or you do not have a subscription to this site.',
     Error_2 :'Server error occurred. Please try again later.'

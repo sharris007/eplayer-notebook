@@ -538,7 +538,7 @@ export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeI
         bookObj.hastocflatten= response.data[0].userBookTOList[0].hastocflatten,
         bookObj.languageid= response.data[0].userBookTOList[0].languageID,
         bookObj.roleTypeID= response.data[0].userBookTOList[0].roleTypeID,
-        bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseID,
+        bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseActivityID,
         bookObj.version= response.data[0].userBookTOList[0].version,
         bookObj.author=author,
         bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt,
@@ -874,7 +874,7 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
                   && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId) {
               hlObj.isHighlightOnly = false;
               bookState.highlights.push(hlObj);
-            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3) {
+            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3 && hlObj.courseId == courseId) {
               if(hlObj.shared)
               {
                hlObj.isHighlightOnly = false;
@@ -1332,7 +1332,8 @@ const ACTION_HANDLERS = {
       hashighlightingtoolbutton: action.payload.data[0].toolBarFeaturesTO.hasHighlightingToolButton,
       hasnotetoolbutton: action.payload.data[0].toolBarFeaturesTO.hasNoteToolButton,
       hasbookmarkpagebutton: action.payload.data[0].toolBarFeaturesTO.hasBookMarkPageButton,
-      hasdrawerbutton: action.payload.data[0].generalFeaturesTO.hasLeftAccordion
+      hasdrawerbutton: action.payload.data[0].generalFeaturesTO.hasLeftAccordion,
+      hasPrintLink: action.payload.data[0].headerFeaturesTO.hasPrintLink
     }
   }),
   [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({

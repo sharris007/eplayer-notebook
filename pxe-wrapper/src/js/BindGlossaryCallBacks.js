@@ -5,8 +5,8 @@ import replaceAllRelByAbs from './ConstructUrls';
 
 export class BindGlossaryCallBacks {
   constructor(props) {
-
     this.glossaryCollection = [];
+    this.biblorefCollection = props.biblorefCollection;
     this.glossayStatus = '';
     this.glossaryDoms = [];
     this.glossaryUrlCollection = [];
@@ -89,11 +89,13 @@ export class BindGlossaryCallBacks {
 
             popOverCollection.popOverTitle = glossaryNode ? (glossaryNode.getElementsByTagName('dfn').length > 0 ? glossaryNode.getElementsByTagName('dfn')[0].textContent : '') : '';
             let glossaryDesc = '';
-            if (glossaryNode && glossaryNode.nextElementSibling && glossaryNode.nextElementSibling.getElementsByTagName('p')[0]) {
-              glossaryDesc = glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML;
-            } else if (glossaryNode && glossaryNode.nextElementSibling) {
-              glossaryDesc = glossaryNode.nextElementSibling.innerHTML;
-            } 
+            if (bookDivQuerySelectorClasses[i] && bookDivQuerySelectorClasses[i].className && bookDivQuerySelectorClasses[i].className.indexOf('noteref_opener') === -1) {
+                if (glossaryNode && glossaryNode.nextElementSibling && glossaryNode.nextElementSibling.getElementsByTagName('p')[0]) {
+                  glossaryDesc = glossaryNode.nextElementSibling.getElementsByTagName('p')[0].innerHTML;
+                } else if (glossaryNode && glossaryNode.nextElementSibling) {
+                  glossaryDesc = glossaryNode.nextElementSibling.innerHTML;
+                } 
+            }
             popOverCollection.popOverDescription = glossaryDesc;
             if (popOverCollection.popOverTitle && popOverCollection.popOverDescription) {
               this.glossaryCollection.push({ popOverCollection, item: bookDivQuerySelectorClasses[i] });
@@ -106,6 +108,9 @@ export class BindGlossaryCallBacks {
             }
           }
         });
+       for (let b=0;b<this.biblorefCollection.length > 0; b++) {
+        this.glossaryCollection[this.glossaryCollection.length] = this.biblorefCollection[b];
+       } 
       new BindMoreInfoCallBacks({ glossaryCollection: this.glossaryCollection, node: this.props.node });
     }
   }

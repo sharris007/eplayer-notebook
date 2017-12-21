@@ -299,7 +299,10 @@ export default class BookshelfPage extends React.Component {
           userBookScenarioLastModifiedDate: bookRef.userBookScenarioLastModifiedDate,
           roleTypeID: bookRef.roleTypeID,
           active: bookRef.active,
-          expired: bookRef.expired
+          expired: bookRef.expired,
+          firstName: bookRef.firstName,
+          lastName: bookRef.lastName,
+          expirationDate: bookRef.expirationDate
         };
         booksdata.push(book);
       });

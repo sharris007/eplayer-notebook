@@ -232,14 +232,14 @@ this.JSON || (JSON = function() {
     function(e) {
         function t(t) {
             /*Change for Horizontal Layout. Disabling mouse scroll if the book is horizontal Layout*/
-                if(JSON.parse(window.localStorage.getItem('navigationLayout')) == "vertical"){
+                //if(JSON.parse(window.localStorage.getItem('navigationLayout')) == "vertical"){
                     var n = t || window.event,
                         o = [].slice.call(arguments, 1),
                         r = 0,
                         i = 0,
                         s = 0;
                     return t = e.event.fix(n), t.type = "mousewheel", n.wheelDelta && (r = n.wheelDelta / 120), n.detail && (r = -n.detail / 3), s = r, void 0 !== n.axis && n.axis === n.HORIZONTAL_AXIS && (s = 0, i = -1 * r), void 0 !== n.wheelDeltaY && (s = n.wheelDeltaY / 120), void 0 !== n.wheelDeltaX && (i = -1 * n.wheelDeltaX / 120), o.unshift(t, r, i, s), (e.event.dispatch || e.event.handle).apply(this, o)
-                }
+                //}
             }
         var n = ["DOMMouseScroll", "mousewheel"];
         if (e.event.fixHooks)

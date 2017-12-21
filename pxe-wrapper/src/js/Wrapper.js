@@ -1,14 +1,12 @@
-import {BindGlossaryCallBacks} from './BindGlossaryCallBacks';
+import {NoterefBiblioref} from './NoterefBiblioref';
 
 export default class Wrapper {
  constructor(props) {
-   this.divGlossaryRef = props.divGlossaryRef;
-   this.bookDiv = props.bookDiv;
-   this.node=props.node;
-   this.basePath = props.basePath;
+   this.props = props;
  }
 
  bindPopUpCallBacks() {
-   new BindGlossaryCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : this.bookDiv, node:this.node, basePath: this.basePath});
+   const props = this.props;
+   new NoterefBiblioref({'divGlossaryRef' : props.divGlossaryRef, 'bookDiv' : props.bookDiv, node:props.node, basePath: props.basePath});
  }
 }
