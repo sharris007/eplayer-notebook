@@ -62,14 +62,46 @@ position: relative;
   width:150px;
   z-index : 100050;
 }
-
-.sppContent {
-  position: absolute;
-  margin-top:100px;
-  margin-bottom:100px;
-  left : 40%;
-  height:500 px;
-  width:600 px;
-  z-index : 100050;
-  align: middle;
+.sppModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 70px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(255,255,255,0.5);
+}
+.sppModalContent {
+    position: relative;
+    margin: auto;
+    padding: 0;
+    width: 450px;
+}
+.sppCloseBtn {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 5px 16px;
+}
+.sppCloseBtn:hover,
+.sppCloseBtn:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 28px;
+}
+.sppModalHeader {
+    padding: 2px 16px;
+    background-color: #808080;
+    color: white;
+    font-weight: bold;
+    font-size:15px;
+}
+.sppModalBody {
+    padding-top: 2px;
 }
