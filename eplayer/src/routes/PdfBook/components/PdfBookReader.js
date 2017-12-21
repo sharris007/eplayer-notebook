@@ -1299,8 +1299,11 @@ printFunc = () => {
       value : 'signOut',
       text : messages.signOut ? messages.signOut : 'Sign Out',
     }
-    moreMenuData.push(showHideHotspots);
-    moreMenuData.push({type : 'divider'});
+    if(this.props.data.book.bookFeatures.hasShowLinksButton == true)
+    {
+      moreMenuData.push(showHideHotspots);
+      moreMenuData.push({type : 'divider'});
+    }
     if(this.props.data.book.bookFeatures.hasPrintLink == true)
     {
       moreMenuData.push(printData);

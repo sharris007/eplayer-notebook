@@ -1333,7 +1333,8 @@ const ACTION_HANDLERS = {
       hasnotetoolbutton: action.payload.data[0].toolBarFeaturesTO.hasNoteToolButton,
       hasbookmarkpagebutton: action.payload.data[0].toolBarFeaturesTO.hasBookMarkPageButton,
       hasdrawerbutton: action.payload.data[0].generalFeaturesTO.hasLeftAccordion,
-      hasPrintLink: action.payload.data[0].headerFeaturesTO.hasPrintLink
+      hasPrintLink: action.payload.data[0].headerFeaturesTO.hasPrintLink,
+      hasShowLinksButton: action.payload.data[0].toolBarFeaturesTO.hasShowLinksButton
     }
   }),
   [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({
