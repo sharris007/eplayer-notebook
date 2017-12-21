@@ -54,7 +54,7 @@ export class BindMoreInfoCallBacks {
           }
           
           if (hrefId) {
-            if(bookDiv.getElementById(hrefId) && bookDiv.getElementById(hrefId).getElementsByTagName('p').length) {
+            if (bookDiv.getElementById(hrefId) && bookDiv.getElementById(hrefId).getElementsByTagName('p').length) {
               const popOverDescription = bookDiv.getElementById(hrefId).getElementsByTagName('p');
               popOverCollection.popOverDescription = popOverDescription.length > 0 ?  popOverDescription[0].innerHTML.trim() : '';
             } else {
