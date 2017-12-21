@@ -5,8 +5,8 @@ import replaceAllRelByAbs from './ConstructUrls';
 
 export class BindGlossaryCallBacks {
   constructor(props) {
-
     this.glossaryCollection = [];
+    this.biblorefCollection = props.biblorefCollection;
     this.glossayStatus = '';
     this.glossaryDoms = [];
     this.glossaryUrlCollection = [];
@@ -108,6 +108,9 @@ export class BindGlossaryCallBacks {
             }
           }
         });
+       for (let b=0;b<this.biblorefCollection.length > 0; b++) {
+        this.glossaryCollection[this.glossaryCollection.length] = this.biblorefCollection[b];
+       } 
       new BindMoreInfoCallBacks({ glossaryCollection: this.glossaryCollection, node: this.props.node });
     }
   }
