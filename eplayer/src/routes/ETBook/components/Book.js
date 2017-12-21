@@ -870,7 +870,7 @@ export class Book extends Component {
     if (this.state.prefOpen === true) {
       this.setState({ prefOpen: false });
     } else {
-      this.setState({ prefOpen: true, searchOpen: false });
+      this.setState({ prefOpen: true});
     }
   }
 
@@ -879,15 +879,7 @@ export class Book extends Component {
       this.handlePreferenceClick();
     }
   }
-  searchClick = (isopenparam) => {
-    let searchIconleft = $('.searchIconBtn').offset().left - 335;
-    $('.searchContainer').css('left', searchIconleft);
-    if (this.state.searchOpen === true || isopenparam == 'closesearch') {
-      this.setState({ searchOpen: false });
-    } else {
-      this.setState({ searchOpen: true, prefOpen: false });
-    }
-  }
+  
   goToTextChange = (e) => {
     this.setState({ goToTextVal: e.target.value });
   }
@@ -903,14 +895,6 @@ export class Book extends Component {
     }
   }
 
-  searchKeySelect = (event) => {
-    if ((event.which || event.keyCode) === 13) {
-      this.searchClick();
-    }
-    if ((event.which || event.keyCode) === 27) {
-      this.searchClick();
-    }
-  }
   // Applies the style to the HTML Body content
   getThemeFromPreference = () => (this.props.preferences.fetched ?
     this.props.preferences.data :
@@ -988,7 +972,9 @@ export class Book extends Component {
 
 
   onPageClick = () => {
-    this.setState({ searchOpen: false, prefOpen: false });
+    this.setState({ searchOpen: true }, () => {
+      this.setState({searchOpen : false, prefOpen: false});
+    });
   };
 
   onSearchResultClick = (searchInfo) => {
@@ -1322,13 +1308,12 @@ export class Book extends Component {
             pxeOptions={productData.pxeOptions}>
             <div>
               <div>
-                <HeaderComponent
+                {!this.state.searchOpen && <HeaderComponent
                   bookshelfClick={this.handleBookshelfClick}
                   drawerClick={this.handleDrawer}
                   bookmarkIconData={bookmarkIconData}
                   handlePreferenceClick={this.handlePreferenceClick}
                   handleDrawerkeyselect={this.handleDrawerkeyselect}
-                  searchClick={this.searchClick}
                   locale={locale}
                   headerTitleData={headerTitleData}
                   hideIcons={hideIcons}
@@ -1337,7 +1322,7 @@ export class Book extends Component {
                   autoComplete={this.props.autoComplete}
                   search={this.props.search}
                   onSearchResultClick={this.onSearchResultClick.bind(this)}
-                />
+                /> }
                 {
                   this.props.book.tocReceived &&
                   <Drawer
@@ -1359,9 +1344,7 @@ export class Book extends Component {
                 }
 
 
-                <div className="searchContainer">
-                  {this.state.searchOpen ? <Search locale={this.props.locale} store={this.context.store} goToPage={(pageId) => this.goToPage(pageId)} indexId={{ 'indexId': this.bookIndexId, 'searchUrl': this.searchUrl }} searchKeySelect={this.searchKeySelect} listClick={this.searchClick} isET1="N" /> : <div className="empty" />}
-                </div>
+                
                 <div className="preferences-container" >
                   {this.state.prefOpen ?
                     <div className="content">
