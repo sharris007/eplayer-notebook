@@ -20,7 +20,7 @@ export const resources = {
     secureApi      : true,
     idcDashboardEnabled : true,
     iseEnabled : true,
-    zeppelinEnabled     : true,
+    zeppelinEnabled     : false,
     isDisableAnnotation : false
   },
   links: {

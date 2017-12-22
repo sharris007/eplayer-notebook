@@ -138,6 +138,9 @@ export class Book extends Component {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
               const piUserId = piSession.userId();
+              if (!Utils.checkCookie('etext-cdn-token')) {
+                self.props.dispatch(getAuthToken(userToken));
+              }
               self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }
