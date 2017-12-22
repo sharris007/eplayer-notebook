@@ -34,7 +34,7 @@ import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
 import axios from 'axios';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
-import RefreshIndicator from 'material-ui/RefreshIndicator';
+import CircularProgress from 'material-ui/CircularProgress';
 import { resources, domain, typeConstants } from '../../../../const/Settings';
 import Search from '../../../components/search/containers/searchContainer';
 import Utils from '../../../components/utils';
@@ -866,7 +866,7 @@ export class Book extends Component {
 
   handlePreferenceClick = () => {
     let prefIconleft = $('.prefIconBtn').offset().left - 181;
-    $('.preferences-container').css('left', prefIconleft);
+    $('.preferences-container-etext').css('left', prefIconleft);
     if (this.state.prefOpen === true) {
       this.setState({ prefOpen: false });
     } else {
@@ -930,7 +930,7 @@ export class Book extends Component {
       const eleSearch = $(e.target).closest('.searchIconBtn');
       const elepref = $(e.target).closest('.prefIconBtn');
       const searchContainer = $(e.target).closest('.searchContainer');
-      const prefContainer = $(e.target).closest('.preferences-container');
+      const prefContainer = $(e.target).closest('.preferences-container-etext');
       if (eleSearch.length === 0 && elepref.length === 0 && prefContainer.length === 0 && searchContainer.length === 0) {
         this.setState({ searchOpen: false, prefOpen: false });
       } else if (eleSearch.length === 0 && searchContainer.length === 0) {
@@ -1349,7 +1349,7 @@ export class Book extends Component {
 
 
                 
-                <div className="preferences-container" >
+                <div className="preferences-container-etext" >
                   {this.state.prefOpen ?
                     <div className="content">
                       <PreferencesComponent
@@ -1382,7 +1382,7 @@ export class Book extends Component {
                     pagePlayList={this.props.playListWithOutDuplicates}
                     currentPageId={bootstrapParams.pageDetails.currentPageURL.id}
                   />
-                </div> : <div></div>
+                </div> : <div><CircularProgress className="circularProgress" /></div>
               }
             </div>
           </LearningContextProvider>}

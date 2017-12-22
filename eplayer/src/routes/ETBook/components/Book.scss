@@ -1,7 +1,7 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  *   
- *  *  Copyright © 2017 Pearson Education, Inc.
+ *  *  Copyright ï¿½ 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
  *  * 
  *  * NOTICE:  All information contained herein is, and remains
@@ -40,7 +40,7 @@ $cont-padding-bottom: 85px;
 .headerBar {
     padding: 0px 55px !important;
 }
-.preferences-container {
+.preferences-container-etext {
     width: 300px !important;
     position: fixed !important;
     z-index: 10001 !important;
@@ -116,4 +116,16 @@ $cont-padding-bottom: 85px;
 //       margin-left:265px !important;
 //       }
 //   }
+
+.circularProgress {
+    position: absolute !important;
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    top: 0;
+    text-align: center;
+    background: #fff;
+    padding-top: 120px;
+    z-index:1000;
+  }
 
