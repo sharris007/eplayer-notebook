@@ -178,8 +178,11 @@ export class Book extends Component {
             if (!prdType && !iseSource) {
               localStorage.setItem('backUrl', '');
             }
-
-            if( ((resources.constants.idcDashboardEnabled && !prdType) || ( resources.constants.iseEnabled && !iseSource)) && ( (url.search('returnurl=') > -1) ||  (url.search('returnUrl=') > -1) ) ) {
+            let checkReturnUrl = url.search('returnurl=');
+            if (checkReturnUrl === -1) {
+              checkReturnUrl = url.search('returnUrl=');
+            }
+            if(  ((resources.constants.idcDashboardEnabled && !prdType && !iseSource && (checkReturnUrl > 0)) || ( resources.constants.iseEnabled && !iseSource && !prdType && (checkReturnUrl > 0))) ) {
               this.props.dispatch(getCourseCallServiceForRedirect(this.bookDetailsData));
             }
             else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
