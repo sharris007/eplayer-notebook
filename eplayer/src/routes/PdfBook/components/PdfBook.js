@@ -35,6 +35,9 @@ let serverDetails;
 let langID;
 let roleTypeID;
 let currentbook;
+let firstName;
+let lastName;
+let expirationDate;
 /* Creating PdfBook component. */
 export class PdfBook extends Component {
   constructor(props){
@@ -117,6 +120,9 @@ used for before mounting occurs. */
         ubsd = this.props.currentbook.ubsd;
         serverDetails = this.props.currentbook.serverDetails;
         roleTypeID = this.props.currentbook.roleTypeID;
+        firstName = this.props.currentbook.firstName;
+        lastName = this.props.currentbook.lastName;
+        expirationDate = this.props.currentbook.expirationDate;
       }
       else
       {
@@ -139,6 +145,9 @@ used for before mounting occurs. */
         ubsd = bookData.userBookScenarioLastModifiedDate;
         serverDetails = bookData.bookServerUrl;
         roleTypeID = bookData.roleTypeID;
+        firstName = bookData.firstName;
+        lastName = bookData.lastName;
+        expirationDate = bookData.expirationDate;
       }
     }
     else if (this.props.location.query.invoketype != undefined &&    
@@ -257,6 +266,9 @@ used for before mounting occurs. */
     currentbook.languageid = this.props.location.query.languageid ?   
                              this.props.location.query.languageid : undefined;    
     currentbook.ssoKey = authkey;
+    currentbook.firstName = firstName;
+    currentbook.lastName = lastName;
+    currentbook.expirationDate = expirationDate;
     await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
   }
  /* Multiple methods we have paased in PdfBookReader inside return, fetchTocViewer fot fetching the value of TOC,

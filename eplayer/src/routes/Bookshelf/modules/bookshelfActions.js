@@ -81,7 +81,10 @@ export const storeBookDetails = book => ({
   uid: book.userInfoLastModifiedDate,
   ubd: book.userBookLastModifiedDate,
   ubsd: book.userBookScenarioLastModifiedDate,
-  roleTypeID: book.roleTypeID
+  roleTypeID: book.roleTypeID,
+  firstName: book.firstName,
+  lastName: book.lastName,
+  expirationDate: book.expirationDate
 });
 
 /* Created a Action creater for storing the SsoKey for session management.  */

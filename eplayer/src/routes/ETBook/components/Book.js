@@ -34,7 +34,7 @@ import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
 import axios from 'axios';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
-import RefreshIndicator from 'material-ui/RefreshIndicator';
+import CircularProgress from 'material-ui/CircularProgress';
 import { resources, domain, typeConstants } from '../../../../const/Settings';
 import Search from '../../../components/search/containers/searchContainer';
 import Utils from '../../../components/utils';
@@ -864,11 +864,11 @@ export class Book extends Component {
 
   handlePreferenceClick = () => {
     let prefIconleft = $('.prefIconBtn').offset().left - 181;
-    $('.preferences-container').css('left', prefIconleft);
+    $('.preferences-container-etext').css('left', prefIconleft);
     if (this.state.prefOpen === true) {
       this.setState({ prefOpen: false });
     } else {
-      this.setState({ prefOpen: true, searchOpen: false });
+      this.setState({ prefOpen: true});
     }
   }
 
@@ -877,15 +877,7 @@ export class Book extends Component {
       this.handlePreferenceClick();
     }
   }
-  searchClick = (isopenparam) => {
-    let searchIconleft = $('.searchIconBtn').offset().left - 335;
-    $('.searchContainer').css('left', searchIconleft);
-    if (this.state.searchOpen === true || isopenparam == 'closesearch') {
-      this.setState({ searchOpen: false });
-    } else {
-      this.setState({ searchOpen: true, prefOpen: false });
-    }
-  }
+  
   goToTextChange = (e) => {
     this.setState({ goToTextVal: e.target.value });
   }
@@ -901,14 +893,6 @@ export class Book extends Component {
     }
   }
 
-  searchKeySelect = (event) => {
-    if ((event.which || event.keyCode) === 13) {
-      this.searchClick();
-    }
-    if ((event.which || event.keyCode) === 27) {
-      this.searchClick();
-    }
-  }
   // Applies the style to the HTML Body content
   getThemeFromPreference = () => (this.props.preferences.fetched ?
     this.props.preferences.data :
@@ -944,7 +928,7 @@ export class Book extends Component {
       const eleSearch = $(e.target).closest('.searchIconBtn');
       const elepref = $(e.target).closest('.prefIconBtn');
       const searchContainer = $(e.target).closest('.searchContainer');
-      const prefContainer = $(e.target).closest('.preferences-container');
+      const prefContainer = $(e.target).closest('.preferences-container-etext');
       if (eleSearch.length === 0 && elepref.length === 0 && prefContainer.length === 0 && searchContainer.length === 0) {
         this.setState({ searchOpen: false, prefOpen: false });
       } else if (eleSearch.length === 0 && searchContainer.length === 0) {
@@ -986,7 +970,9 @@ export class Book extends Component {
 
 
   onPageClick = () => {
-    this.setState({ searchOpen: false, prefOpen: false });
+    this.setState({ searchOpen: true }, () => {
+      this.setState({searchOpen : false, prefOpen: false});
+    });
   };
 
   onSearchResultClick = (searchInfo) => {
@@ -1000,15 +986,19 @@ export class Book extends Component {
       searchCombination=searchInfo.split('##')[1].split(',')
     } else {
       searchHref = searchInfo.split('*')[0];// For Auto complete search SVC
-      searchCombination = [searchInfo.split('*')[1]];
-    }
-    
+      if(searchInfo.split('*')[2] && searchInfo.split('*')[2].match('key')) {
+        searchCombination = [`${searchInfo.split('*')[1]}*${searchInfo.split('*')[2]}`];
+      } else{
+        searchCombination = [searchInfo.split('*')[1]];
+      }     
+    }    
     this.state.pageDetails.playListURL.forEach(function(page, i) {
       if(page.href && page.href.match(searchHref)) {
         bookObj = page;
         console.log("onSearchResultClick : ", page, i);
       }
     });
+    //bookObj = this.state.pageDetails.playListURL[306];
     this.goToPageCallback(bookObj.id, '', searchCombination);
     let obj = {};
     obj.event = "searchResultClicked";
@@ -1106,7 +1096,7 @@ export class Book extends Component {
             coPage: itemObj.coPage,
             playOrder: itemObj.playOrder,
             children: subItems,
-            href: itemObj.href
+            href:itemObj.href
           };
         });
         const tocResponseData = { tocContents: listData };
@@ -1320,13 +1310,12 @@ export class Book extends Component {
             pxeOptions={productData.pxeOptions}>
             <div>
               <div>
-                <HeaderComponent
+                {!this.state.searchOpen && <HeaderComponent
                   bookshelfClick={this.handleBookshelfClick}
                   drawerClick={this.handleDrawer}
                   bookmarkIconData={bookmarkIconData}
                   handlePreferenceClick={this.handlePreferenceClick}
                   handleDrawerkeyselect={this.handleDrawerkeyselect}
-                  searchClick={this.searchClick}
                   locale={locale}
                   headerTitleData={headerTitleData}
                   hideIcons={hideIcons}
@@ -1335,7 +1324,7 @@ export class Book extends Component {
                   autoComplete={this.props.autoComplete}
                   search={this.props.search}
                   onSearchResultClick={this.onSearchResultClick.bind(this)}
-                />
+                /> }
                 {
                   this.props.book.tocReceived &&
                   <Drawer
@@ -1357,10 +1346,8 @@ export class Book extends Component {
                 }
 
 
-                <div className="searchContainer">
-                  {this.state.searchOpen ? <Search locale={this.props.locale} store={this.context.store} goToPage={(pageId) => this.goToPage(pageId)} indexId={{ 'indexId': this.bookIndexId, 'searchUrl': this.searchUrl }} searchKeySelect={this.searchKeySelect} listClick={this.searchClick} isET1="N" /> : <div className="empty" />}
-                </div>
-                <div className="preferences-container" >
+                
+                <div className="preferences-container-etext" >
                   {this.state.prefOpen ?
                     <div className="content">
                       <PreferencesComponent
@@ -1393,7 +1380,7 @@ export class Book extends Component {
                     pagePlayList={this.props.playListWithOutDuplicates}
                     currentPageId={bootstrapParams.pageDetails.currentPageURL.id}
                   />
-                </div> : <div></div>
+                </div> : <div><CircularProgress className="circularProgress" /></div>
               }
             </div>
           </LearningContextProvider>}

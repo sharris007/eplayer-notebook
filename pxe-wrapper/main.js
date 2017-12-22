@@ -29,7 +29,7 @@ export default class PxeWrapperComponent {
     const locale = config.locale ? config.locale : 'en';
     ReactDOM.render(
       <IntlProvider locale={locale} messages={translations[locale]}>
-        <ComponentOwner bookUrl = "https://content.openclass.com/eps/pearson-reader/api/item/790a1a2d-eacc-4c53-949e-9ddcf4514af1/1/file/nay4_5-25a_post/OPS/s9ml/chapter01/filep7000499443000000000000000000c87.xhtml" isFromComponent = {true}  />
+        <ComponentOwner bookUrl = "https://content.stg-openclass.com/eps/pearson-reader/api/item/3e6ea386-cd63-43eb-bfa9-de3c2f4e13e8/100/file/Bledsoe_Vol1/OPS/s9ml/chapter01/filep70010122960000000000000000006fc.xhtml" isFromComponent = {true}  />
       </IntlProvider>,
         document.getElementById(config.contentId)
     );

@@ -120,13 +120,13 @@ export class PdfBookReader extends Component {
           {
           __pdfInstance.displayRegions(that.props.data.book.regions,that.props.data.book.bookFeatures,_);
           }
-          if(this.state.showHotspot !== true)
+          if(that.state.showHotspot !== true)
           {
             try
             {
               $(".hotspot").hide();
               $(".hotspotIcon").hide();
-              this.setState({showHotspot:false})
+              that.setState({showHotspot:false});
             }
             catch(e){}
           }
@@ -198,8 +198,8 @@ export class PdfBookReader extends Component {
       {
         try{
           Popup.close();
-          $('#sppDiv').empty();
-          $('#sppDiv').hide();
+          $('#player-iframesppModalBody').remove();
+          $('#sppModal').css('display','none');
         }
         catch(e){
         }
@@ -228,7 +228,7 @@ export class PdfBookReader extends Component {
             {
               $(".hotspot").hide();
               $(".hotspotIcon").hide();
-              this.setState({showHotspot:false})
+              this.setState({showHotspot:false});
             }
             catch(e){}
           }
@@ -316,15 +316,12 @@ export class PdfBookReader extends Component {
       __pdfInstance.removeExistingHighlightCornerImages();
       this.setState({ drawerOpen: false,pageLoaded: false,regionData: null,
         popUpCollection: [],highlightList: []});
-      if($('#sppDiv').is(':visible'))
-      {
         try
         {
-          $('#sppDiv').empty();
-          $('#sppDiv').hide();
+          $('#player-iframesppModalBody').remove();
+          $('#sppModal').css('display','none');
         }
         catch(e){}
-      }
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(pageIndexToLoad);
       this.setState({ totalPagesToHit });
       if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
@@ -484,7 +481,7 @@ export class PdfBookReader extends Component {
       {
         $(".hotspot").hide();
         $(".hotspotIcon").hide();
-        this.setState({showHotspot:false})
+        this.setState({showHotspot:false});
       }
       catch(e){}
     }
@@ -515,10 +512,13 @@ export class PdfBookReader extends Component {
   }
 /*Method for removing hotspot content on clicking the close button*/
   onHotspotClose() {
-    if($('#hotspot').length > 0)
-    {
-      $('#hotspot').empty();
-    }
+      try
+      {
+        $('#hotspot').empty();
+        $('#player-iframesppModalBody').remove();
+        $('#sppModal').css("display","none");
+      }
+      catch(e){}
   }
 /* Method for checking if a url is starts with http:// and convert it to https:// */
   createHttps = (uri) => {
@@ -685,17 +685,19 @@ export class PdfBookReader extends Component {
                break;
       case 'SPPASSET':
                source = hotspotDetails.linkValue;
+               var sppPlayer = document.getElementById('sppModalBody');
                var lastIndex = source.lastIndexOf("/");
                var assetID = source.slice(lastIndex+1);
-               var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppDiv/' + assetID;
+               var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppModalBody/' + assetID;
                var sppScript=document.createElement('SCRIPT');
                sppScript.src = scriptContent;
-               document.getElementById('sppDiv').style.height = 400 + 'px';
-               document.getElementById('sppDiv').style.width = 500 + 'px';
-               document.getElementById('docViewer_ViewContainer_PageContainer_0').appendChild(sppScript);
+               sppPlayer.appendChild(sppScript);
+               sppPlayer.style.height = 450 + 'px';
+               sppPlayer.style.width = 450 + 'px';
+               document.getElementById('sppCloseBtn').addEventListener('click',this.onHotspotClose);
                 try
                 {
-                  $('#sppDiv').show();
+                  $('#sppModal').css("display","block");
                 }
                 catch(e){
                 }
@@ -745,17 +747,12 @@ handleRegionClick(hotspotID) {
     {
       this.setState({regionData : null});
     }
-    if($('#sppDiv').is(':visible'))
+    try
     {
-      try
-      {
-        $('#sppDiv').empty();
-        $('#sppDiv').hide();
-      }
-      catch(e){
-
-      }
+      $('player-iframesppModalBody').remove();
+      $('#sppModal').css("display","none");
     }
+    catch(e){}
     if(this.props.data.book.regions.length > 0 )
     {
       for(let i=0; i < this.props.data.book.regions.length ; i++)
@@ -1156,13 +1153,13 @@ handleRegionClick(hotspotID) {
     {
       $(".hotspot").hide();
       $(".hotspotIcon").hide();
-      this.setState({showHotspot:false})
+      this.setState({showHotspot:false});
     }
     else
     {
       $(".hotspot").show();
       $(".hotspotIcon").show();
-      this.setState({showHotspot:true})
+      this.setState({showHotspot:true});
     }
   }
   getPreference = () => {
@@ -1186,7 +1183,7 @@ handleRegionClick(hotspotID) {
       try
       {
         $(".fwr-highlight-annot").css("visibility","hidden");
-        this.setState({showHighlight : false})
+        this.setState({showHighlight : false});
       }
       catch(e){}
     }
@@ -1195,7 +1192,7 @@ handleRegionClick(hotspotID) {
       try
       {
         $(".fwr-highlight-annot").css("visibility","visible");
-        this.setState({showHighlight : true})
+        this.setState({showHighlight : true});
       }
       catch(e){}
     }
@@ -1209,13 +1206,20 @@ handleRegionClick(hotspotID) {
   }
 
 printFunc = () => {
+    let date = new Date();
+    let currDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
+    date = new Date(this.props.currentbook.expirationDate);
+    let expirationDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
+    let copyrightInfo = `Printed by ${this.props.currentbook.firstName} ${this.props.currentbook.firstName} on ${currDate} autorized to use until ${expirationDate}. 
+    Use beyond the authorized user or valid subscription date represents copyright violation.`;
     var prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
     var pageSrc = prtContent.currentSrc;
     var win = window.open('');
-    win.document.write('<style type="text/css"> @media print { @page { size:auto;margin:0; }}</style>')
-    win.document.write('<img src="' + pageSrc + '" onload="window.print();window.close()" />');
+    win.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:auto; } #footer{ display:block; bottom: 0 }}</style>')
+    win.document.write('<div><img src="' + pageSrc + '" onload="window.print();window.close()" ><div id=footer>'+copyrightInfo+'</div></img></div>');
     win.focus();
   }
+
   getpiSessionKey = () => {
     let piSessionKey;
     piSession.getToken(function(result, userToken){
@@ -1295,10 +1299,16 @@ printFunc = () => {
       value : 'signOut',
       text : messages.signOut ? messages.signOut : 'Sign Out',
     }
-    moreMenuData.push(showHideHotspots);
-    moreMenuData.push({type : 'divider'});
-    moreMenuData.push(printData);
-    moreMenuData.push({type : 'divider'});
+    if(this.props.data.book.bookFeatures.hasShowLinksButton == true)
+    {
+      moreMenuData.push(showHideHotspots);
+      moreMenuData.push({type : 'divider'});
+    }
+    if(this.props.data.book.bookFeatures.hasPrintLink == true)
+    {
+      moreMenuData.push(printData);
+      moreMenuData.push({type : 'divider'});
+    }
     moreMenuData.push(signOutData);
     /* Here we are passing data, pages, goToPageCallback,
        getPrevNextPage method and isET1 flag in ViewerComponent
@@ -1346,7 +1356,15 @@ printFunc = () => {
           </div>
         </div>
         <div>
-        <div id='sppDiv' className='sppContent' />
+          <div id='sppModal' className='sppModal'>
+            <div id='sppModalContent' className='sppModalContent'>
+              <div id='sppModalHeader' className='sppModalHeader'>
+                <span id='sppCloseBtn' className='sppCloseBtn'>&times;</span>
+                  <p>Smart Pearson Player</p>
+              </div>
+              <div id='sppModalBody' className='sppModalBody' />
+            </div>
+          </div>
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
         <LearningContextProvider
           contextId = {this.props.data.location.query.bookid}

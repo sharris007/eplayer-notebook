@@ -155,13 +155,15 @@
 	          }
 	          serverDetails = eT1Contants.ServerUrls[envType][bookserverurl];
 	        }
-			okurl = serverDetails+'/ebook/pdfplayer/validateuser?'+okurlValuesParam;
 			var serviceurl;
 			var siteid = eT1Contants.SITE_IDs[envType]['S'+scenario];
+			var piSuccessurl = serverDetails+'/ebook/pdfplayer/validateuser?'+okurlValuesParam;
 			// Proper errurl & loginurl has to be configured 
 			var errurl = window.location.origin+"/eplayer/pdfbookerror?errorcode=1";
 			var loginurl = window.location.origin+"/eplayer/";
-			serviceurl = smsbaseurl+'?cmd=chk_login&okurl='+okurl+'&errurl='+errurl+'&loginurl='+loginurl+'&siteid='+siteid+'&isCourseAware=N';
+			var piQueryParams = 'success_url='+piSuccessurl+'&siteid='+siteid+'&client_id='+eT1Contants.piClientIDs[envType]+'&errurl='+errurl+'&loginurl='+loginurl+'&smsAware=true';
+			okurl = eT1Contants.piEnvUrls[envType]+'initiatePiSession?'+piQueryParams;
+			serviceurl = smsbaseurl+'?cmd=chk_login&okurl='+encodeURIComponent(okurl)+'&errurl='+errurl+'&loginurl='+loginurl+'&siteid='+siteid+'&isCourseAware=N';
 			cookies.set('ReactPlayerCookie', 'ReactPlayerCookie', { path: '/' });
 			window.location.replace(serviceurl);
 		}

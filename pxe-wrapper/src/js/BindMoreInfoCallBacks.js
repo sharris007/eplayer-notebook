@@ -25,6 +25,8 @@ export class BindMoreInfoCallBacks {
             popOverCollection.popOverTitle = bookDiv.getElementById(hrefId).getElementsByTagName('h2')[0].innerHTML;
             break;
           }
+          case 'a.noteref.noteref_rearnote' :
+          case 'a.noteref.noteref_opener' :
           case 'a.noteref.noteref_footnote' : {
             if (moreInfoIconDOM.href) {
               hrefId = moreInfoIconDOM.href.split('#')[1];
@@ -52,7 +54,7 @@ export class BindMoreInfoCallBacks {
           }
           
           if (hrefId) {
-            if(bookDiv.getElementById(hrefId) && bookDiv.getElementById(hrefId).getElementsByTagName('p').length) {
+            if (bookDiv.getElementById(hrefId) && bookDiv.getElementById(hrefId).getElementsByTagName('p').length) {
               const popOverDescription = bookDiv.getElementById(hrefId).getElementsByTagName('p');
               popOverCollection.popOverDescription = popOverDescription.length > 0 ?  popOverDescription[0].innerHTML.trim() : '';
             } else {
