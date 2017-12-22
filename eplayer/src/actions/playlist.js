@@ -308,7 +308,7 @@ export const getCourseCallServiceForRedirect = (data) => dispatch => PlaylistApi
       }
       else if (instructorCheck && getSectionDetails.authgrouptype == 'instructor') {
         const productType = getSectionDetails.section.extras.metadata.productModel;
-        const prodType = data.prdType;
+        const prodType = productType;
         const courseId = getBookId;
         redirectToIDCDashboard(prodType, courseId);
       }
