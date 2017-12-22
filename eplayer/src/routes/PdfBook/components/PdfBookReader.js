@@ -1214,10 +1214,21 @@ printFunc = () => {
     Use beyond the authorized user or valid subscription date represents copyright violation.`;
     var prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
     var pageSrc = prtContent.currentSrc;
-    var win = window.open('');
-    win.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:auto; } #footer{ display:block; bottom: 0 }}</style>')
-    win.document.write('<div><img src="' + pageSrc + '" onload="window.print();window.close()" ><div id=footer>'+copyrightInfo+'</div></img></div>');
-    win.focus();
+    let printFrame = document.createElement('iframe');
+    printFrame.id = "printFrame";
+    printFrame.display = "hidden";
+    printFrame.style.position = "absolute";
+    printFrame.style.top = "-100px";
+    printFrame.style.width = "100px";
+    printFrame.style.height = "100px";
+    document.body.appendChild(printFrame);
+    printFrame.contentWindow.document.open();
+    printFrame.contentWindow.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:A4 potrait; } #footer{ display:block; bottom: 0 }}</style>');
+    printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();" ><div id=footer>'+copyrightInfo+'</div></img></div>');
+    printFrame.contentWindow.document.close();
+    window.onafterprint = function(){
+      document.body.removeChild(document.getElementById('printFrame'));
+    }
   }
 
   getpiSessionKey = () => {
