@@ -357,7 +357,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
         const zeppelinCheck = resources.constants.zeppelinEnabled;
         if( zeppelinCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access ){
-          redirectToZeppelin(bookDetails, passportDetails);
+          redirectToZeppelin(bookDetails, passportDetails, url);
           return false;
         }
       }
@@ -498,7 +498,7 @@ function redirectToIse(courseId) {
   window.open(iseBaseurl, '_self');
 }
 
-function redirectToZeppelin(bookDetails, passportDetails) {
+function redirectToZeppelin(bookDetails, passportDetails, url) {
   let successOriginUrl,
     errOriginUrl;
   const userAccess = {
@@ -509,7 +509,8 @@ function redirectToZeppelin(bookDetails, passportDetails) {
     launchUrl: bookDetails.section.extras.metadata.launchUrl
   };
   if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-    successOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    // successOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
+    successOriginUrl = url;
     errOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
     localStorage.setItem('backUrl', errOriginUrl);
     // successOriginUrl = window.location.href;
