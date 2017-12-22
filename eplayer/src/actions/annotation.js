@@ -34,7 +34,8 @@ export const annStructureChange = (annTotalList) => {
   const annListArray = [];
   if (annTotalList && annTotalList.length > 0) {
     for (let i = 0; i < annTotalList.length; i++) {
-      const setArray = {
+      if (!annTotalList[i].data.isCustomAnotation) {
+        const setArray = {
         pageId: annTotalList[i].data.source.id,
         id: annTotalList[i].id,
         author: annTotalList[i].data.user,
@@ -42,8 +43,9 @@ export const annStructureChange = (annTotalList) => {
         text: annTotalList[i].data.quote,
         comment: annTotalList[i].data.text || '',
         color: colorArr[annTotalList[i].data.colorCode] || 'Green'
-      };
+        };
       annListArray.push(setArray);
+      }
     }
   }
   return annListArray;
@@ -54,6 +56,7 @@ export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.do
     .then((json) => {
       if (json.response && json.response.length > 0) {
         const annTotalList = json.response;
+        //
         const annListArray = annStructureChange(annTotalList);
         dispatch(getTotalAnnotationData(annListArray));
         dispatch(gotNotes(annTotalList));
