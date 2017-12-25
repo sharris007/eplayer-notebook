@@ -380,13 +380,15 @@ export class Book extends Component {
   };
 
   onNavChange = (data) => {
+    let pageDetails = this.state.pageDetails;
+    pageDetails.searchText = [];
     document.title = data.title;
     const parameters = this.state.urlParams;
     parameters.id = data.id,
       parameters.uri = encodeURIComponent(data.href),
       data.uri = data.href;
     data.label = data.title;
-    const pageDetails = { ...this.state.pageDetails };
+    pageDetails = { ...pageDetails };
     this.setState({
       currentPageDetails: data,
       currentPageTitle: data.title,
