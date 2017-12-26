@@ -124,8 +124,8 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
 
             tocResponse.list = [];
             const tocItems = tocResponse.items;
-            let subItems = [];
             const listData = tocItems.map((itemObj) => {
+              let subItems = [];
               if (itemObj.items) {
                 subItems = itemObj.items.map(n => ({
                   urn: n.id,
@@ -225,8 +225,8 @@ export const getBookTocCallService = data => dispatch =>
 
       tocResponse.list = [];
       const tocItems = tocResponse.items;
-      let subItems = [];
       const listData = tocItems.map((itemObj) => {
+        let subItems = [];
         if (itemObj.items) {
           subItems = itemObj.items.map(n => ({
             urn: n.id,
@@ -387,8 +387,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
 
       tocResponse.list = [];
       const tocItems = tocResponse.items;
-      let subItems = [];
       const listData = tocItems.map((itemObj) => {
+        let subItems = [];
         if (itemObj.items) {
           subItems = itemObj.items.map(n => ({
             urn: n.id,
