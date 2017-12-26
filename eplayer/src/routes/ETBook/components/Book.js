@@ -832,7 +832,13 @@ export class Book extends Component {
       this.props.book.annTotalData = [];
     }
     const getOriginurl = localStorage.getItem('backUrl');
-    localStorage.setItem('secureToken', undefined);
+    let _secureToken = null;
+    if(piSession)
+    {
+      if(piSession.currentToken() !== undefined && piSession.currentToken() !== null)
+      _secureToken = piSession.currentToken();
+    }
+    localStorage.setItem('secureToken', _secureToken);
     if (getOriginurl) {
       window.location.href = getOriginurl;
     }
