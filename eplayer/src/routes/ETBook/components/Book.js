@@ -129,15 +129,18 @@ export class Book extends Component {
     let self = this;
     const IntervalCheck = setInterval(() => {
       // deeper code
+      console.log("InterVal Check");
       if (!isSessionLoaded) {
         let redirectCourseUrl = window.location.href;
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
+        console.log("isSessionLoaded Check");
         if (piSession) {
           isSessionLoaded = true;
           piSession.getToken(function (result, userToken) {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
               const piUserId = piSession.userId();
+              console.log("piSession Check",Utils.checkCookie('etext-cdn-token'));
               if (!Utils.checkCookie('etext-cdn-token')) {
                 self.props.dispatch(getAuthToken(userToken));
               }
@@ -148,6 +151,10 @@ export class Book extends Component {
         }
          
         const getSecureToken = localStorage.getItem('secureToken');
+        if (!Utils.checkCookie('etext-cdn-token')) {
+          self.props.dispatch(getAuthToken(userToken));
+          console.log("Calling auth token");
+        }
         this.bookDetailsData = {
           context: this.state.urlParams.context,
           piToken: getSecureToken,
@@ -201,7 +208,7 @@ export class Book extends Component {
     this.props.dispatch({ type: "CLEAR_BOOKMARKS" });
     this.props.dispatch({ type: "CLEAR_SEARCH" });
     //PLA pageunload Event
-    if (this.props.bookdetailsdata.userCourseSectionDetail !== undefined) {
+    if (this.props.bookdetailsdata && this.props.bookdetailsdata.userCourseSectionDetail && (this.props.bookdetailsdata.userCourseSectionDetail !== undefined)) {
       const unloadPageNxtpageId = this.getNxtPageId(this.state.currentPageId);
       this.mapUnloadData(this.state.currentPageId, unloadPageNxtpageId, '', '', false);
     }
@@ -653,7 +660,7 @@ export class Book extends Component {
       let annElement = $('#contentIframe').contents().find('span[data-ann-id=' + annId + ']');
       if (annElement && annElement[0]) {
         $('html, body').animate({
-          scrollTop: annElement[0].offsetTop
+          scrollTop: annElement[0].getBoundingClientRect().top
         });
       }
     }
@@ -1193,7 +1200,7 @@ export class Book extends Component {
       };
       
     let annotationClient;
-    let userType,headerTitleData={ params: '', classname: '', chapterTitle: '', pageTitle: '', isChapterOpener: '' };
+    let userType,productModel,headerTitleData={ params: '', classname: '', chapterTitle: '', pageTitle: '', isChapterOpener: '' };
     if (this.state.headerDataloaded) {
       headerTitleData = {
       params: this.props.params,
@@ -1206,13 +1213,16 @@ export class Book extends Component {
     if (playlistReceived && bookdetailsdata) {
       const getMathjaxJs = this.loadMathjax();
       let i;
-      if (bookdetailsdata.roles === undefined)
+      if (bookdetailsdata.roles === undefined) {
         userType = bookdetailsdata.userCourseSectionDetail.authgrouptype;
+        productModel = 'ETEXT2_PXE';
+      }
       else {
         for (i = 0; i < bookdetailsdata.roles.length; i++) {
           if (bookdetailsdata.roles[i].toLowerCase() === 'educator' || bookdetailsdata.roles[i].toLowerCase() === 'instructor')
             userType = 'instructor';
         }
+         productModel = 'ETEXT2_SMS';
       }
       annotationClient = axios.create({
         baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
@@ -1220,7 +1230,8 @@ export class Book extends Component {
         data: {
           context: this.state.urlParams.context,
           user: this.state.urlParams.user,
-          userType: userType == 'instructor' ? 'Instructor' : 'Student'
+          userType: userType == 'instructor' ? 'Instructor' : 'Student',
+          productModel: productModel
         }
       });
       if (userType === 'instructor') {
