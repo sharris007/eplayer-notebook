@@ -126,6 +126,7 @@ export class Book extends Component {
   }
   componentWillMount = () => {
     let isSessionLoaded = false;
+    console.log("componentWillMount");
     let self = this;
     const IntervalCheck = setInterval(() => {
       // deeper code
@@ -136,11 +137,12 @@ export class Book extends Component {
         console.log("isSessionLoaded Check");
         if (piSession) {
           isSessionLoaded = true;
+          console.log("piSession");
           piSession.getToken(function (result, userToken) {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
               const piUserId = piSession.userId();
-              console.log("piSession Check",Utils.checkCookie('etext-cdn-token'));
+              console.log("piSession cookie Check ",Utils.checkCookie('etext-cdn-token'));
               if (!Utils.checkCookie('etext-cdn-token')) {
                 self.props.dispatch(getAuthToken(userToken));
               }
@@ -152,7 +154,7 @@ export class Book extends Component {
          
         const getSecureToken = localStorage.getItem('secureToken');
         if (!Utils.checkCookie('etext-cdn-token')) {
-          self.props.dispatch(getAuthToken(userToken));
+          self.props.dispatch(getAuthToken(getSecureToken));
           console.log("Calling auth token");
         }
         this.bookDetailsData = {
