@@ -279,11 +279,11 @@ Annotator.Editor = (function(_super) {
   
   Editor.prototype.unShareAnnotation=function() {
      this.annotation.colorCode=this.annotation.lastColor;
-     if(this.annotation.colorCode == '#FFD232') { //Yellow
+     if(this.annotation.colorCode == '#FFD232' || this.annotation.colorCode == '#FFEDAD' ) { //Yellow
          annBgColor = 'rgba(255,210,50,0.4)';
-     } else if (this.annotation.colorCode == '#55DF49') { //Green
+     } else if (this.annotation.colorCode == '#55DF49' || this.annotation.colorCode == '#BBF2B6') { //Green
          annBgColor = '#bbf2b6';
-     } else if (this.annotation.colorCode == '#FC92CF') { //Pink
+     } else if (this.annotation.colorCode == '#FC92CF' || this.annotation.colorCode == '#FED3EC') { //Pink
          annBgColor = '#fed3ec';
      } 
      this.annotation.shareable=false;
@@ -403,14 +403,14 @@ Annotator.Editor = (function(_super) {
     $(this.annotation.highlights).find('.annotator-handle').css('background-color', 'inherit');
    }
    var annBgColor = '', noteIconBgColor = '', noteText = '';
-   if(colorCode == '#FFD232') { //Yellow
+   if(colorCode == '#FFD232' || colorCode == '#FFEDAD') { //Yellow
       annBgColor = 'rgba(255,210,50,0.4)';
       noteIconBgColor = '#ffedad';
       noteText = 'Q';
-   } else if (colorCode == '#55DF49') { //Green
+   } else if (colorCode == '#55DF49' || colorCode == '#BBF2B6') { //Green
       annBgColor = noteIconBgColor = '#bbf2b6';
       noteText = 'M';
-   } else if (colorCode == '#FC92CF') { //Pink
+   } else if (colorCode == '#FC92CF' || colorCode == '#FED3EC') { //Pink
       annBgColor = noteIconBgColor = '#fed3ec';
       noteText = 'O';
    } else if (colorCode == '#ccf5fd') { //Share(Blue)
@@ -559,14 +559,14 @@ Annotator.Editor = (function(_super) {
 
   Editor.prototype.hide = function(event) {
    var annBgColor = '', noteIconBgColor = '', noteText = '', _i;
-   if(this.annotation.colorCode == '#FFD232') { //Yellow
+   if(this.annotation.colorCode == '#FFD232' || this.annotation.colorCode == '#FFEDAD') { //Yellow
        annBgColor = 'rgba(255,210,50,0.4)';
        noteIconBgColor = '#ffedad';
        noteText = 'Q';
-   } else if (this.annotation.colorCode == '#55DF49') { //Green
+   } else if (this.annotation.colorCode == '#55DF49' || this.annotation.colorCode == '#BBF2B6') { //Green
        annBgColor = noteIconBgColor = 'bbf2b6';
        noteText = 'M';
-   } else if (this.annotation.colorCode == '#FC92CF') { //Pink
+   } else if (this.annotation.colorCode == '#FC92CF' || this.annotation.colorCode == '#FED3EC') { //Pink
        annBgColor = noteIconBgColor = '#fed3ec';
        noteText = 'O'
    } else if (this.annotation.colorCode == '#ccf5fd') { //Share(Blue)

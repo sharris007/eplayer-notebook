@@ -392,14 +392,14 @@ Annotator = (function(_super) {
     cssClass+=" highlight-note";
    white = /^\s*$/;
    var annBgColor = '', noteIconBgColor = '', noteText = '';
-   if(normedRange.color == '#FFD232') { //Yellow
+   if(normedRange.color == '#FFD232' || normedRange.color == '#FFEDAD') { //Yellow
       annBgColor = 'rgba(255,210,50,0.4)';
       noteIconBgColor = '#ffedad';
       noteText = 'Q';
-   } else if (normedRange.color == '#55DF49') { //Green
+   } else if (normedRange.color == '#55DF49' || normedRange.color == '#BBF2B6') { //Green
       annBgColor = noteIconBgColor = '#bbf2b6';
       noteText = 'M';
-   } else if (normedRange.color == '#FC92CF') { //Pink
+   } else if (normedRange.color == '#FC92CF' || normedRange.color == '#FED3EC') { //Pink
       annBgColor = noteIconBgColor = '#fed3ec';
       noteText = 'O';
    } else if (normedRange.color == '#ccf5fd') { //Share(Blue)
