@@ -30,11 +30,10 @@ import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
 import { VegaViewPager } from '@pearson-incubator/vega-viewer';
-import { Navigation } from '@pearson-incubator/aquila-js-core';
+import { Navigation, Progress } from '@pearson-incubator/aquila-js-core';
 import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
 import axios from 'axios';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
-import CircularProgress from 'material-ui/CircularProgress';
 import { resources, domain, typeConstants } from '../../../../const/Settings';
 import Search from '../../../components/search/containers/searchContainer';
 import Utils from '../../../components/utils';
@@ -1325,6 +1324,7 @@ export class Book extends Component {
     };
     return (
       <div onClick={this.closeHeaderPopups}>
+      {!playlistReceived?<div className="pageCenterLoading"><Progress /></div>:null}
         {playlistReceived &&
           <LearningContextProvider
             contextId="ddddd"
@@ -1407,7 +1407,7 @@ export class Book extends Component {
                     pagePlayList={this.props.playListWithOutDuplicates}
                     currentPageId={bootstrapParams.pageDetails.currentPageURL.id}
                   />
-                </div> : <div><CircularProgress className="circularProgress" /></div>
+                </div> : null
               }
             </div>
           </LearningContextProvider>}
