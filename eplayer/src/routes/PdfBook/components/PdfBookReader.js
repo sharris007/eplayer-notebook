@@ -130,6 +130,7 @@ export class PdfBookReader extends Component {
             }
             catch(e){}
           }
+          window.reactContext.updateGlossary();
       })
   }
 
@@ -492,29 +493,7 @@ export class PdfBookReader extends Component {
       }
       catch(e){}
     }
-    let glossaryDataUpdated = [];
-    for(let i=0;i<this.props.data.book.glossaryInfoList.length;i++)
-    {
-      for(let k=0 ; k < this.state.glossaryRegions.length ; k++)
-      {
-        if((this.props.data.book.glossaryInfoList[i].glossaryEntryID).trim() == (this.state.glossaryRegions[k].glossaryEntryID).trim())
-        {
-          let glossTerm = {
-            isET1 : 'Y' ,
-            item : document.getElementById('region' + this.state.glossaryRegions[k].regionID),
-            popOverCollection : {
-              popOverDescription : this.props.data.book.glossaryInfoList[i].glossaryDefinition,
-              popOverTitle : this.props.data.book.glossaryInfoList[i].glossaryTerm
-            }
-          };
-          glossaryDataUpdated.push(glossTerm);
-        }
-      }
-    }
-    if(glossaryDataUpdated.length>0)
-    {
-      new PopUpInfo({'popUpCollection' : glossaryDataUpdated, 'bookContainerId' : 'docViewer_ViewContainer_PageContainer_0', isET1 : 'Y'});
-    }
+    this.updateGlossary();
     this.setState({currZoomLevel : currZoomLevel});
   }
 /*Method for removing hotspot content on clicking the close button*/
@@ -565,6 +544,35 @@ export class PdfBookReader extends Component {
       this.goToPage(Number(currentPage.pageorder));
     }
 
+  }
+
+/*Glossary Updation on changung properties of glossary element*/
+
+  updateGlossary()
+  {
+    let glossaryDataUpdated = [];
+    for(let i=0;i<this.props.data.book.glossaryInfoList.length;i++)
+    {
+      for(let k=0 ; k < this.state.glossaryRegions.length ; k++)
+      {
+        if((this.props.data.book.glossaryInfoList[i].glossaryEntryID).trim() == (this.state.glossaryRegions[k].glossaryEntryID).trim())
+        {
+          let glossTerm = {
+            isET1 : 'Y' ,
+            item : document.getElementById('region' + this.state.glossaryRegions[k].regionID),
+            popOverCollection : {
+              popOverDescription : this.props.data.book.glossaryInfoList[i].glossaryDefinition,
+              popOverTitle : this.props.data.book.glossaryInfoList[i].glossaryTerm
+            }
+          };
+          glossaryDataUpdated.push(glossTerm);
+        }
+      }
+    }
+    if(glossaryDataUpdated.length>0)
+    {
+      new PopUpInfo({'popUpCollection' : glossaryDataUpdated, 'bookContainerId' : 'docViewer_ViewContainer_PageContainer_0', isET1 : 'Y'});
+    }
   }
 /*Method to handle mouse hover event for transparent hotsopts*/
   handleTransparentRegionHover(hotspotID)
