@@ -35,7 +35,7 @@ export class NoterefBiblioref {
       if (this.noteRefUrl) {
         this.triggerNoteRefService(this.noteRefUrl)
       } else {
-        new BindGlossaryCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : this.bookDiv, node:this.node, basePath: this.basePath, 'biblorefCollection' : []});
+        new BindGlossaryCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : this.bookDiv, node:this.node, basePath: this.basePath, 'noteRefCollection' : []});
       }
     }
 
