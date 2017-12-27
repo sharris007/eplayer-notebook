@@ -108,7 +108,7 @@
     "@pearson-incubator/preferences": "0.1.37",
     "@pearson-incubator/pxe-annotation": "1.0.45",
     "@pearson-incubator/pxe-printpage": "*",
-    "@pearson-incubator/pxe-wrapper": "1.0.11",
+    "@pearson-incubator/pxe-wrapper": "1.0.12",
     "@pearson-incubator/search": "0.1.38",
     "@pearson-incubator/toc": "0.1.60",
 
