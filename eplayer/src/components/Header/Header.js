@@ -68,6 +68,7 @@ export class Header extends React.Component {
         this.setState({loadingFirstTime : false})
       }
       $('.navigation').css({height :60})
+      $('.content').css({height :20})
     }
   }
 
