@@ -1237,7 +1237,7 @@ export class Book extends Component {
           productModel: this.productModel
         }
       });
-      if (userType === 'instructor') {
+      if (this.userType === 'instructor') {
         annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
         annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
       }
