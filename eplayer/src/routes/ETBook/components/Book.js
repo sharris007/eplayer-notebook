@@ -136,15 +136,19 @@ export class Book extends Component {
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
+          if(piSession.userId() !== undefined && piSession.userId() !== null)
+          {
+            self.state.urlParams.user = piSession.userId();
+          }
           piSession.getToken(function (result, userToken) {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
-              const piUserId = piSession.userId();
+              // const piUserId = piSession.userId();
               if (!isAuthToken && !Utils.checkCookie('etext-cdn-token')) {
                 isAuthToken = true;
                 self.props.dispatch(getAuthToken(userToken));
               }
-              self.state.urlParams.user = piUserId;
+              // self.state.urlParams.user = piUserId;
               clearInterval(IntervalCheck);
             }
           });
