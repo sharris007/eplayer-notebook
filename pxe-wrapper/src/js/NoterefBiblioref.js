@@ -1,4 +1,4 @@
-import { NoterefBibliorefClasses } from '../../const/PopUpClasses';
+import { NoterefClasses } from '../../const/PopUpClasses';
 import PopupApi from '../api/PopupApi';
 
 import {BindGlossaryCallBacks} from './BindGlossaryCallBacks';
@@ -6,37 +6,40 @@ import {BindGlossaryCallBacks} from './BindGlossaryCallBacks';
 export class NoterefBiblioref { 
     constructor(props) { 
       this.props = props;
-      this.biblorefDoms = [];
-      this.biblorefUrl = '';
-      this.biblorefCollection = [];
+      this.noteRefDoms = [];
+      this.noteRefUrl = '';
+      this.noteRefCollection = [];
 
       this.divGlossaryRef = props.divGlossaryRef;
       this.bookDiv = props.bookDiv;
       this.node=props.node;
       this.basePath = props.basePath;
 
-      this.bindNoterefBibliorefCallBacks(props);
+      this.bindNoterefClasses(props);
     }
 
-    bindNoterefBibliorefCallBacks = (props) => {
+    bindNoterefClasses = (props) => {
       const bookDiv = props.node.contentDocument.body;
-      NoterefBibliorefClasses.forEach((classes) => {
-        this.biblorefDoms = bookDiv.querySelectorAll(classes);
-        console.log(this.biblorefDoms);
-        console.log(classes);
+      NoterefClasses.forEach((classes) => {
+        if(this.noteRefDoms.length === 0)  {
+          this.noteRefDoms = bookDiv.querySelectorAll(classes);
+          console.log(this.noteRefDoms);
+          console.log(classes);
+        } else { console.log("classes : ",classes) }
+        
       });
-      if (this.biblorefDoms && this.biblorefDoms.length > 0) {
-        this.biblorefUrl = this.biblorefDoms[0].href ? this.biblorefDoms[0].href.split('#')[0] : '';
+      if (this.noteRefDoms && this.noteRefDoms.length > 0) {
+        this.noteRefUrl = this.noteRefDoms[0].href ? this.noteRefDoms[0].href.split('#')[0] : '';
       } 
 
-      if (this.biblorefUrl) {
-        this.triggerBiblorefService(this.biblorefUrl)
+      if (this.noteRefUrl) {
+        this.triggerNoteRefService(this.noteRefUrl)
       } else {
         new BindGlossaryCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : this.bookDiv, node:this.node, basePath: this.basePath, 'biblorefCollection' : []});
       }
     }
 
-    triggerBiblorefService = (url) => {
+    triggerNoteRefService = (url) => {
       PopupApi.getData(url).then((response) => {
         return response.text();
       }).then(this.renderData).catch((err) => {
@@ -48,13 +51,13 @@ export class NoterefBiblioref {
       //const bibloref = renderHTML(text);
       const parser = new DOMParser();
       const doc = parser.parseFromString(text, 'text/xml');
-      for (let i=0; i<this.biblorefDoms.length;i++) {
+      for (let i=0; i<this.noteRefDoms.length;i++) {
         const popOverCollection = {};
-        const id = this.biblorefDoms[i].href.split('#')[1];
+        const id = this.noteRefDoms[i].href.split('#')[1];
         popOverCollection.popOverDescription = doc.getElementById(id).innerHTML;
-        this.biblorefCollection.push({'popOverCollection':popOverCollection, 'item':this.biblorefDoms[i]})
+        this.noteRefCollection.push({'popOverCollection':popOverCollection, 'item':this.noteRefDoms[i]})
       }
-      new BindGlossaryCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : this.bookDiv, node:this.node, basePath: this.basePath, 'biblorefCollection' : this.biblorefCollection});
+      new BindGlossaryCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : this.bookDiv, node:this.node, basePath: this.basePath, 'noteRefCollection' : this.noteRefCollection});
       //window.renderPopUp(this.biblorefCollection);
     }
 }
