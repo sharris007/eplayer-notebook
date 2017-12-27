@@ -27,7 +27,7 @@ export default class Utilities {
     if (pages && bookmarks) {
       pages.forEach((page) => {
         bookmarks.forEach((bookmark) => {
-          if (page.id === bookmark.uri) {
+          if (bookmark.source && page.id === bookmark.source.id) {
             sortedBookmarkArr.push(bookmark);
           }
         });
@@ -37,19 +37,24 @@ export default class Utilities {
   }
 
   static formBookmarkPayload = (reqData) => {
+    let data = {...reqData};
+    delete data.userType;
+    delete data.productModel;
+    delete data.user;
     const bookmarkData = {
       clientApp: "ETEXT2_WEB",
       color: "",
       contextId: reqData.context,
-      productModel: "SAeT",
-      data: reqData,
+      productModel: reqData.productModel,
+      data: {source: data},
       isBookMark: true,
-      pageId: reqData.uri,
+      pageId: reqData.id,
       pageNo: "",
       selectedText: "",
       sharable: "",
       status: "",
       subContextId: "",
+      role: reqData.userType,
       userId: reqData.user
     }
     const reqPayload = {

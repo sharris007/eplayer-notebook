@@ -108,6 +108,8 @@ export class Book extends Component {
     this.searchUrl = '';
     this.isAnnotationHide = false;
     this.productType = '';
+    this.userType = '';
+    this.productModel= '';
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
     this.state.pageDetails.currentPageURL = '';
@@ -126,24 +128,21 @@ export class Book extends Component {
   }
   componentWillMount = () => {
     let isSessionLoaded = false;
-    console.log("componentWillMount");
+    let isAuthToken = false;
     let self = this;
     const IntervalCheck = setInterval(() => {
       // deeper code
-      console.log("InterVal Check");
       if (!isSessionLoaded) {
         let redirectCourseUrl = window.location.href;
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
-        console.log("isSessionLoaded Check");
         if (piSession) {
           isSessionLoaded = true;
-          console.log("piSession");
           piSession.getToken(function (result, userToken) {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
               const piUserId = piSession.userId();
-              console.log("piSession cookie Check ",Utils.checkCookie('etext-cdn-token'));
-              if (!Utils.checkCookie('etext-cdn-token')) {
+              if (!isAuthToken && !Utils.checkCookie('etext-cdn-token')) {
+                isAuthToken = true;
                 self.props.dispatch(getAuthToken(userToken));
               }
               self.state.urlParams.user = piUserId;
@@ -153,9 +152,9 @@ export class Book extends Component {
         }
          
         const getSecureToken = localStorage.getItem('secureToken');
-        if (!Utils.checkCookie('etext-cdn-token')) {
+        if (!isAuthToken && !Utils.checkCookie('etext-cdn-token')) {
           self.props.dispatch(getAuthToken(getSecureToken));
-          console.log("Calling auth token");
+          isAuthToken = true;
         }
         this.bookDetailsData = {
           context: this.state.urlParams.context,
@@ -348,7 +347,8 @@ export class Book extends Component {
   addBookmarkHandler = () => {
     const bMarkData = this.state;
     const bookmark = {
-      uri: bMarkData.urlParams.id,
+      uri: bMarkData.currentPageDetails.uri,
+      id: bMarkData.urlParams.id,
       data: {
         baseUrl: bMarkData.pageDetails.baseUrl
       },
@@ -356,6 +356,8 @@ export class Book extends Component {
       labels: [bMarkData.currentPageTitle],
       context: bMarkData.urlParams.context,
       user: bMarkData.urlParams.user,
+      productModel: this.productModel,
+      userType: this.userType == 'instructor' ? 'Instructor' : 'Student',
       xAuth: localStorage.getItem('secureToken')
     };
     this.props.dispatch(postBookmarkCallService(bookmark));
@@ -373,7 +375,7 @@ export class Book extends Component {
     let sectionInfo = {};
     let chapterInfo = {};
     this.props.tocData.content.list.forEach((chapter, i)=>{
-      sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedBookmarkData.uri);
+      sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedBookmarkData.source.id);
       if(sectionInfo && !chapterInfo.title) {
         chapterInfo = chapter;
       }
@@ -1202,7 +1204,7 @@ export class Book extends Component {
       };
       
     let annotationClient;
-    let userType,productModel,headerTitleData={ params: '', classname: '', chapterTitle: '', pageTitle: '', isChapterOpener: '' };
+    let headerTitleData={ params: '', classname: '', chapterTitle: '', pageTitle: '', isChapterOpener: '' };
     if (this.state.headerDataloaded) {
       headerTitleData = {
       params: this.props.params,
@@ -1216,15 +1218,15 @@ export class Book extends Component {
       const getMathjaxJs = this.loadMathjax();
       let i;
       if (bookdetailsdata.roles === undefined) {
-        userType = bookdetailsdata.userCourseSectionDetail.authgrouptype;
-        productModel = 'ETEXT2_PXE';
+        this.userType = bookdetailsdata.userCourseSectionDetail.authgrouptype;
+        this.productModel = 'ETEXT2_PXE';
       }
       else {
         for (i = 0; i < bookdetailsdata.roles.length; i++) {
           if (bookdetailsdata.roles[i].toLowerCase() === 'educator' || bookdetailsdata.roles[i].toLowerCase() === 'instructor')
-            userType = 'instructor';
+            this.userType = 'instructor';
         }
-         productModel = 'ETEXT2_SMS';
+         this.productModel = 'ETEXT2_SMS';
       }
       annotationClient = axios.create({
         baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
@@ -1232,8 +1234,8 @@ export class Book extends Component {
         data: {
           context: this.state.urlParams.context,
           user: this.state.urlParams.user,
-          userType: userType == 'instructor' ? 'Instructor' : 'Student',
-          productModel: productModel
+          userType: this.userType == 'instructor' ? 'Instructor' : 'Student',
+          productModel: this.productModel
         }
       });
       if (userType === 'instructor') {
@@ -1292,7 +1294,7 @@ export class Book extends Component {
       };
     }
     this.isAnnotationHide = bootstrapParams.pageDetails.isAnnotationHide;
-    const isInstructor = userType === 'instructor' ? true : false;
+    const isInstructor = this.userType === 'instructor' ? true : false;
     let isconfigTocData = false;
     if (isInstructor) {
       isconfigTocData = true;

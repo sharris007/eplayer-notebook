@@ -149,7 +149,7 @@ export const getBookmarkData = data => fetch(`${spectrumService[envType]}/${data
 export const postBookmarkData = postData => {
   let payload = Object.assign({},postData);
   delete payload.xAuth;
-  return fetch(`${spectrumService[envType]}/${postData.context}/identities/${postData.user}/notesX?pageId=${postData.uri}&isBookMark=true`, {  // eslint-disable-line max-len
+  return fetch(`${spectrumService[envType]}/${postData.context}/identities/${postData.user}/notesX?pageId=${postData.id}&isBookMark=true`, {  // eslint-disable-line max-len
     method: 'POST',
     headers: {
       Accept: 'application/json',
