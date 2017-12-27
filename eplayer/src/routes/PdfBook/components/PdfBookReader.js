@@ -112,25 +112,31 @@ export class PdfBookReader extends Component {
     } else {
       this.loadCoverPage('cover');
     }
-     let that = this;
+    window.reactContext = this;
     $(window).resize(function(){
       __pdfInstance.onDocviewerResize();
-          that.displayHighlight();
-          if(that.props.data.book.regions.length > 0 )
+          window.reactContext.displayHighlight();
+          if(window.reactContext.props.data.book.regions.length > 0 )
           {
-          __pdfInstance.displayRegions(that.props.data.book.regions,that.props.data.book.bookFeatures,_);
+          __pdfInstance.displayRegions(window.reactContext.props.data.book.regions,window.reactContext.props.data.book.bookFeatures,_);
           }
-          if(that.state.showHotspot !== true)
+          if(window.reactContext.state.showHotspot !== true)
           {
             try
             {
               $(".hotspot").hide();
               $(".hotspotIcon").hide();
-              that.setState({showHotspot:false});
+              window.reactContext.setState({showHotspot:false});
             }
             catch(e){}
           }
       })
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if(prevProps.data != this.props.data){
+      window.reactContext = this;
+    }
   }
   /* componentWillUnmount() is invoked immediately before a component is going to unmount. */
    componentWillUnmount(){
@@ -274,6 +280,7 @@ export class PdfBookReader extends Component {
     try
     {
       Popup.close();
+      $("#printFrame").remove();
     }
     catch(e){}
     const currPageIndex = this.state.currPageIndex;
@@ -1216,14 +1223,12 @@ printFunc = () => {
     var pageSrc = prtContent.currentSrc;
     let printFrame = document.createElement('iframe');
     printFrame.id = "printFrame";
-    printFrame.display = "hidden";
-    printFrame.style.position = "absolute";
-    printFrame.style.top = "-100px";
+    printFrame.style.display = "none";
     printFrame.style.width = "100px";
     printFrame.style.height = "100px";
     document.body.appendChild(printFrame);
     printFrame.contentWindow.document.open();
-    printFrame.contentWindow.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:A4 potrait; } #footer{ display:block; bottom: 0 }}</style>');
+    printFrame.contentWindow.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:auto; page-break-after:avoid;} img{ max-height: 32cm; max-width: 24cm;} #footer{ display:block; bottom: 0 }}</style>');
     printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();" ><div id=footer>'+copyrightInfo+'</div></img></div>');
     printFrame.contentWindow.document.close();
     window.onafterprint = function(){
