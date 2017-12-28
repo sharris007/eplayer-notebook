@@ -140,6 +140,8 @@ export const eT1Contants = {
       stage        : 'https://pi-int.pearsoned.com/v1/piapi-int/login/',
       prod         : 'https://pi.pearsoned.com/v1/piapi/login/'
   },
+  clientAppNameForSpectrumApi: 'ETEXT1_WEB',
+  productModelForSpectrumApi: 'ETEXT1_PDF',
   ErrorCodeMessages : {
     Error_1 :'Either you have entered an incorrect username/password, or you do not have a subscription to this site.',
     Error_2 :'Server error occurred. Please try again later.'

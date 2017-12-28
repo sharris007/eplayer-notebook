@@ -213,7 +213,7 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
 export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, externalId, courseId, shared, Page, roleTypeId, piSessionKey) {
   clients.readerApi[envType].defaults.headers =  {'X-Authorization':piSessionKey,'Content-Type': 'application/json'};
   const data = {
-    clientApp: 'ETEXT1_WEB',
+    clientApp: eT1Contants.clientAppNameForSpectrumApi,
     isBookMark:true,
     userId,
     data: {
@@ -222,6 +222,7 @@ export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, exte
     role:roleTypeId,
     contextId: bookId,
     pageId: externalId,
+    productModel: eT1Contants.productModelForSpectrumApi,
     pageNo,
     subContextId: courseId,
     shareable: shared
@@ -900,12 +901,13 @@ export function saveHighlightUsingSpectrumApi(userId, bookId, pageNo,
   const axiosInstance = clients.readerApi[envType];
   axiosInstance.defaults.headers = {'X-Authorization':piSessionId,'Content-Type': 'application/json'};
   const data = {
-    clientApp: 'ETEXT1_WEB',
+    clientApp: eT1Contants.clientAppNameForSpectrumApi,
     color,
     contextId: bookId,
     role:roleTypeId,
     data: meta,
     isBookMark:false,
+    productModel: eT1Contants.productModelForSpectrumApi,
     pageId: currentPageId,
     pageNo,
     selectedText,
@@ -975,11 +977,12 @@ export function editHighlightUsingSpectrumApi(id, note, color, isShared, userId,
   const editHightlightURI = '/api/context/'+bookId+'/identities/'+userId+'/notesX';
   const payloadData = {
     id,
-    clientApp: 'ETEXT1_WEB',
+    clientApp: eT1Contants.clientAppNameForSpectrumApi,
     color,
     contextId: bookId,
     data: meta,
     isBookMark:false,
+    productModel: eT1Contants.productModelForSpectrumApi,
     pageId: currentPageId,
     pageNo,
     role:roleTypeId,
