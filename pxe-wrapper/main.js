@@ -29,7 +29,7 @@ export default class PxeWrapperComponent {
     const locale = config.locale ? config.locale : 'en';
     ReactDOM.render(
       <IntlProvider locale={locale} messages={translations[locale]}>
-        <ComponentOwner bookUrl = "https://content.stg-openclass.com/eps/pearson-reader/api/item/78e0830a-c187-4a9b-b1a7-f728e14f101f/1/file/Blake3-082715-MJ-CM-CSS/OPS/s9ml/chapter01/filep7000496622000000000000000000eb8.xhtml" isFromComponent = {true}  />
+        <ComponentOwner bookUrl = "https://etext.pearson.com/eps/pearson-reader/api/item/41a45147-8f4e-4420-b4d3-961441119580/1/file/HessPGALA12-060216-MJ-DW/OPS/s9ml/imported_files01/filep7001011641000000000000000002c30.xhtml" isFromComponent = {true}  />
       </IntlProvider>,
         document.getElementById(config.contentId)
     );
@@ -48,4 +48,6 @@ https://content.stg-openclass.com/eps/pearson-reader/api/item/e460baf9-c83c-4519
 https://content.stg-openclass.com/eps/pearson-reader/api/item/3e6ea386-cd63-43eb-bfa9-de3c2f4e13e8/100/file/Bledsoe_Vol1/OPS/s9ml/chapter01/filep70010122960000000000000000006fc.xhtml ---------- bibloref
 
 https://content.stg-openclass.com/eps/pearson-reader/api/item/78e0830a-c187-4a9b-b1a7-f728e14f101f/1/file/Blake3-082715-MJ-CM-CSS/OPS/s9ml/chapter01/filep7000496622000000000000000000eb8.xhtml
+
+https://etext.pearson.com/eps/pearson-reader/api/item/41a45147-8f4e-4420-b4d3-961441119580/1/file/HessPGALA12-060216-MJ-DW/OPS/s9ml/imported_files01/filep7001011641000000000000000002c30.xhtml ------------ noteref_footnote
 */

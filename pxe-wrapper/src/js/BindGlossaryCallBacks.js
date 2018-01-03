@@ -110,6 +110,7 @@ export class BindGlossaryCallBacks {
         });
        for (let n=0;n<this.noteRefCollection.length > 0; n++) {
         this.glossaryCollection[this.glossaryCollection.length] = this.noteRefCollection[n];
+        console.log('this.glossaryCollection[this.glossaryCollection.length] ', this.glossaryCollection[this.glossaryCollection.length]);
        } 
       new BindMoreInfoCallBacks({ glossaryCollection: this.glossaryCollection, node: this.props.node });
     }

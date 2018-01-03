@@ -62,7 +62,11 @@ export class BindMoreInfoCallBacks {
           } else {
             popOverCollection.popOverDescription = moreInfoIconDOM.children[0].innerHTML.trim();
           }
-          this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
+          if (popOverCollection.popOverDescription) {
+            this.popUpCollection.push({'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
+          }
+          
+          console.log('MoreInfo : ', {'popOverCollection' : popOverCollection, 'item' : bookDivQuerySelectorClasses[i]});
         }
         //});
       });

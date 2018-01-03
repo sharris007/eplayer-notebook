@@ -23,7 +23,7 @@ export class NoterefBiblioref {
       NoterefClasses.forEach((classes) => {
         if(this.noteRefDoms.length === 0)  {
           this.noteRefDoms = bookDiv.querySelectorAll(classes);
-          console.log(this.noteRefDoms);
+          console.log("this.noteRefDoms : ",this.noteRefDoms);
           console.log(classes);
         } else { console.log("classes : ",classes) }
         
@@ -57,6 +57,7 @@ export class NoterefBiblioref {
         popOverCollection.popOverDescription = doc.getElementById(id).innerHTML;
         this.noteRefCollection.push({'popOverCollection':popOverCollection, 'item':this.noteRefDoms[i]})
       }
+      console.log("this.noteRefCollection : ", this.noteRefCollection);
       new BindGlossaryCallBacks({'divGlossaryRef' : this.divGlossaryRef, 'bookDiv' : this.bookDiv, node:this.node, basePath: this.basePath, 'noteRefCollection' : this.noteRefCollection});
       //window.renderPopUp(this.biblorefCollection);
     }
