@@ -42,6 +42,7 @@ let expirationDate;
 export class PdfBook extends Component {
   constructor(props){
     super(props);
+    document.title = 'Pearson eText';
     const cookies = new Cookies();
     if(this.props.location.query.invoketype !== undefined && 
               this.props.location.query.invoketype === 'pi')

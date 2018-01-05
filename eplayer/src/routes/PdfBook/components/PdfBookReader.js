@@ -472,8 +472,8 @@ export class PdfBookReader extends Component {
   /* Method for setting the zoom level selected by user, using passing the selected value. */
   setCurrentZoomLevel = (level) => {
     let currZoomLevel = this.state.currZoomLevel;
-    if(level == 0){
-      currZoomLevel = 0.25;
+    if(level <= 0.1){
+      currZoomLevel = 0.1;
     }else{
       currZoomLevel = level;
     }
