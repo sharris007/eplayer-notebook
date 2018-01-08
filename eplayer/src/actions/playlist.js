@@ -295,6 +295,7 @@ export const getCourseCallServiceForRedirect = (data) => dispatch => PlaylistApi
   .then(response => response.json())
   .then((response) => {
       if (response.status >= 400) {
+        dispatch(getBookDetails(response));
         browserHistory.push(`/eplayer/error/${response.status}`);
         return false;
       }
@@ -318,6 +319,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
   .then(response => response.json())
   .then((response) => {
     if (response.status >= 400) {
+      dispatch(getBookDetails(response));
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
