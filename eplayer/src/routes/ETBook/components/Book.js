@@ -373,20 +373,30 @@ export class Book extends Component {
     const deletedBookmarkData = find(this.props.book.bookmarks, bookmark => bookmark.id === bookmarkId);
     let sectionInfo = {};
     let chapterInfo = {};
+    let sectionTitle = {};
+    
     this.props.tocData.content.list.forEach((chapter, i)=>{
-      sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedBookmarkData.source.id);
-      if(sectionInfo && !chapterInfo.title) {
-        chapterInfo = chapter;
-      }
-    })
+      sectionInfo = find(this.props.tocData.content.list[i].children, list => list.id === deletedBookmarkData.source.id);
+     // sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedBookmarkData.source.id);
+     
+        if(sectionInfo) {
+          chapterInfo = chapter;
+          sectionTitle = sectionInfo;         
+        }
+        
+    } )
+  
+    
     let dataLayerObj = {
       'eventAction': 'Deleting BookMark',
       'event': 'bookmarkDelete',
       'eventCategory': 'Bookmarks',
       'chapterTitle': chapterInfo.title,
-      'sectionTitle': sectionInfo.title
+      'sectionTitle': sectionTitle.title
     }
     dataLayer.push(dataLayerObj);
+    
+
   };
 
   onNavChange = (data) => {
