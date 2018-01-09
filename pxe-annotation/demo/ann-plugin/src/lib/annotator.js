@@ -44,6 +44,8 @@ Annotator = (function(_super) {
 
   Annotator.prototype.viewerHideTimer = null;
 
+  Annotator.prototype.annPopupLPosition = {'right' : '-25px' };
+
   function Annotator(element, options) {
     this.onDeleteAnnotation = __bind(this.onDeleteAnnotation, this);
     this.onEditAnnotation = __bind(this.onEditAnnotation, this);
@@ -305,6 +307,10 @@ Annotator = (function(_super) {
     return this.isShareable=isShareable;
   };
 
+  Annotator.prototype.annPopupPosition = function(popupPosition) {
+    return this.annPopupLPosition = popupPosition;
+  };
+
   Annotator.prototype.updateAnnotationId = function (annotation) {
      $('.annotator-hl').each(function() {
       if($(this).data("annotation").createdTimestamp.toString() == annotation.createdTimestamp) {
@@ -365,6 +371,7 @@ Annotator = (function(_super) {
     
   };
   Annotator.prototype.alignNotes = function() {
+    $('.annotator-handle').css(this.annPopupLPosition);
     var notes=document.getElementsByClassName('annotator-handle');
     for (var i = 0; i<notes.length - 1; i++) {
       for(var j=i+1;j<notes.length;j++){

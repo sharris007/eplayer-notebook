@@ -26,6 +26,9 @@ class Annotation extends Component {
   componentDidMount() { 
     this.annotationEventHandler();
     $('.' + this.props.contentId).annotator('shareAnnotations', this.props.shareableAnnotations);
+    if (this.props.annPopupPosition) {
+      $('.' + this.props.contentId).annotator('annPopupPosition', this.props.annPopupPosition);
+    }
     const contentWid = $('.' + this.props.contentId).width()+40
     $('.annotator-editor').css({'left':contentWid});
   }

@@ -1,6 +1,6 @@
 {
   "name": "@pearson-incubator/pxe-annotation",
-  "version": "1.0.48",
+  "version": "1.0.49",
   "description": "",
   "main": "./main.js",
   "scripts": {
