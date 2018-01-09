@@ -136,10 +136,13 @@ export class Book extends Component {
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
-          if(piSession.userId() !== undefined && piSession.userId() !== null)
-          {
-            self.state.urlParams.user = piSession.userId();
-          }
+          const useridIntervalCheck = setInterval(() => {
+            if(!piSession.userId())
+            {
+              self.state.urlParams.user = piSession.userId();
+              clearInterval(useridIntervalCheck);
+            }
+          });
           piSession.getToken(function (result, userToken) {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
