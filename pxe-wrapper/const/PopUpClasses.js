@@ -15,6 +15,7 @@ export const  MoreInfoPopUpClasses = [
 ];
 
 export const NoterefClasses = [
+  'a.biblioref',
   'a.noteref.noteref_biblioref',
   'a.noteref.noteref_rearnote'
 ];
