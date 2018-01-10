@@ -40,11 +40,11 @@ const webpackConfig = {
     root: paths.client(),
     extensions: ['', '.js', '.jsx', '.json'],
     alias: {
-      react: path.resolve('node_modules/react'),
-      'assessment-client': path.resolve('./node_modules/@pearson-incubator/vega-viewer/node_modules/@pearson-incubator/assessment-client'),
+      react: path.resolve(__dirname, '../node_modules/react'),
+      'assessment-client': path.resolve(__dirname, '../node_modules/@pearson-incubator/vega-viewer/node_modules/@pearson-incubator/assessment-client'),
       'tdx-components': locatePath.sync([
-        path.resolve('./node_modules/@pearson-incubator/tdx-components'),
-        path.resolve('./node_modules/@pearson-incubator/vega-viewer/node_modules/@pearson-incubator/assessment-client/node_modules/@pearson-incubator/tdx-components')
+        path.resolve(__dirname, '../node_modules/@pearson-incubator/tdx-components'),
+        path.resolve(__dirname, '../node_modules/@pearson-incubator/vega-viewer/node_modules/@pearson-incubator/assessment-client/node_modules/@pearson-incubator/tdx-components')
       ])
     }
   },
