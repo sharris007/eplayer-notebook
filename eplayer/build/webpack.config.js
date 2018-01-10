@@ -21,6 +21,7 @@ const debug = require('debug')('app:webpack:config');
 const path = require('path');
 // const Promise = require('es6-promise').Promise;
 // const jquery = require('jquery');
+const locatePath = require('locate-path');
 
 const annotationLibPath = path.join(__dirname, '../node_modules/@pearson-incubator/pxe-annotation/demo/ann-plugin/output');
 const webInfPath = path.join(__dirname, '../WEB-INF');
@@ -37,7 +38,15 @@ const webpackConfig = {
   devtool: config.compiler_devtool,
   resolve: {
     root: paths.client(),
-    extensions: ['', '.js', '.jsx', '.json']
+    extensions: ['', '.js', '.jsx', '.json'],
+    alias: {
+      react: path.resolve('node_modules/react'),
+      'assessment-client': path.resolve('./node_modules/@pearson-incubator/vega-viewer/node_modules/@pearson-incubator/assessment-client'),
+      'tdx-components': locatePath.sync([
+        path.resolve('./node_modules/@pearson-incubator/tdx-components'),
+        path.resolve('./node_modules/@pearson-incubator/vega-viewer/node_modules/@pearson-incubator/assessment-client/node_modules/@pearson-incubator/tdx-components')
+      ])
+    }
   },
   module: {},
   stylus: {

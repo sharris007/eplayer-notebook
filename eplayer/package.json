@@ -111,9 +111,8 @@
     "@pearson-incubator/pxe-wrapper": "1.0.14",
     "@pearson-incubator/search": "0.1.38",
     "@pearson-incubator/toc": "0.1.60",
-
     "@pearson-incubator/vega-core": "0.0.97",
-    "@pearson-incubator/vega-viewer": "0.0.81",
+    "@pearson-incubator/vega-viewer": "0.0.82",
     "@pearson-incubator/viewer": "0.1.44",
     "axios": "^0.15.3",
     "babel-loader": "^6.2.5",
@@ -140,6 +139,7 @@
     "jquery": "^3.2.1",
     "js-md5": "^0.6.0",
     "json-loader": "^0.5.4",
+    "locate-path": "^2.0.0",
     "lodash": "^4.16.4",
     "material-ui": "^0.16.3",
     "nib": "1.1.0",
