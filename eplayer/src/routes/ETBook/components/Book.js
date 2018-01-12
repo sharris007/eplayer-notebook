@@ -136,9 +136,16 @@ export class Book extends Component {
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
-          if(piSession.userId() !== undefined && piSession.userId() !== null)
+           const useridIntervalCheck = setInterval(() => {
+            if(!piSession.userId())
+            {
+              self.state.urlParams.user = piSession.userId();
+              clearInterval(useridIntervalCheck);
+            }            
+          });
+          if(!piSession.currentToken())
           {
-            self.state.urlParams.user = piSession.userId();
+              localStorage.setItem('secureToken',  piSession.currentToken());
           }
           piSession.getToken(function (result, userToken) {
             if (result === piSession['Success']) {
@@ -1230,6 +1237,10 @@ export class Book extends Component {
             this.userType = 'instructor';
         }
          this.productModel = 'ETEXT2_SMS';
+      }
+      if(piSession){
+        this.state.urlParams.user = piSession.userId();
+        localStorage.setItem('secureToken', piSession.currentToken());
       }
       annotationClient = axios.create({
         baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
