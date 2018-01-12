@@ -143,7 +143,7 @@ export class Book extends Component {
               clearInterval(useridIntervalCheck);
             }            
           });
-          if(piSession.currentToken() !== undefined && piSession.currentToken() !== null))
+          if(piSession.currentToken() !== undefined && piSession.currentToken() !== null)
           {
               localStorage.setItem('secureToken',  piSession.currentToken());
           }
