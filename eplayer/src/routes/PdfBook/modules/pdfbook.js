@@ -1337,7 +1337,8 @@ const ACTION_HANDLERS = {
       hasbookmarkpagebutton: action.payload.data[0].toolBarFeaturesTO.hasBookMarkPageButton,
       hasdrawerbutton: action.payload.data[0].generalFeaturesTO.hasLeftAccordion,
       hasPrintLink: action.payload.data[0].headerFeaturesTO.hasPrintLink,
-      hasShowLinksButton: action.payload.data[0].toolBarFeaturesTO.hasShowLinksButton
+      hasShowLinksButton: action.payload.data[0].toolBarFeaturesTO.hasShowLinksButton,
+      printWithFooter: action.payload.data[0].generalFeaturesTO.printWithFooter
     }
   }),
   [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({
