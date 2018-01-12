@@ -143,19 +143,18 @@ export class Book extends Component {
               clearInterval(useridIntervalCheck);
             }            
           });
-          if(!piSession.currentToken())
+          if(piSession.currentToken() !== undefined && piSession.currentToken() !== null))
           {
               localStorage.setItem('secureToken',  piSession.currentToken());
           }
           piSession.getToken(function (result, userToken) {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
-              // const piUserId = piSession.userId();
               if (!isAuthToken && !Utils.checkCookie('etext-cdn-token')) {
                 isAuthToken = true;
                 self.props.dispatch(getAuthToken(userToken));
               }
-              // self.state.urlParams.user = piUserId;
+              self.state.urlParams.user = piSession.userId();
               clearInterval(IntervalCheck);
             }
           });
@@ -1240,7 +1239,9 @@ export class Book extends Component {
       }
       if(piSession){
         this.state.urlParams.user = piSession.userId();
-        localStorage.setItem('secureToken', piSession.currentToken());
+        if(piSession.currentToken() !== undefined && piSession.currentToken() !== null){
+          localStorage.setItem('secureToken', piSession.currentToken());
+        }
       }
       annotationClient = axios.create({
         baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,

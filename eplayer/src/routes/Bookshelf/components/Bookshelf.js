@@ -57,11 +57,17 @@ export default class BookshelfPage extends React.Component {
     document.title = 'Bookshelf';
     this.cookies = new Cookies();
     this.piTokenFlag = false;
+    if(piSession){
+      if(piSession.currentToken() !== undefined && piSession.currentToken() !== null)
+      {
+          localStorage.setItem('secureToken',  piSession.currentToken());
+      }
+    }
     if(this.props.location.query.invoketype !== 'et1')
     {
       let appPath             = window.location.origin;
       let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
-      redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
+      redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");      
       setTimeout(()=>{
         piSession.getToken((result, userToken) => {
         if (result === piSession.Success) {

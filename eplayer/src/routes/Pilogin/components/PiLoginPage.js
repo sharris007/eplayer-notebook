@@ -35,6 +35,9 @@ class PiLoginPage extends React.Component {
       let appPath             = window.location.origin;
       let redirectCourseUrl   = appPath+'/eplayer/bookshelf';
       redirectCourseUrl       = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
+      if(piSession.currentToken() !== undefined && piSession.currentToken() !== null){
+        localStorage.setItem('secureToken',piSession.currentToken());
+      }
       piSession.getToken(function(result, userToken){
         if(result === 'success'){
           localStorage.setItem('secureToken',userToken);
