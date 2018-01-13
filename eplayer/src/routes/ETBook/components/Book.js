@@ -30,7 +30,7 @@ import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
 import { VegaViewPager } from '@pearson-incubator/vega-viewer';
-import { Navigation, Progress } from '@pearson-incubator/aquila-js-core';
+import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
 import axios from 'axios';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
@@ -1342,7 +1342,6 @@ export class Book extends Component {
     };
     return (
       <div onClick={this.closeHeaderPopups}>
-      {!playlistReceived?<div className="pageCenterLoading"><Progress /></div>:null}
         {playlistReceived &&
           <LearningContextProvider
             contextId="ddddd"
