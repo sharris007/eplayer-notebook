@@ -11,33 +11,25 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
+import checkIfElementExists from '../lib/checkIfElementExists';
+
 /**
- * Select the text area of the given element
- * @param  {String}   element  Element selector
- * @param  {String}   startOffsetX        X coordinate to move to
- * @param  {String}   startOffsetY        Y coordinate to move to
- * @param  {String}   endOffsetX          X coordinate to move to
- * @param  {String}   endOffsetY          Y coordinate to move to
- * @param  {Function} done     Function to execute when finished
+ * Set the value of the given input field to a new value or add a value to the
+ * current element value
+ * @param  {String}   method  The method to use (add or set)
+ * @param  {String}   value   The value to set the element to
+ * @param  {String}   element Element selector
+ * @param  {Function} done    Function to execute when finished
  */
-module.exports = (element, done) => {
-	/**
-     * X coordinate
-     * @type {Int}
+module.exports = (valUsername, elementUserField, valPassword, elementPasswordField, elementForm, done) => {
+    /**
+     * The command to perform on the browser object (addValue or setValue)
+     * @type {String}
      */
-    const startX =  100;
-    const endX = 500;
-	/**
-     * Y coordinate
-     * @type {Int}
-     */
-    const startY = 200;
-    const endY =  400;
 
-    browser.moveToObject(element,startX,startY);
-    browser.buttonDown();
-    browser.moveToObject(element,endX,endY);
-    browser.buttonUp();
-
+    checkIfElementExists(elementUserField, false, 1);
+    browser.setValue(elementUserField, valUsername);
+    browser.setValue(elementPasswordField, valPassword);
+    browser.click(elementForm);
     done();
 };
