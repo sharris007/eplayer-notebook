@@ -332,10 +332,13 @@ export class Book extends Component {
     const deletedAnnotationData = find(this.props.book.annTotalData, note => note.id === annotationId);
     let sectionInfo = {};
     let chapterInfo = {};
+    let sectionTitle = {};
     this.props.tocData.content.list.forEach((chapter, i)=>{
-      sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedAnnotationData.pageId);
-      if(sectionInfo && !chapterInfo.title) {
+    //  sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedAnnotationData.pageId);
+      sectionInfo = find(this.props.tocData.content.list[i].children, list => list.id === deletedAnnotationData.pageId);
+      if(sectionInfo) {
         chapterInfo = chapter;
+        sectionTitle = sectionInfo;
       }
     })
     let dataLayerObj = {
@@ -345,9 +348,10 @@ export class Book extends Component {
       'selectedText': deletedAnnotationData.text,
       'text': deletedAnnotationData.comment,
       'chapterTitle': chapterInfo.title,
-      'sectionTitle': sectionInfo.title
+      'sectionTitle': sectionTitle.title
     }
     dataLayer.push(dataLayerObj);
+     
   };
 
   addBookmarkHandler = () => {
