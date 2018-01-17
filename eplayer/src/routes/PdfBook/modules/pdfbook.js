@@ -592,6 +592,7 @@ export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
             pageObj.chaptername = page.chapterName;
             pageObj.isbookmark = page.isBookmark;
             pageObj.pdfPath = page.pdfPath;
+            pageObj.printDisabled = page.printDisabled;
             pageObj.readerPlusID = page.readerPlusID;
             bookState.bookInfo.pages.push(pageObj);
           });
@@ -638,6 +639,7 @@ export function fetchPageInfo(userid, bookid, bookeditionid,
             pageObj.chaptername = page.chapterName;
             pageObj.isbookmark = page.isBookmark;
             pageObj.pdfPath = page.pdfPath;
+            pageObj.printDisabled = page.printDisabled;
             pageObj.readerPlusID = page.readerPlusID;
             bookState.bookInfo.pages.push(pageObj);
           });
