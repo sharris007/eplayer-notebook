@@ -1310,18 +1310,21 @@ printFunc = () => {
     };
     /*Creating array of objects containing options info for moreMenu*/
     let moreMenuData = [];
+    let currPageObj = this.findPages(pages, this.state.currPageIndex);
     let showHideHotspots = {
       type : 'menuItem',
       value : 'showHideHotspots',
       text : this.state.showHotspot ? messages.hideLinks ? messages.hideLinks :'Hide Links'
                   : messages.showLinks ? messages.showLinks : 'Show Links',
-      onClick : this.showHideRegions
+      onClick : this.showHideRegions,
+      isDisabled : false
     }
     let printData = {
       type : 'menuItem',
       value : 'print',
       text : messages.print ? messages.print : 'Print',
-      onClick : this.printFunc
+      onClick : this.printFunc,
+      isDisabled : currPageObj ? currPageObj.printDisabled ? true : false : false
     }
     let signOutData = {
       type : 'menuItem',
