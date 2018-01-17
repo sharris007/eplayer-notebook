@@ -145,16 +145,7 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
     }
   };
   let queryString;
-/*  if (roletypeid == 2)
-  {
-    queryString = `/bookmark?limit=${eT1Contants.readerApiResponseRecordsLimits}&userId=${userId}&bookId=${bookId}`;
-  }
-  else
-  {
-    queryString = `/bookmark?limit=${eT1Contants.readerApiResponseRecordsLimits}&userId=${userId}&bookId=${bookId}&courseId=${courseId}`;
-  }*/
   queryString = '/api/context/'+bookId+'/identities/'+userId+'/notesX?isBookMark=true';
-  // const authorizationHeaderVal = createAuthorizationToken(queryString, 'GET');
 
   /* Dispatch is part of middleware used to dispatch the action, usually used in Asynchronous Ajax call.*/
   return (dispatch) => {
@@ -191,11 +182,11 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
             uri: extID,
             externalId: extID
           };
-          if (roletypeid == 3 && bookmark.subContextId == courseId)
+          if (roletypeid == eT1Contants.UserRoleType.Instructor && bookmark.subContextId == courseId)
           {
             bookState.bookmarks.push(bmObj);
           }
-          else
+          else if (roletypeid == eT1Contants.UserRoleType.Student)
           {
             bookState.bookmarks.push(bmObj);
           }
@@ -499,7 +490,7 @@ export function updateAuthKey(ssoKey)
 export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeId, uid, ubd, ubsd, globaluserid, authkey) {
   let roleTypeID = roleTypeId;
   if (roleTypeID === undefined || roleTypeID === null || roleTypeID === '') {
-    roleTypeID = 2;
+    roleTypeID = eT1Contants.UserRoleType.Student;
   }
   const bookState = {
     bookInfo: {
@@ -824,15 +815,13 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
     }
   };
   let queryString;
-  if (roletypeid == 2)
+  if (roletypeid == eT1Contants.UserRoleType.Student)
   {
     queryString = '/api/context/'+bookId+'/identities/'+userid+'/notesX?isBookMark=false&withShared=true';
-    // queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}`;
   }
   else
   {
     queryString = '/api/context/'+bookId+'/identities/'+userid+'/notesX?isBookMark=false';
-    // queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}&courseId=${courseId}&userId=${userid}`;
   }
   return (dispatch) => {
     dispatch(request('highlights'));
@@ -873,11 +862,14 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
             hlObj.creationTime = highlight.createdTime;
             hlObj.time = highlight.updatedTime;
             hlObj.pageIndex = 1;        // For Foxit
-            if ((_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
-                  && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId) {
+            if ((roletypeid == eT1Contants.UserRoleType.Instructor && (_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
+                  && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId)
+               ||
+               (roletypeid == eT1Contants.UserRoleType.Student && (_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
+                  && (_.toString(hlObj.userId) === _.toString(userid)))) {
               hlObj.isHighlightOnly = false;
               bookState.highlights.push(hlObj);
-            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3 && hlObj.courseId == courseId) {
+            } else if (roletypeid == eT1Contants.UserRoleType.Student && hlObj.meta.roletypeid == eT1Contants.UserRoleType.Instructor && hlObj.courseId == courseId) {
               if(hlObj.shared)
               {
                hlObj.isHighlightOnly = false;

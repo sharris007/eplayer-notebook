@@ -55,6 +55,10 @@ export const eT1Contants = {
     CHROMELESS_URL : 15,
     JAZZASSET : 16
   },
+  UserRoleType : {
+    Student: 2,
+    Instructor: 3
+  },
   SCENARIOS : {
     S1 : 1,
     S3 : 3,
