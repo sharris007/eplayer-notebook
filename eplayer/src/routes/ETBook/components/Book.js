@@ -673,7 +673,7 @@ export class Book extends Component {
       let annElement = $('#contentIframe').contents().find('span[data-ann-id=' + annId + ']');
       if (annElement && annElement[0]) {
         $('html, body').animate({
-          scrollTop: annElement[0].getBoundingClientRect().top
+          scrollTop: annElement[0].getBoundingClientRect().top - 60
         });
       }
     }
