@@ -187,7 +187,10 @@
     "karma-webpack-with-fast-source-maps": "^1.9.2",
     "mocha": "^3.0.1",
     "sinon": "^1.17.5",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "enzyme": "^2.9.1",
+    "react-addons-test-utils": "^15.4.0",
+    "react-test-renderer": "^15.6.2"
   },
   "devDependencies": {
     "allure-commandline": "^2.1.1",
