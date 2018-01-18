@@ -17,8 +17,8 @@
 // import { config } from '../../../../config/environments';
 // const ROOT_URL = 'http://view.dev2.ebookplus.pearsoncmg.com/ebook/ipad/searchbook?bookid=7443104&globalbookid=CM76820710&sortby=1&version=1.0&authkey=31358503403719696212017&outputformat=JSON';
 import fetch from 'isomorphic-fetch';
-import { eT1Contants } from '../../common/et1constants';
-import { getmd5 } from '../../Utility/Util';
+import { eT1Contants } from '../components/common/et1constants';
+import { getmd5 } from '../components/Utility/Util';
 
 export const SEARCH = 'SEARCH';
 export const CLEAR_SEARCH_OBJ = 'CLEAR_SEARCH_OBJ';
