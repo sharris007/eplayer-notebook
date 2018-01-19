@@ -12,32 +12,13 @@
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 /**
- * Select the text area of the given element
- * @param  {String}   element  Element selector
- * @param  {String}   startOffsetX        X coordinate to move to
- * @param  {String}   startOffsetY        Y coordinate to move to
- * @param  {String}   endOffsetX          X coordinate to move to
- * @param  {String}   endOffsetY          Y coordinate to move to
+ * Scroll the page to the given element
+ * @param  {String}   selector Element selector
+ * @param  {String}   expectedString Expected String
  * @param  {Function} done     Function to execute when finished
  */
-module.exports = (element, done) => {
-	/**
-     * X coordinate
-     * @type {Int}
-     */
-    const startX =  100;
-    const endX = 500;
-	/**
-     * Y coordinate
-     * @type {Int}
-     */
-    const startY = 200;
-    const endY =  400;
-
-    browser.moveToObject(element,startX,startY);
-    browser.buttonDown();
-    browser.moveToObject(element,endX,endY);
-    browser.buttonUp();
-
+module.exports = (selector, expectedString, done) => {
+  var url =  browser.getCssProperty(selector,"background-image");
+    expect(url.value).to.contain(expectedString);
     done();
 };

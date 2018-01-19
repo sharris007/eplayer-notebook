@@ -100,6 +100,15 @@ class PopUpInfo extends Component {
     return false;
   }
 
+  closeGlossaryOnClick = (e) => {
+    // console.log(e);
+    // alert('clicked');
+    if (e.target.tagName === 'A') {
+      return false;
+    }
+    this.closePopUp();
+  };
+
   framePopOver = (index, event) => {
     event.preventDefault();
     this.closePopUp();
@@ -111,6 +120,7 @@ class PopUpInfo extends Component {
 
     const props = this.props.popUpCollection[index];
     const node = this.props.node.contentDocument.body;
+    node.addEventListener('click', this.closeGlossaryOnClick);
     const iframe = document.getElementById(this.props.node.id);
     const pageFontFamilyStyle = window.getComputedStyle(iframe.contentDocument.body, null).getPropertyValue('font-family');
     let iframeFreeSpace = 0;
@@ -132,7 +142,7 @@ class PopUpInfo extends Component {
     console.log("document.getElementById( 'contentIframe' ) ", document.getElementById( 'contentIframe' ).offsetTop)*/
     if (props.popOverCollection) {
       const bookDivHeight = `${node.clientHeight}px`;
-      document.getElementsByClassName('mm-popup')[0].style.height = bookDivHeight;
+      document.getElementsByClassName('mm-popup')[0].style.height = 0;
       const content = renderHTML(props.popOverCollection.popOverDescription);
       Popup.registerPlugin('popover', function (element) {
         this.create({
@@ -216,10 +226,10 @@ class PopUpInfo extends Component {
           }
         }
       }
-      setTimeout(function() {
-        if($('.accessibility_audio').length && $('.mm-popup__box').length) {
-            $('.accessibility_audio').text('');
-            $('.accessibility_audio').text($('.mm-popup__box').text());
+      setTimeout(() => {
+        if ($('.accessibility_audio').length && $('.mm-popup__box').length) {
+          $('.accessibility_audio').text('');
+          $('.accessibility_audio').text($('.mm-popup__box').text());
         }
       }, 500);
     }

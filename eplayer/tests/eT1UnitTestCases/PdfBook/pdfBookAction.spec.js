@@ -84,7 +84,7 @@ describe('pdfBook (ActionCreators)', () => {
   	}
     actionCreatorFunctionWithDispatch(fetchTocAndViewer,dispatchArgs,'fetchTocAndViewer');
 
-    //fetchBookmarksUsingReaderApi
+   /* //fetchBookmarksUsingReaderApi
     bookState = {
     			bookmarks: [],
     			isFetching: {
@@ -114,7 +114,7 @@ describe('pdfBook (ActionCreators)', () => {
   		bookState
   	}
   	actionCreatorFunctionWithDispatch(removeBookmarkUsingReaderApi,dispatchArgs,'removeBookmarkUsingReaderApi');
-
+*/
   	//fetchPageInfo
   	bookState = {
     		bookInfo: {
@@ -135,7 +135,7 @@ describe('pdfBook (ActionCreators)', () => {
   	}
   	actionCreatorFunctionWithDispatch(goToPage,dispatchArgs,'goToPage');
 
-  	//fetchHighlightUsingReaderApi
+  	/*//fetchHighlightUsingReaderApi
   	bookState = {
    			highlights: [],
     		isFetching: {
@@ -172,7 +172,7 @@ describe('pdfBook (ActionCreators)', () => {
   		bookState
   	}
   	actionCreatorFunctionWithDispatch(editHighlightUsingReaderApi,dispatchArgs,'editHighlightUsingReaderApi');
-
+*/
   	//fetchRegionsInfo
   	bookState = {
     		regions: [],

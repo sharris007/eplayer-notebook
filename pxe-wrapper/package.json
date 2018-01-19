@@ -1,6 +1,6 @@
 {
   "name": "@pearson-incubator/pxe-wrapper",
-  "version": "1.0.13",
+  "version": "1.0.16",
   "description": "",
   "main": "./main.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
-    "@pearson-incubator/popup-info": "^1.1.1",
+    "@pearson-incubator/popup-info": "2.0.23",
     "install": "^0.8.7",
     "intl": "^1.2.5",
     "npm": "^4.4.1",

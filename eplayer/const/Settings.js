@@ -18,9 +18,9 @@ export const resources = {
     TextSearchLimit: 100,
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
-    idcDashboardEnabled : true,
-    iseEnabled : true,
-    zeppelinEnabled     : true,
+    idcDashboardEnabled : false,
+    iseEnabled : false,
+    zeppelinEnabled     : false,
     isDisableAnnotation : false
   },
   links: {
@@ -133,10 +133,10 @@ export const resources = {
       prod         :"https://etext-instructor.pearson.com/idc-api/course",
     },
     spectrumServiceUrl : {
-      local        :"https://spectrum-qa.stg-openclass.com/api/context",
-      dev          :"https://spectrum-qa.stg-openclass.com/api/context",
-      qa           :"https://spectrum-qa.stg-openclass.com/api/context",
-      stage        :"https://spectrum.stg-openclass.com/api/context",
+      local        :"https://spectrum-qa.pearsoned.com/api/context",
+      dev          :"https://spectrum-qa.pearsoned.com/api/context",
+      qa           :"https://spectrum-qa.pearsoned.com/api/context",
+      stage        :"https://spectrum-stg.pearsoned.com/api/context",
       PERF         :"https://spectrum-ppe.pearsoned.com/api/context",
       prod         :"https://spectrum.openclass.com/api/context"
     },

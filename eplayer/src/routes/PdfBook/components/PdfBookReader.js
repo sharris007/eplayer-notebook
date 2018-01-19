@@ -472,8 +472,8 @@ export class PdfBookReader extends Component {
   /* Method for setting the zoom level selected by user, using passing the selected value. */
   setCurrentZoomLevel = (level) => {
     let currZoomLevel = this.state.currZoomLevel;
-    if(level == 0){
-      currZoomLevel = 0.25;
+    if(level <= 0.1){
+      currZoomLevel = 0.1;
     }else{
       currZoomLevel = level;
     }
@@ -1236,8 +1236,13 @@ printFunc = () => {
     printFrame.style.height = "100px";
     document.body.appendChild(printFrame);
     printFrame.contentWindow.document.open();
-    printFrame.contentWindow.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:auto; page-break-after:avoid;} img{ max-height: 32cm; max-width: 24cm;} #footer{ display:block; bottom: 0 }}</style>');
+    if(this.props.data.book.bookFeatures.printWithFooter){
+      printFrame.contentWindow.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 20cm;} #footer{ display:block; bottom: 0; }}</style>');
     printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();" ><div id=footer>'+copyrightInfo+'</div></img></div>');
+  }else{
+     printFrame.contentWindow.document.write('<style type="text/css"> @media print { @page { size:auto; page-break-after:avoid; margin:0} img{ max-height: 29.7cm; max-width: 20cm;} }</style>');
+    printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();" ></img></div>');
+  }
     printFrame.contentWindow.document.close();
     window.onafterprint = function(){
       document.body.removeChild(document.getElementById('printFrame'));
@@ -1305,18 +1310,21 @@ printFunc = () => {
     };
     /*Creating array of objects containing options info for moreMenu*/
     let moreMenuData = [];
+    let currPageObj = this.findPages(pages, this.state.currPageIndex);
     let showHideHotspots = {
       type : 'menuItem',
       value : 'showHideHotspots',
       text : this.state.showHotspot ? messages.hideLinks ? messages.hideLinks :'Hide Links'
                   : messages.showLinks ? messages.showLinks : 'Show Links',
-      onClick : this.showHideRegions
+      onClick : this.showHideRegions,
+      isDisabled : false
     }
     let printData = {
       type : 'menuItem',
       value : 'print',
       text : messages.print ? messages.print : 'Print',
-      onClick : this.printFunc
+      onClick : this.printFunc,
+      isDisabled : currPageObj ? currPageObj.printDisabled ? true : false : false
     }
     let signOutData = {
       type : 'menuItem',
@@ -1328,7 +1336,7 @@ printFunc = () => {
       moreMenuData.push(showHideHotspots);
       moreMenuData.push({type : 'divider'});
     }
-    if(this.props.data.book.bookFeatures.hasPrintLink == true)
+    if(this.props.data.book.bookFeatures.hasPrintLink == true && this.state.currPageIndex !== 0)
     {
       moreMenuData.push(printData);
       moreMenuData.push({type : 'divider'});

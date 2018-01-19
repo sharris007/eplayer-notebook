@@ -55,6 +55,10 @@ export const eT1Contants = {
     CHROMELESS_URL : 15,
     JAZZASSET : 16
   },
+  UserRoleType : {
+    Student: 2,
+    Instructor: 3
+  },
   SCENARIOS : {
     S1 : 1,
     S3 : 3,
@@ -140,6 +144,8 @@ export const eT1Contants = {
       stage        : 'https://pi-int.pearsoned.com/v1/piapi-int/login/',
       prod         : 'https://pi.pearsoned.com/v1/piapi/login/'
   },
+  clientAppNameForSpectrumApi: 'ETEXT1_WEB',
+  productModelForSpectrumApi: 'ETEXT1_PDF',
   ErrorCodeMessages : {
     Error_1 :'Either you have entered an incorrect username/password, or you do not have a subscription to this site.',
     Error_2 :'Server error occurred. Please try again later.'

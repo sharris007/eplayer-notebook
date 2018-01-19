@@ -1,14 +1,14 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
+ *
  *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
- *  * 
+ *  *
  *  * NOTICE:  All information contained herein is, and remains
  *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
  *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
  *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
+ *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 var date = new Date();
@@ -17,10 +17,10 @@ var mm = date.getMonth()+1;
 var yyyy = date.getFullYear();
 if(dd<10){
     dd='0'+dd;
-} 
+}
 if(mm<10){
     mm='0'+mm;
-} 
+}
 var today = dd+'-'+mm+'-'+yyyy;
 exports.config = {
     //
@@ -34,7 +34,9 @@ exports.config = {
     // `wdio` will be called from there.
     //
     specs: [
-        './integrationtests/src/features/**/*.feature',
+        './integrationtests/src/features/login.feature',
+        './integrationtests/src/features/bookshelf.feature',
+        //'./integrationtests/src/features/Book/hotspotFeature.feature',
     ],
     // Patterns to exclude.
     exclude: [
@@ -215,16 +217,28 @@ exports.config = {
         global.expect = chai.expect;
         global.assert = chai.assert;
         global.should = chai.should();
+
+      //Launch the site and Login
+        browser.url("/eplayer")
+        browser.waitForVisible("#username", 5000);
+        browser.setValue("#username", "et1_qaautomation_edu2");
+        browser.setValue("#password", "Pa55word@123");
+        browser.click("#mainButton");
     },
     //
     // Hook that gets executed before the suite starts
-    // beforeSuite: function beforeSuite(suite) {
-    // },
+    //beforeSuite: function beforeSuite(suite) {
+    //    browser.URL('https://etext-qa-stg.pearson.com/eplayer');
+    //    setbrowser.username('et1_qaautomation_edu1');
+    //    setbrowser.password('Pa55word@123');
+    //    browser.mainButton.click();
+
+    //},
     //
     // Hook that gets executed _before_ a hook within the suite starts (e.g.
     // runs before calling beforeEach in Mocha)
-    // beforeHook: function beforeHook() {
-    // },
+    //beforeHook: function beforeHook() {
+    //  },
     //
     // Hook that gets executed _after_ a hook within the suite starts (e.g. runs
     // after calling afterEach in Mocha)

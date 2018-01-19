@@ -25,8 +25,8 @@ import { pageDetails } from '../../../../const/Mockdata';// booksdata, tocData
 
 import './Book.scss';
 
-import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
-import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
+//import { getAnnCallService, postAnnCallService, deleteAnnCallService } from '../../../actions/annotation';
+//import { getBookCallService, getPlaylistCallService} from '../../../actions/playlist';
 
 export class Book extends Component {
   constructor(props) {
@@ -66,14 +66,14 @@ export class Book extends Component {
 
     // const pageUrl = this.state.currentPageDetails.playOrder;
     // eslint-disable-next-line
-    this.props.dispatch(getAnnCallService(1));
+    //this.props.dispatch(getAnnCallService(1));
   }
 
   componentWillUnmount() {
     WidgetManager.navChanged(this.nodesToUnMount);
   }
   componentWillMount(){
-    this.props.dispatch(getBookCallService(this.props.params.bookId));
+    //this.props.dispatch(getBookCallService(this.props.params.bookId));
   }
 
   parseDom = () => {
@@ -161,10 +161,10 @@ export class Book extends Component {
     // console.log('data stack', eventType);
     switch (eventType) {
       case 'annotationCreated': {
-        return this.props.dispatch(postAnnCallService(data));
+        //return this.props.dispatch(postAnnCallService(data));
       }
       case 'annotationDeleted': {
-        return this.props.dispatch(deleteAnnCallService(data));
+        //return this.props.dispatch(deleteAnnCallService(data));
       }
       default : {
         return eventType;
