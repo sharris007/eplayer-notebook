@@ -4,7 +4,7 @@ import book, { fetchTocAndViewer, fetchBookmarksUsingReaderApi, addBookmarkUsing
 	fetchPagebyPageNumber, fetchUserIcons, fetchBookFeatures, fetchGlossaryItems, fetchBasepaths,fetchUserInfo,
 	REQUEST_BOOKMARKS, RECEIVE_BOOKMARKS, ADD_BOOKMARK, REMOVE_BOOKMARK, REQUEST_TOC, RECEIVE_TOC, 
 	GO_TO_PAGE, SAVE_HIGHLIGHT, REQUEST_HIGHLIGHTS, RECIEVE_HIGHLIGHTS, REMOVE_HIGHLIGHT, 
-	LOAD_ASSERT_URL, EDIT_HIGHLIGHT, REQUEST_REGIONS, RECEIVE_REGIONS, RECEIVE_GLOSSARY_TERM } 
+	EDIT_HIGHLIGHT, REQUEST_REGIONS, RECEIVE_REGIONS, RECEIVE_GLOSSARY_TERM } 
 	 from '../../../src/routes/PdfBook/modules/pdfbook';
 //import actionCreatorFunctionWithDispatch from '../actionCreatorTestCase'
 function request(component) {
