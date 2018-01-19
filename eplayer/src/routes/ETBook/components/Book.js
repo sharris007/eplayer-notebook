@@ -30,7 +30,7 @@ import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
 import { VegaViewPager } from '@pearson-incubator/vega-viewer';
-import { Navigation, Progress } from '@pearson-incubator/aquila-js-core';
+import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
 import axios from 'axios';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
@@ -136,22 +136,25 @@ export class Book extends Component {
         redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
         if (piSession) {
           isSessionLoaded = true;
-          const useridIntervalCheck = setInterval(() => {
+           const useridIntervalCheck = setInterval(() => {
             if(!piSession.userId())
             {
               self.state.urlParams.user = piSession.userId();
               clearInterval(useridIntervalCheck);
-            }
+            }            
           });
+          if(piSession.currentToken() !== undefined && piSession.currentToken() !== null)
+          {
+              localStorage.setItem('secureToken',  piSession.currentToken());
+          }
           piSession.getToken(function (result, userToken) {
             if (result === piSession['Success']) {
               localStorage.setItem('secureToken', userToken);
-              // const piUserId = piSession.userId();
               if (!isAuthToken && !Utils.checkCookie('etext-cdn-token')) {
                 isAuthToken = true;
                 self.props.dispatch(getAuthToken(userToken));
               }
-              // self.state.urlParams.user = piUserId;
+              self.state.urlParams.user = piSession.userId();
               clearInterval(IntervalCheck);
             }
           });
@@ -684,7 +687,7 @@ export class Book extends Component {
       let annElement = $('#contentIframe').contents().find('span[data-ann-id=' + annId + ']');
       if (annElement && annElement[0]) {
         $('html, body').animate({
-          scrollTop: annElement[0].getBoundingClientRect().top
+          scrollTop: annElement[0].getBoundingClientRect().top - 60
         });
       }
     }
@@ -1248,6 +1251,12 @@ export class Book extends Component {
         }
          this.productModel = 'ETEXT2_SMS';
       }
+      if(piSession){
+        this.state.urlParams.user = piSession.userId();
+        if(piSession.currentToken() !== undefined && piSession.currentToken() !== null){
+          localStorage.setItem('secureToken', piSession.currentToken());
+        }
+      }
       annotationClient = axios.create({
         baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
         headers: this.annHeaders,
@@ -1347,7 +1356,6 @@ export class Book extends Component {
     };
     return (
       <div onClick={this.closeHeaderPopups}>
-      {!playlistReceived?<div className="pageCenterLoading"><Progress /></div>:null}
         {playlistReceived &&
           <LearningContextProvider
             contextId="ddddd"
