@@ -20,6 +20,7 @@ const payLoad = {
 
 let searchResults = [];
 let searchResultLength = 0;
+let requestId = '';
 
 function keyIndex(arr, key) {
   return arr.findIndex(item => (key === item.category));
@@ -90,6 +91,11 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
   payLoad.queryString = searchcontent;
   payLoad.filter=[];
   payLoad.filter.push("indexid:"+window.localStorage.getItem('searchIndexId'));
+  requestId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+  payLoad.requestId = requestId;
+  console.log('requestId ',requestId);
   console.log(resources.links.etextSearchUrl[domain.getEnvType()],payLoad);
   fetch(resources.links.etextSearchUrl[domain.getEnvType()], 
     {
@@ -102,7 +108,9 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
       body: JSON.stringify(payLoad)
     }).then(response => response.json())
    .then((response) => {
-     handleResults((getSearchFormat(response)));
+     if(response && response.requestId && requestId === response.requestId) {
+      handleResults((getSearchFormat(response)));
+     }   
    });
 }
 
