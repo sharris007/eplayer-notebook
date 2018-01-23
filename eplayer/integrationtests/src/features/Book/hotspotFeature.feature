@@ -8,8 +8,7 @@ Scenario: Bookshelf should be visible
 
 Scenario: Should launch the book
     When I click on the button "p*=Audio_492_Simp_Automation"
-    And I pause for 5000ms
-    Then I expect that element "#docViewer_ViewContainer_PageContainer_0" becomes visible
+    Then I wait on element "#docViewer_ViewContainer_PageContainer_0" for 10000ms to be visible
 
 
 Scenario: Should navigate to the page number 304 using search bar for Relative Assets
@@ -151,6 +150,8 @@ Scenario: Verify the display of Assets for Teacher user (All & Teacher should be
 Scenario: Verify the dispaly of Assets for Stdent user on page 305
     When I set "et1_qaautomation_stu2" value in element "#username" and "Pa55word@123" value in element "#password" and click on "#mainButton" button
     Then I wait on element "#bookshelf" for 10000ms to be visible
+    When I click on the button "p*=Audio_492_Simp_Automation"
+    Then I wait on element "#docViewer_ViewContainer_PageContainer_0" for 10000ms to be visible
     When I click on search icon ".icon-white.searchIcon" and in element "#search__input" set page as "305" and click on the searched term
     Then I expect that element "[name='eText MP3']" becomes visible
     Then I expect that element "[name='Teacher PSP']" is not visible
