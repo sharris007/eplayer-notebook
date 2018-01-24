@@ -45,11 +45,15 @@ export default (state = initialData, action) => {
     }
     case 'DELETE_BOOKMARK': {
       const bookmarkId = action.data.successItems ? action.data.successItems[0] : '';
-      const getDeletedbookmark = state.bookmarksData.filter(bookmark => bookmark.id !== bookmarkId);
+      let deletedBookmarkPageId=null;
+      const getDeletedbookmark = state.bookmarksData.filter((bookmark) => {
+        deletedBookmarkPageId = deletedBookmarkPageId?deletedBookmarkPageId:(bookmark.id===bookmarkId?bookmark.source.id:null)
+        return bookmark.id !== bookmarkId;
+      });
       return {
         ...state,
         bookmarksData: getDeletedbookmark,
-        data: bookmarkId ? { isBookmarked: false } : state.data.isBookmarked
+        data: deletedBookmarkPageId===action.currentPageId ? { isBookmarked: false } : {isBookmarked : state.data.isBookmarked}
       };
     }
     case 'CLEAR_BOOKMARKS': {
