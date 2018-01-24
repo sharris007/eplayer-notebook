@@ -86,7 +86,7 @@ webpackConfig.plugins = [
       { from: path.join(__dirname, '../hotspot_icons'), to: 'hotspot_icons' },
       { from: annotationLibPath, to: 'annotation-lib' },
       { from: webInfPath, to: 'WEB-INF' },
-      { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/public/pxe'), to: 'pxe_scripts' },
+      { from: path.join(__dirname, '../public/pxe'), to: 'pxe_scripts' },
       { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/demo/assets/js'), to: 'bxix_scripts' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ]),
