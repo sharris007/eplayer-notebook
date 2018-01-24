@@ -380,6 +380,7 @@ export class Book extends Component {
     let id = (bookmarkId ? bookmarkId : this.props.bookmarkedData.bookmarkId);
     this.forceUpdate();
     let bookmarksParams = this.state.urlParams;
+    bookmarksParams.currentPageId=this.props.params.pageId
     bookmarksParams.xAuth = localStorage.getItem('secureToken');
     bookmarksParams.body = { ids: [id] };
     this.props.dispatch(deleteBookmarkCallService(bookmarksParams));
@@ -1084,7 +1085,7 @@ export class Book extends Component {
       removeBookmarkHandler: callbacks.removeBookmarkHandler,
       isCurrentPageBookmarked: callbacks.isCurrentPageBookmarked
     };
-
+    
     const bookDetails = {
       title: '',
       author: ''

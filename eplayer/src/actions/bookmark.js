@@ -61,10 +61,11 @@ export const postBookmarkCallService = filterData => dispatch => BookmarkApi.doP
     });
 
  // DELETE call for Bookmark
-export const deleteBookmarkData = json => ({
+export const deleteBookmarkData = (json, currentPageId) => ({
   type: typeConstants.DELETE_BOOKMARK,
   data: json,
-  loading: true
+  loading: true,
+  currentPageId:currentPageId
 });
 
 export const deleteBookmarkCallService = filterData => dispatch => BookmarkApi.doDeleteBookmark(filterData)
@@ -72,7 +73,7 @@ export const deleteBookmarkCallService = filterData => dispatch => BookmarkApi.d
         response => response.json()
       )
     .then(
-        json => dispatch(deleteBookmarkData(json))
+        json => dispatch(deleteBookmarkData(json, filterData.currentPageId))
     );
 
 export const getTotalBookmarkCallService = filterData => dispatch =>
