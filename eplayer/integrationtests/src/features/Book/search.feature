@@ -85,14 +85,15 @@ Scenario: Should update search results on editing the search Term [TC-ETEXT-3828
     Then I expect that element ".searchCompContainer" becomes visible
     When I set "atom" to the inputfield "#search__input"
     Then I expect that element "span*=299" becomes visible
-    When I set "s" to the inputfield "#search__input"
+    When I set "atoms" to the inputfield "#search__input"
     Then I expect that element "span*=A1" becomes visible
-    When I press esc key
+    And I click on the element ".eT1headerBar>div>h1"
+    Then I expect that element ".searchCompContainer" becomes not visible
 
 
 Scenario: Should redirect to Login page on Sign-out after performing search [TC-ETEXT-3828_Search_44]
-    When I click on search icon ".icon-white.searchIcon" and in element "#search__input" set page as "304" and click on the searched term
-    Then I expect that element "[name='eText MP3']" becomes visible
+    When I click on search icon ".icon-white.searchIcon" and in element "#search__input" set page as "305" and click on the searched term
+    Then I wait on element "[name='eText MP3']" for 120000ms to be visible
     When I click on the element ".pe-icon--chevron-back-18"
     Then I wait on element ".signoutBtn>div>button" for 3000ms to be visible
     And I click on the element ".signoutBtn>div>button"
