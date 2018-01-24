@@ -149,6 +149,7 @@ export const eT1Contants = {
   ErrorCodeMessages : {
     Error_1 :'Either you have entered an incorrect username/password, or you do not have a subscription to this site.',
     Error_2 :'Server error occurred. Please try again later.'
-  }
+  },
+  printCopyrightInfo : 'Copyright &copy; 2018 Pearson Education'
 };
 export default eT1Contants;

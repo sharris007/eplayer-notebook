@@ -1332,7 +1332,8 @@ const ACTION_HANDLERS = {
       hasdrawerbutton: action.payload.data[0].generalFeaturesTO.hasLeftAccordion,
       hasPrintLink: action.payload.data[0].headerFeaturesTO.hasPrintLink,
       hasShowLinksButton: action.payload.data[0].toolBarFeaturesTO.hasShowLinksButton,
-      printWithFooter: action.payload.data[0].generalFeaturesTO.printWithFooter
+      printWithFooter: action.payload.data[0].generalFeaturesTO.printWithFooter,
+      printWithWatermark: action.payload.data[0].generalFeaturesTO.printWithWatermark
     }
   }),
   [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({

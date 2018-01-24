@@ -1225,24 +1225,31 @@ printFunc = () => {
     let currDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
     date = new Date(this.props.currentbook.expirationDate);
     let expirationDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
-    let copyrightInfo = `Printed by ${this.props.currentbook.firstName} ${this.props.currentbook.firstName} on ${currDate} autorized to use until ${expirationDate}. 
+    let userEmailId = this.props.currentbook.userEmailId ? this.props.currentbook.userEmailId : 'etextqa@pearson.com';
+    let copyrightViolationMsg = `Printed by ${this.props.currentbook.firstName} ${this.props.currentbook.firstName} (${userEmailId}) on ${currDate} autorized to use until ${expirationDate}. 
     Use beyond the authorized user or valid subscription date represents copyright violation.`;
-    var prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
-    var pageSrc = prtContent.currentSrc;
+    let printWatermark = eT1Contants.printCopyrightInfo; 
+    let prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
+    let pageSrc = prtContent.currentSrc;
     let printFrame = document.createElement('iframe');
     printFrame.id = "printFrame";
     printFrame.style.display = "none";
     printFrame.style.width = "100px";
     printFrame.style.height = "100px";
     document.body.appendChild(printFrame);
+    let frameContentCss = '#watermark{ top:30%; left:2%; position:absolute; transform: rotate(30deg); font-size:50px; font-weight:20px; opacity:0.3; display:none;} #footer{ bottom:0; position:absolute; display:none; font-size:14px}';
+    if(this.props.data.book.bookFeatures.printWithFooter && this.props.data.book.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #footer{ display:block; } #watermark{ display:block; }}';
+    }else if(this.props.data.book.bookFeatures.printWithFooter && !this.props.data.book.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #footer{ display:block; }}';
+    }else if(!this.props.data.book.bookFeatures.printWithFooter && this.props.data.book.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #watermark{ display:block; }}';
+    }else if(!this.props.data.book.bookFeatures.printWithFooter && !this.props.data.book.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;}}';
+    }
     printFrame.contentWindow.document.open();
-    if(this.props.data.book.bookFeatures.printWithFooter){
-      printFrame.contentWindow.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 20cm;} #footer{ display:block; bottom: 0; }}</style>');
-    printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();" ><div id=footer>'+copyrightInfo+'</div></img></div>');
-  }else{
-     printFrame.contentWindow.document.write('<style type="text/css"> @media print { @page { size:auto; page-break-after:avoid; margin:0} img{ max-height: 29.7cm; max-width: 20cm;} }</style>');
-    printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();" ></img></div>');
-  }
+    printFrame.contentWindow.document.write('<style type="text/css">'+frameContentCss+'</style>');
+    printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();"><div id=watermark>'+printWatermark+'</div><div id=footer>'+copyrightViolationMsg+'</div></div>');
     printFrame.contentWindow.document.close();
     window.onafterprint = function(){
       document.body.removeChild(document.getElementById('printFrame'));
