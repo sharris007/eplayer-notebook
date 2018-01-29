@@ -583,7 +583,7 @@ export class Book extends Component {
     const playlist = this.props.playlistData.content;
     for (let i = 0; i < playlistLength; i++) {
       if (playlist[i].id === getid) {
-        const nextpageId = playlist[i + 1] ? playlist[i + 1].id : playlist[i];
+        const nextpageId = playlist[i + 1] ? playlist[i + 1].id : playlist[i].id;
         return nextpageId;
       }
     }
