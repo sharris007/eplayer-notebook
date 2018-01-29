@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import { PreferencesComponent } from '@pearson-incubator/preferences';
-import { HeaderComponent, Drawer } from '@pearson-incubator/vega-core';
+import { HeaderComponent } from '@pearson-incubator/vega-core';
 import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
 import './Book.scss';
 import { browserHistory } from 'react-router';
@@ -29,6 +29,7 @@ import { getPreferenceCallService, postPreferenceCallService } from '../../../ac
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
+import { DrawerComponent } from '@pearson-incubator/vega-drawer';
 import { VegaViewPager } from '@pearson-incubator/vega-viewer';
 import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
@@ -1387,7 +1388,7 @@ export class Book extends Component {
                 /> }
                 {
                   this.props.book.tocReceived &&
-                  <Drawer
+                  <DrawerComponent
                     isDocked={false}
                     drawerWidth={400}
                     isDraweropen={this.state.drawerOpen}
