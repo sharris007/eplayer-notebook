@@ -700,6 +700,7 @@ export class PdfBookReader extends Component {
                break;
       case 'SPPASSET':
                source = hotspotDetails.linkValue;
+               var sppHeaderHeight =document.getElementById('sppModalHeader').style.height;
                var sppPlayer = document.getElementById('sppModalBody');
                var lastIndex = source.lastIndexOf("/");
                var assetID = source.slice(lastIndex+1);
@@ -707,11 +708,12 @@ export class PdfBookReader extends Component {
                var sppScript=document.createElement('SCRIPT');
                sppScript.src = scriptContent;
                sppPlayer.appendChild(sppScript);
-               sppPlayer.style.height = 450 + 'px';
-               sppPlayer.style.width = 450 + 'px';
+               sppPlayer.style.height = (document.documentElement.clientHeight - parseInt(sppHeaderHeight,10)) + 'px';
+               sppPlayer.style.width = document.documentElement.clientWidth + 'px';
                document.getElementById('sppCloseBtn').addEventListener('click',this.onHotspotClose);
                 try
                 {
+                  document.getElementById('root').appendChild(document.getElementById('sppModal'));
                   $('#sppModal').css("display","block");
                 }
                 catch(e){
@@ -1396,13 +1398,11 @@ printFunc = () => {
         </div>
         <div>
           <div id='sppModal' className='sppModal'>
-            <div id='sppModalContent' className='sppModalContent'>
-              <div id='sppModalHeader' className='sppModalHeader'>
+              <div id='sppModalHeader' className='sppModalHeader' style={{height: 50 + 'px'}}>
                 <span id='sppCloseBtn' className='sppCloseBtn'>&times;</span>
                   <p>Smart Pearson Player</p>
               </div>
               <div id='sppModalBody' className='sppModalBody' />
-            </div>
           </div>
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
         <LearningContextProvider
