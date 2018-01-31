@@ -39,7 +39,7 @@ export class BindGlossaryCallBacks {
     if (this.glossaryUrlCollection.length > 0) {
       this.triggerGlossaryService(this.glossaryUrlCollection[this.glossaryurlIndex]);
     } else {
-      new BindMoreInfoCallBacks({ glossaryCollection: this.glossaryCollection, node: props.node });
+      new BindMoreInfoCallBacks({ glossaryCollection: this.noteRefCollection, node: props.node });
     }
   }
 
