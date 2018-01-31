@@ -1166,17 +1166,23 @@ handleRegionClick(hotspotID) {
   /* Method to show or hide hotspots. */
   showHideRegions = () => {
     let regionElementList = document.getElementsByClassName('hotspotIcon');
-    if(regionElementList.length > 0 && regionElementList[0].style.display !== "none")
+    if(this.state.showHotspot == true)
     {
-      $(".hotspot").hide();
-      $(".hotspotIcon").hide();
-      this.setState({showHotspot:false});
+      try{
+        $(".hotspot").hide();
+        $(".hotspotIcon").hide();
+        this.setState({showHotspot:false});
+      }
+      catch(e){}
     }
     else
     {
-      $(".hotspot").show();
-      $(".hotspotIcon").show();
-      this.setState({showHotspot:true});
+      try{
+        $(".hotspot").show();
+        $(".hotspotIcon").show();
+        this.setState({showHotspot:true});        
+      }
+      catch(e){}
     }
   }
   getPreference = () => {
