@@ -18,9 +18,9 @@ export const resources = {
     TextSearchLimit: 100,
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
-    idcDashboardEnabled : false,
-    iseEnabled : false,
-    zeppelinEnabled     : false,
+    idcDashboardEnabled : true,
+    iseEnabled : true,
+    zeppelinEnabled     : true,
     isDisableAnnotation : false
   },
   links: {
