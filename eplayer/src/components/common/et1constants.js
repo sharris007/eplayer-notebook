@@ -66,6 +66,14 @@ export const eT1Contants = {
     S11 : 11,
     S88 : 88
   },
+  SppBaseUrls :
+  {
+    SppDev: 'http://mediaplayer-dev.pearsoncmg.com/assets',
+    SppCert:  'http://mediaplayer-cert.pearsoncmg.com/assets',
+    SppPPE:  'http://mediaplayer-ppe.pearsoncmg.com/assets',
+    SppStage: 'http://mediaplayer-test.pearsoncmg.com/assets',
+    SppProd : 'http://mediaplayer.pearsoncmg.com/assets'
+  },
   FoxitUrls : {
     qa: 'https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/',
     stage: 'http://foxit-poc.gls.pearson-intl.com/foxit-webpdf-web/pc/',

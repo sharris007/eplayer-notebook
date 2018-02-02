@@ -895,7 +895,11 @@ handleRegionClick(hotspotID) {
                     regionDetails.linkValue = basepath + regionDetails.linkValue;
                   }
                 }
-              if(_.startsWith(regionDetails.linkValue,'https://mediaplayer.pearsoncmg.com/assets') || _.startsWith(regionDetails.linkValue,'http://mediaplayer.pearsoncmg.com/assets'))
+              if(_.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppDev) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppDev)) ||
+                 _.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppCert) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppCert)) ||
+                 _.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppPPE) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppPPE)) ||
+                 _.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppStage) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppStage)) ||
+                 _.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppProd) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppProd)))
               {
                 regionDetails.hotspotType = 'SPPASSET';
               }
@@ -1346,11 +1350,11 @@ printFunc = () => {
       value : 'signOut',
       text : messages.signOut ? messages.signOut : 'Sign Out',
     }
-    if(this.props.data.book.bookFeatures.hasShowLinksButton == true)
-    {
-      moreMenuData.push(showHideHotspots);
-      moreMenuData.push({type : 'divider'});
-    }
+    // if(this.props.data.book.bookFeatures.hasShowLinksButton == true)
+    // {
+    //   moreMenuData.push(showHideHotspots);
+    //   moreMenuData.push({type : 'divider'});
+    // }
     if(this.props.data.book.bookFeatures.hasPrintLink == true && this.state.currPageIndex !== 0)
     {
       moreMenuData.push(printData);
