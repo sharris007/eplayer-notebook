@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import find from 'lodash/find';
 import WidgetManager from '../../../components/widget-integration/widgetManager';
 import { PreferencesComponent } from '@pearson-incubator/preferences';
-import { HeaderComponent, Drawer } from '@pearson-incubator/vega-core';
+import { HeaderComponent } from '@pearson-incubator/vega-core';
 import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
 import './Book.scss';
 import { browserHistory } from 'react-router';
@@ -29,6 +29,7 @@ import { getPreferenceCallService, postPreferenceCallService } from '../../../ac
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
+import { DrawerComponent } from '@pearson-incubator/vega-drawer';
 import { VegaViewPager } from '@pearson-incubator/vega-viewer';
 import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { LearningContextProvider } from '@pearson-incubator/vega-viewer';
@@ -335,10 +336,13 @@ export class Book extends Component {
     const deletedAnnotationData = find(this.props.book.annTotalData, note => note.id === annotationId);
     let sectionInfo = {};
     let chapterInfo = {};
+    let sectionTitle = {};
     this.props.tocData.content.list.forEach((chapter, i)=>{
-      sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedAnnotationData.pageId);
-      if(sectionInfo && !chapterInfo.title) {
+    //  sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedAnnotationData.pageId);
+      sectionInfo = find(this.props.tocData.content.list[i].children, list => list.id === deletedAnnotationData.pageId);
+      if(sectionInfo) {
         chapterInfo = chapter;
+        sectionTitle = sectionInfo;
       }
     })
     let dataLayerObj = {
@@ -348,9 +352,10 @@ export class Book extends Component {
       'selectedText': deletedAnnotationData.text,
       'text': deletedAnnotationData.comment,
       'chapterTitle': chapterInfo.title,
-      'sectionTitle': sectionInfo.title
+      'sectionTitle': sectionTitle.title
     }
     dataLayer.push(dataLayerObj);
+     
   };
 
   addBookmarkHandler = () => {
@@ -376,6 +381,7 @@ export class Book extends Component {
     let id = (bookmarkId ? bookmarkId : this.props.bookmarkedData.bookmarkId);
     this.forceUpdate();
     let bookmarksParams = this.state.urlParams;
+    bookmarksParams.currentPageId=this.props.params.pageId
     bookmarksParams.xAuth = localStorage.getItem('secureToken');
     bookmarksParams.body = { ids: [id] };
     this.props.dispatch(deleteBookmarkCallService(bookmarksParams));
@@ -383,20 +389,30 @@ export class Book extends Component {
     const deletedBookmarkData = find(this.props.book.bookmarks, bookmark => bookmark.id === bookmarkId);
     let sectionInfo = {};
     let chapterInfo = {};
+    let sectionTitle = {};
+    
     this.props.tocData.content.list.forEach((chapter, i)=>{
-      sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedBookmarkData.source.id);
-      if(sectionInfo && !chapterInfo.title) {
-        chapterInfo = chapter;
-      }
-    })
+      sectionInfo = find(this.props.tocData.content.list[i].children, list => list.id === deletedBookmarkData.source.id);
+     // sectionInfo = find(this.state.pageDetails.playListURL, list => list.id === deletedBookmarkData.source.id);
+     
+        if(sectionInfo) {
+          chapterInfo = chapter;
+          sectionTitle = sectionInfo;         
+        }
+        
+    } )
+  
+    
     let dataLayerObj = {
       'eventAction': 'Deleting BookMark',
       'event': 'bookmarkDelete',
       'eventCategory': 'Bookmarks',
       'chapterTitle': chapterInfo.title,
-      'sectionTitle': sectionInfo.title
+      'sectionTitle': sectionTitle.title
     }
     dataLayer.push(dataLayerObj);
+    
+
   };
 
   onNavChange = (data) => {
@@ -568,7 +584,8 @@ export class Book extends Component {
     const playlist = this.props.playlistData.content;
     for (let i = 0; i < playlistLength; i++) {
       if (playlist[i].id === getid) {
-        return playlist[i + 1].id;
+        const nextpageId = playlist[i + 1] ? playlist[i + 1].id : playlist[i].id;
+        return nextpageId;
       }
     }
   }
@@ -1070,7 +1087,7 @@ export class Book extends Component {
       removeBookmarkHandler: callbacks.removeBookmarkHandler,
       isCurrentPageBookmarked: callbacks.isCurrentPageBookmarked
     };
-
+    
     const bookDetails = {
       title: '',
       author: ''
@@ -1371,7 +1388,7 @@ export class Book extends Component {
                 /> }
                 {
                   this.props.book.tocReceived &&
-                  <Drawer
+                  <DrawerComponent
                     isDocked={false}
                     drawerWidth={400}
                     isDraweropen={this.state.drawerOpen}

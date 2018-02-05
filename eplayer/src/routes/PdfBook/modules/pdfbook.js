@@ -145,16 +145,7 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
     }
   };
   let queryString;
-/*  if (roletypeid == 2)
-  {
-    queryString = `/bookmark?limit=${eT1Contants.readerApiResponseRecordsLimits}&userId=${userId}&bookId=${bookId}`;
-  }
-  else
-  {
-    queryString = `/bookmark?limit=${eT1Contants.readerApiResponseRecordsLimits}&userId=${userId}&bookId=${bookId}&courseId=${courseId}`;
-  }*/
   queryString = '/api/context/'+bookId+'/identities/'+userId+'/notesX?isBookMark=true';
-  // const authorizationHeaderVal = createAuthorizationToken(queryString, 'GET');
 
   /* Dispatch is part of middleware used to dispatch the action, usually used in Asynchronous Ajax call.*/
   return (dispatch) => {
@@ -191,11 +182,11 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
             uri: extID,
             externalId: extID
           };
-          if (roletypeid == 3 && bookmark.subContextId == courseId)
+          if (roletypeid == eT1Contants.UserRoleType.Instructor && bookmark.subContextId == courseId)
           {
             bookState.bookmarks.push(bmObj);
           }
-          else
+          else if (roletypeid == eT1Contants.UserRoleType.Student)
           {
             bookState.bookmarks.push(bmObj);
           }
@@ -213,7 +204,7 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
 export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, externalId, courseId, shared, Page, roleTypeId, piSessionKey) {
   clients.readerApi[envType].defaults.headers =  {'X-Authorization':piSessionKey,'Content-Type': 'application/json'};
   const data = {
-    clientApp: 'ETEXT1_WEB',
+    clientApp: eT1Contants.clientAppNameForSpectrumApi,
     isBookMark:true,
     userId,
     data: {
@@ -222,6 +213,7 @@ export function addBookmarkUsingSpectrumApi(userId, bookId, pageId, pageNo, exte
     role:roleTypeId,
     contextId: bookId,
     pageId: externalId,
+    productModel: eT1Contants.productModelForSpectrumApi,
     pageNo,
     subContextId: courseId,
     shareable: shared
@@ -498,7 +490,7 @@ export function updateAuthKey(ssoKey)
 export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeId, uid, ubd, ubsd, globaluserid, authkey) {
   let roleTypeID = roleTypeId;
   if (roleTypeID === undefined || roleTypeID === null || roleTypeID === '') {
-    roleTypeID = 2;
+    roleTypeID = eT1Contants.UserRoleType.Student;
   }
   const bookState = {
     bookInfo: {
@@ -591,6 +583,7 @@ export function fetchPagebyPageNumber(userid, roleTypeID, bookid, bookeditionid,
             pageObj.chaptername = page.chapterName;
             pageObj.isbookmark = page.isBookmark;
             pageObj.pdfPath = page.pdfPath;
+            pageObj.printDisabled = page.printDisabled;
             pageObj.readerPlusID = page.readerPlusID;
             bookState.bookInfo.pages.push(pageObj);
           });
@@ -637,6 +630,7 @@ export function fetchPageInfo(userid, bookid, bookeditionid,
             pageObj.chaptername = page.chapterName;
             pageObj.isbookmark = page.isBookmark;
             pageObj.pdfPath = page.pdfPath;
+            pageObj.printDisabled = page.printDisabled;
             pageObj.readerPlusID = page.readerPlusID;
             bookState.bookInfo.pages.push(pageObj);
           });
@@ -821,15 +815,13 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
     }
   };
   let queryString;
-  if (roletypeid == 2)
+  if (roletypeid == eT1Contants.UserRoleType.Student)
   {
     queryString = '/api/context/'+bookId+'/identities/'+userid+'/notesX?isBookMark=false&withShared=true';
-    // queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}`;
   }
   else
   {
     queryString = '/api/context/'+bookId+'/identities/'+userid+'/notesX?isBookMark=false';
-    // queryString = `/highlight?limit=${eT1Contants.readerApiResponseRecordsLimits}&bookId=${bookId}&courseId=${courseId}&userId=${userid}`;
   }
   return (dispatch) => {
     dispatch(request('highlights'));
@@ -870,11 +862,14 @@ export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletyp
             hlObj.creationTime = highlight.createdTime;
             hlObj.time = highlight.updatedTime;
             hlObj.pageIndex = 1;        // For Foxit
-            if ((_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
-                  && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId) {
+            if ((roletypeid == eT1Contants.UserRoleType.Instructor && (_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
+                  && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId)
+               ||
+               (roletypeid == eT1Contants.UserRoleType.Student && (_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
+                  && (_.toString(hlObj.userId) === _.toString(userid)))) {
               hlObj.isHighlightOnly = false;
               bookState.highlights.push(hlObj);
-            } else if (roletypeid == 2 && hlObj.meta.roletypeid == 3 && hlObj.courseId == courseId) {
+            } else if (roletypeid == eT1Contants.UserRoleType.Student && hlObj.meta.roletypeid == eT1Contants.UserRoleType.Instructor && hlObj.courseId == courseId) {
               if(hlObj.shared)
               {
                hlObj.isHighlightOnly = false;
@@ -900,12 +895,13 @@ export function saveHighlightUsingSpectrumApi(userId, bookId, pageNo,
   const axiosInstance = clients.readerApi[envType];
   axiosInstance.defaults.headers = {'X-Authorization':piSessionId,'Content-Type': 'application/json'};
   const data = {
-    clientApp: 'ETEXT1_WEB',
+    clientApp: eT1Contants.clientAppNameForSpectrumApi,
     color,
     contextId: bookId,
     role:roleTypeId,
     data: meta,
     isBookMark:false,
+    productModel: eT1Contants.productModelForSpectrumApi,
     pageId: currentPageId,
     pageNo,
     selectedText,
@@ -975,11 +971,12 @@ export function editHighlightUsingSpectrumApi(id, note, color, isShared, userId,
   const editHightlightURI = '/api/context/'+bookId+'/identities/'+userId+'/notesX';
   const payloadData = {
     id,
-    clientApp: 'ETEXT1_WEB',
+    clientApp: eT1Contants.clientAppNameForSpectrumApi,
     color,
     contextId: bookId,
     data: meta,
     isBookMark:false,
+    productModel: eT1Contants.productModelForSpectrumApi,
     pageId: currentPageId,
     pageNo,
     role:roleTypeId,
@@ -1334,7 +1331,9 @@ const ACTION_HANDLERS = {
       hasbookmarkpagebutton: action.payload.data[0].toolBarFeaturesTO.hasBookMarkPageButton,
       hasdrawerbutton: action.payload.data[0].generalFeaturesTO.hasLeftAccordion,
       hasPrintLink: action.payload.data[0].headerFeaturesTO.hasPrintLink,
-      hasShowLinksButton: action.payload.data[0].toolBarFeaturesTO.hasShowLinksButton
+      hasShowLinksButton: action.payload.data[0].toolBarFeaturesTO.hasShowLinksButton,
+      printWithFooter: action.payload.data[0].generalFeaturesTO.printWithFooter,
+      printWithWatermark: action.payload.data[0].generalFeaturesTO.printWithWatermark
     }
   }),
   [RECEIVE_BOOK_FEATURES_REJECTED]: state => ({

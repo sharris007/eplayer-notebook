@@ -472,8 +472,8 @@ export class PdfBookReader extends Component {
   /* Method for setting the zoom level selected by user, using passing the selected value. */
   setCurrentZoomLevel = (level) => {
     let currZoomLevel = this.state.currZoomLevel;
-    if(level == 0){
-      currZoomLevel = 0.25;
+    if(level <= 0.1){
+      currZoomLevel = 0.1;
     }else{
       currZoomLevel = level;
     }
@@ -700,6 +700,7 @@ export class PdfBookReader extends Component {
                break;
       case 'SPPASSET':
                source = hotspotDetails.linkValue;
+               var sppHeaderHeight =document.getElementById('sppModalHeader').style.height;
                var sppPlayer = document.getElementById('sppModalBody');
                var lastIndex = source.lastIndexOf("/");
                var assetID = source.slice(lastIndex+1);
@@ -707,11 +708,12 @@ export class PdfBookReader extends Component {
                var sppScript=document.createElement('SCRIPT');
                sppScript.src = scriptContent;
                sppPlayer.appendChild(sppScript);
-               sppPlayer.style.height = 450 + 'px';
-               sppPlayer.style.width = 450 + 'px';
+               sppPlayer.style.height = (document.documentElement.clientHeight - parseInt(sppHeaderHeight,10)) + 'px';
+               sppPlayer.style.width = document.documentElement.clientWidth + 'px';
                document.getElementById('sppCloseBtn').addEventListener('click',this.onHotspotClose);
                 try
                 {
+                  document.getElementById('root').appendChild(document.getElementById('sppModal'));
                   $('#sppModal').css("display","block");
                 }
                 catch(e){
@@ -893,7 +895,11 @@ handleRegionClick(hotspotID) {
                     regionDetails.linkValue = basepath + regionDetails.linkValue;
                   }
                 }
-              if(_.startsWith(regionDetails.linkValue,'https://mediaplayer.pearsoncmg.com/assets') || _.startsWith(regionDetails.linkValue,'http://mediaplayer.pearsoncmg.com/assets'))
+              if(_.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppDev) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppDev)) ||
+                 _.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppCert) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppCert)) ||
+                 _.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppPPE) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppPPE)) ||
+                 _.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppStage) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppStage)) ||
+                 _.startsWith(regionDetails.linkValue,eT1Contants.SppBaseUrls.SppProd) || _.startsWith(regionDetails.linkValue,this.createHttps(eT1Contants.SppBaseUrls.SppProd)))
               {
                 regionDetails.hotspotType = 'SPPASSET';
               }
@@ -1164,17 +1170,23 @@ handleRegionClick(hotspotID) {
   /* Method to show or hide hotspots. */
   showHideRegions = () => {
     let regionElementList = document.getElementsByClassName('hotspotIcon');
-    if(regionElementList.length > 0 && regionElementList[0].style.display !== "none")
+    if(this.state.showHotspot == true)
     {
-      $(".hotspot").hide();
-      $(".hotspotIcon").hide();
-      this.setState({showHotspot:false});
+      try{
+        $(".hotspot").hide();
+        $(".hotspotIcon").hide();
+        this.setState({showHotspot:false});
+      }
+      catch(e){}
     }
     else
     {
-      $(".hotspot").show();
-      $(".hotspotIcon").show();
-      this.setState({showHotspot:true});
+      try{
+        $(".hotspot").show();
+        $(".hotspotIcon").show();
+        this.setState({showHotspot:true});        
+      }
+      catch(e){}
     }
   }
   getPreference = () => {
@@ -1225,19 +1237,31 @@ printFunc = () => {
     let currDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
     date = new Date(this.props.currentbook.expirationDate);
     let expirationDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
-    let copyrightInfo = `Printed by ${this.props.currentbook.firstName} ${this.props.currentbook.firstName} on ${currDate} autorized to use until ${expirationDate}. 
+    let userEmailId = this.props.currentbook.userEmailId ? this.props.currentbook.userEmailId : 'etextqa@pearson.com';
+    let copyrightViolationMsg = `Printed by ${this.props.currentbook.firstName} ${this.props.currentbook.firstName} (${userEmailId}) on ${currDate} autorized to use until ${expirationDate}. 
     Use beyond the authorized user or valid subscription date represents copyright violation.`;
-    var prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
-    var pageSrc = prtContent.currentSrc;
+    let printWatermark = eT1Contants.printCopyrightInfo; 
+    let prtContent = document.getElementById("docViewer_ViewContainer_BG_0");
+    let pageSrc = prtContent.currentSrc;
     let printFrame = document.createElement('iframe');
     printFrame.id = "printFrame";
     printFrame.style.display = "none";
     printFrame.style.width = "100px";
     printFrame.style.height = "100px";
     document.body.appendChild(printFrame);
+    let frameContentCss = '#watermark{ top:30%; left:2%; position:absolute; transform: rotate(30deg); font-size:50px; font-weight:20px; opacity:0.3; display:none;} #footer{ bottom:0; position:absolute; display:none; font-size:14px}';
+    if(this.props.data.book.bookFeatures.printWithFooter && this.props.data.book.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #footer{ display:block; } #watermark{ display:block; }}';
+    }else if(this.props.data.book.bookFeatures.printWithFooter && !this.props.data.book.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #footer{ display:block; }}';
+    }else if(!this.props.data.book.bookFeatures.printWithFooter && this.props.data.book.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #watermark{ display:block; }}';
+    }else if(!this.props.data.book.bookFeatures.printWithFooter && !this.props.data.book.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;}}';
+    }
     printFrame.contentWindow.document.open();
-    printFrame.contentWindow.document.write('<style type="text/css"> #footer{ bottom:0; position:fixed; display:none; font-size:14px} @media print { @page { size:auto; page-break-after:avoid;} img{ max-height: 32cm; max-width: 24cm;} #footer{ display:block; bottom: 0 }}</style>');
-    printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();" ><div id=footer>'+copyrightInfo+'</div></img></div>');
+    printFrame.contentWindow.document.write('<style type="text/css">'+frameContentCss+'</style>');
+    printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();"><div id=watermark>'+printWatermark+'</div><div id=footer>'+copyrightViolationMsg+'</div></div>');
     printFrame.contentWindow.document.close();
     window.onafterprint = function(){
       document.body.removeChild(document.getElementById('printFrame'));
@@ -1305,30 +1329,33 @@ printFunc = () => {
     };
     /*Creating array of objects containing options info for moreMenu*/
     let moreMenuData = [];
+    let currPageObj = this.findPages(pages, this.state.currPageIndex);
     let showHideHotspots = {
       type : 'menuItem',
       value : 'showHideHotspots',
       text : this.state.showHotspot ? messages.hideLinks ? messages.hideLinks :'Hide Links'
                   : messages.showLinks ? messages.showLinks : 'Show Links',
-      onClick : this.showHideRegions
+      onClick : this.showHideRegions,
+      isDisabled : false
     }
     let printData = {
       type : 'menuItem',
       value : 'print',
       text : messages.print ? messages.print : 'Print',
-      onClick : this.printFunc
+      onClick : this.printFunc,
+      isDisabled : currPageObj ? currPageObj.printDisabled ? true : false : false
     }
     let signOutData = {
       type : 'menuItem',
       value : 'signOut',
       text : messages.signOut ? messages.signOut : 'Sign Out',
     }
-    if(this.props.data.book.bookFeatures.hasShowLinksButton == true)
-    {
-      moreMenuData.push(showHideHotspots);
-      moreMenuData.push({type : 'divider'});
-    }
-    if(this.props.data.book.bookFeatures.hasPrintLink == true)
+    // if(this.props.data.book.bookFeatures.hasShowLinksButton == true)
+    // {
+    //   moreMenuData.push(showHideHotspots);
+    //   moreMenuData.push({type : 'divider'});
+    // }
+    if(this.props.data.book.bookFeatures.hasPrintLink == true && this.state.currPageIndex !== 0)
     {
       moreMenuData.push(printData);
       moreMenuData.push({type : 'divider'});
@@ -1381,13 +1408,11 @@ printFunc = () => {
         </div>
         <div>
           <div id='sppModal' className='sppModal'>
-            <div id='sppModalContent' className='sppModalContent'>
-              <div id='sppModalHeader' className='sppModalHeader'>
+              <div id='sppModalHeader' className='sppModalHeader' style={{height: 50 + 'px'}}>
                 <span id='sppCloseBtn' className='sppCloseBtn'>&times;</span>
                   <p>Smart Pearson Player</p>
               </div>
               <div id='sppModalBody' className='sppModalBody' />
-            </div>
           </div>
         {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
         <LearningContextProvider

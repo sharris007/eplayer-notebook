@@ -55,12 +55,24 @@ export const eT1Contants = {
     CHROMELESS_URL : 15,
     JAZZASSET : 16
   },
+  UserRoleType : {
+    Student: 2,
+    Instructor: 3
+  },
   SCENARIOS : {
     S1 : 1,
     S3 : 3,
     S6 : 6,
     S11 : 11,
     S88 : 88
+  },
+  SppBaseUrls :
+  {
+    SppDev: 'http://mediaplayer-dev.pearsoncmg.com/assets',
+    SppCert:  'http://mediaplayer-cert.pearsoncmg.com/assets',
+    SppPPE:  'http://mediaplayer-ppe.pearsoncmg.com/assets',
+    SppStage: 'http://mediaplayer-test.pearsoncmg.com/assets',
+    SppProd : 'http://mediaplayer.pearsoncmg.com/assets'
   },
   FoxitUrls : {
     qa: 'https://foxit-qa.gls.pearson-intl.com/foxit-webpdf-web/pc/',
@@ -140,9 +152,12 @@ export const eT1Contants = {
       stage        : 'https://pi-int.pearsoned.com/v1/piapi-int/login/',
       prod         : 'https://pi.pearsoned.com/v1/piapi/login/'
   },
+  clientAppNameForSpectrumApi: 'ETEXT1_WEB',
+  productModelForSpectrumApi: 'ETEXT1_PDF',
   ErrorCodeMessages : {
     Error_1 :'Either you have entered an incorrect username/password, or you do not have a subscription to this site.',
     Error_2 :'Server error occurred. Please try again later.'
-  }
+  },
+  printCopyrightInfo : 'Copyright &copy; 2018 Pearson Education'
 };
 export default eT1Contants;

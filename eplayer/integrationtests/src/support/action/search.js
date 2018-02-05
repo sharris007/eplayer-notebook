@@ -11,33 +11,22 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
+import checkIfElementExists from '../lib/checkIfElementExists';
+
 /**
- * Select the text area of the given element
- * @param  {String}   element  Element selector
- * @param  {String}   startOffsetX        X coordinate to move to
- * @param  {String}   startOffsetY        Y coordinate to move to
- * @param  {String}   endOffsetX          X coordinate to move to
- * @param  {String}   endOffsetY          Y coordinate to move to
+ * Search for a specific criteira
+ * @param  {String}   elemSearchIcon  search selector
+ * @param  {String}   elemInputField  input field selector
+ * @param  {String}   valPageNum      page number to be selected
  * @param  {Function} done     Function to execute when finished
  */
-module.exports = (element, done) => {
-	/**
-     * X coordinate
-     * @type {Int}
-     */
-    const startX =  100;
-    const endX = 500;
-	/**
-     * Y coordinate
-     * @type {Int}
-     */
-    const startY = 200;
-    const endY =  400;
 
-    browser.moveToObject(element,startX,startY);
-    browser.buttonDown();
-    browser.moveToObject(element,endX,endY);
-    browser.buttonUp();
-
+module.exports = (elemSearchIcon, elemInputField, valPageNum, done) => {
+    browser.click(elemSearchIcon);
+    checkIfElementExists(elemInputField, false, 1);
+    browser.setValue(elemInputField, valPageNum);
+    browser.waitForVisible("span*=Page "+valPageNum, 10000);
+    browser.click("span*=Page "+valPageNum);
+    browser.pause(3000);
     done();
 };

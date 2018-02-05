@@ -2692,6 +2692,8 @@ Annotator = (function(_super) {
 
   Annotator.prototype.viewerHideTimer = null;
 
+  Annotator.prototype.annPopupLPosition = {'right' : '-25px' };
+
   function Annotator(element, options) {
     this.onDeleteAnnotation = __bind(this.onDeleteAnnotation, this);
     this.onEditAnnotation = __bind(this.onEditAnnotation, this);
@@ -2953,6 +2955,10 @@ Annotator = (function(_super) {
     return this.isShareable=isShareable;
   };
 
+  Annotator.prototype.annPopupPosition = function(popupPosition) {
+    return this.annPopupLPosition = popupPosition;
+  };
+
   Annotator.prototype.updateAnnotationId = function (annotation) {
      $('.annotator-hl').each(function() {
       if($(this).data("annotation").createdTimestamp.toString() == annotation.createdTimestamp) {
@@ -3013,6 +3019,7 @@ Annotator = (function(_super) {
     
   };
   Annotator.prototype.alignNotes = function() {
+    $('.annotator-handle').css(this.annPopupLPosition);
     var notes=document.getElementsByClassName('annotator-handle');
     for (var i = 0; i<notes.length - 1; i++) {
       for(var j=i+1;j<notes.length;j++){
@@ -3111,18 +3118,22 @@ Annotator = (function(_super) {
     return this;
   };
 
-  Annotator.prototype.showEditor = function(annotation, location, isAdderClick, event) {
+  Annotator.prototype.showEditor = function(annotation, location, isAdderClick, e) {
     var height=0,annId = annotation?annotation.id:'',len;
     //len = $('span[data-ann-id='+annId+']').length;
     var annElement = $('span[data-ann-id='+annId+']')[0];
+    var getOffset = $(annElement).offset();
     if(annElement) {
-      var noteIconHght=0;
+      var noteIconHght=0, winHeight = window.screen.availHeight, currHeight = event.screenY;
+      if ((winHeight-currHeight) < 250) { // 250 - annotator widget approximate height
+        window.parent.parent.scrollTo(0,(getOffset.top)-(winHeight-350));
+      }
       if($(annElement).find('.annotator-handle').length>0)
         noteIconHght = isNaN(parseInt($(annElement.innerHTML).css('margin-top')))?0:parseInt($(annElement.innerHTML).css('margin-top'));
       height = $(annElement).offset().top+noteIconHght;
     }
     else
-      height = location.top + 30;
+        height = location.top + 30;
     var selctionOverlap = '', position;
     if(window.getSelection().rangeCount > 0) {
      selctionOverlap = window.getSelection().getRangeAt(0);
@@ -3135,7 +3146,7 @@ Annotator = (function(_super) {
     }
     
     this.editor.element.css(position);
-    this.editor.load(annotation,this.isShareable,height, event);
+    this.editor.load(annotation,this.isShareable,height, e);
     this.publish('annotationEditorShown', [this.editor, annotation]);
     if(selctionOverlap.toString()!= '' && ($(selctionOverlap.startContainer).hasClass('annotator-hl') || $(selctionOverlap.endContainer).hasClass('annotator-hl'))) {
       $('.annotator-editor').addClass('overlapingpopup');

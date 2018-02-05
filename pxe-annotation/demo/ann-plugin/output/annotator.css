@@ -878,7 +878,7 @@
     width: 24px;
     height: 24px;
     position: absolute;
-    right: -25px;
+    /*right: -25px; */ 
     /*margin-top:5px;*/
     background-color: inherit;
     background-size: contain;

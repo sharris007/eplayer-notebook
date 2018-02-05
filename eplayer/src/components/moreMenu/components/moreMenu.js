@@ -136,7 +136,7 @@ class MoreMenuComponent extends React.Component {
     if(menu.value === 'signOut'){
       return <MenuItem key={index} value={menu.value} primaryText={menu.text} onClick = {this.onBookHeaderLogout} style={style.menuItem}/>;
     }
-    return <MenuItem key={index} value={menu.value} primaryText={menu.text} onClick = {menu.onClick} style={style.menuItem}/>;
+    return <MenuItem key={index} value={menu.value} primaryText={menu.text} onClick = {menu.onClick} style={style.menuItem} disabled = {menu.isDisabled}/>;
   });
   return (<IconMenu
       iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}

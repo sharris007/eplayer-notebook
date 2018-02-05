@@ -38,10 +38,12 @@ let currentbook;
 let firstName;
 let lastName;
 let expirationDate;
+let userEmailId;
 /* Creating PdfBook component. */
 export class PdfBook extends Component {
   constructor(props){
     super(props);
+    document.title = 'Pearson eText';
     const cookies = new Cookies();
     if(this.props.location.query.invoketype !== undefined && 
               this.props.location.query.invoketype === 'pi')
@@ -123,6 +125,7 @@ used for before mounting occurs. */
         firstName = this.props.currentbook.firstName;
         lastName = this.props.currentbook.lastName;
         expirationDate = this.props.currentbook.expirationDate;
+        userEmailId = this.props.currentbook.userEmailId;
       }
       else
       {
@@ -148,6 +151,7 @@ used for before mounting occurs. */
         firstName = bookData.firstName;
         lastName = bookData.lastName;
         expirationDate = bookData.expirationDate;
+        userEmailId = bookData.userEmailId;
       }
     }
     else if (this.props.location.query.invoketype != undefined &&    
@@ -269,6 +273,7 @@ used for before mounting occurs. */
     currentbook.firstName = firstName;
     currentbook.lastName = lastName;
     currentbook.expirationDate = expirationDate;
+    currentbook.userEmailId = userEmailId;
     await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario);
   }
  /* Multiple methods we have paased in PdfBookReader inside return, fetchTocViewer fot fetching the value of TOC,

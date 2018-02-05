@@ -39,7 +39,7 @@ export class BindGlossaryCallBacks {
     if (this.glossaryUrlCollection.length > 0) {
       this.triggerGlossaryService(this.glossaryUrlCollection[this.glossaryurlIndex]);
     } else {
-      new BindMoreInfoCallBacks({ glossaryCollection: this.glossaryCollection, node: props.node });
+      new BindMoreInfoCallBacks({ glossaryCollection: this.noteRefCollection, node: props.node });
     }
   }
 
@@ -110,6 +110,7 @@ export class BindGlossaryCallBacks {
         });
        for (let n=0;n<this.noteRefCollection.length > 0; n++) {
         this.glossaryCollection[this.glossaryCollection.length] = this.noteRefCollection[n];
+        console.log('this.glossaryCollection[this.glossaryCollection.length] ', this.glossaryCollection[this.glossaryCollection.length]);
        } 
       new BindMoreInfoCallBacks({ glossaryCollection: this.glossaryCollection, node: this.props.node });
     }

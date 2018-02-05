@@ -21,6 +21,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { resources , domain , typeConstants } from '../../../../const/Settings';
+import { connect } from 'react-redux';
 
 // import LoginHeader from '../../../components/LoginHeader'; /* Adding the LoginHeader for login page header.*/
 // import reducer from '../modules/loginReducer';/* Injecting the reducers for login. */
@@ -49,6 +50,7 @@ class ErrorPage extends React.Component {
   render() {
      // CourseSection to Student enrollment is not found <br/><br/>(OR)<br/><br/>
      // Productcode is not found in ETEXT for this CourseSection
+     const { bookdetailsdata } = this.props;
    const actions = [
        <FlatButton
         label="OK"
@@ -57,9 +59,24 @@ class ErrorPage extends React.Component {
         onClick={this.handleClose}
       />,
     ];
-
+    let modalContent;
+    if( bookdetailsdata.status === 403 ){
+      modalContent = true;
+    }
     return (
-      <div>
+    <div>
+      {(bookdetailsdata.status === 403) ? <div>
+            <Dialog
+          title="Unauthorized to Access Resources"
+          actions={actions}
+          modal={true}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+        >
+         <div>You are not authorized to request this resource. You may see this message if you try to access a recently created course or follow a link to a course where you are not enrolled. Go to the My Courses list and try again. If this issue persists and you believe you should have access to this resource, please contact support with following information:</div>
+         <div className="error-response">{JSON.stringify(bookdetailsdata)}</div>
+          </Dialog>
+          </div> : <div>
         <Dialog
           title="1001 - Error while processing your request"
           actions={actions}
@@ -68,10 +85,18 @@ class ErrorPage extends React.Component {
           onRequestClose={this.handleClose}
         >
          Please contact support team with this error
-        </Dialog>
+          </Dialog>
+        </div>
+      }
       </div>
     );
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    bookdetailsdata: state.playlistReducer.bookdetailsdata
+  }
+}; // eslint-disable-line max-len
+ErrorPage = connect(mapStateToProps)(ErrorPage);
 export default ErrorPage;

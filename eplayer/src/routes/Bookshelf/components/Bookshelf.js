@@ -308,7 +308,8 @@ export default class BookshelfPage extends React.Component {
           expired: bookRef.expired,
           firstName: bookRef.firstName,
           lastName: bookRef.lastName,
-          expirationDate: bookRef.expirationDate
+          expirationDate: bookRef.expirationDate,
+          userEmailId: bookRef.userEmailId
         };
         booksdata.push(book);
       });

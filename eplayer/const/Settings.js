@@ -133,17 +133,17 @@ export const resources = {
       prod         :"https://etext-instructor.pearson.com/idc-api/course",
     },
     spectrumServiceUrl : {
-      local        :"https://spectrum-qa.stg-openclass.com/api/context",
-      dev          :"https://spectrum-qa.stg-openclass.com/api/context",
-      qa           :"https://spectrum-qa.stg-openclass.com/api/context",
-      stage        :"https://spectrum.stg-openclass.com/api/context",
+      local        :"https://spectrum-qa.pearsoned.com/api/context",
+      dev          :"https://spectrum-qa.pearsoned.com/api/context",
+      qa           :"https://spectrum-qa.pearsoned.com/api/context",
+      stage        :"https://spectrum-stg.pearsoned.com/api/context",
       PERF         :"https://spectrum-ppe.pearsoned.com/api/context",
       prod         :"https://spectrum.openclass.com/api/context"
     },
     iseUrl : {
-      local        :"https://etext-ise-qa.pearson.com",
-      dev          :"https://etext-ise-qa.pearson.com",
-      qa           :"https://etext-ise-qa.pearson.com",
+      local        :"https://etext-ise-qa-int.pearson.com",
+      dev          :"https://etext-ise-qa-int.pearson.com",
+      qa           :"https://etext-ise-qa-int.pearson.com",
       stage        :"https://etext-ise-stg.pearson.com",
       prod         :"https://etext-ise.pearson.com"
     }

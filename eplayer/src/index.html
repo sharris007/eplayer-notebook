@@ -34,19 +34,8 @@
   <!-- End Google Tag Manager -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="//d12m40tknrppbi.cloudfront.net/cite/css/style.css">
   <script src="https://cdn.polyfill.io/v2/polyfill.js?features=CustomEvent,Intl.~locale.en,Intl.~locale.fr"></script>
-  <!-- <script src="https://etext-qa-stg.pearson.com/eplayer-ann/jquery.min.js"></script> -->
   <link rel="stylesheet" href="/eplayer/annotation-lib/instructor-annotator/instructor-annotator.css">
-  <script src="/eplayer/annotation-lib/jquery.min.js"></script>
-
-  <!-- <script src="https://pxe-sdk-qa.stg-openclass.com/eplayer-ann/pdfannotator.js"></script> -->
-  <script src="/eplayer/annotation-lib/pdfannotator.js"></script>
-  <script src="/eplayer/pdf/webpdf.tools.mini.js"></script>
-  <script src="/eplayer/pdf/pdfWrapper.js"></script>
-  <script src="/eplayer/pdf/webpdf.mini.js"></script>
-  <script src="/eplayer/pdf/seajs.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://brix-content.pearsoned.com/brix/assets/brix/api/item/ba0f0972-271d-43d3-ab28-9a95e24bceeb/110/file/brixauthoring/client/css/brix.css">
 </head>
 
 <body style="overflow:visible;">
@@ -56,11 +45,11 @@
   <!-- End Google Tag Manager (noscript) -->
   <div id="divSVG" style="display:none">  
   </div>
-  <script src="https://pi.pearsoned.com/v1/piapi/login/js/session.js"></script>
+  <script src="https://tst-piapi.dev-openclass.com/v1/piapi-test/login/js/session.js"></script>
   <script type="text/javascript">
     var redirectPiurl = window.location.href;
     redirectPiurl = decodeURIComponent(redirectPiurl).replace(/\s/g, "+").replace(/%20/g, "+");
-    var clientId = 'mmiGVm0apwEdyZzZieOY5q5su06Ch0kN';
+    var clientId = 'I2RJd7eO5F9T6U9TgVK7VxtAgw48u0pU';
     var jwtSetting = {
       "useJwt": true, "checkSessionMilliseconds": "6000",
       "sessionIdleTimeoutSeconds": "1800"
@@ -93,10 +82,7 @@
       console.log("The Cookiee Deleted ",name + '=;expires=Thu, 01 Jan 2000 00:00:01 GMT;path=/;');
     }
   </script>
-  <script>
-      var __pdfInstance = pdfWrapper();
 
-  </script>
   <!-- Icons -->
   <script>
     if (document.body.children[0].nodeName !== 'svg') {
@@ -117,6 +103,16 @@
   <div id="root" style="height: 100%"></div>
   <div id="accessibility_audio" class="accessibility_audio accessibility_readonly" aria-live="assertive"></div>
 </body>
+<script src="/eplayer/annotation-lib/jquery.min.js"></script>
+<script src="/eplayer/annotation-lib/pdfannotator.js"></script>
+<script src="/eplayer/pdf/webpdf.tools.mini.js"></script>
+<script src="/eplayer/pdf/pdfWrapper.js"></script>
+<script>
+    var __pdfInstance = pdfWrapper();
+
+</script>
+<script src="/eplayer/pdf/webpdf.mini.js"></script>
+<script src="/eplayer/pdf/seajs.js"></script>
 <script src="/eplayer/annotation-lib/annotator.js"></script>
 
 </html>
