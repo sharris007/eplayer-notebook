@@ -141,9 +141,9 @@ export const resources = {
       prod         :"https://spectrum.openclass.com/api/context"
     },
     iseUrl : {
-      local        :"https://etext-ise-qa.pearson.com",
-      dev          :"https://etext-ise-qa.pearson.com",
-      qa           :"https://etext-ise-qa.pearson.com",
+      local        :"https://etext-ise-qa-int.pearson.com",
+      dev          :"https://etext-ise-qa-int.pearson.com",
+      qa           :"https://etext-ise-qa-int.pearson.com",
       stage        :"https://etext-ise-stg.pearson.com",
       prod         :"https://etext-ise.pearson.com"
     }
