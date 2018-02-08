@@ -183,8 +183,6 @@ class PdfPlayer extends Component {
   }
 }
 
-export default PdfPlayer;
-
 PdfPlayer.propTypes = {
   pageList : PropTypes.array.isRequired
 }
@@ -192,3 +190,4 @@ PdfPlayer.propTypes = {
 PdfPlayer.defaultProps = {
   
 }
+export default PdfPlayer;

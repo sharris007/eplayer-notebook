@@ -1,4 +1,4 @@
-eventMap = [];
+window.eventMap = [];
 let docViewerId = 'docViewer';
 
 export function triggerEvent (eventName, eventData) {
