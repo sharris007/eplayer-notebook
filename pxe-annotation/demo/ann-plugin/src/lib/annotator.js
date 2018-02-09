@@ -667,6 +667,7 @@ Annotator = (function(_super) {
        if(!($(annotations)[_i].id))
         currAnnPosition++;
     };
+    $('.goto-button').removeClass('hide');
     this.showEditor(annotations[currAnnPosition], Util.mousePosition(event, this.wrapper[0]), false);
  
   }

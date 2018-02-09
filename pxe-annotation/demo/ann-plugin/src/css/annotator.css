@@ -950,6 +950,22 @@
   cursor: pointer;
 
 }
+
+.goto-button {
+   width: 31px;
+   height: 31px;
+   float: right;
+   margin: 8px 12px;
+   object-fit: contain;
+   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAfCAYAAAAfrhY5AAAAAXNSR0IArs4c6QAAANdJREFUSA1jYBgFoyEwGgKjITBcQ4CRGh7LLizcCjSHn4mDI3Bye/trYs1kIlYhPnX/GRgE/v//b/33+/d9uZWVovjUIstRxXIuZuZARkbGq0CDdUhxAFWCHeSbkpISse9//+4DhoA2kHuFmZPTiVAUUM1ychzAAtKEC4ASEtAnXrjk0cW//fmDLKTz7/v3dUABW2RBZDZV4hzZQFLYAxrsVLN8wBIcORaDogdvgiM2/r79/buegYQsBjOXKgkOGHcfgIXMUWLyNsziUXo0BEZDYDQEaB4CAGI+a1J162s2AAAAAElFTkSuQmCC') !important;
+   background-size: contain;
+   background-repeat: no-repeat;
+   pointer-events: all;
+   background-color: #fff;
+   border: none;
+   text-decoration: none;
+}
+
 .show-edit-options .annotator-edit-container, .show-edit-options .annotator-share-text, .show-edit-options .annotator-share{
 	display: none;
 }
@@ -1187,6 +1203,10 @@
 
 .hide {
 	display: none;
+}
+
+.goto-button.hide {
+	display: none !important;
 }
 
 .positionAbs {

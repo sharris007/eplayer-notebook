@@ -125,6 +125,7 @@ export class Book extends Component {
     }
     this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
     window.isDisableAnnotation = resources.constants.isDisableAnnotation;
+    window.iseUrl = resources.links.iseUrl[domain.getEnvType()]+'/courses/'+ this.props.params.bookId +'/notes';
   }
   componentWillMount = () => {
     let isSessionLoaded = false;
