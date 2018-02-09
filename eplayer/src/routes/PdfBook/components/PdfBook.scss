@@ -86,19 +86,20 @@ position: relative;
     float: right;
     font-size: 28px;
     font-weight: bold;
-    padding: 5px 16px;
+    padding: 2px 16px;
 }
 .sppCloseBtn:hover,
 .sppCloseBtn:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-    font-size: 28px;
+    font-family: "Open Sans"
 }
 .sppModalHeader {
     padding: 2px 16px;
     background-color: #808080;
     color: white;
     font-weight: bold;
-    font-size:15px;
+    font-size:18px;
+    font-family: "Open Sans"
 }

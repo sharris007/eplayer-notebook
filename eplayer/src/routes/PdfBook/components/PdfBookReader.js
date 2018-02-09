@@ -700,6 +700,7 @@ export class PdfBookReader extends Component {
                break;
       case 'SPPASSET':
                source = hotspotDetails.linkValue;
+               document.getElementById('sppTitle').innerText = hotspotDetails.name;
                var sppHeaderHeight =document.getElementById('sppModalHeader').style.height;
                var sppPlayer = document.getElementById('sppModalBody');
                var lastIndex = source.lastIndexOf("/");
@@ -1408,9 +1409,9 @@ printFunc = () => {
         </div>
         <div>
           <div id='sppModal' className='sppModal'>
-              <div id='sppModalHeader' className='sppModalHeader' style={{height: 50 + 'px'}}>
+              <div id='sppModalHeader' className='sppModalHeader' style={{height: 60 + 'px'}}>
                 <span id='sppCloseBtn' className='sppCloseBtn'>&times;</span>
-                  <p>Smart Pearson Player</p>
+                  <p id='sppTitle'></p>
               </div>
               <div id='sppModalBody' className='sppModalBody' />
           </div>
