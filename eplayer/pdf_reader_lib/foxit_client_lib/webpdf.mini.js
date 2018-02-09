@@ -316,7 +316,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                 } else a("core/Plugins/InkSign/PCInkSign")
             }, this.load = function() {
                 // For poc
-                if (r.isOffline()) return r.registerBaseModule(), void r.initInstance();
+                /*if (r.isOffline()) return r.registerBaseModule(), void r.initInstance();
                 try {
                     $.ajax({
                         url: c.baseUrl + "api/config/plugins",
@@ -331,8 +331,8 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     })
                 } catch (a) {
                     console.error(a)
-                }
-                //return r.setPlugin(1023), r.registerBaseModule(), r.initInstance();
+                }*/
+                return r.setPlugin(1023), r.registerBaseModule(), r.initInstance();
             }, this.saveAnnots = function(a, b) {
                 return new Promise(function(c, e) {
                     if (r) {
@@ -2227,8 +2227,8 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     success: function(a) {
                         e.Engine.JR || (N = a.fname), ka = -1
                     }
-                }), e.waiting(wa, null, i18n.t("Load.Opening")), Ta = g.defaults.maxManifestRetryCount, void z(null, !1);
-                if (wa.isOffline()) return A(), e.waiting(wa, null, i18n.t("Load.Opening")), Ta = g.defaults.maxManifestRetryCount, z(null, !1), !0;
+                }), e.waiting(wa, null, i18n.t("")), Ta = g.defaults.maxManifestRetryCount, void z(null, !1);
+                if (wa.isOffline()) return A(), e.waiting(wa, null, i18n.t("")), Ta = g.defaults.maxManifestRetryCount, z(null, !1), !0;
                 var a = R.baseUrl + "api/systemuser/permission",
                     b = {};
                 apiConfig && apiConfig.user && "object" == typeof apiConfig.user.getUserPermission ? b = apiConfig.user.getUserPermission : apiConfig && apiConfig.user && "function" == typeof apiConfig.user.getUserPermission ? b = apiConfig.user.getUserPermission() : console.error("apiConfig.user.getUserPermission format error,mush object or function"), b = b ? b : {};
@@ -2236,7 +2236,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     params: JSON.stringify(b),
                     uuid: X
                 };
-                $.ajax({
+                /*$.ajax({
                     url: a,
                     dataType: "json",
                     headers: {
@@ -2253,11 +2253,11 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                         var a = i18n.t("OffLine.FailToOpenInOnline");
                         return e.alert(e.Tool.getReaderApp(), null, a, null, null, !1, 0), !1
                     }
-                })
+                })*/
                 // For poc
-                // let aa = {error: 0, permission: -1};
-                // let bb = aa.error;
-                // return 0 == bb ? (ka = aa.permission, w(e.UserPermission.DOCUMENT_VIEW) ? (A(), e.waiting(wa, null, i18n.t("Load.Opening")), Ta = g.defaults.maxManifestRetryCount, z(null, !1), !0) : void e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), i18n.t("User.NoViewPermission"))) : (console.error("failed to get user permission!"), !1)
+                let aa = {error: 0, permission: -1};
+                let bb = aa.error;
+                return 0 == bb ? (ka = aa.permission, w(e.UserPermission.DOCUMENT_VIEW) ? (A(), e.waiting(wa, null, i18n.t("Load.Opening")), Ta = g.defaults.maxManifestRetryCount, z(null, !1), !0) : void e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), i18n.t("User.NoViewPermission"))) : (console.error("failed to get user permission!"), !1)
             }, this.onResize = function(a, b) {
                 U && U.onResize(a, b), $(wa).trigger(e.EventList.MAINFRAME_RESIZE, {})
             }, this.registerToolHandler = function(a) {
@@ -15445,7 +15445,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             j = a("core/Plugins/Form/service/PDFFormConstants").actionFlag;
         b.init = function(a, b) {
             e = a, f = new d(b), WebPDF.FormPlugin.form = f
-        }, b.loadForm = function() {
+        }, b.loadForm = function() {/*
             if (!e.isOffline()) try {
                 $.ajax({
                     url: e.getBaseUrl() + "asserts/" + e.getFileID() + "/form/fields?" + Math.random(),
@@ -15470,7 +15470,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                 })
             } catch (a) {
                 console.error(a)
-            }
+            }*/
         }, b.getData = function() {
             return f.getData()
         }, b.exportXML = function(a) {
@@ -22469,7 +22469,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             }
             var f = WebPDF.Config.defaults.requestRetryCount,
                 g = this;
-            this.asyncLoadUserAnnotation = function(a, b, d, e) {
+            this.asyncLoadUserAnnotation = function(a, b, d, e) {/*
                 if ($.isFunction(d) && $.isFunction(e) || $.error("both 'doneHandler' and 'failedHandler' must be function."), 0 >= f) return console.error("Maximum number of retries exceeded for getAnnotData request."), void e(null);
                 var h = a.getOptions().url;
                 if (!h.match(/\/null\//)) {
@@ -22503,7 +22503,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                             e(null)
                         }
                     })
-                }
+                }*/
             }, this.asyncLoadCommentAnnotation = function(a, c, d, e, f, g) {
                 function h(c) {
                     if (null == c.response) return console.warn("Get annot data error: response is null"), void g(c.response);
@@ -41658,24 +41658,32 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                         c = {
                             userId: a.getIP()
                         };
-                    $.ajax({
-                        url: b + "?" + Math.random(),
+                   /* $.ajax({
+                         url: b + "?" + Math.random(),
                         type: "GET",
-                        data: c,
-                        async: !1,
-                        timeout: 500,
-                        success: function(a) {
-                            if (0 == a.resultCode) {
-                                var b = a.resultBody.hasWaterMark;
-                                _isTrialWaterMark = null == b || "0" == b ? !1 : !0;
-                                var c = $.parseJSON(a.resultBody.content);
-                                c.globalWatermark && (_watermarkInfo = $.parseJSON(c.globalWatermark), _watermarkInfo.color = parseInt(_watermarkInfo.color, 16)), c.userWatermark && (_userWatermarkInfo = $.parseJSON(c.userWatermark))
-                            }
-                        },
+                         data: c,
+                         async: !1,
+                         timeout: 500,
+                         success: function(a) {
+                             if (0 == a.resultCode) {
+                                 var b = a.resultBody.hasWaterMark;
+                                 _isTrialWaterMark = null == b || "0" == b ? !1 : !0;
+                                 var c = $.parseJSON(a.resultBody.content);
+                                 c.globalWatermark && (_watermarkInfo = $.parseJSON(c.globalWatermark), _watermarkInfo.color = parseInt(_watermarkInfo.color, 16)), c.userWatermark && (_userWatermarkInfo = $.parseJSON(c.userWatermark))
+                             }
+                         },
                         error: function() {
-                            alert("Fail to load watermark")
-                        }
-                    }), _userWatermarkInfo = WebPDF.AccountInstance.getWatermarkInfo()
+                             alert("Fail to load watermark")
+                         }
+                     }),_userWatermarkInfo = WebPDF.AccountInstance.getWatermarkInfo()*/
+                    var a = {"resultCode":"0","resultMsg":"","resultBody":{"content":"{\"userWatermark\":\"\",\"globalWatermark\":\"{\\\"add\\\":false,\\\"content\\\":\\\"test watermark\\\",\\\"fontSize\\\":20,\\\"fontFamily\\\":\\\"Segoe UI, sans-serif\\\",\\\"fontWeight\\\":\\\"normal\\\",\\\"fontStyle\\\":false,\\\"rotation\\\":0,\\\"color\\\":\\\"abcedf\\\",\\\"scale\\\":1,\\\"opacity\\\":1,\\\"isFixed\\\":\\\"true\\\",\\\"isDynamic\\\":false,\\\"userName\\\":false,\\\"ip\\\":false,\\\"openTime\\\":false,\\\"transparency\\\":100}\"}","hasWaterMark":"0"}};
+                     if (0 == a.resultCode) {
+                        var b = a.resultBody.hasWaterMark;
+                        _isTrialWaterMark = null == b || "0" == b ? !1 : !0;
+                        var c = $.parseJSON(a.resultBody.content);
+                        c.globalWatermark && (_watermarkInfo = $.parseJSON(c.globalWatermark), _watermarkInfo.color = parseInt(_watermarkInfo.color, 16)), c.userWatermark && (_userWatermarkInfo = $.parseJSON(c.userWatermark))
+                    }
+                    _userWatermarkInfo = WebPDF.AccountInstance.getWatermarkInfo();
                 }
             }, this.getWatermarkInfo = function() {
                 return _watermarkInfo
