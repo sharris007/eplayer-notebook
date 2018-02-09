@@ -173,7 +173,7 @@ export class PdfBook extends Component {
         await this.props.actions.getlocaluserID(serverDetails,identityId,'sms');
       }
       else {
-        this.props.book.userInfo.userid = this.props.location.query.userid;
+        this.props.actions.updateUserID(this.props.location.query.userid);
       }
       if(this.props.location.query.scenario) {
         if(this.props.location.query.scenario == eT1Contants.SCENARIOS.S1 || this.props.location.query.scenario == eT1Contants.SCENARIOS.S3
@@ -235,6 +235,19 @@ export class PdfBook extends Component {
         bookID, currentbook.authorName, currentbook.title, currentbook.thumbnail,
         this.props.book.bookinfo.book.bookeditionid, currentbook.ssoKey, serverDetails,
         this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
+      const locale = languageName(this.props.book.bookinfo.book.languageid);
+      const localisedData = locale.split('-')[0];
+      addLocaleData((require(`react-intl/locale-data/${localisedData}`))); // eslint-disable-line global-require,import/no-dynamic-require
+      const { messages } = languages.translations[locale];
+      const PdfbookMessages = {
+        PageMsg: messages.page
+      };
+      let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
+      if (courseId === undefined || courseId === '' || courseId === null) {
+        courseId = -1;
+      }
+      this.props.actions.fetchBookmarksUsingSpectrumApi(bookID,
+      this.props.book.userInfo.userid, PdfbookMessages.PageMsg, this.props.book.bookinfo.book.roleTypeID, courseId, this.getpiSessionKey());
       this.currentbook = currentbook;
   }
 
@@ -256,16 +269,46 @@ export class PdfBook extends Component {
     return pagecount;
   }
 
+  getpiSessionKey = () => {
+    let piSessionKey;
+    piSession.getToken(function(result, userToken){
+          if(result === 'success'){
+            piSessionKey = userToken;
+          }
+    });
+    if(piSessionKey === undefined)
+    {
+      piSessionKey = localStorage.getItem('secureToken');
+    }
+    return piSessionKey;
+  }
+
   render() {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData} = this.props.book;
     if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
-      const locale = languageName(bookinfo.book.languageid);
-      const localisedData = locale.split('-')[0];
-      addLocaleData((require(`react-intl/locale-data/${localisedData}`))); // eslint-disable-line global-require,import/no-dynamic-require
-      const { messages } = languages.translations[locale];
-      const PdfbookMessages = {
-        PageMsg: messages.page
-      };
+      // Sample preference. Not used currently
+      let bookPreference = {
+        headerBar: {
+          isVisible: true,
+          isDrawerVisible: true,
+          drawerProperties: {
+            isTocListVisible: true,
+            isBookmarksListVisible: true,
+            isNotesListVisible: true
+          },
+          isBackButtonVisible: true,
+          isBookmarkIconVisible: true,
+          isZoomButtomVisible: true,
+          isSearchOptionVisible: true,
+          isMoremenuItemsVisible: true
+        },
+        footerNavigationBar: {
+          isVisible: true
+        },
+        pageLoading: 'singlepage',
+        isAnnotationsSupported: true,
+        isRegionsSupported: true
+      }
       return (
         <PdfPlayer
           pageList={bookPagesInfo.pages}

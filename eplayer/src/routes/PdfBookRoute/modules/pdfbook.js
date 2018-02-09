@@ -28,6 +28,7 @@ const envType = domain.getEnvType();
 export const RECEIVE_USER_INFO_PENDING = 'RECEIVE_USER_INFO_PENDING';
 export const RECEIVE_USER_INFO_REJECTED = 'RECEIVE_USER_INFO_REJECTED';
 export const RECEIVE_USER_INFO_FULFILLED = 'RECEIVE_USER_INFO_FULFILLED';
+export const UPDATE_USER_ID = 'UPDATE_USER_ID';
 export const UPDATE_AUTH_KEY= 'UPDATE_AUTH_KEY';
 export const RECEIVEBOOKINFO_PENDING = 'RECEIVEBOOKINFO_PENDING';
 export const RECEIVEBOOKINFO_FAILED = 'RECEIVEBOOKINFO_FAILED';
@@ -38,6 +39,8 @@ export const RECEIVE_BOOK_FEATURES_REJECTED='RECEIVE_BOOK_FEATURES_REJECTED';
 export const RECEIVE_PAGE_INFO = 'RECEIVE_PAGE_INFO';
 export const REQUEST_TOC = 'REQUEST_TOC';
 export const RECEIVE_TOC = 'RECEIVE_TOC';
+export const REQUEST_BOOKMARKS = 'REQUEST_BOOKMARKS';
+export const RECEIVE_BOOKMARKS = 'RECEIVE_BOOKMARKS';
 
 export function request(component) {
   switch (component) {
@@ -45,6 +48,8 @@ export function request(component) {
       return {type: RECEIVEBOOKINFO_PENDING};
     case 'toc':
       return { type: REQUEST_TOC };
+    case 'bookmarks':
+      return { type: REQUEST_BOOKMARKS };
     default:
       return {};
   }
@@ -82,6 +87,13 @@ export function getlocaluserID(bookServerURL, globaluserid, type) {
     type: 'RECEIVE_USER_INFO',
     payload: axios.get(`${serviceurl}&hsid=${hsid}`),
     timeout: 20000
+  };
+}
+
+export function updateUserID(userID)
+{
+  return (dispatch) => {
+    dispatch({ type: UPDATE_USER_ID, userID });
   };
 }
 
@@ -398,6 +410,63 @@ export function fetchTocAndViewer(bookId, authorName, title,
   };
 }
 
+export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid, courseId, piSessionKey) {
+  const bookState = {
+    bookmarkData: {
+      bookmarksList: []
+    }
+  };
+  let queryString;
+  queryString = '/api/context/'+bookId+'/identities/'+userId+'/notesX?isBookMark=true';
+  return (dispatch) => {
+    dispatch(request('bookmarks'));
+    return clients.readerApi[envType].get(queryString, {
+        headers: {
+        'X-Authorization': piSessionKey,
+        'Content-Type': 'application/json'
+        }
+      }).then((response) => {
+        if (response.status >= 400) {
+          bookState.bookmarkData.fetching = false;
+          bookState.bookmarkData.fetched = false;
+          return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
+        }
+        return response.data.response;
+      })
+    .then((bookmarkResponseList) => {
+      if (bookmarkResponseList.length) {
+        bookmarkResponseList.forEach((bookmark) => {
+          const extID = Number(bookmark.pageId);
+          const bmObj = {
+            id: extID,
+            bkmarkId: bookmark.id,
+            userId: bookmark.userId,
+            bookId: bookmark.contextId,
+            pageId: bookmark.data.pageId,
+            pageNo: bookmark.pageNo,
+            roleTypeId: bookmark.role,
+            createdTimestamp: bookmark.updatedTime,
+            title: `${Page} ${bookmark.pageNo}`,
+            uri: extID,
+            externalId: extID
+          };
+          if (roletypeid == eT1Contants.UserRoleType.Instructor && bookmark.subContextId == courseId)
+          {
+            bookState.bookmarkData.bookmarksList.push(bmObj);
+          }
+          else if (roletypeid == eT1Contants.UserRoleType.Student)
+          {
+            bookState.bookmarkData.bookmarksList.push(bmObj);
+          }
+        });
+      }
+      bookState.bookmarkData.bookmarksList.sort((bkm1, bkm2) => bkm1.uri - bkm2.uri);
+      bookState.bookmarkData.fetching = false;
+      bookState.bookmarkData.fetched = true;
+      return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
+    });
+  };
+}
 const ACTION_HANDLERS = {
   [RECEIVE_USER_INFO_PENDING]: state => ({
     ...state,
@@ -419,6 +488,14 @@ const ACTION_HANDLERS = {
     userInfo: {
       fetching: false,
       fetched: false
+    }
+  }),
+  [UPDATE_USER_ID]: (state, action) => ({
+    ...state,
+    userInfo: {
+      fetching: false,
+      fetched: true,
+      userid: action.userID
     }
   }),
   [UPDATE_AUTH_KEY]: (state, action) => ({
@@ -508,6 +585,17 @@ const ACTION_HANDLERS = {
   [RECEIVE_TOC]: (state, action) => ({
     ...state,
     tocData: action.bookState.tocData
+  }),
+  [REQUEST_BOOKMARKS]: state => ({
+    ...state,
+    bookmarkData: {
+      fetching: true,
+      fetched: false
+    }
+  }),
+  [RECEIVE_BOOKMARKS]: (state, action) => ({
+    ...state,
+    bookmarkData: action.bookState.bookmarkData,
   })
 };
 
@@ -537,6 +625,11 @@ const initialState = {
   tocData: {
     fetching: false,
     fetched: false
+  },
+  bookmarkData: {
+    fetching: false,
+    fetched: false,
+    bookmarksList: []
   }
 };
 
