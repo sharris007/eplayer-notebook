@@ -181,7 +181,7 @@ module.exports = function then() {
         /^I expect that a (alertbox|confirmbox|prompt)( not)* contains the text "([^"]*)?"$/,
         checkModalText
     );
-    this.Given(
+    this.Then(
         /^I expect that backgound image URL of custom icon "([^"]*)?" is equal to "([^"]*)?"$/,
         customIcon
     );

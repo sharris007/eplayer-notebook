@@ -142,9 +142,9 @@ Scenario Outline: Check the SPP Video with Flag On/Off from Authoring
 Scenario: Verify the display of Assets for Teacher user (All & Teacher should be visible)
     Then I expect that element "[name='Teacher PSP']" is visible
     And I expect that element "[name='Student XLS']" is not visible
-    And I click on the element ".pe-icon--chevron-back-18"
+    When I click on the element ".pe-icon--chevron-back-18"
     Then I wait on element ".signoutBtn>div>button" for 3000ms to be visible
-    And I click on the element ".signoutBtn>div>button"
+    When I click on the element ".signoutBtn>div>button"
     Then I wait on element "#username" for 3000ms to be visible
 
 Scenario: Verify the dispaly of Assets for Stdent user on page 305
