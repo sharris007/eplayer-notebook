@@ -50,7 +50,7 @@ class PdfPlayer extends Component {
         script8.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/config/config.js';
         script8.async = false;
         let script9 = document.createElement('SCRIPT');
-        script9.src = '/pdf/foxit_client_lib/webpdf.mini.js';
+        script9.src = '/eplayer/pdf/foxit_client_lib/webpdf.mini.js';
         script9.async = false;
         script9.onload = function(){
           let optionsParams = {
