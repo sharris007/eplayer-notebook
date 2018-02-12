@@ -5,6 +5,7 @@ import RefreshIndicator from 'material-ui/RefreshIndicator';
 import { ViewerComponent } from '@pearson-incubator/viewer';
 import './PdfPlayer.scss';
 import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
+import { HeaderComponent } from '@pearson-incubator/vega-core';
 
 let docViewerId = 'docViewer';
 
@@ -146,6 +147,15 @@ class PdfPlayer extends Component {
 
     return (currentPage.pagenumber);
   }
+
+  addBookmarkHandler = () => {}
+  removeBookmarkHandler = () => {}
+  isCurrentPageBookmarked = () => {}
+
+  handleBookshelfClick = () => {}
+  handleDrawerkeyselect = () => {}
+  handleDrawer = () => {}
+  handlePreferenceClick = () => {}
   
 /**
  * Function defined to handle the window resize event.
@@ -158,8 +168,54 @@ class PdfPlayer extends Component {
     } else {
       viewerClassName = '';
     }
+    let moreMenuData = {};
+    moreMenuData.menuItem = [];
+    let moreMenuItem = {
+      type : 'menuItem',
+      value : 'option 1',
+      text : 'option 1',
+    }
+    moreMenuData.menuItem.push(moreMenuItem);
+
+    const hideIcons = {
+      backNav: false,
+      hamburger: false,
+      bookmark: false,
+      pref: false,
+      search: false,
+      audio: true,
+      moreIcon: false
+    };
+    const headerTitleData = {
+      params: {
+        pageId : '1',
+        bookId : '12345',
+      },
+      classname: 'headerBar',
+      chapterTitle: 'Generic Header',
+      pageTitle: 'Generic Header',
+      isChapterOpener: true
+    };
+
+    const callbacks = {};
+    callbacks.addBookmarkHandler = this.addBookmarkHandler;
+    callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
+    callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     return (
       <div>
+      <HeaderComponent
+        locale={"en-US"}
+        bookshelfClick={this.handleBookshelfClick}
+        drawerClick={this.handleDrawer}
+        bookmarkIconData={callbacks}
+        handlePreferenceClick={this.handlePreferenceClick}
+        handleDrawerkeyselect={this.handleDrawerkeyselect}
+        prefOpen={false}
+        searchOpen={false}
+        hideIcons={hideIcons}
+        headerTitleData={headerTitleData}
+        moreIconData={moreMenuData} />
+
         <div className="eT1viewerContent">
             {this.state.isFirstPageBeingLoad !== true ? <ViewerComponent
               data={this.state.data} pages={this.props.pageList} goToPageCallback={this.goToPage}

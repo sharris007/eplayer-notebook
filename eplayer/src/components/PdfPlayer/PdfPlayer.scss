@@ -3,3 +3,31 @@
 .hideViewerContent{
     visibility: hidden
 }
+
+.headerBar {
+    padding: 0px 55px !important;
+}
+.searchContainer {
+  .triangle-up {
+    border-bottom: 20px solid #f2f2f2 !important;
+    &.fixHeader {
+      border-bottom: 20px solid #f2f2f2 !important;
+    }
+  }
+}
+.headerBar {
+  .bookmarkIcon {
+      float: initial !important;
+  }
+  .searchContainer {
+    position: relative !important; 
+    right: initial !important; 
+    top: initial !important; 
+  }
+  .headerTitle {
+    font-family: "Open Sans" !important;
+  }
+  .SearchinputBar input[type=text] {
+      margin: 0 !important;
+  }
+}
