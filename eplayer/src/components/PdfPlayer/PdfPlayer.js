@@ -17,7 +17,7 @@ class PdfPlayer extends Component {
       pageLoaded : false,
       data : {},
       isFirstPageBeingLoad : true,
-      currPageIndex : -1
+      currPageIndex : 0
     }
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
@@ -172,8 +172,8 @@ class PdfPlayer extends Component {
     moreMenuData.menuItem = [];
     let moreMenuItem = {
       type : 'menuItem',
-      value : 'option 1',
-      text : 'option 1',
+      value : 'SignOut',
+      text : 'Sign Out',
     }
     moreMenuData.menuItem.push(moreMenuItem);
 
@@ -188,12 +188,12 @@ class PdfPlayer extends Component {
     };
     const headerTitleData = {
       params: {
-        pageId : '1',
-        bookId : '12345',
+        pageId : this.state.currPageIndex ? this.state.currPageIndex :'1',
+        bookId : this.props.currentbook.bookId ? this.props.currentbook.bookId :'12345',
       },
       classname: 'headerBar',
-      chapterTitle: 'Generic Header',
-      pageTitle: 'Generic Header',
+      chapterTitle: this.props.currentbook.title ? this.props.currentbook.title : 'Generic Header',
+      pageTitle: this.props.currentbook.title ? this.props.currentbook.title : 'Generic Header',
       isChapterOpener: true
     };
 
@@ -205,7 +205,7 @@ class PdfPlayer extends Component {
       <div>
       <HeaderComponent
         locale={"en-US"}
-        bookshelfClick={this.handleBookshelfClick}
+        bookshelfClick={this.props.bookCallbacks.handleBookshelfClick}
         drawerClick={this.handleDrawer}
         bookmarkIconData={callbacks}
         handlePreferenceClick={this.handlePreferenceClick}
@@ -240,7 +240,9 @@ class PdfPlayer extends Component {
 }
 
 PdfPlayer.propTypes = {
-  pageList : PropTypes.array.isRequired
+  pageList : PropTypes.array.isRequired,
+  currentbook : PropTypes.object,
+  bookCallbacks : PropTypes.object
 }
 
 PdfPlayer.defaultProps = {

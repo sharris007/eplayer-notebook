@@ -61,6 +61,7 @@ export class PdfBook extends Component {
     else {
       browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
     }
+    this.currentbook = {};
   }
 
  async componentDidMount() {
@@ -283,6 +284,11 @@ export class PdfBook extends Component {
     return piSessionKey;
   }
 
+  handleBookshelfClick = () => {
+    this.props.actions.restoreBookState();
+    browserHistory.push('/eplayer/bookshelf');
+  }
+
   render() {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData} = this.props.book;
     if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
@@ -309,9 +315,14 @@ export class PdfBook extends Component {
         isAnnotationsSupported: true,
         isRegionsSupported: true
       }
+      this.currentbook.bookId = this.props.location.query.bookId;
+      let bookCallbacks = {};
+      bookCallbacks.handleBookshelfClick = this.handleBookshelfClick;
       return (
         <PdfPlayer
           pageList={bookPagesInfo.pages}
+          currentbook={this.currentbook}
+          bookCallbacks={bookCallbacks}
         />);
     }
     return (

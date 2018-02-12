@@ -41,6 +41,7 @@ export const REQUEST_TOC = 'REQUEST_TOC';
 export const RECEIVE_TOC = 'RECEIVE_TOC';
 export const REQUEST_BOOKMARKS = 'REQUEST_BOOKMARKS';
 export const RECEIVE_BOOKMARKS = 'RECEIVE_BOOKMARKS';
+export const RESTORE_BOOK_STATE = 'RESTORE_BOOK_STATE';
 
 export function request(component) {
   switch (component) {
@@ -467,6 +468,35 @@ export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid,
     });
   };
 }
+
+export function restoreBookState() {
+  let bookState = {
+    bookinfo: {
+    fetching: false,
+    fetched: false
+    },
+    bookPagesInfo: {
+      pages: [],
+      fetching: false,
+      fetched: false
+    },
+    bookFeatures: {
+      fetching: false,
+      fetched: false
+    },
+    tocData: {
+      fetching: false,
+      fetched: false
+    },
+    bookmarkData: {
+      fetching: false,
+      fetched: false,
+      bookmarksList: []
+    }
+  }
+  return { type : RESTORE_BOOK_STATE , bookState };
+}
+
 const ACTION_HANDLERS = {
   [RECEIVE_USER_INFO_PENDING]: state => ({
     ...state,
@@ -596,9 +626,16 @@ const ACTION_HANDLERS = {
   [RECEIVE_BOOKMARKS]: (state, action) => ({
     ...state,
     bookmarkData: action.bookState.bookmarkData,
+  }),
+  [RESTORE_BOOK_STATE]: (state,action) => ({
+    ...state,
+    bookinfo : action.bookState.bookinfo,
+    bookPagesInfo : action.bookState.bookPagesInfo,
+    bookFeatures : action.bookState.bookFeatures,
+    tocData : action.bookState.tocData,
+     bookmarkData: action.bookState.bookmarkData
   })
 };
-
 
 const initialState = {
   userInfo: {
