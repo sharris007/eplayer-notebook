@@ -236,7 +236,7 @@ Annotator.Editor = (function(_super) {
           }
         }, 25); 
     }
-    if(keycode == 32) {
+    if(keycode == 13 || keycode == 32) {
       $(e.target).trigger('click');
     } 
   }

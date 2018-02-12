@@ -3124,9 +3124,9 @@ Annotator = (function(_super) {
     var annElement = $('span[data-ann-id='+annId+']')[0];
     var getOffset = $(annElement).offset();
     if(annElement) {
-      var noteIconHght=0, winHeight = window.screen.availHeight, currHeight = event.screenY;
+      var noteIconHght=0, winHeight = window.screen.availHeight, currHeight = e.screenY;
       if ((winHeight-currHeight) < 250) { // 250 - annotator widget approximate height
-        window.parent.parent.scrollTo(0,(getOffset.top)-(winHeight-350));
+        window.parent.parent.scrollTo(0,(getOffset.top)-(winHeight-400));
       }
       if($(annElement).find('.annotator-handle').length>0)
         noteIconHght = isNaN(parseInt($(annElement.innerHTML).css('margin-top')))?0:parseInt($(annElement.innerHTML).css('margin-top'));
@@ -3316,7 +3316,7 @@ Annotator = (function(_super) {
         currAnnPosition++;
     };
     $('.goto-button').removeClass('hide');
-    this.showEditor(annotations[currAnnPosition], Util.mousePosition(event, this.wrapper[0]), false);
+    this.showEditor(annotations[currAnnPosition], Util.mousePosition(event, this.wrapper[0]), false, event);
  
   }
 
@@ -3425,7 +3425,7 @@ Annotator = (function(_super) {
     this.subscribe('annotationEditorHidden', cleanup);
     this.subscribe('annotationEditorSubmit', update);
     this.viewer.hide();
-    return this.showEditor(annotation, offset, false);
+    return this.showEditor(annotation, offset, false, event);
   };
 
   Annotator.prototype.onDeleteAnnotation = function(annotation) {
@@ -3838,7 +3838,7 @@ Annotator.Editor = (function(_super) {
           }
         }, 25); 
     }
-    if(keycode == 32) {
+    if(keycode == 13 || keycode == 32) {
       $(e.target).trigger('click');
     } 
   }
