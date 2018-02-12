@@ -224,7 +224,7 @@ export class PdfBook extends Component {
       currentbook.lastName = lastName;
       currentbook.expirationDate = expirationDate;
       currentbook.userEmailId = userEmailId;
-      await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
+      // await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
       const totalPagesToHit = this.getPageOrdersToGetPageDetails(1,this.getPageCount());
       if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
             this.props.actions.fetchPageInfo(this.props.book.userInfo.userid,this.props.location.query.bookid,
@@ -232,13 +232,13 @@ export class PdfBook extends Component {
             this.props.book.bookinfo.book.roleTypeID,currentbook.globalBookId
             );
       }
-      this.props.actions.fetchTocAndViewer(
+    /*  this.props.actions.fetchTocAndViewer(
         bookID, currentbook.authorName, currentbook.title, currentbook.thumbnail,
         this.props.book.bookinfo.book.bookeditionid, currentbook.ssoKey, serverDetails,
         this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
       const locale = languageName(this.props.book.bookinfo.book.languageid);
       const localisedData = locale.split('-')[0];
-      addLocaleData((require(`react-intl/locale-data/${localisedData}`))); // eslint-disable-line global-require,import/no-dynamic-require
+      addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
       const { messages } = languages.translations[locale];
       const PdfbookMessages = {
         PageMsg: messages.page
@@ -248,7 +248,7 @@ export class PdfBook extends Component {
         courseId = -1;
       }
       this.props.actions.fetchBookmarksUsingSpectrumApi(bookID,
-      this.props.book.userInfo.userid, PdfbookMessages.PageMsg, this.props.book.bookinfo.book.roleTypeID, courseId, this.getpiSessionKey());
+      this.props.book.userInfo.userid, PdfbookMessages.PageMsg, this.props.book.bookinfo.book.roleTypeID, courseId, this.getpiSessionKey()); */
       this.currentbook = currentbook;
   }
 
@@ -291,7 +291,8 @@ export class PdfBook extends Component {
 
   render() {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData} = this.props.book;
-    if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
+    // if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
+    if (bookinfo.fetched && bookPagesInfo.fetched) {
       // Sample preference. Not used currently
       let bookPreference = {
         headerBar: {
