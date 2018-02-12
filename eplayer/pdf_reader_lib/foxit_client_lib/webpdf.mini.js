@@ -146,8 +146,8 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                             i18n.init(f, function(e) {
                                 $("body").i18n(), WebPDF.optionParameters = $.extend(WebPDF.optionParameters, c);
                                 var f = !0,
-                                    g = WebPDF.baseUrl + "/pdf/foxit_client_lib/webpdf.mini.js";
-                                f ? d && (g = WebPDF.baseUrl + "/pdf/foxit_client_lib/webpdf.mini.js") : g = d ? WebPDF.baseUrl + "/scripts/core/main.js" : WebPDF.baseUrl + "/scripts/core/include.js", seajs.use([g], function(c) {
+                                    g = WebPDF.baseUrl + "/eplayer/pdf/foxit_client_lib/webpdf.mini.js";
+                                f ? d && (g = WebPDF.baseUrl + "/eplayer/pdf/foxit_client_lib/webpdf.mini.js") : g = d ? WebPDF.baseUrl + "/scripts/core/main.js" : WebPDF.baseUrl + "/scripts/core/include.js", seajs.use([g], function(c) {
                                     WebPDF.createViewer(b, WebPDF.optionParameters), WebPDF.createAccount(WebPDF.optionParameters.serverBaseUrl, WebPDF.optionParameters.language), !WebPDF.Environment.mobile && WebPDF.JsPlugin ? WebPDF.JsPlugin.loadAllPlugins().then(function() {
                                         a()
                                     }) : a(), setTimeout(function() {
@@ -1819,7 +1819,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     e.closeWaiting(), null == a && (a = "Load Worker fail"), e.alert(wa, null, a, "OK", null, !0, 0)
                 }
                 // For poc
-                function c(a) {}!this.isMobile() && e.Engine.JR && (ra && (ra.terminate(), ra = null), ra = new Worker(getBaseUrl() + "pdf/foxit_client_lib/fxcore_worker.js"), ra.addEventListener("error", b, !0), ra.addEventListener("message", c, !0), ra.postMessage({
+                function c(a) {}!this.isMobile() && e.Engine.JR && (ra && (ra.terminate(), ra = null), ra = new Worker(getBaseUrl() + "eplayer/pdf/foxit_client_lib/fxcore_worker.js"), ra.addEventListener("error", b, !0), ra.addEventListener("message", c, !0), ra.postMessage({
                     type: "initWorker",
                     baseUrl: e.optionParameters.serverBaseUrl
                 }))
