@@ -19,7 +19,7 @@ export const resources = {
     PiTokenRefreshTimeout:1800,
     secureApi      : true,
     idcDashboardEnabled : true,
-    iseEnabled : true,
+    iseEnabled : false,
     zeppelinEnabled     : true,
     isDisableAnnotation : false
   },
