@@ -3628,7 +3628,8 @@ Annotator.Editor = (function(_super) {
     '.annotator-delete-container keyup':'ondeleteKeydownEvent',
     '.annotator-select-outer-circle keydown': 'oncircleKeydownEvent',
     '.annotator-edit-Note-Panel-1-circle,.annotator-edit-Note-Panel-1-rect,.annotator-select-outer-circle,.annotator-confirm-cancel,.annotator-delete-container,.goto-button,.annotator-confirm-delete keydown' : 'onkeydownSelection',
-    '.goto-button,.annotator-confirm-delete keydown':'ongotoDeleteKeydownEvent'
+    '.goto-button,.annotator-confirm-delete keydown':'ongotoDeleteKeydownEvent',
+    '.goto-button click': 'gotoNotebookClick'
   };
 
   Editor.prototype.classes = {
@@ -3709,7 +3710,7 @@ Annotator.Editor = (function(_super) {
                 <div class="annotator-controls"> \
                   <div class="annotator-delete-container" tabindex="0" title="' + locale_data[language]['delete'] + '" aria-label="'+locale_data[language]["delete"]+'"> \
                   </div> \
-                  <a href="'+window.parent.window.iseUrl+'" target="_blank" class="goto-button" tabindex="0" title="Go to Notebook" aria-label="Go to Notebook"></a> \
+                  <a href="#" class="goto-button" tabindex="0" title="Go to Notebook" aria-label="Go to Notebook"></a> \
                   <div class="ann-cancel-delete-confirm-section hide"> \
                     <div class="ann-confirm-section"> \
                       <label class="annotator-confirm" tabindex="0" aria-label="'+locale_data[language]["confirm"]+'">' + locale_data[language]['confirm'] + '?</label> \
@@ -3757,6 +3758,7 @@ Annotator.Editor = (function(_super) {
     this.onNoteChange=__bind(this.onNoteChange, this);
     this.ondeleteKeydownEvent=__bind(this.ondeleteKeydownEvent, this);
     this.ongotoDeleteKeydownEvent=__bind(this.ongotoDeleteKeydownEvent, this);
+    this.gotoNotebookClick=__bind(this.gotoNotebookClick, this);
     Editor.__super__.constructor.call(this, $(this.html)[0], options);
     this.fields = [];
     this.annotation = {};
@@ -3841,6 +3843,11 @@ Annotator.Editor = (function(_super) {
     if(keycode == 13 || keycode == 32) {
       $(e.target).trigger('click');
     } 
+  }
+
+  Editor.prototype.gotoNotebookClick=function(e) {
+    e.preventDefault();
+    window.parent.window.location.href = window.parent.window.iseUrl;
   }
   
   Editor.prototype.oncircleKeydownEvent= function(e) {
