@@ -3625,9 +3625,9 @@ Annotator.Editor = (function(_super) {
     '.annotator-edit-Note-Panel-1-circle click' : 'onEditColorChange',
     '#noteContainer click' : 'onNoteContainerClick',
     '.annotator-select-rect,.annotator-confirm-cancel,.annotator-edit-Note-Panel-1-rect,.annotator-edit-Note-Panel-1-circle,#noteContainer keyup': 'onKeyupClick',
-    '.annotator-delete-container keydown':'ondeleteKeydownEvent',
+    '.annotator-delete-container keyup':'ondeleteKeydownEvent',
     '.annotator-select-outer-circle keydown': 'oncircleKeydownEvent',
-    '.annotator-edit-Note-Panel-1-circle,.annotator-edit-Note-Panel-1-rect,.annotator-select-outer-circle,.annotator-confirm-cancel keydown' : 'onkeydownSelection',
+    '.annotator-edit-Note-Panel-1-circle,.annotator-edit-Note-Panel-1-rect,.annotator-select-outer-circle,.annotator-confirm-cancel,.annotator-delete-container,.goto-button,.annotator-confirm-delete keydown' : 'onkeydownSelection',
     '.goto-button,.annotator-confirm-delete keydown':'ongotoDeleteKeydownEvent'
   };
 
