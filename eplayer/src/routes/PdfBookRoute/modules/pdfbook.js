@@ -227,6 +227,8 @@ export function fetchPageInfo(userid, bookid, bookeditionid, totalPagesToHit,
                 + `/ebook${globalbookid}/ipadpdfs/${page.pdfPath}`;
             pageObj.printDisabled = page.printDisabled;
             pageObj.readerPlusID = page.readerPlusID;
+            pageObj.id = page.pageOrder;
+            pageObj.title = 'Page ' + page.bookPageNumber;
             bookState.bookPagesInfo.pages.push(pageObj);
           });
         });

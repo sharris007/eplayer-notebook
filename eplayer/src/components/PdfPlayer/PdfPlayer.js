@@ -6,6 +6,7 @@ import { ViewerComponent } from '@pearson-incubator/viewer';
 import './PdfPlayer.scss';
 import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
 import { HeaderComponent } from '@pearson-incubator/vega-core';
+import { Navigation } from '@pearson-incubator/aquila-js-core';
 
 let docViewerId = 'docViewer';
 
@@ -132,6 +133,12 @@ class PdfPlayer extends Component {
     this.renderPdf(pageIndexToLoad);
   }
 
+  onPageRequest = (requestedPageObj) => {
+    this.setState({pageLoaded : false});
+    let requestedPageOrder = requestedPageObj.pageorder;
+    this.renderPdf(requestedPageOrder);
+  }
+
   getPrevNextPage = (pageType) => {
     const currPageNumber = this.state.currPageIndex;
     let pageNo;
@@ -196,7 +203,6 @@ class PdfPlayer extends Component {
       pageTitle: this.props.currentbook.title ? this.props.currentbook.title : 'Generic Header',
       isChapterOpener: true
     };
-
     const callbacks = {};
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
@@ -215,13 +221,11 @@ class PdfPlayer extends Component {
         hideIcons={hideIcons}
         headerTitleData={headerTitleData}
         moreIconData={moreMenuData} />
-
-        <div className="eT1viewerContent">
-            {this.state.isFirstPageBeingLoad !== true ? <ViewerComponent
-              data={this.state.data} pages={this.props.pageList} goToPageCallback={this.goToPage}
-              getPrevNextPage={this.getPrevNextPage} isET1="Y"
-            /> : null}
-        </div>
+      <Navigation
+        onPageRequest={this.onPageRequest}
+        pagePlayList={this.props.pageList}
+        currentPageId={this.state.currPageIndex}
+      />
         <div id="main" className="pdf-fwr-pc-main">
             <div id="right" className="pdf-fwr-pc-right">
               <div id="toolbar" className="pdf-fwr-toolbar" />
