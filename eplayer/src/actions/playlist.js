@@ -377,10 +377,10 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
     
     PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
     .then((response) => {
-      //Changing content urls to secured url
+      // Changing content urls to secured url
       response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
       response.provider = Utilities.changeContentUrlToSecured(response.provider);
-            
+
       const tocResponse = response.content;
       tocResponse.mainTitle = bookDetails.title;
       tocResponse.author = bookDetails.creator;
@@ -397,7 +397,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
             href: n.href,
             id: n.id,
             playOrder: n.playOrder,
-            title: n.title
+            title: n.title,
+            children: n.items
           }));
         }
         return {
@@ -407,7 +408,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
           coPage: itemObj.coPage,
           playOrder: itemObj.playOrder,
           children: subItems,
-          href: itemObj.href
+          href: itemObj.href,
+          level: 0
         };
       });
       tocResponse.list = listData;
@@ -415,18 +417,20 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const tocFinalModifiedData = { content: tocResponse, bookDetails };
       dispatch(getTocCompleteDetails(tocFinalModifiedData));
       const result = [];
-      const resultAttr = ['id','title','href'];
-      const playlistData={};
+      const resultAttr = ['id', 'title', 'href'];
+      const playlistData = {};
       function prepareFlatten(items) {
         _.forEach(items, (item) => {
           if (item.children && item.children.length) {
             const newItem = {
-              chapterHeading: true,
               type: 'page'
             };
-           _.forEach(resultAttr, (attr) =>{ 
-             newItem[attr] = item[attr] 
-           });
+            if (item.level === 0) {
+              newItem.chapterHeading = true;
+            }
+            _.forEach(resultAttr, (attr) => {
+              newItem[attr] = item[attr];
+            });
             result.push(newItem);
             prepareFlatten(item.children);
           } else {
@@ -434,8 +438,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
               type: 'page'
             };
             _.forEach(resultAttr, (attr) => {
-              newItem[attr]=item[attr] 
-              });
+              newItem[attr] = item[attr];
+            });
             result.push(newItem);
           }
         });
@@ -444,35 +448,35 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const securl = baseUrl.replace(/^http:\/\//i, 'https://');
       playlistData.baseUrl = securl;
 
-        //Changing content urls to secured url
+        // Changing content urls to secured url
       playlistData.baseUrl = Utilities.changeContentUrlToSecured(playlistData.baseUrl);
       playlistData.provider = Utilities.changeContentUrlToSecured(response.provider);
-      playlistData.content = result;         
+      playlistData.content = result;
       dispatch(getPlaylistCompleteDetails(playlistData));
       if (isFromCustomToc) {
         dispatch(getCustomPlaylistCompleteDetails());
       }
 
       let currentPageInfo = {};
-      if(data.pageId) {
+      if (data.pageId) {
         currentPageInfo = find(playlistData.content, list => list.id === data.pageId);
       } else {
         currentPageInfo = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
       }
-      let bookTitle = ''
-      if(courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
-         bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
+      let bookTitle = '';
+      if (courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
+        bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
       }
-      let dataLayerObj = {
-        'eventCategory': 'Chapter',
-        'event': 'chapterStarted',
-        'eventAction': 'Chapter Started',
-        'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
-        'firstSectionEntered' : currentPageInfo.title,
-        'bookTitle': bookTitle,
-        'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
-      }
-        //Custom dimension for initial Master Play List
+      const dataLayerObj = {
+        eventCategory: 'Chapter',
+        event: 'chapterStarted',
+        eventAction: 'Chapter Started',
+        href: currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+        firstSectionEntered: currentPageInfo.title,
+        bookTitle,
+        playOrder: currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+      };
+        // Custom dimension for initial Master Play List
       dataLayer.push(dataLayerObj);
     });
   });
