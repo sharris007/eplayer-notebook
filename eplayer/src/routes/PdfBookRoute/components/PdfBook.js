@@ -321,9 +321,17 @@ export class PdfBook extends Component {
      
       let bookCallbacks = {};
       bookCallbacks.handleBookshelfClick = this.handleBookshelfClick;
+
+      let coverPage = {
+        pdfPath : `${this.currentbook.serverDetails}/ebookassets`
+                + `/ebook${this.props.book.bookinfo.book.globalbookid}${this.props.book.bookinfo.book.pdfCoverArt}`,
+        title : 'Cover',
+        id : 'Cover' 
+      }
       return (
         <PdfPlayer
           pageList={bookPagesInfo.pages}
+          coverPage={coverPage}
           annotationList={annotationData.annotationList}
           bookmarkList={bookmarkData.bookmarkList}
           tocData={tocData.content}

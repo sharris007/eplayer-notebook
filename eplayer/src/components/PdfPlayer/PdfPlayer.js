@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import find from 'lodash/find';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
-import { ViewerComponent } from '@pearson-incubator/viewer';
 import './PdfPlayer.scss';
 import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
 import { HeaderComponent } from '@pearson-incubator/vega-core';
@@ -25,6 +24,12 @@ class PdfPlayer extends Component {
   }
 
   componentDidMount(){
+    let pageIndexToLoad;
+    if(this.props.coverPage){
+      pageIndexToLoad = 'cover';
+    }else{
+      pageIndexToLoad = 1;
+    }
     if(!window.WebPDF){
         let script1 = document.createElement('SCRIPT');
         script1.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/jquery-1.10.2.min.js';
@@ -61,7 +66,7 @@ class PdfPlayer extends Component {
           };
           WebPDF.ready(docViewerId, optionsParams).then(function(data) {
           addEventListenersForWebPDF();
-          triggerEvent('viewerReady', 1);
+          triggerEvent('viewerReady', pageIndexToLoad);
          })
         }
         document.body.appendChild(script1);
@@ -82,7 +87,7 @@ class PdfPlayer extends Component {
 
         WebPDF.ready(docViewerId, optionsParams).then(function(data) {
         addEventListenersForWebPDF();
-        triggerEvent('viewerReady', 1);
+        triggerEvent('viewerReady', pageIndexToLoad);
       })
     }
   }
@@ -93,66 +98,32 @@ class PdfPlayer extends Component {
     eventMap = [];
   }
 
-  renderPdf = (currPageIndex) => {
-    let currPageObj = this.props.pageList[currPageIndex - 1];
-        
-        let openFileParams = {
-              url: currPageObj.pdfPath
-        };
-        WebPDF.ViewerInstance.openFileByUri(openFileParams);
-        const data = this.state.data;
-        data.isFirstPage = (currPageIndex - 1) ? false : true;
-        data.isLastPage = (currPageIndex === this.props.pageList.length) ? true : false;
-        data.currentPageNo = currPageObj.pageorder;
-        this.setState({data, currPageIndex});
+  renderPdf = (pageIndexToLoad) => {
+    let openFileParams = {};
+    let currPageIndex;
+    if(isNaN(pageIndexToLoad)){
+      openFileParams.url = this.props.coverPage.pdfPath;
+      currPageIndex = this.props.coverPage.id;
+    }else{
+      let currPageObj = find(this.props.pageList, page => page.id == pageIndexToLoad);
+      openFileParams.url = currPageObj.pdfPath;
+      currPageIndex = currPageObj.id;
+    }
+    WebPDF.ViewerInstance.openFileByUri(openFileParams);
+    this.setState({currPageIndex});
    }
 
   onPageLoad = () => {
-    if(this.state.currPageIndex === 1){
+    if(this.state.isFirstPageBeingLoad == true){
       this.setState({isFirstPageBeingLoad : false})
     }
-  this.setState({pageLoaded : true });
-  }
-
-  goToPage = (pageno) => {
-    this.setState({pageLoaded : false});
-    let pageIndexToLoad = 0;
-    const currPageIndex = this.state.currPageIndex;
-    if(isNaN(pageno))
-      {
-        if (pageno === 'prev') {
-          if(currPageIndex === 1){
-            pageIndexToLoad = 0;
-          }else{
-            pageIndexToLoad = currPageIndex - 1;
-          }
-        } else if (pageno === 'next') {
-          pageIndexToLoad = currPageIndex + 1;
-        }
-      }
-    this.renderPdf(pageIndexToLoad);
+    this.setState({pageLoaded : true});
   }
 
   onPageRequest = (requestedPageObj) => {
     this.setState({pageLoaded : false});
-    let requestedPageOrder = requestedPageObj.pageorder;
+    let requestedPageOrder = requestedPageObj.id;
     this.renderPdf(requestedPageOrder);
-  }
-
-  getPrevNextPage = (pageType) => {
-    const currPageNumber = this.state.currPageIndex;
-    let pageNo;
-    if (pageType === 'prev') {
-      pageNo = currPageNumber - 1;
-    } else if (pageType === 'next') {
-      pageNo = currPageNumber + 1;
-    }
-    const currentPage = find(this.props.pageList, page => page.pageorder === pageNo);
-    if (currentPage === undefined) {
-      return pageNo;
-    }
-
-    return (currentPage.pagenumber);
   }
 
   addBookmarkHandler = () => {}
@@ -207,6 +178,10 @@ class PdfPlayer extends Component {
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
+    let pageList = [...this.props.pageList];
+    if(this.props.coverPage){
+      pageList.unshift(this.props.coverPage);
+    }
     return (
       <div>
       <HeaderComponent
@@ -221,11 +196,13 @@ class PdfPlayer extends Component {
         hideIcons={hideIcons}
         headerTitleData={headerTitleData}
         moreIconData={moreMenuData} />
-      <Navigation
-        onPageRequest={this.onPageRequest}
-        pagePlayList={this.props.pageList}
-        currentPageId={this.state.currPageIndex}
-      />
+      {!this.state.isFirstPageBeingLoad ? 
+        <Navigation
+          onPageRequest={this.onPageRequest}
+          pagePlayList={pageList}
+          currentPageId={this.state.currPageIndex}
+          /> : null
+        }
         <div id="main" className="pdf-fwr-pc-main">
             <div id="right" className="pdf-fwr-pc-right">
               <div id="toolbar" className="pdf-fwr-toolbar" />
@@ -246,7 +223,8 @@ class PdfPlayer extends Component {
 PdfPlayer.propTypes = {
   pageList : PropTypes.array.isRequired,
   currentbook : PropTypes.object,
-  bookCallbacks : PropTypes.object
+  bookCallbacks : PropTypes.object,
+  coverPage : PropTypes.object
 }
 
 PdfPlayer.defaultProps = {
