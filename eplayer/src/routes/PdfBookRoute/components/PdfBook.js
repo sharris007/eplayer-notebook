@@ -326,7 +326,7 @@ export class PdfBook extends Component {
           pageList={bookPagesInfo.pages}
           annotationList={annotationData.annotationList}
           bookmarkList={bookmarkData.bookmarkList}
-          tocData={tocData}
+          tocData={tocData.content}
           currentbook={this.currentbook}
           bookCallbacks={bookCallbacks}
         />);
