@@ -1120,7 +1120,8 @@ export class Book extends Component {
               href: n.href,
               id: n.id,
               playOrder: n.playOrder,
-              title: n.title
+              title: n.title,
+              children: n.children
             }));
           }
           return {
