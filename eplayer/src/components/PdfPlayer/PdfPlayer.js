@@ -7,6 +7,7 @@ import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, remove
 import { HeaderComponent } from '@pearson-incubator/vega-core';
 import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { DrawerComponent } from '@pearson-incubator/vega-drawer';
+import { PreferencesComponent } from '@pearson-incubator/preferences';
 
 let docViewerId = 'docViewer';
 
@@ -21,7 +22,8 @@ class PdfPlayer extends Component {
       currPageIndex : 0,
       drawerOpen: false,
       prefOpen: false,
-      searchOpen: false
+      searchOpen: false,
+      currZoomLevel: 1
     }
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
@@ -103,6 +105,9 @@ class PdfPlayer extends Component {
   }
 
   renderPdf = (pageIndexToLoad) => {
+    this.setState({drawerOpen: false });
+    this.setState({prefOpen : false})
+    this.setState({searchOpen : false})
     let openFileParams = {};
     let currPageIndex;
     if(isNaN(pageIndexToLoad)){
@@ -122,6 +127,7 @@ class PdfPlayer extends Component {
       this.setState({isFirstPageBeingLoad : false})
     }
     this.setState({pageLoaded : true});
+    this.setCurrentZoomLevel(this.state.currZoomLevel);
   }
 
   onPageRequest = (requestedPageObj) => {
@@ -153,10 +159,36 @@ class PdfPlayer extends Component {
     }
     this.setState({ drawerOpen: false });
   }
+
+  handlePreferenceClick = () => {
+    let prefIconleft = $('.prefIconBtn').offset().left - 181;
+    $('.preferences-container-etext').css('left', prefIconleft);
+    if (this.state.prefOpen === true) {
+      this.setState({ prefOpen: false });
+    } else {
+      this.setState({ prefOpen: true });
+      this.setState({ searchOpen: false });
+    }
+  }
+
+  handlePreferenceKeySelect = (event) => {
+    if ((event.which || event.keyCode) === 13) {
+      this.handlePreferenceClick();
+    }
+  }
+  setCurrentZoomLevel = (level) => {
+    let currZoomLevel = this.state.currZoomLevel;
+    if(level <= 0.1){
+      currZoomLevel = 0.1;
+    }else{
+      currZoomLevel = level;
+    }
+    this.props.resetCurrentZoomLevel(level);
+    this.setState({currZoomLevel : currZoomLevel});
+  }
   addBookmarkHandler = () => {}
   removeBookmarkHandler = () => {}
   isCurrentPageBookmarked = () => {}
-  handlePreferenceClick = () => {}
   removeAnnotationHandler = () => {}
   
   render() {
@@ -225,8 +257,8 @@ class PdfPlayer extends Component {
         bookmarkIconData={callbacks}
         handlePreferenceClick={this.handlePreferenceClick}
         handleDrawerkeyselect={this.handleDrawerkeyselect}
-        prefOpen={false}
-        searchOpen={false}
+        prefOpen={this.state.prefOpen}
+        searchOpen={this.state.searchOpen}
         hideIcons={hideIcons}
         headerTitleData={headerTitleData}
         moreIconData={moreMenuData} />
@@ -249,6 +281,24 @@ class PdfPlayer extends Component {
         currentPageId={pageIdString}
         bookCallbacks={callbacks}
       />}
+      {this.props.isPdfPlayer ? <div className="preferences-container-etext">
+        {this.state.prefOpen ? 
+          <div className="content">
+          <PreferencesComponent isET1={this.props.isPdfPlayer} 
+          setCurrentZoomLevel={this.setCurrentZoomLevel}
+          disableBackgroundColor={true}
+          prefKeySelect = {this.handlePreferenceKeySelect}/></div> : <div className="empty" />} 
+          </div> :
+          <div className="preferences-container">
+        {this.state.prefOpen ? 
+          <div className="content">
+          <PreferencesComponent fetch={this.props.getPreference} 
+          preferenceUpdate={this.props.updatePreference}
+          disableBackgroundColor={false} 
+          locale="en" />
+          </div> : <div className="empty" />} 
+      </div>}
+
         <div id="main" className="pdf-fwr-pc-main">
             <div id="right" className="pdf-fwr-pc-right">
               <div id="toolbar" className="pdf-fwr-toolbar" />

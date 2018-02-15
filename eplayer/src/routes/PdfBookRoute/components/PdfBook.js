@@ -275,6 +275,9 @@ export class PdfBook extends Component {
     browserHistory.push('/eplayer/bookshelf');
   }
 
+  resetCurrentZoomLevel = function(level) {
+    WebPDF.ViewerInstance.zoomTo(level);
+  }
   render() {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData, bookmarkData, annotationData} = this.props.book;
     if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
@@ -327,6 +330,8 @@ export class PdfBook extends Component {
           tocData={tocCompData}
           currentbook={this.currentbook}
           bookCallbacks={bookCallbacks}
+          isPdfPlayer={"Y"}
+          resetCurrentZoomLevel ={this.resetCurrentZoomLevel}
         />);
     }
     return (

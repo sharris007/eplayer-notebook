@@ -31,3 +31,16 @@
       margin: 0 !important;
   }
 }
+.preferences-container-etext {
+    width: 300px !important;
+    position: fixed !important;
+    z-index: 10001 !important;
+    top: 33px !important;
+    right: initial !important;
+    .PrefernceTriangleUp{
+      border-bottom: 20px solid #f2f2f2 !important;
+      &.fixHeader {
+        border-bottom: 20px solid #f2f2f2 !important;
+      }
+    }
+  }
