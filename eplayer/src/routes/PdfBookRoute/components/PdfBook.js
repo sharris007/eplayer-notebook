@@ -226,13 +226,9 @@ export class PdfBook extends Component {
       currentbook.userEmailId = userEmailId;
       currentbook.bookId = bookID;
       await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
-      const totalPagesToHit = this.getPageOrdersToGetPageDetails(1,this.getPageCount());
-      if (totalPagesToHit !== undefined || totalPagesToHit !== '' || totalPagesToHit !== null) {
-            this.props.actions.fetchPageInfo(this.props.book.userInfo.userid,this.props.location.query.bookid,
-            this.props.book.bookinfo.book.bookeditionid,totalPagesToHit,currentbook.ssoKey,serverDetails,
-            this.props.book.bookinfo.book.roleTypeID,currentbook.globalBookId
-            );
-      }
+      this.props.actions.fetchPageInfo(this.props.book.userInfo.userid,this.props.location.query.bookid,
+          this.props.book.bookinfo.book.bookeditionid,currentbook.ssoKey,serverDetails,
+          this.props.book.bookinfo.book.roleTypeID,currentbook.globalBookId);
       this.props.actions.fetchTocAndViewer(
         bookID, currentbook.authorName, currentbook.title, currentbook.thumbnail,
         this.props.book.bookinfo.book.bookeditionid, currentbook.ssoKey, serverDetails,
@@ -253,19 +249,6 @@ export class PdfBook extends Component {
       this.props.actions.fetchHighlightUsingSpectrumApi(bookID,courseId,
         this.props.book.userInfo.userid,this.props.book.bookinfo.book.roleTypeID,this.getpiSessionKey());
       this.currentbook = currentbook;
-  }
-
-  getPageOrdersToGetPageDetails = (startPageOrder,endPageOrder) => {
-    let totalPagesToHit = '';
-    if (startPageOrder < 1 || endPageOrder > this.getPageCount()) {
-      return '';
-    }
-    let pageOrder = startPageOrder;
-    while (startPageOrder <= pageOrder &&  pageOrder <= endPageOrder) {
-      totalPagesToHit = `${totalPagesToHit + pageOrder},`;
-      pageOrder++;
-    }
-    return totalPagesToHit;
   }
 
   getPageCount = () => {
@@ -328,13 +311,20 @@ export class PdfBook extends Component {
         title : 'Cover',
         id : 'Cover' 
       }
+      const tocCompData = {
+        separateToggleIcon: true,
+        data: tocData ?  tocData : {},
+        depth: 5,
+        childField: 'children',
+        isTocWrapperRequired: false
+      };
       return (
         <PdfPlayer
           pageList={bookPagesInfo.pages}
           coverPage={coverPage}
           annotationList={annotationData.annotationList}
           bookmarkList={bookmarkData.bookmarkList}
-          tocData={tocData.content}
+          tocData={tocCompData}
           currentbook={this.currentbook}
           bookCallbacks={bookCallbacks}
         />);

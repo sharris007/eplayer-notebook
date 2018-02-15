@@ -192,14 +192,14 @@ export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, rol
   };
 }
 
-export function fetchPageInfo(userid, bookid, bookeditionid, totalPagesToHit,
+export function fetchPageInfo(userid, bookid, bookeditionid,
   sessionKey, bookServerURL, roleTypeID, globalbookid) {
   const bookState = {
     bookPagesInfo: {
       pages: []
     }
   };
-  let serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagebypageorder?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&listval=${totalPagesToHit}&authkey=${sessionKey}&outputformat=JSON`;
+  let serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagedetails?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&authkey=${sessionKey}`;
   // tempurl is starts with http to create hash key for matching with server
   let tempurl = serviceurl.replace("https","http");
   let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
@@ -214,31 +214,27 @@ export function fetchPageInfo(userid, bookid, bookeditionid, totalPagesToHit,
         // console.log(`FetchPage info error: ${response.statusText}`);
       } else if (response.data.length) {
         response.data.forEach((jsonData) => {
-          const pages = jsonData.viewerPageInfoRestTO;
+          const pages = jsonData.pdfPlayerPageInfoTOList;
           pages.forEach((page) => {
             const pageObj = {
 
             };
             pageObj.pageid = page.pageID;
-            pageObj.bookid = page.bookID;
             pageObj.pagenumber = page.bookPageNumber;
-            pageObj.thumbnailpath = page.thumbnailFilePath;
             pageObj.pageorder = page.pageOrder;
-            pageObj.bookeditionid = page.bookEditionID;
             pageObj.chaptername = page.chapterName;
-            pageObj.isbookmark = page.isBookmark;
+            pageObj.chapterID = page.chapterID
             pageObj.pdfPath = `${bookServerURL}/ebookassets`
                 + `/ebook${globalbookid}/ipadpdfs/${page.pdfPath}`;
-            pageObj.printDisabled = page.printDisabled;
             pageObj.readerPlusID = page.readerPlusID;
-            pageObj.id = page.pageOrder;
+            pageObj.printDisabled = page.printDisabled;
             pageObj.title = 'Page ' + page.bookPageNumber;
+            pageObj.id = page.pageOrder;
             bookState.bookPagesInfo.pages.push(pageObj);
           });
         });
       }
       dispatch({ type: 'RECEIVE_PAGE_INFO', bookState });
-    // loadPdfPageCallback(pageIndexToLoad);
     });
 }
 
