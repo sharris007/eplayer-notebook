@@ -94,17 +94,17 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
       PlaylistApi.doGetBookDetails(data)
         .then(response => response.json())
         .then((response) => {
-          //Changing content urls to secured url
+          // Changing content urls to secured url
           response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
           response.bookDetail.metadata.toc = Utilities.changeContentUrlToSecured(response.bookDetail.metadata.toc);
-          
+
           dispatch(getBookDetails(response));
           bookId = response.bookDetail.bookId;
-          let bookDetailInfo = response;
+          const bookDetailInfo = response;
           tocUrl = getTocUrlOnResp(response.bookDetail.metadata.toc);
 
           if (domain.getEnvType() === 'dev') {
-            tocUrl = tocUrl.replace(contentUrl.SecuredUrl['dev'],contentUrl.SecuredUrl['qa']);
+            tocUrl = tocUrl.replace(contentUrl.SecuredUrl.dev, contentUrl.SecuredUrl.qa);
           }
 
           bookDetails = response.bookDetail.metadata;
@@ -112,10 +112,10 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
 
           PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
           .then((response) => {
-            //Changing content urls to secured url
+            // Changing content urls to secured url
             response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
             response.provider = Utilities.changeContentUrlToSecured(response.provider);
-                  
+
             const tocResponse = response.content;
             tocResponse.mainTitle = bookDetails.title;
             tocResponse.author = bookDetails.creator;
@@ -132,7 +132,8 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
                   href: n.href,
                   id: n.id,
                   playOrder: n.playOrder,
-                  title: n.title
+                  title: n.title,
+                  children: n.items
                 }));
               }
               return {
@@ -142,7 +143,8 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
                 coPage: itemObj.coPage,
                 playOrder: itemObj.playOrder,
                 children: subItems,
-                href: itemObj.href
+                href: itemObj.href,
+                level: 0
               };
             });
             tocResponse.list = listData;
@@ -150,18 +152,20 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
             const tocFinalModifiedData = { content: tocResponse, bookDetails };
             dispatch(getTocCompleteDetails(tocFinalModifiedData));
             const result = [];
-            const resultAttr = ['id','title','href'];
+            const resultAttr = ['id', 'title', 'href'];
             const playlistData = {};
             function prepareFlatten(items) {
               _.forEach(items, (item) => {
                 if (item.children && item.children.length) {
                   const newItem = {
-                    chapterHeading: true,
                     type: 'page'
                   };
-                _.forEach(resultAttr, (attr) =>{ 
-                  newItem[attr] = item[attr] 
-                });
+                  if (item.level === 0) {
+                    newItem.chapterHeading = true;
+                  }
+                  _.forEach(resultAttr, (attr) => {
+                    newItem[attr] = item[attr];
+                  });
                   result.push(newItem);
                   prepareFlatten(item.children);
                 } else {
@@ -169,8 +173,8 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
                     type: 'page'
                   };
                   _.forEach(resultAttr, (attr) => {
-                    newItem[attr]=item[attr] 
-                    });
+                    newItem[attr] = item[attr];
+                  });
                   result.push(newItem);
                 }
               });
@@ -179,32 +183,32 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
             //  Changing content urls to secured url
             playlistData.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
             playlistData.provider = Utilities.changeContentUrlToSecured(response.provider);
-            playlistData.content = result;         
+            playlistData.content = result;
             dispatch(getPlaylistCompleteDetails(playlistData));
             if (isFromCustomToc) {
               dispatch(getCustomPlaylistCompleteDetails());
             }
 
             let currentPageInfo = {};
-            if(data.pageId) {
+            if (data.pageId) {
               currentPageInfo = find(playlistData.content, list => list.id === data.pageId);
             } else {
               currentPageInfo = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
             }
-            let bookTitle = ''
-            if(courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
+            let bookTitle = '';
+            if (courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
               bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
             }
-            let dataLayerObj = {
-              'eventCategory': 'Chapter',
-              'event': 'chapterStarted',
-              'eventAction': 'Chapter Started',
-              'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
-              'firstSectionEntered' : currentPageInfo.title,
-              'bookTitle': bookTitle,
-              'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
-            }
-              //Custom dimension for initial Master Play List
+            const dataLayerObj = {
+              eventCategory: 'Chapter',
+              event: 'chapterStarted',
+              eventAction: 'Chapter Started',
+              href: currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+              firstSectionEntered: currentPageInfo.title,
+              bookTitle,
+              playOrder: currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+            };
+              // Custom dimension for initial Master Play List
             dataLayer.push(dataLayerObj);
           });
         });
@@ -213,10 +217,10 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
 export const getBookTocCallService = data => dispatch =>
   PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
     .then((response) => {
-      //Changing content urls to secured url
+      // Changing content urls to secured url
       response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
       response.provider = Utilities.changeContentUrlToSecured(response.provider);
-            
+
       const tocResponse = response.content;
       tocResponse.mainTitle = bookDetails.title;
       tocResponse.author = bookDetails.creator;
@@ -289,30 +293,30 @@ export const getParameterByName = (name, url) => {
   if (!results) return null;
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
+};
 
-export const getCourseCallServiceForRedirect = (data) => dispatch => PlaylistApi.doGetCourseDetailsForRedirct(data)
+export const getCourseCallServiceForRedirect = data => dispatch => PlaylistApi.doGetCourseDetailsForRedirct(data)
   .then(response => response.json())
   .then((response) => {
-      if (response.status >= 400) {
-        browserHistory.push(`/eplayer/error/${response.status}`);
-        return false;
-      }
-      const getSectionDetails = response.userCourseSectionDetail;
-      const getBookId = getSectionDetails.section.sectionId;
-      const studentCheck = resources.constants.iseEnabled;
-      const instructorCheck = resources.constants.idcDashboardEnabled;
-      if (studentCheck && getSectionDetails.authgrouptype == 'student') {
-         //redirectToZeppelin(bookDetails, passportDetails);
-        redirectToIse(getBookId);
-      }
-      else if (instructorCheck && getSectionDetails.authgrouptype == 'instructor') {
-        const productType = getSectionDetails.section.extras.metadata.productModel;
-        const prodType = productType;
-        const courseId = getBookId;
-        redirectToIDCDashboard(prodType, courseId);
-      }
-});
+    if (response.status >= 400) {
+      browserHistory.push(`/eplayer/error/${response.status}`);
+      return false;
+    }
+    const getSectionDetails = response.userCourseSectionDetail;
+    const getBookId = getSectionDetails.section.sectionId;
+    const studentCheck = resources.constants.iseEnabled;
+    const instructorCheck = resources.constants.idcDashboardEnabled;
+    if (studentCheck && getSectionDetails.authgrouptype == 'student') {
+         // redirectToZeppelin(bookDetails, passportDetails);
+      redirectToIse(getBookId);
+    }
+    else if (instructorCheck && getSectionDetails.authgrouptype == 'instructor') {
+      const productType = getSectionDetails.section.extras.metadata.productModel;
+      const prodType = productType;
+      const courseId = getBookId;
+      redirectToIDCDashboard(prodType, courseId);
+    }
+  });
 
 export const getCourseCallService = (data, isFromCustomToc) => dispatch => PlaylistApi.doGetCourseDetails(data)
   .then(response => response.json())
@@ -321,18 +325,18 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
-    let courseDetailInfo = response;
-     //Changing content urls to secured url
+    const courseDetailInfo = response;
+     // Changing content urls to secured url
     response.userCourseSectionDetail.baseUrl = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.baseUrl);
     response.userCourseSectionDetail.bookCoverImageUrl = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.bookCoverImageUrl);
-    response.userCourseSectionDetail.toc = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.toc);    
-    
+    response.userCourseSectionDetail.toc = Utilities.changeContentUrlToSecured(response.userCourseSectionDetail.toc);
+
     dispatch(getBookDetails(response));
     const baseUrl = response.userCourseSectionDetail.baseUrl;
     tocUrl = getTocUrlOnResp(response.userCourseSectionDetail.toc);
 
     if (domain.getEnvType() === 'dev') {
-      tocUrl = tocUrl.replace(contentUrl.SecuredUrl['dev'],contentUrl.SecuredUrl['qa']);
+      tocUrl = tocUrl.replace(contentUrl.SecuredUrl.dev, contentUrl.SecuredUrl.qa);
     }
 
     bookDetails = response.userCourseSectionDetail;
@@ -342,9 +346,9 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
     if (!isFromCustomToc) {
       const getPreferenceData = {
         userId: data.userId,
-        bookId: bookId,
+        bookId,
         piToken: localStorage.getItem('secureToken')
-      }
+      };
       dispatch(getPreferenceCallService(getPreferenceData));
       const passportDetails = response.passportPermissionDetail;
       const url = window.location.href;
@@ -356,7 +360,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       else if (!getsourceUrl && !data.prdType) {
         getOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
         const zeppelinCheck = resources.constants.zeppelinEnabled;
-        if( zeppelinCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access ){
+        if (zeppelinCheck && bookDetails.authgrouptype == 'student' && passportDetails && !passportDetails.access) {
           redirectToZeppelin(bookDetails, passportDetails, url);
           return false;
         }
@@ -372,13 +376,13 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
         localStorage.setItem('backUrl', decodeURIComponent(IDCreturnUrl));
       }
     }
-    
+
     PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
     .then((response) => {
-      //Changing content urls to secured url
+      // Changing content urls to secured url
       response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
       response.provider = Utilities.changeContentUrlToSecured(response.provider);
-            
+
       const tocResponse = response.content;
       tocResponse.mainTitle = bookDetails.title;
       tocResponse.author = bookDetails.creator;
@@ -395,7 +399,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
             href: n.href,
             id: n.id,
             playOrder: n.playOrder,
-            title: n.title
+            title: n.title,
+            children: n.items
           }));
         }
         return {
@@ -405,7 +410,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
           coPage: itemObj.coPage,
           playOrder: itemObj.playOrder,
           children: subItems,
-          href: itemObj.href
+          href: itemObj.href,
+          level: 0
         };
       });
       tocResponse.list = listData;
@@ -413,18 +419,20 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const tocFinalModifiedData = { content: tocResponse, bookDetails };
       dispatch(getTocCompleteDetails(tocFinalModifiedData));
       const result = [];
-      const resultAttr = ['id','title','href'];
-      const playlistData={};
+      const resultAttr = ['id', 'title', 'href'];
+      const playlistData = {};
       function prepareFlatten(items) {
         _.forEach(items, (item) => {
           if (item.children && item.children.length) {
             const newItem = {
-              chapterHeading: true,
               type: 'page'
             };
-           _.forEach(resultAttr, (attr) =>{ 
-             newItem[attr] = item[attr] 
-           });
+            if (item.level === 0) {
+              newItem.chapterHeading = true;
+            }
+            _.forEach(resultAttr, (attr) => {
+              newItem[attr] = item[attr];
+            });
             result.push(newItem);
             prepareFlatten(item.children);
           } else {
@@ -432,8 +440,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
               type: 'page'
             };
             _.forEach(resultAttr, (attr) => {
-              newItem[attr]=item[attr] 
-              });
+              newItem[attr] = item[attr];
+            });
             result.push(newItem);
           }
         });
@@ -442,47 +450,47 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const securl = baseUrl.replace(/^http:\/\//i, 'https://');
       playlistData.baseUrl = securl;
 
-        //Changing content urls to secured url
+        // Changing content urls to secured url
       playlistData.baseUrl = Utilities.changeContentUrlToSecured(playlistData.baseUrl);
       playlistData.provider = Utilities.changeContentUrlToSecured(response.provider);
-      playlistData.content = result;         
+      playlistData.content = result;
       dispatch(getPlaylistCompleteDetails(playlistData));
       if (isFromCustomToc) {
         dispatch(getCustomPlaylistCompleteDetails());
       }
 
       let currentPageInfo = {};
-      if(data.pageId) {
+      if (data.pageId) {
         currentPageInfo = find(playlistData.content, list => list.id === data.pageId);
       } else {
         currentPageInfo = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
       }
-      let bookTitle = ''
-      if(courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
-         bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
+      let bookTitle = '';
+      if (courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
+        bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
       }
-      let dataLayerObj = {
-        'eventCategory': 'Chapter',
-        'event': 'chapterStarted',
-        'eventAction': 'Chapter Started',
-        'href': currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
-        'firstSectionEntered' : currentPageInfo.title,
-        'bookTitle': bookTitle,
-        'playOrder': currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
-      }
-        //Custom dimension for initial Master Play List
+      const dataLayerObj = {
+        eventCategory: 'Chapter',
+        event: 'chapterStarted',
+        eventAction: 'Chapter Started',
+        href: currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+        firstSectionEntered: currentPageInfo.title,
+        bookTitle,
+        playOrder: currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+      };
+        // Custom dimension for initial Master Play List
       dataLayer.push(dataLayerObj);
     });
   });
 
-export const getAuthToken = (webToken) => dispatch =>
+export const getAuthToken = webToken => dispatch =>
    PlaylistApi.doGetAuthToken(webToken).then(response => response.json())
     .then((response) => {
-        if(response.name && response.value) {
-          const authToken = response.name+"="+response.value+ ";path=/";
-          document.cookie = authToken;
-          //dispatch(getAuthTokenResponse(authToken));
-        }
+      if (response.name && response.value) {
+        const authToken = `${response.name}=${response.value};path=/`;
+        document.cookie = authToken;
+          // dispatch(getAuthTokenResponse(authToken));
+      }
     });
 
 function redirectToIDCDashboard(prodType, courseId) {
