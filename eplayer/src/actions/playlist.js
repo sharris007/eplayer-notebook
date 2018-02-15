@@ -299,7 +299,7 @@ export const getCourseCallServiceForRedirect = data => dispatch => PlaylistApi.d
   .then(response => response.json())
   .then((response) => {
     if (response.status >= 400) {
-      dispatch(getBookDetails(response));
+      //dispatch(getBookDetails(response));
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
