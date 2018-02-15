@@ -6,6 +6,7 @@ import './PdfPlayer.scss';
 import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
 import { HeaderComponent } from '@pearson-incubator/vega-core';
 import { Navigation } from '@pearson-incubator/aquila-js-core';
+import { DrawerComponent } from '@pearson-incubator/vega-drawer';
 
 let docViewerId = 'docViewer';
 
@@ -17,7 +18,10 @@ class PdfPlayer extends Component {
       pageLoaded : false,
       data : {},
       isFirstPageBeingLoad : true,
-      currPageIndex : 0
+      currPageIndex : 0,
+      drawerOpen: false,
+      prefOpen: false,
+      searchOpen: false
     }
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
@@ -126,19 +130,35 @@ class PdfPlayer extends Component {
     this.renderPdf(requestedPageOrder);
   }
 
+  goToPage = (pageNo) => {
+    this.setState({pageLoaded : false});
+    this.renderPdf(pageNo);
+  }
+
+  handleDrawerkeyselect = (event) => {
+    if ((event.which || event.keyCode) === 13) {
+      this.setState({ drawerOpen: true });
+    }
+  }
+
+  handleDrawer = () => {
+    this.setState({drawerOpen: true });
+    this.setState({prefOpen : false})
+    this.setState({searchOpen : false})
+  }
+
+  hideDrawer = () => {
+    if (this.state.drawerOpen) {
+      document.getElementsByClassName('drawerIconBtn')[0].focus();
+    }
+    this.setState({ drawerOpen: false });
+  }
   addBookmarkHandler = () => {}
   removeBookmarkHandler = () => {}
   isCurrentPageBookmarked = () => {}
-
-  handleBookshelfClick = () => {}
-  handleDrawerkeyselect = () => {}
-  handleDrawer = () => {}
   handlePreferenceClick = () => {}
+  removeAnnotationHandler = () => {}
   
-/**
- * Function defined to handle the window resize event.
- */
- 
   render() {
     let viewerClassName;
     if (this.state.pageLoaded !== true) {
@@ -148,12 +168,12 @@ class PdfPlayer extends Component {
     }
     let moreMenuData = {};
     moreMenuData.menuItem = [];
-    let moreMenuItem = {
+    let signOutOption = {
       type : 'menuItem',
       value : 'SignOut',
       text : 'Sign Out',
     }
-    moreMenuData.menuItem.push(moreMenuItem);
+    moreMenuData.menuItem.push(signOutOption);
 
     const hideIcons = {
       backNav: false,
@@ -174,10 +194,24 @@ class PdfPlayer extends Component {
       pageTitle: this.props.currentbook.title ? this.props.currentbook.title : 'Generic Header',
       isChapterOpener: true
     };
+
+    var bookmarksObj = {
+      bookmarksArr : this.props.bookmarkList ? this.props.bookmarkList : []
+    };
+    var notesObj = {
+      notes : this.props.annotationList ? this.props.annotationList : []
+    };
+    var bookDetails = {
+      author : this.props.currentbook.authorName,
+      title : this.props.currentbook.title
+    };
+    var pageIdString = this.state.currPageIndex.toString();
     const callbacks = {};
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
+    callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
+    callbacks.goToPageCallback = this.goToPage;
     let pageList = [...this.props.pageList];
     if(this.props.coverPage){
       pageList.unshift(this.props.coverPage);
@@ -203,6 +237,18 @@ class PdfPlayer extends Component {
           currentPageId={this.state.currPageIndex}
           /> : null
         }
+      {this.props.tocData.data.fetched && <DrawerComponent
+        isDocked={false}
+        drawerWidth={400}
+        isDraweropen={this.state.drawerOpen}
+        hideDrawer={this.hideDrawer}
+        bookDetails={bookDetails}
+        tocData={this.props.tocData}
+        bookmarkData={bookmarksObj}
+        notesData={notesObj}
+        currentPageId={pageIdString}
+        bookCallbacks={callbacks}
+      />}
         <div id="main" className="pdf-fwr-pc-main">
             <div id="right" className="pdf-fwr-pc-right">
               <div id="toolbar" className="pdf-fwr-toolbar" />
