@@ -203,8 +203,11 @@ class PdfPlayer extends Component {
   }
 
   goToPage = (pageNo) => {
-    this.setState({pageLoaded : false});
-    this.renderPdf(pageNo);
+    if(pageNo !== this.state.currPageIndex)
+    {
+      this.setState({pageLoaded : false});
+      this.renderPdf(pageNo);
+    }
   }
 
   handleDrawerkeyselect = (event) => {
