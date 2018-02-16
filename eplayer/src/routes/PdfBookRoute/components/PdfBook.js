@@ -275,9 +275,6 @@ export class PdfBook extends Component {
     browserHistory.push('/eplayer/bookshelf');
   }
 
-  resetCurrentZoomLevel = function(level) {
-    WebPDF.ViewerInstance.zoomTo(level);
-  }
   render() {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData, bookmarkData, annotationData} = this.props.book;
     if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
@@ -308,12 +305,6 @@ export class PdfBook extends Component {
       let bookCallbacks = {};
       bookCallbacks.handleBookshelfClick = this.handleBookshelfClick;
 
-      let coverPage = {
-        pdfPath : `${this.currentbook.serverDetails}/ebookassets`
-                + `/ebook${this.props.book.bookinfo.book.globalbookid}${this.props.book.bookinfo.book.pdfCoverArt}`,
-        title : 'Cover',
-        id : 'Cover' 
-      }
       const tocCompData = {
         separateToggleIcon: true,
         data: tocData ?  tocData : {},
@@ -324,14 +315,12 @@ export class PdfBook extends Component {
       return (
         <PdfPlayer
           pageList={bookPagesInfo.pages}
-          coverPage={coverPage}
           annotationList={annotationData.annotationList}
           bookmarkList={bookmarkData.bookmarkList}
           tocData={tocCompData}
           currentbook={this.currentbook}
           bookCallbacks={bookCallbacks}
           isPdfPlayer={"Y"}
-          resetCurrentZoomLevel ={this.resetCurrentZoomLevel}
         />);
     }
     return (

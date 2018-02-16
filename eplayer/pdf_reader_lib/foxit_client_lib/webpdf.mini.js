@@ -8889,7 +8889,20 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     userName: k,
                     fileMd5: ""
                 };
-                $.ajax({
+                let isfileIDPresent = false;
+                let fileID;
+                for(let ii=0;ii<window.fileIdsList.length;ii++) {
+                    let assetObj = window.fileIdsList[ii];
+                    if(assetObj[g] === undefined) {
+                        isfileIDPresent = false;
+                    } else {
+                        isfileIDPresent = true;
+                        fileID = assetObj[g];
+                        break;
+                    }
+                }
+                if(!isfileIDPresent){
+                    $.ajax({
                     type: "GET",
                     url: j + "api/file/id",
                     data: n,
@@ -8904,14 +8917,26 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                                 url: j + "api/file/id",
                                 data: n,
                                 success: function(a) {
-                                    b = a.id, i(b)
+                                    b = a.id, i(b);
+                                    var fileIdObj = {};
+                                    fileIdObj[g] = b
+                                    window.fileIdsList.push(fileIdObj);
                                 },
                                 error: function(a, b, c) {}
                             })
-                        } else i(b)
+                        } else {
+                            var fileIdObj = {};
+                            fileIdObj[g] = b
+                            window.fileIdsList.push(fileIdObj);
+                            i(b);
+                        }
                     },
                     error: function(a, b, c) {}
-                })
+                    })
+                }else{
+                    i(fileID);
+                }
+                
             },
             openFileUrlByJR: function(a, b) {
                 function c() {

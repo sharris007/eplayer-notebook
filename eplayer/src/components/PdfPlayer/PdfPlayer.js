@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import find from 'lodash/find';
+import _ from 'lodash';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import './PdfPlayer.scss';
 import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
@@ -9,7 +9,13 @@ import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { DrawerComponent } from '@pearson-incubator/vega-drawer';
 import { PreferencesComponent } from '@pearson-incubator/preferences';
 
+var pdfWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/pdfworker.js');
+var fileIdWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/fileidworker.js');
+
+window.fileIdsList = [];
+
 let docViewerId = 'docViewer';
+let foxitBaseUrl = 'https://foxit-aws.gls.pearson-intl.com/';
 
 class PdfPlayer extends Component {
 
@@ -27,15 +33,12 @@ class PdfPlayer extends Component {
     }
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
+    if(window.Worker){
+      pdfWorker.postMessage([this.props.pageList,0,0]);
+    }
   }
 
   componentDidMount(){
-    let pageIndexToLoad;
-    if(this.props.coverPage){
-      pageIndexToLoad = 'cover';
-    }else{
-      pageIndexToLoad = 1;
-    }
     if(!window.WebPDF){
         let script1 = document.createElement('SCRIPT');
         script1.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/jquery-1.10.2.min.js';
@@ -72,7 +75,7 @@ class PdfPlayer extends Component {
           };
           WebPDF.ready(docViewerId, optionsParams).then(function(data) {
           addEventListenersForWebPDF();
-          triggerEvent('viewerReady', pageIndexToLoad);
+          triggerEvent('viewerReady', 0);
          })
         }
         document.body.appendChild(script1);
@@ -93,7 +96,7 @@ class PdfPlayer extends Component {
 
         WebPDF.ready(docViewerId, optionsParams).then(function(data) {
         addEventListenersForWebPDF();
-        triggerEvent('viewerReady', pageIndexToLoad);
+        triggerEvent('viewerReady', 0);
       })
     }
   }
@@ -102,24 +105,88 @@ class PdfPlayer extends Component {
     window.removeEventListener('resize', Resize);
     removeEventListenersForWebPDF();
     eventMap = [];
+    window.fileIdsList = [];
   }
 
-  renderPdf = (pageIndexToLoad) => {
+  preLoadPdf = (preFetchPageList,startIndex, endIndex) => {
+    if(window.Worker){
+        let g = new SparkMD5.ArrayBuffer;
+        fileIdWorker.postMessage([preFetchPageList,window.fileIdsList,startIndex,endIndex,WebPDF.AccountInstance.getUserAccount(),
+                    WebPDF.AccountInstance.getUserId(),g.end(),foxitBaseUrl]);
+        fileIdWorker.onmessage = function(e){
+          window.fileIdsList.push(e.data);
+        }
+      }
+  }
+ 
+  preFetchPages = (pageIndex) => {
+    let lowerIndex = pageIndex-5;
+    let upperIndex = pageIndex+5;
+    let startIndex;
+    let endIndex;
+    let preFetchPageList = [];
+    if((lowerIndex >= 0) && (upperIndex < this.props.pageList.length)){
+      startIndex = lowerIndex;
+      endIndex = upperIndex;
+    }else if((lowerIndex >= 0) && !(upperIndex < this.props.pageList.length)){
+      startIndex = lowerIndex;
+      endIndex = this.props.pageList.length - 1
+    }else if(!(lowerIndex >= 0) && (upperIndex < this.props.pageList.length)){
+      startIndex = 0;
+      endIndex = upperIndex;
+    }
+    if(window.fileIdsList.length){
+       for(let i=startIndex ; i<=endIndex ; i++){
+        var a = this.props.pageList[i].pdfPath;
+        let fileIDPresent = false;
+        for(let i=0;i<window.fileIdsList.length;i++) {
+            let assetObj = fileIdsList[i];
+            if(assetObj[a] === undefined) {
+                fileIDPresent = false;
+            } else {
+                fileIDPresent = true;
+                break;
+            }
+        }
+        if(fileIDPresent === true)
+        {
+          continue;
+        }else{
+          preFetchPageList.push(this.props.pageList[i]);
+        }
+      }
+      this.preLoadPdf(preFetchPageList,0,(preFetchPageList.length - 1));
+    }else{
+      this.preLoadPdf(this.props.pageList,startIndex,endIndex);
+    }
+    
+  }
+
+  renderPdf = (requestedPage) => {
     this.setState({drawerOpen: false });
     this.setState({prefOpen : false})
     this.setState({searchOpen : false})
     let openFileParams = {};
     let currPageIndex;
-    if(isNaN(pageIndexToLoad)){
-      openFileParams.url = this.props.coverPage.pdfPath;
-      currPageIndex = this.props.coverPage.id;
+    let index;
+    if(_.isObject(requestedPage)){
+      openFileParams.url = requestedPage.pdfPath;
+      currPageIndex = requestedPage.id;
+      index = _.findIndex(this.props.pageList, page => page == requestedPage);
+    }else if(requestedPage === 0){
+      let requestedPageObj = this.props.pageList[0];
+      openFileParams.url = requestedPageObj.pdfPath;
+      currPageIndex = requestedPageObj.id;
+      index = 0;
     }else{
-      let currPageObj = find(this.props.pageList, page => page.id == pageIndexToLoad);
-      openFileParams.url = currPageObj.pdfPath;
-      currPageIndex = currPageObj.id;
+      index = _.findIndex(this.props.pageList, page => page.id == requestedPage);
+      let requestedPageObj = this.props.pageList[index];
+      openFileParams.url = requestedPageObj.pdfPath;
+      currPageIndex = requestedPageObj.id;
     }
     WebPDF.ViewerInstance.openFileByUri(openFileParams);
     this.setState({currPageIndex});
+    this.preFetchPages(index);
    }
 
   onPageLoad = () => {
@@ -132,8 +199,7 @@ class PdfPlayer extends Component {
 
   onPageRequest = (requestedPageObj) => {
     this.setState({pageLoaded : false});
-    let requestedPageOrder = requestedPageObj.id;
-    this.renderPdf(requestedPageOrder);
+    this.renderPdf(requestedPageObj);
   }
 
   goToPage = (pageNo) => {
@@ -183,9 +249,14 @@ class PdfPlayer extends Component {
     }else{
       currZoomLevel = level;
     }
-    this.props.resetCurrentZoomLevel(level);
+    this.resetCurrentZoomLevel(level);
     this.setState({currZoomLevel : currZoomLevel});
   }
+
+  resetCurrentZoomLevel = function(level) {
+    WebPDF.ViewerInstance.zoomTo(level);
+  }
+
   addBookmarkHandler = () => {}
   removeBookmarkHandler = () => {}
   isCurrentPageBookmarked = () => {}
@@ -244,10 +315,7 @@ class PdfPlayer extends Component {
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.removeAnnotationHandler = this.removeAnnotationHandler;
     callbacks.goToPageCallback = this.goToPage;
-    let pageList = [...this.props.pageList];
-    if(this.props.coverPage){
-      pageList.unshift(this.props.coverPage);
-    }
+
     return (
       <div>
       <HeaderComponent
@@ -262,13 +330,7 @@ class PdfPlayer extends Component {
         hideIcons={hideIcons}
         headerTitleData={headerTitleData}
         moreIconData={moreMenuData} />
-      {!this.state.isFirstPageBeingLoad ? 
-        <Navigation
-          onPageRequest={this.onPageRequest}
-          pagePlayList={pageList}
-          currentPageId={this.state.currPageIndex}
-          /> : null
-        }
+      
       {this.props.tocData.data.fetched && <DrawerComponent
         isDocked={false}
         drawerWidth={400}
@@ -298,6 +360,14 @@ class PdfPlayer extends Component {
           locale="en" />
           </div> : <div className="empty" />} 
       </div>}
+
+      {!this.state.isFirstPageBeingLoad ? 
+        <Navigation
+          onPageRequest={this.onPageRequest}
+          pagePlayList={this.props.pageList}
+          currentPageId={this.state.currPageIndex}
+          /> : null
+      }
 
         <div id="main" className="pdf-fwr-pc-main">
             <div id="right" className="pdf-fwr-pc-right">
