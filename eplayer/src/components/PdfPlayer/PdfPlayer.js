@@ -343,23 +343,24 @@ class PdfPlayer extends Component {
         currentPageId={pageIdString}
         bookCallbacks={callbacks}
       />}
-      {this.props.isPdfPlayer ? <div className="preferences-container-etext">
+      <div className = "preferences-container-etext">
         {this.state.prefOpen ? 
-          <div className="content">
-          <PreferencesComponent isET1={this.props.isPdfPlayer} 
-          setCurrentZoomLevel={this.setCurrentZoomLevel}
-          disableBackgroundColor={true}
-          prefKeySelect = {this.handlePreferenceKeySelect}/></div> : <div className="empty" />} 
-          </div> :
-          <div className="preferences-container">
-        {this.state.prefOpen ? 
-          <div className="content">
-          <PreferencesComponent fetch={this.props.getPreference} 
-          preferenceUpdate={this.props.updatePreference}
-          disableBackgroundColor={false} 
-          locale="en" />
-          </div> : <div className="empty" />} 
-      </div>}
+          <div className = "content">
+            {this.props.isPdfPlayer ? 
+              <PreferencesComponent
+                isET1 = {this.props.isPdfPlayer}
+                setCurrentZoomLevel = {this.setCurrentZoomLevel}
+                disableBackgroundColor = {true}
+                prefKeySelect = {this.handlePreferenceKeySelect}/> : 
+              <PreferencesComponent
+                fetch = {this.props.getPreference}
+                preferenceUpdate = {this.props.updatePreference}
+                disableBackgroundColor = {false}
+                locale = {"en-US"} />
+            }
+          </div> : <div className="empty" />
+        }
+      </div>
 
       {!this.state.isFirstPageBeingLoad ? 
         <Navigation
