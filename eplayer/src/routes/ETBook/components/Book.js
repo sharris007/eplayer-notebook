@@ -1106,7 +1106,7 @@ export class Book extends Component {
     const tocCompData = {
       separateToggleIcon: true,
       data: this.props.book.toc ? this.props.book.toc : {},
-      depth: 5,
+      depth: 2,
       childField: 'children',
       isTocWrapperRequired: false
     };
@@ -1138,7 +1138,8 @@ export class Book extends Component {
               href: n.href,
               id: n.id,
               playOrder: n.playOrder,
-              title: n.title
+              title: n.title,
+              children: n.children
             }));
           }
           return {
