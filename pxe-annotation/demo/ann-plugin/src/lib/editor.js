@@ -251,6 +251,9 @@ Annotator.Editor = (function(_super) {
   Editor.prototype.oncircleKeydownEvent= function(e) {
     var keycode = e.keyCode;
     if(keycode == 9) {
+      if($(e.target).closest('.annotator-color-select-container').attr('value') == '#FC92CF') {
+        e.preventDefault();
+      }
       setTimeout(function() {
         if ($(e.target).closest('.annotator-color-select-container').attr('value') == '#FC92CF') {
           if($('.ann-cancel-delete-confirm-section').css('display') != 'block' && $('.annotator-outer').hasClass('hide-note')) {
