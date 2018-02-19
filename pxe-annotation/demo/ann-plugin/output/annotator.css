@@ -1209,6 +1209,9 @@
 	display: none !important;
 }
 
+.visible {
+	display: block;
+}
 .positionAbs {
 	position: absolute;
 }

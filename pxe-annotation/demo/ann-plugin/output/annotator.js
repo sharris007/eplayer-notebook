@@ -3315,7 +3315,10 @@ Annotator = (function(_super) {
        if(!($(annotations)[_i].id))
         currAnnPosition++;
     };
-    $('.goto-button').removeClass('hide');
+    if ($(event.target).data('ann-id'))
+      $('.goto-button').addClass('visible').removeClass('hide');
+    else
+      $('.goto-button').addClass('hide').removeClass('visible');
     this.showEditor(annotations[currAnnPosition], Util.mousePosition(event, this.wrapper[0]), false, event);
  
   }
@@ -3710,7 +3713,7 @@ Annotator.Editor = (function(_super) {
                 <div class="annotator-controls"> \
                   <div class="annotator-delete-container" tabindex="0" title="' + locale_data[language]['delete'] + '" aria-label="'+locale_data[language]["delete"]+'"> \
                   </div> \
-                  <a href="#" class="goto-button" tabindex="0" title="Go to Notebook" aria-label="Go to Notebook"></a> \
+                  <a href="#" class="goto-button visible" tabindex="0" title="Go to Notebook" aria-label="Go to Notebook"></a> \
                   <div class="ann-cancel-delete-confirm-section hide"> \
                     <div class="ann-confirm-section"> \
                       <label class="annotator-confirm" tabindex="0" aria-label="'+locale_data[language]["confirm"]+'">' + locale_data[language]['confirm'] + '?</label> \
@@ -4047,6 +4050,11 @@ Annotator.Editor = (function(_super) {
    } else { 
       annBgColor = noteIconBgColor = colorCode;
    }
+   if(this.annotation && this.annotation.id)
+      $('.goto-button').addClass('visible').removeClass('hide');
+   else
+      $('.goto-button').addClass('hide').removeClass('visible');
+
    $(this.annotation.highlights).each(function() {
       if ($(this).parent().attr('shareable') == 'true') {
         $(this).css('background', 'inherit')
