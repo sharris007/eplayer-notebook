@@ -127,14 +127,21 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
             const listData = tocItems.map((itemObj) => {
               let subItems = [];
               if (itemObj.items) {
-                subItems = itemObj.items.map(n => ({
-                  urn: n.id,
-                  href: n.href,
-                  id: n.id,
-                  playOrder: n.playOrder,
-                  title: n.title,
-                  children: n.items
-                }));
+                subItems = itemObj.items.map((n) => {
+                  let children = [];
+                  if (n.items && n.items.length) {
+                    children = n.items.map(child => Object.assign({...child}, {level:2}));
+                  }
+                  return {
+                    urn: n.id,
+                    href: n.href,
+                    id: n.id,
+                    playOrder: n.playOrder,
+                    title: n.title,
+                    children: children,
+                    level:1
+                  }
+                });
               }
               return {
                 id: itemObj.id,
@@ -396,14 +403,21 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const listData = tocItems.map((itemObj) => {
         let subItems = [];
         if (itemObj.items) {
-          subItems = itemObj.items.map(n => ({
-            urn: n.id,
-            href: n.href,
-            id: n.id,
-            playOrder: n.playOrder,
-            title: n.title,
-            children: n.items
-          }));
+          subItems = itemObj.items.map((n) => {
+            let children = [];
+            if (n.items && n.items.length) {
+              children = n.items.map(child => Object.assign({...child}, {level:2}));
+            }
+            return {
+              urn: n.id,
+              href: n.href,
+              id: n.id,
+              playOrder: n.playOrder,
+              title: n.title,
+              children: children,
+              level:1
+            }
+          });
         }
         return {
           id: itemObj.id,

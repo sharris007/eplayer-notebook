@@ -1117,7 +1117,7 @@ export class Book extends Component {
     let configTocData = {
       dropLevelType: 'WITH_IN_SAME_LEVEL',
       tocContents: tocCompData.data.content.list,
-      tocLevel: 2,
+      tocLevel: 3,
       dndType: 'TableOfContents',
       tocHeight:300,
       handlePublish: (changedTocContent) => {
