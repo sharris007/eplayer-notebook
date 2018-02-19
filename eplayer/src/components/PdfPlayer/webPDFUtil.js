@@ -28,7 +28,7 @@ export function Resize() {
     }
     $('#right').height(rightHeight);
 
-    $("#setting .tools").height(height - 130);
+    //$("#setting .tools").height(height - 130);
 
     if ($('#homepage').length == 0 || $('#homepage').is(':hidden')) {//show docviewer, homepage is hidden.
         updateLayer();
@@ -49,7 +49,7 @@ function updateLayer() {
 
     inkSignList.height(height - topOffset);
     
-    let viewHeight = height - topOffset - 175;
+    let viewHeight = height - topOffset - 160;
     let viewWidth = width - rightOffset;
 
     if(!viewHeight){

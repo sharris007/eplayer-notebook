@@ -2075,7 +2075,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                         var m = a("core/Plugins/Print/PrintConfig");
                         wa.registerPlugin(m)
                     }
-                    a("core/Plugins/Navigation/NavigationComponent").createNavigationComponent(wa).init();
+                    //a("core/Plugins/Navigation/NavigationComponent").createNavigationComponent(wa).init();
                     a("core/Plugins/Thumbnail/thumbnailController").createThumbnailController(wa);
                     if (V = a("core/Plugins/Bookmark/BookmarkController").createBookmarkController(wa), d.DocProperties === !0) {
                         var s = a("core/Plugins/DocProperties/DocPropertiesPlugin");
@@ -2774,7 +2774,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             };
             $.each(Ya, function(a, b) {
                 wa[a] = function(c) {
-                    ("onLButtonDbClick" === a || "onLButtonDown" === a || "onLButtonUp" === a || "onRButtonDbClick" === a || "onRButtonDown" === a || "onRButtonUp" === a) && $(".fwr-toolbar-icontext-form").hide();
+                    //("onLButtonDbClick" === a || "onLButtonDown" === a || "onLButtonUp" === a || "onRButtonDbClick" === a || "onRButtonDown" === a || "onRButtonUp" === a) && $(".fwr-toolbar-icontext-form").hide();
                     var d = !1;
                     return $.each(Ca, function(a, e) {
                         return d = e ? e[b](c) : !1, !d
@@ -8302,13 +8302,13 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     w = "";
                 switch (o.showMode) {
                     case WebPDF.PDFView.RD_BRMODE_CONTINUOUS:
-                        w = "<div class='fwr-page'  data-width='" + g + "' data-height='" + h + "'id='" + b.getPageViewContainerID() + "' style='position:relative;" + r + "'><div id='" + b.getWrapPageID() + "' class='fwr-page border ' style='width:100%;height:100%' ></div><img alt='' src='" + q + "' id='" + b.getPageBackgroundImgID() + "' class='" + s + "' style='width:100%;height:100%;background-size:cover' /><div id='" + b.getPageLoaderImageID() + "' class='" + t + "' /> <p class='fwr-page-loadinfo'>" + i18n.t("CommonLng.loadingImage") + "</p></div><div id='" + b.getTrialWatermarkID() + "' class='" + v + "'></div><div id='" + b.getWatermarkID() + "' class='" + u + "'></div><div id='" + b.getUserWatermarkID() + "'></div>", w += "</div>";
+                        w = "<div class='fwr-page'  data-width='" + g + "' data-height='" + h + "'id='" + b.getPageViewContainerID() + "' style='position:relative;" + r + "'><div id='" + b.getWrapPageID() + "' class='fwr-page border ' style='width:100%;height:100%' ></div><img alt='' src='" + q + "' id='" + b.getPageBackgroundImgID() + "' class='" + s + "' style='width:100%;height:100%;background-size:cover' /><div id='" + b.getPageLoaderImageID() + "' class='" + t + "' /> <p class='fwr-page-loadinfo'></p></div><div id='" + b.getTrialWatermarkID() + "' class='" + v + "'></div><div id='" + b.getWatermarkID() + "' class='" + u + "'></div><div id='" + b.getUserWatermarkID() + "'></div>", w += "</div>";
                         break;
                     case WebPDF.PDFView.RD_BRMODE_SINGLE_PAGE:
-                        w = "<div class='fwr-single-page' id='" + b.getPageViewContainerID() + "' style='position:relative;" + r + "'><div id='" + b.getWrapPageID() + "' class='fwr-page border ' style='width:100%;height:100%' ></div><img alt='' src='" + q + "' id='" + b.getPageBackgroundImgID() + "' class='" + s + "' style='width:100%;height:100%;background-size:cover' /><div id='" + b.getPageLoaderImageID() + "' class='" + t + "' /> <p class='fwr-page-loadinfo'>" + i18n.t("CommonLng.loadingImage") + "</p></div><div id='" + b.getTrialWatermarkID() + "' class='" + v + "'></div><div id='" + b.getWatermarkID() + "' class='" + u + "'></div><div id='" + b.getUserWatermarkID() + "'></div>", w += "</div>";
+                        w = "<div class='fwr-single-page' id='" + b.getPageViewContainerID() + "' style='position:relative;" + r + "'><div id='" + b.getWrapPageID() + "' class='fwr-page border ' style='width:100%;height:100%' ></div><img alt='' src='" + q + "' id='" + b.getPageBackgroundImgID() + "' class='" + s + "' style='width:100%;height:100%;background-size:cover' /><div id='" + b.getPageLoaderImageID() + "' class='" + t + "' /> <p class='fwr-page-loadinfo'></p></div><div id='" + b.getTrialWatermarkID() + "' class='" + v + "'></div><div id='" + b.getWatermarkID() + "' class='" + u + "'></div><div id='" + b.getUserWatermarkID() + "'></div>", w += "</div>";
                         break;
                     case WebPDF.PDFView.RD_BRMODE_CONTINUOUS_FACING:
-                        w = "<div class='fwr-page' id='" + b.getPageViewContainerID() + "' style='position:relative;" + r + "'><div id='" + b.getWrapPageID() + "' class='fwr-page border ' style='width:100%;height:100%' ></div><img alt='' src='" + q + "' id='" + b.getPageBackgroundImgID() + "' class='" + s + "' style='width:100%;height:100%;background-size:cover' /><div id='" + b.getPageLoaderImageID() + "' class='" + t + "' /> <p class='fwr-page-loadinfo' >" + i18n.t("CommonLng.loadingImage") + "</p></div><div id='" + b.getTrialWatermarkID() + "' class='" + v + "'></div><div id='" + b.getWatermarkID() + "' class='" + u + "'></div><div id='" + b.getUserWatermarkID() + "'></div>", w += "</div>"
+                        w = "<div class='fwr-page' id='" + b.getPageViewContainerID() + "' style='position:relative;" + r + "'><div id='" + b.getWrapPageID() + "' class='fwr-page border ' style='width:100%;height:100%' ></div><img alt='' src='" + q + "' id='" + b.getPageBackgroundImgID() + "' class='" + s + "' style='width:100%;height:100%;background-size:cover' /><div id='" + b.getPageLoaderImageID() + "' class='" + t + "' /> <p class='fwr-page-loadinfo' ></p></div><div id='" + b.getTrialWatermarkID() + "' class='" + v + "'></div><div id='" + b.getWatermarkID() + "' class='" + u + "'></div><div id='" + b.getUserWatermarkID() + "'></div>", w += "</div>"
                 }
                 return w
             }, this.createPagesView = function(a, b, c) {
@@ -17748,7 +17748,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                 n = !1;
             this.getName = function() {
                 return "ContextMenu Plugin"
-            }, this.onRegister = function() {}, this.init = function() {
+            }, this.onRegister = function() {}, this.init = function() {/*
                 var a = "<div id='" + l + "'><ul id='" + m + "' class='fwrContextMenu fwr-cm-default' style='left: 341px; top: 167px; display: none;'></div>",
                     c = k.getMainView();
                 $(document.body).append(a), e();
@@ -17771,7 +17771,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     onHover: function(a, b) {
                         return !0
                     }
-                }, document.getElementById(c.getMainFrameID()))
+                }, document.getElementById(c.getMainFrameID()))*/
             }, this.hideMenu = function() {
                 if (n) {
                     var a = $("#" + m);
