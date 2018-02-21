@@ -537,14 +537,16 @@ Annotator.Editor = (function(_super) {
       if(this.annotation.colorCode == '#ccf5fd') {
         this.element.find('.annotator-widget').addClass('instructorNote');
         //$('#noteContainer').css('pointer-events', 'none');
-        $('.annotator-controls').hide();
-        $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true)});
+        $('.annotator-delete-container, .ann-cancel-delete-confirm-section').hide();
+        $('#noteContainer, .goto-button').css('pointer-events', 'all');
+        //$('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true)});
       } else {
         this.element.find('.annotator-widget').removeClass('instructorNote');
         $('#noteContainer').css('pointer-events', 'all');
-        $('.annotator-controls').show();
-        $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true) + $('.annotator-controls').height()});
+        $('.annotator-delete-container').show();
+        $('.ann-cancel-delete-confirm-section').hide();
       }
+      $('.annotator-editor').css({ top : topPos + $('.annotator-panel-1').height() + $('.annotator-panel-2 textarea').outerHeight(true) + $('.annotator-controls').height()});
     } else { // Initial annotation
       $('.edit-Note-Panel-1').hide();
       $('.annotator-color-select-container').show();
