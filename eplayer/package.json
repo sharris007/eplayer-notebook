@@ -65,7 +65,7 @@
       }
     },
     "start": {
-      "command": "node bin/server",
+      "command": "node --max-old-space-size=4096 bin/server",
       "env": {
         "DEBUG": "app:*"
       }
@@ -114,7 +114,7 @@
     "@pearson-incubator/toc": "0.1.60",
     "@pearson-incubator/vega-core": "0.0.97",
     "@pearson-incubator/vega-drawer": "^0.0.2",
-    "@pearson-incubator/vega-viewer": "0.0.95",
+    "@pearson-incubator/vega-viewer": "0.0.98",
     "@pearson-incubator/viewer": "0.1.44",
     "axios": "^0.15.3",
     "babel-loader": "^6.2.5",
