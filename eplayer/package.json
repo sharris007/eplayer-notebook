@@ -116,7 +116,6 @@
     "@pearson-incubator/vega-drawer": "^0.0.2",
     "@pearson-incubator/vega-viewer": "0.0.98",
     "@pearson-incubator/viewer": "0.1.44",
-    "@pearson-incubator/vega-pxe-scripts": "^0.0.x",
     "axios": "^0.15.3",
     "babel-loader": "^6.2.5",
     "babel-plugin-add-module-exports": "0.2.1",
