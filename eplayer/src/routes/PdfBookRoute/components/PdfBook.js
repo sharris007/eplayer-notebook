@@ -225,10 +225,11 @@ export class PdfBook extends Component {
       currentbook.expirationDate = expirationDate;
       currentbook.userEmailId = userEmailId;
       currentbook.bookId = bookID;
+      currentbook.bookeditionid = this.props.book.bookinfo.book.bookeditionid;
+      currentbook.roletypeid = roleTypeID;
+      currentbook.userbookid = this.props.book.bookinfo.userbook.userbookid;
       await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
-      this.props.actions.fetchPageInfo(this.props.book.userInfo.userid,this.props.location.query.bookid,
-          this.props.book.bookinfo.book.bookeditionid,currentbook.ssoKey,serverDetails,
-          this.props.book.bookinfo.book.roleTypeID,currentbook.globalBookId);
+      this.props.actions.fetchPageInfo(this.getAuthDetails(),currentbook);
       this.props.actions.fetchTocAndViewer(
         bookID, currentbook.authorName, currentbook.title, currentbook.thumbnail,
         this.props.book.bookinfo.book.bookeditionid, currentbook.ssoKey, serverDetails,
@@ -244,16 +245,33 @@ export class PdfBook extends Component {
       if (courseId === undefined || courseId === '' || courseId === null) {
         courseId = -1;
       }
-      this.props.actions.fetchBookmarksUsingSpectrumApi(bookID,this.props.book.userInfo.userid,
-        PdfbookMessages.PageMsg, this.props.book.bookinfo.book.roleTypeID, courseId, this.getpiSessionKey());
-      this.props.actions.fetchHighlightUsingSpectrumApi(bookID,courseId,
-        this.props.book.userInfo.userid,this.props.book.bookinfo.book.roleTypeID,this.getpiSessionKey());
+      currentbook.courseId = courseId;
       this.currentbook = currentbook;
   }
 
   getPageCount = () => {
     const pagecount = this.props.book.bookinfo.book.numberOfPages;
     return pagecount;
+  }
+
+  getAuthDetails = () => {
+    let piSessionKey, sessionId, userId;
+    piSession.getToken(function(result, userToken){
+          if(result === 'success'){
+            piSessionKey = userToken;
+          }
+    });
+    if(piSessionKey === undefined)
+    {
+      piSessionKey = localStorage.getItem('secureToken');
+    }
+    sessionId = this.props.book.sessionInfo.ssoKey;
+    userId = this.props.book.userInfo.userid;
+    return {
+      userid:userId,
+      piToken:piSessionKey,
+      smsKey:sessionId
+    }
   }
 
   getpiSessionKey = () => {
@@ -301,7 +319,17 @@ export class PdfBook extends Component {
         isAnnotationsSupported: true,
         isRegionsSupported: true
       }
-     
+      let annotations = {
+        load : {
+          get : this.props.actions.getAnnotations
+        },
+        data : annotationData,
+        operation : {
+          post : this.props.actions.postAnnotation,
+          put : this.props.actions.putAnnotation,
+          delete : this.props.actions.deleteAnnotation
+        }
+      }
       let bookCallbacks = {};
       bookCallbacks.handleBookshelfClick = this.handleBookshelfClick;
 
@@ -315,10 +343,11 @@ export class PdfBook extends Component {
       return (
         <PdfPlayer
           pageList={bookPagesInfo.pages}
-          annotationList={annotationData.annotationList}
+          annotations={annotations}
+          auth={this.getAuthDetails}
           bookmarkList={bookmarkData.bookmarkList}
           tocData={tocCompData}
-          currentbook={this.currentbook}
+          metaData={this.currentbook}
           bookCallbacks={bookCallbacks}
           isPdfPlayer={"Y"}
         />);

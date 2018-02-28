@@ -20,6 +20,9 @@ import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
 import { eT1Contants } from '../../../components/common/et1constants';
 
+export { fetchPageInfo } from './actions/pagePlayList';
+export { getAnnotations, postAnnotation, deleteAnnotation, putAnnotation } from './actions/annotations';
+
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
 const etextCourseService = resources.links['courseServiceUrl'];
@@ -41,8 +44,11 @@ export const REQUEST_TOC = 'REQUEST_TOC';
 export const RECEIVE_TOC = 'RECEIVE_TOC';
 export const REQUEST_BOOKMARKS = 'REQUEST_BOOKMARKS';
 export const RECEIVE_BOOKMARKS = 'RECEIVE_BOOKMARKS';
-export const REQUEST_HIGHLIGHTS = 'REQUEST_HIGHLIGHTS';
-export const RECIEVE_HIGHLIGHTS = 'RECIEVE_HIGHLIGHTS';
+export const REQUEST_ANNOTATIONS = 'REQUEST_ANNOTATIONS';
+export const RECEIVE_ANNOTATIONS = 'RECEIVE_ANNOTATIONS';
+export const SAVE_ANNOTATION = 'SAVE_ANNOTATION';
+export const EDIT_ANNOTATION = 'EDIT_ANNOTATION';
+export const DELETE_ANNOTATION = 'DELETE_ANNOTATION';
 export const RESTORE_BOOK_STATE = 'RESTORE_BOOK_STATE';
 
 export function request(component) {
@@ -54,7 +60,7 @@ export function request(component) {
     case 'bookmarks':
       return { type: REQUEST_BOOKMARKS };
     case 'highlights':
-      return { type: REQUEST_HIGHLIGHTS };
+      return { type: REQUEST_ANNOTATIONS };
     default:
       return {};
   }
@@ -192,59 +198,6 @@ export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, rol
   };
 }
 
-export function fetchPageInfo(userid, bookid, bookeditionid,
-  sessionKey, bookServerURL, roleTypeID, globalbookid) {
-  const bookState = {
-    bookPagesInfo: {
-      pages: []
-    }
-  };
-  let serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagedetails?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&authkey=${sessionKey}`;
-  // tempurl is starts with http to create hash key for matching with server
-  let tempurl = serviceurl.replace("https","http");
-  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
-  return (dispatch,getState) =>{
-       // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-       axios.get(`${serviceurl}&hsid=${hsid}`,
-         {
-           timeout: 20000
-         })
-      .then((response) => {
-        if (response.status >= 400) {
-          // console.log(`FetchPage info error: ${response.statusText}`);
-        } else if (response.data.length) {
-           let coverPageObj = {
-              pdfPath : `${bookServerURL}/ebookassets`
-                  + `/ebook${globalbookid}${getState().book.bookinfo.book.pdfCoverArt}`,
-              title : 'Cover',
-              id : 'Cover' 
-            };
-            bookState.bookPagesInfo.pages.push(coverPageObj);
-            response.data.forEach((jsonData) => {
-            const pages = jsonData.pdfPlayerPageInfoTOList;
-            pages.forEach((page) => {
-              const pageObj = {
-  
-              };
-              pageObj.pageid = page.pageID;
-              pageObj.pagenumber = page.bookPageNumber;
-              pageObj.pageorder = page.pageOrder;
-              pageObj.chaptername = page.chapterName;
-              pageObj.chapterID = page.chapterID
-              pageObj.pdfPath = `${bookServerURL}/ebookassets`
-                  + `/ebook${globalbookid}/ipadpdfs/${page.pdfPath}`;
-              pageObj.readerPlusID = page.readerPlusID;
-              pageObj.printDisabled = page.printDisabled;
-              pageObj.title = 'Page ' + page.bookPageNumber;
-              pageObj.id = page.pageOrder;
-              bookState.bookPagesInfo.pages.push(pageObj);
-            });
-          });
-        }
-        dispatch({ type: 'RECEIVE_PAGE_INFO', bookState });
-      });
-    }
-}
 
 function Node() {
   this.id = '';
@@ -421,145 +374,6 @@ export function fetchTocAndViewer(bookId, authorName, title,
   };
 }
 
-export function fetchBookmarksUsingSpectrumApi(bookId, userId, Page, roletypeid, courseId, piSessionKey) {
-  const bookState = {
-    bookmarkData: {
-      bookmarkList: []
-    }
-  };
-  let queryString;
-  queryString = '/api/context/'+bookId+'/identities/'+userId+'/notesX?isBookMark=true';
-  return (dispatch) => {
-    dispatch(request('bookmarks'));
-    return clients.readerApi[envType].get(queryString, {
-        headers: {
-        'X-Authorization': piSessionKey,
-        'Content-Type': 'application/json'
-        }
-      }).then((response) => {
-        if (response.status >= 400) {
-          bookState.bookmarkData.fetching = false;
-          bookState.bookmarkData.fetched = false;
-          return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
-        }
-        return response.data.response;
-      })
-    .then((bookmarkResponseList) => {
-      if (bookmarkResponseList.length) {
-        bookmarkResponseList.forEach((bookmark) => {
-          const extID = Number(bookmark.pageId);
-          const bmObj = {
-            id: extID,
-            bkmarkId: bookmark.id,
-            userId: bookmark.userId,
-            bookId: bookmark.contextId,
-            pageId: bookmark.data.pageId,
-            pageNo: bookmark.pageNo,
-            roleTypeId: bookmark.role,
-            createdTimestamp: bookmark.updatedTime,
-            title: `${Page} ${bookmark.pageNo}`,
-            uri: extID,
-            externalId: extID
-          };
-          if (roletypeid == eT1Contants.UserRoleType.Instructor && bookmark.subContextId == courseId)
-          {
-            bookState.bookmarkData.bookmarkList.push(bmObj);
-          }
-          else if (roletypeid == eT1Contants.UserRoleType.Student)
-          {
-            bookState.bookmarkData.bookmarkList.push(bmObj);
-          }
-        });
-      }
-      bookState.bookmarkData.bookmarkList.sort((bkm1, bkm2) => bkm1.uri - bkm2.uri);
-      bookState.bookmarkData.fetching = false;
-      bookState.bookmarkData.fetched = true;
-      return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
-    });
-  };
-}
-
-export function fetchHighlightUsingSpectrumApi(bookId, courseId, userid, roletypeid, piSessionKey) {
-  const bookState = {
-    annotationData: {
-      annotationList: []
-    }
-  };
-  let queryString;
-  if (roletypeid == eT1Contants.UserRoleType.Student)
-  {
-    queryString = '/api/context/'+bookId+'/identities/'+userid+'/notesX?isBookMark=false&withShared=true';
-  }
-  else
-  {
-    queryString = '/api/context/'+bookId+'/identities/'+userid+'/notesX?isBookMark=false';
-  }
-  return (dispatch) => {
-    dispatch(request('highlights'));
-    return clients.readerApi[envType].get(queryString, {
-        headers: {
-          'X-Authorization':piSessionKey
-        }
-      }).then((response) => {
-        if (response.status >= 400) {
-          bookState.annotationData.fetching = false;
-          bookState.annotationData.fetched = false;
-          return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
-        }
-        return response.data.response;
-      }).then((highlightResponseList) => {
-        if (highlightResponseList.length) {
-          highlightResponseList.forEach((highlight) => {
-            const hlObj = {
-
-            };
-            const pageid = Number(highlight.pageId);
-            hlObj.userId = highlight.userId;
-            hlObj.bookId = highlight.contextId;
-            hlObj.pageId = pageid;
-            hlObj.courseId = highlight.subContextId;
-            hlObj.shared = highlight.shareable;
-            hlObj.highlightHash = highlight.data.highlightHash;
-            hlObj.comment = highlight.data.note;
-            hlObj.text = highlight.selectedText;
-            hlObj.color = highlight.color;
-            hlObj.originalColor = highlight.color;
-            hlObj.id = highlight.id;
-            hlObj.pageNo = highlight.pageNo;
-            hlObj.roleTypeId = highlight.role;
-            hlObj.meta = highlight.data;
-            hlObj.author = highlight.data.author;
-            hlObj.creationTime = highlight.createdTime;
-            hlObj.time = highlight.updatedTime;
-            hlObj.pageIndex = 1;
-            if ((roletypeid == eT1Contants.UserRoleType.Instructor && (_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
-                  && (_.toString(hlObj.userId) === _.toString(userid)) && hlObj.courseId == courseId)
-               ||
-               (roletypeid == eT1Contants.UserRoleType.Student && (_.toString(hlObj.meta.roletypeid) === _.toString(roletypeid))
-                  && (_.toString(hlObj.userId) === _.toString(userid)))) {
-              hlObj.isHighlightOnly = false;
-              bookState.annotationData.annotationList.push(hlObj);
-            } else if (roletypeid == eT1Contants.UserRoleType.Student && hlObj.meta.roletypeid == eT1Contants.UserRoleType.Instructor && hlObj.courseId == courseId) {
-              if(hlObj.shared)
-              {
-               hlObj.isHighlightOnly = false;
-              }
-              else
-              {
-               hlObj.isHighlightOnly = true;
-              }
-              bookState.annotationData.annotationList.push(hlObj);
-            }
-          });
-        }
-        bookState.annotationData.annotationList.sort((hl1, hl2) => hl2.time - hl1.time);
-        bookState.annotationData.fetching = false;
-        bookState.annotationData.fetched = true;
-        return dispatch({ type: RECIEVE_HIGHLIGHTS, bookState });
-      });
-  };
-}
-
 export function restoreBookState() {
   let bookState = {
     bookinfo: {
@@ -723,16 +537,60 @@ const ACTION_HANDLERS = {
     ...state,
     bookmarkData: action.bookState.bookmarkData,
   }),
-  [REQUEST_HIGHLIGHTS]: state => ({
+  [REQUEST_ANNOTATIONS]: state => ({
     ...state,
     annotationData: {
       fetching: true,
       fetched: false
     }
   }),
-  [RECIEVE_HIGHLIGHTS]: (state, action) => ({
+  [RECEIVE_ANNOTATIONS]: (state, action) => ({
     ...state,
     annotationData: action.bookState.annotationData
+  }),
+  [SAVE_ANNOTATION]: (state, action) => ({
+    ...state,
+    annotationData: {
+      ...state.annotationData,
+      annotationList :[
+        ...state.annotationData.annotationList
+      ].concat(action.highlightList).sort((hl1, hl2) => hl2.time - hl1.time)
+    }
+  }),
+  [EDIT_ANNOTATION]: (state, action) => ({
+    ...state,
+    annotationData: {
+      ...state.annotationData,
+      annotationList :[
+        ...state.annotationData.annotationList.filter(highlight => highlight.id !== action.highlightObj.id),
+          {
+          userId: action.highlightObj.userId,
+          bookId: action.highlightObj.bookId,
+          pageId: action.highlightObj.pageId,
+          author: action.highlightObj.author,
+          courseId: action.highlightObj.courseId,
+          shared: action.highlightObj.shared,
+          highlightHash: action.highlightObj.highlightHash,
+          comment: action.highlightObj.comment,
+          text: action.highlightObj.text,
+          color: action.highlightObj.color,
+          originalColor: action.highlightObj.originalColor,
+          id: action.highlightObj.id,
+          pageNo: action.highlightObj.pageNo,
+          meta: action.highlightObj.meta,
+          creationTime: action.highlightObj.creationTime,
+          time: action.highlightObj.time,
+          pageIndex: action.highlightObj.pageIndex
+        }
+      ].sort((hl1, hl2) => hl2.time - hl1.time)
+    }
+  }),
+  [DELETE_ANNOTATION]: (state, action) => ({
+    ...state,
+    annotationData: {
+      ...state.annotationData,
+      annotationList :state.annotationData.annotationList.filter(highlight => highlight.id !== action.id)
+    }
   }),
   [RESTORE_BOOK_STATE]: (state,action) => ({
     ...state,

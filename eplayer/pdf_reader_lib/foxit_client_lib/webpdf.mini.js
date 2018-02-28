@@ -236,6 +236,8 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             e = a("core/Framework/Config"),
             f = a("core/Framework/ReaderApp"),
             g = a("core/Common/ServerService");
+            sv = a("core/Plugins/FindTool/SearchView");
+            ss = a("core/Plugins/FindTool/SearchService");
         a("core/Common/Common"), a("core/Common/Event");
         var h = a("core/Framework/File/FileUtils");
         d.Viewer = function(b, c) {
@@ -597,8 +599,10 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                 return d.loadThumb(c, a, b, e.defaults.requestRetryCount)
             }, this.highlightText = function(a, b) {
                 if (r.isLargeFile()) return void console.error("this method not support large file now");
-                var c = r.getPluginByName(d.FindToolPluginName);
-                return c ? (c.resetHighLightText(!0), c.curPageIndex = a, c.setHighlightRects(b), c.setSeacrchedPageIndex(a), c.highlightSearchedText(a, b)) : !1
+                //var c = r.getPluginByName(d.FindToolPluginName);
+                var aa = ss.createSearchServie(d.Tool.getReaderApp());
+                var c = sv.prototype;
+                return c ? (c.resetHighLightText(!0), c.curPageIndex = a, aa.setHighlightRects(b), aa.setSeacrchedPageIndex(a), c.highlightSearchedText(a, b)) : !1
             }, this.addContextMenu = function(a) {
                 return r.addMenuItem(menuItemDefinition)
             }, this.registerMainFrmEventHandler = function(a) {
@@ -2075,7 +2079,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                         var m = a("core/Plugins/Print/PrintConfig");
                         wa.registerPlugin(m)
                     }
-                    //a("core/Plugins/Navigation/NavigationComponent").createNavigationComponent(wa).init();
+                    a("core/Plugins/Navigation/NavigationComponent").createNavigationComponent(wa).init();
                     a("core/Plugins/Thumbnail/thumbnailController").createThumbnailController(wa);
                     if (V = a("core/Plugins/Bookmark/BookmarkController").createBookmarkController(wa), d.DocProperties === !0) {
                         var s = a("core/Plugins/DocProperties/DocPropertiesPlugin");
@@ -18168,7 +18172,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             if (0 > a || a >= k) return !1;
             var l = i.getPageView(a);
             if (l.isContentCreated() || i.gotoPage(a, 0, 0), !c) {
-                var m = e(this.readerApp, l, b);
+                var m = e(j, l, b);
                 m && i.gotoPage(a, m.x, m.y)
             }
             if (!l || !l.isContentCreated() || !b) return !1;
