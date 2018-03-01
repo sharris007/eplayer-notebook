@@ -228,12 +228,14 @@ export class PdfBook extends Component {
       currentbook.bookeditionid = this.props.book.bookinfo.book.bookeditionid;
       currentbook.roletypeid = roleTypeID;
       currentbook.userbookid = this.props.book.bookinfo.userbook.userbookid;
+      currentbook.version = this.props.book.bookinfo.book.version;
+      currentbook.hastocflatten = this.props.book.bookinfo.book.hastocflatten
       await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
       this.props.actions.fetchPageInfo(this.getAuthDetails(),currentbook);
-      this.props.actions.fetchTocAndViewer(
-        bookID, currentbook.authorName, currentbook.title, currentbook.thumbnail,
-        this.props.book.bookinfo.book.bookeditionid, currentbook.ssoKey, serverDetails,
-        this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
+      // this.props.actions.fetchTocAndViewer(
+      //   bookID, currentbook.authorName, currentbook.title, currentbook.thumbnail,
+      //   this.props.book.bookinfo.book.bookeditionid, currentbook.ssoKey, serverDetails,
+      //   this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
       const locale = languageName(this.props.book.bookinfo.book.languageid);
       const localisedData = locale.split('-')[0];
       addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
@@ -340,16 +342,55 @@ export class PdfBook extends Component {
         childField: 'children',
         isTocWrapperRequired: false
       };
+
+      let toc = {
+        load : {
+          get : this.props.actions.fetchToc
+        },
+        data : tocCompData
+      };
+
+      let hotspot = {
+        load : {
+          get : this.props.actions.fetchRegionsInfo
+        },
+        data : this.props.book.regions ? this.props.book.regions : [] 
+      };
+
+      let search = {
+        load : {
+          get : this.props.actions.search
+        }
+      };
+      
+      let basepaths = {
+        load : {
+          get : this.props.actions.fetchBasepaths
+        },
+        data : this.props.book.basepaths ? this.props.book.basepaths : {}
+      };
+      let glossary = {
+        load : {
+          get : this.props.actions.fetchGlossaryItems
+        },
+        data : this.props.book.glossaryInfoList ? this.props.book.glossaryInfoList : []
+      }
       return (
         <PdfPlayer
           pageList={bookPagesInfo.pages}
           annotations={annotations}
           auth={this.getAuthDetails}
           bookmarkList={bookmarkData.bookmarkList}
-          tocData={tocCompData}
+          tocData={toc}
           metaData={this.currentbook}
           bookCallbacks={bookCallbacks}
+          goToPageNo = {this.props.actions.fetchPagebyPageNumber}
           isPdfPlayer={"Y"}
+          hotspot={hotspot}
+          search={search}
+          basepaths={basepaths}
+          bookFeatures={bookFeatures}
+          glossary={glossary}
         />);
     }
     return (

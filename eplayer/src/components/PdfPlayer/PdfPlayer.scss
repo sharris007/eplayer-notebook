@@ -44,3 +44,45 @@
       }
     }
   }
+  .hotspotContent {
+  position: absolute;
+  margin-top:300px;
+  margin-bottom:100px;
+  left: 50%;
+  right:50%;
+  height:150px;
+  width:150px;
+  z-index : 100050;
+}
+
+.sppModal {
+    display: none;
+    position: fixed;
+    z-index: 201 !important;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #808080;
+}
+.sppCloseBtn {
+    color: white;
+    float: right;
+    font-size: 34px;
+    font-weight: bold;
+    padding: 2px 16px;
+}
+.sppCloseBtn:hover,
+.sppCloseBtn:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: "Open Sans"
+}
+.sppModalHeader {
+    padding: 2px 16px;
+    background-color: #808080;
+    color: white;
+    font-weight: 600;
+    font-size:22px;
+    font-family: "Open Sans"
+}

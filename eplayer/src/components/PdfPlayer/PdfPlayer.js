@@ -9,7 +9,13 @@ import { PreferencesComponent } from '@pearson-incubator/preferences';
 import './PdfPlayer.scss';
 import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
 import { getSelectionInfo,restoreHighlights,reRenderHighlightCornerImages } from './pdfUtility/annotaionsUtil';
+import { displayRegions,handleRegionClick} from './pdfUtility/regionsUtil';
 import { languages } from '../../../locale_config/translations/index';
+import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
+import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
+import { eT1Contants } from '../common/et1constants';
+import Popup from 'react-popup';
+import { PopUpInfo } from '@pearson-incubator/popup-info';
 
 let pdfWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/pdfworker.js');
 let fileIdWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/fileidworker.js');
@@ -32,11 +38,13 @@ class PdfPlayer extends Component {
       prefOpen: false,
       searchOpen: false,
       currZoomLevel: 1,
-      highlightList: []
+      highlightList: [],
+      popUpCollection : [],
     }
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
     registerEvent('highlightClicked', this.handleHighlightClick)
+    registerEvent('regionClicked', this.fetchClickedRegionData.bind(this));
     if(window.Worker){
       pdfWorker.postMessage([this.props.pageList,0,0]);
     }
@@ -169,6 +177,10 @@ class PdfPlayer extends Component {
   }
 
   renderPdf = (requestedPage) => {
+    try{
+      this.props.hotspot.data = [];
+    }
+    catch(e){}
     this.setState({drawerOpen: false });
     this.setState({prefOpen : false})
     this.setState({searchOpen : false})
@@ -193,16 +205,35 @@ class PdfPlayer extends Component {
     WebPDF.ViewerInstance.openFileByUri(openFileParams);
     this.setState({currPageIndex});
     this.preFetchPages(index);
+    const viewer = this;
+    $(document).on('keyup',function(evt) {
+      if (evt.keyCode === 27 && $('#hotspot'))
+      {
+        try{
+          Popup.close();
+          $('#player-iframesppModalBody').remove();
+          $('#sppModal').css('display','none');
+        }
+        catch(e){
+        }
+        viewer.setState({regionData : null});
+      }
+    });
    }
 
   onPageLoad = () => {
     if(this.state.isFirstPageBeingLoad == true){
       this.setState({isFirstPageBeingLoad : false})
-      this.props.annotations.load.get(this.props.auth(),this.props.metaData)
+      this.props.annotations.load.get(this.props.auth(),this.props.metaData);
+      this.props.tocData.load.get(this.props.metaData);
+      this.props.basepaths.load.get(this.props.metaData,this.props.auth()).then(() => {
+      let basepath = this.props.basepaths.data;
+      });;
     }
     this.setState({pageLoaded : true});
     this.setCurrentZoomLevel(this.state.currZoomLevel);
     setTimeout(this.displayHighlights(), 1000);
+    this.displayHotspots();
   }
 
   onPageRequest = (requestedPageObj) => {
@@ -217,6 +248,30 @@ class PdfPlayer extends Component {
       this.renderPdf(pageNo);
     }
   }
+
+  /*Method to navigate to a particular book page number based on bookPageNumber*/
+  // goToPageNumber = (pageNo) => {
+  //   let currentPage = find(pages,page => page.pagenumber == pageNo)
+  //   if(currentPage == undefined)
+  //   {
+  //       this.props.goToPageNo(this.props.metaData,this.props.auth(),pageNo).then(() => {
+  //         if (pages === undefined) {
+  //           pages = this.props.data.book.bookinfo.pages;
+  //           localStorage.setItem('pages', JSON.stringify(pages));
+  //           currentPage = find(pages,page => page.pagenumber == pageNo)
+  //         } else {
+  //           pages = pages.concat(this.props.data.book.bookinfo.pages);
+  //           localStorage.setItem('pages', JSON.stringify(pages));
+  //           currentPage = find(pages,page => page.pagenumber == pageNo)
+  //         }
+  //         this.goToPage(Number(currentPage.pageorder));
+  //     });
+  //   }
+  //   else
+  //   {
+  //     this.goToPage(Number(currentPage.pageorder));
+  //   }
+  // }
 
   handleSelection = () => {
     let curToolHandlerName = WebPDF.ViewerInstance.getCurToolHandlerName();
@@ -426,10 +481,234 @@ class PdfPlayer extends Component {
     }
     this.resetCurrentZoomLevel(level);
     this.setState({currZoomLevel : currZoomLevel});
+    if(this.props.hotspot.data.length > 0 )
+    {
+      displayRegions(this.props.hotspot.data,this.props.bookFeatures,_);
+    }
   }
 
   resetCurrentZoomLevel = function(level) {
     WebPDF.ViewerInstance.zoomTo(level);
+  }
+
+/*Method for removing hotspot content on clicking the close button*/
+  onHotspotClose() {
+      try
+      {
+        $('#hotspot').empty();
+        $('#player-iframesppModalBody').remove();
+        $('#sppModal').css("display","none");
+      }
+      catch(e){}
+  }
+
+  createHttps = (uri) => {
+  if(/^http:\/\//i.test(uri))
+    {
+      let link=uri.substring(4);
+      uri = 'https' + link ;
+    }
+    return uri;
+  }
+
+  fetchClickedRegionData(id){
+    const that = this;
+    var regionhot = handleRegionClick(id,that.props.basepaths.data);
+            /*Checking if the clicked hotspot is Image/Video/Audio/URL and open it in MMI Component */
+            if(regionhot.hotspotType == 'IMAGE' || regionhot.hotspotType == 'VIDEO' || regionhot.hotspotType == 'AUDIO' || regionhot.hotspotType == 'URL')
+            {
+              /*Updating the state to rerender the page with Aquila JS Component*/
+              that.setState({regionData : regionhot});
+              if(that.state.regionData.hotspotType == 'IMAGE')
+              {
+                try
+                {
+                  $('.preview-image').hide();
+                  jQuery(function(){
+                   jQuery('.preview-image').click();
+                  });
+                }
+                catch(e){
+                }
+              }
+              else if(that.state.regionData.hotspotType == 'VIDEO')
+              {
+                try
+                {
+                  $('.poster-play-icon').hide();
+                  // $('.thumb-nail').hide();
+                  jQuery(function(){
+                   jQuery('.poster-play-icon').click();
+                  });
+                }
+                catch(e){
+                }
+              }
+              else if(that.state.regionData.hotspotType == 'URL')
+              {
+                try
+                {
+                  let ExternalLinkComponent = document.getElementsByClassName('link-model')[0];
+                  ExternalLinkComponent.style.backgroundColor = '#ffffff';
+                }
+                catch(e){
+                }
+              }
+              else if(that.state.regionData.hotspotType == 'AUDIO' && that.state.regionData.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
+              {
+                try
+                {
+                 $('.aquila-audio-player').hide();
+                  jQuery(function(){
+                   jQuery('.play-pause').click();
+                  });
+                }
+                catch(e){
+                }
+              }
+              if(that.state.regionData.hotspotType == 'AUDIO')
+              {
+                try
+                {
+                  jQuery(function(){
+                   jQuery('.play-pause').click();
+                  });
+                  $.getScript("https://code.jquery.com/ui/1.12.1/jquery-ui.js", function()
+                  {
+                    $( ".aquila-audio-player" ).draggable()
+                  });
+                }
+                catch(e){
+                }
+              }
+            }
+            else
+            {
+              that.renderHotspot(regionhot);
+            }
+  }
+
+  renderHotspot = (hotspotDetails) => {
+    let regionComponent = " ";
+    let hotspotData,source;
+    switch(hotspotDetails.hotspotType) {
+      case 'AUDIO':
+                  source = this.createHttps(hotspotDetails.linkValue);
+                  hotspotData = {
+                    audioSrc :source,
+                    audioTitle :hotspotDetails.name
+                  };
+                  regionComponent = <AudioPlayer url={hotspotData.audioSrc} title={hotspotData.audioTitle} />;
+                  break;
+      case 'PAGENUMBER':
+                 this.goToPageNumber(hotspotDetails.linkValue);
+                 break;
+      case 'EMAIL':
+                let email = "mailto:" + hotspotDetails.linkValue
+                parent.location = email;
+                break;
+      case 'IMAGE':
+               source = this.createHttps(hotspotDetails.linkValue);
+               hotspotData = {
+                 alt : hotspotDetails.name,
+                 src : source,
+                 width : hotspotDetails.mediaWidth,
+                 height : hotspotDetails.mediaHeight,
+                 title : hotspotDetails.name,
+                 items : hotspotDetails
+               };
+               regionComponent = <ImageViewerPreview data={hotspotData}/>;
+               break;
+      case 'VIDEO':
+               source = this.createHttps(hotspotDetails.linkValue);
+               hotspotData = {
+                title : hotspotDetails.name,
+                src : source,
+                caption : hotspotDetails.description || "",
+                id : hotspotDetails.regionID,
+                thumbnail : {
+                  src : "",
+               },
+               alt : hotspotDetails.name,
+               };
+               regionComponent = <VideoPlayerPreview data={hotspotData}/>;
+               break;
+      case 'SPPASSET':
+               source = hotspotDetails.linkValue;
+               var sppHeaderHeight =document.getElementById('sppModalHeader').style.height;
+               var sppPlayer = document.getElementById('sppModalBody');
+               var lastIndex = source.lastIndexOf("/");
+               var assetID = source.slice(lastIndex+1);
+               var scriptContent = 'https://mediaplayer.pearsoncmg.com/assets/_embed.sppModalBody/' + assetID;
+               var sppScript=document.createElement('SCRIPT');
+               sppScript.src = scriptContent;
+               sppPlayer.appendChild(sppScript);
+               sppPlayer.style.height = (document.documentElement.clientHeight - parseInt(sppHeaderHeight,10)) + 'px';
+               sppPlayer.style.width = document.documentElement.clientWidth + 'px';
+               document.getElementById('sppCloseBtn').addEventListener('click',this.onHotspotClose);
+                try
+                {
+                  document.getElementById('root').appendChild(document.getElementById('sppModal'));
+                  $('#sppModal').css("display","block");
+                }
+                catch(e){
+                }
+                break;
+      case 'DOCUMENT':
+               source=hotspotDetails.linkValue;
+               window.open(source,"_blank");
+               break;
+      case 'URL':
+               source = this.createHttps(hotspotDetails.linkValue);
+               hotspotData = {
+                 title : hotspotDetails.name,
+                 src : source
+               };
+               regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={this.onHotspotClose}/>;
+               break;
+      case 'EXTERNALLINK':
+               source=hotspotDetails.linkValue;
+               window.open(source,"_blank");
+               break;
+      case 'LTILINK':
+               let courseId;
+               if (this.props.book.bookinfo.book.activeCourseID === undefined || this.props.data.book.bookinfo.book.activeCourseID === '' || this.props.data.book.bookinfo.book.activeCourseID === null)
+               {
+                courseId = -1;
+               }
+               else
+               {
+                courseId = this.props.data.book.bookinfo.book.activeCourseID;
+               }
+               /*Framing Complete LTI URl*/
+               let link = serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.data.book.bookinfo.book.roleTypeID + '&userlogin=' + this.props.data.book.userInfo.userid ;
+               /*Converting URL into https*/
+               let ltiUrl = this.createHttps(link);
+               window.open(ltiUrl,"_blank");
+               break;
+      default :regionComponent = null;
+               break;
+    };
+    return regionComponent;
+  }
+  
+    displayHotspots = () => {
+    this.props.hotspot.load.get(this.props.metaData,this.state.currPageIndex,).then(() => {
+      if(this.props.hotspot.data.length > 0 )
+      {
+        displayRegions(this.props.hotspot.data,this.props.bookFeatures,_);
+      }
+    });
+  }
+
+  handleSearchResultClick = (pageOrder,resultType) =>
+  {
+    this.goToPage(pageOrder);
+  }
+
+  searchCallback = (searchTerm,handleResults) =>
+  {
+    this.props.search.load.get(this.props.metaData,searchTerm,handleResults);
   }
 
   addBookmarkHandler = () => {}
@@ -452,7 +731,6 @@ class PdfPlayer extends Component {
       text : 'Sign Out',
     }
     moreMenuData.menuItem.push(signOutOption);
-
     const hideIcons = {
       backNav: false,
       hamburger: false,
@@ -504,15 +782,17 @@ class PdfPlayer extends Component {
         searchOpen={this.state.searchOpen}
         hideIcons={hideIcons}
         headerTitleData={headerTitleData}
+        search={this.searchCallback}
+        onSearchResultClick={this.handleSearchResultClick}
+        autoComplete={this.searchCallback}
         moreIconData={moreMenuData} />
-      
-      {this.props.tocData.data.fetched && <DrawerComponent
+      {this.props.tocData.data.data.fetched && <DrawerComponent
         isDocked={false}
         drawerWidth={400}
         isDraweropen={this.state.drawerOpen}
         hideDrawer={this.hideDrawer}
         bookDetails={bookDetails}
-        tocData={this.props.tocData}
+        tocData={this.props.tocData.data}
         bookmarkData={bookmarksObj}
         notesData={notesObj}
         currentPageId={pageIdString}
@@ -544,7 +824,7 @@ class PdfPlayer extends Component {
           currentPageId={this.state.currPageIndex}
           /> : null
       }
-
+      {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
         <div id="main" className="pdf-fwr-pc-main">
             <div id="right" className="pdf-fwr-pc-right">
               <div id="toolbar" className="pdf-fwr-toolbar" />
@@ -553,6 +833,15 @@ class PdfPlayer extends Component {
               </div>
             </div>
         </div>
+      {this.state.popUpCollection.length ? <PopUpInfo bookContainerId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} isET1='Y'/> : null }
+        <div id='sppModal' className='sppModal'>
+            <div id='sppModalHeader' className='sppModalHeader' style={{height: 60 + 'px'}}>
+              <span id='sppCloseBtn' className='sppCloseBtn'>&times;</span>
+                <p>Smart Pearson Player</p>
+            </div>
+            <div id='sppModalBody' className='sppModalBody' />
+        </div>
+        {this.state.popUpCollection.length ? <PopUpInfo bookContainerId='docViewer_ViewContainer_PageContainer_0' popUpCollection={this.state.popUpCollection} isET1='Y'/> : null }
          {this.state.pageLoaded !== true ?
         <div className="centerCircularBar">
         <RefreshIndicator size={50} left={0.48*$(window).width()} top={200} status="loading" />
