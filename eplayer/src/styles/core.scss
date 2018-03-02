@@ -12,9 +12,8 @@
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
  
-//@import 'base';
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400');
-//@import '~normalize.css/normalize';
+
 // Some best-practice CSS that's useful for most apps
 // Just remove them if they're not what you want
 
@@ -110,7 +109,7 @@ svg[class$="-24"] {
     background-color: white;
     /*position:fixed;*/
     padding-top:0px !important;
-	  margin-top: 10px;
+	  margin-top: -5px;
   }
   .docViewer {
     margin-left: 9%;

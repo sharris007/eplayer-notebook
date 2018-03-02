@@ -25,6 +25,7 @@ import errorRoute from './Error';
 import validateUserRoute from './ValidateUser';
 import pdfbookErrorRoute from './PdfBookError';
 import notebookRoute from './NoteBook';
+import pdfbookRoute1 from './PdfBookRoute';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -45,7 +46,8 @@ export const createRoutes = store => ({
     errorRoute(store),
     validateUserRoute(store),
     pdfbookErrorRoute(store),
-    notebookRoute(store)
+    notebookRoute(store),
+    pdfbookRoute1(store)
   ]
 });
 
