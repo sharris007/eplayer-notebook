@@ -46,7 +46,7 @@ export function restoreHighlights(highlights) {
             let highlightHashes = highlights[i].highlightHash;
             let highlightDiv = document.createElement('div');
                 highlightDiv.classList.add('pdfHighlight');
-             let page = highlights[i].pageIndex || null;
+             let page = highlights[i].pageId || null;
              let highlightHash = highlightHashes.split("@")[0].trim().replace(/(\r\n|\n|\r)/gm,"").replace(/['"]+/g, '');
              let outerHash = highlightHashes.split("@")[1];         
              let hId = highlights[i].id;
@@ -83,7 +83,7 @@ export function restoreHighlights(highlights) {
                 }
                }
               try {
-                page = childDiv[i].getAttribute("page-index");
+                // page = childDiv[i].getAttribute("page-index");
                 WebPDF.ViewerInstance.highlightText((page -1), pdfRectArray);                
                 saveHighlight(page, highlightHashes, hId, highlightColor, highlights[i].isHighlightOnly);
               }catch(e){
@@ -92,7 +92,7 @@ export function restoreHighlights(highlights) {
              }
            }catch(e){}
           }
-          try{
+         /* try{
             if(scrollPercentage == -0) {
               WebPDF.ViewerInstance.gotoPage(0);
             }else{
@@ -100,7 +100,7 @@ export function restoreHighlights(highlights) {
             }            
           }catch(e){
 
-          }
+          }*/
       }
 function saveHighlight(pageIndex, highlightHash, id, highlightColor, isHighlightOnly) { 
         let highlightElements = document.querySelectorAll('.fwr-search-text-highlight');
@@ -199,8 +199,8 @@ function saveHighlight(pageIndex, highlightHash, id, highlightColor, isHighlight
         var parentElement = document.createElement('div');
         parentElement.setAttribute("id", "highlightcornerimages");
         var heightScale, widthScale;
-        var pageWidth = $("#docViewer_ViewContainer_BG_0").width();
-        var pageHeight = $("#docViewer_ViewContainer_BG_0").height();
+        var pageWidth = $("#docViewer_ViewContainer_BG_"+WebPDF.ViewerInstance.getCurPageIndex()).width();
+        var pageHeight = $("#docViewer_ViewContainer_BG_"+WebPDF.ViewerInstance.getCurPageIndex()).height();
         var originalPdfWidth = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageWidth();
         var originalPdfHeight = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageHeight();
         widthScale = pageWidth / originalPdfWidth;
@@ -252,7 +252,7 @@ function saveHighlight(pageIndex, highlightHash, id, highlightColor, isHighlight
                 parentElement.appendChild(childElement);
             }
         }
-        var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
+        var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex());
         parentPageElement.appendChild(parentElement);
       } catch (e) {}
     }

@@ -24,6 +24,7 @@ import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
 import { browserHistory } from 'react-router'; 
 import Cookies from 'universal-cookie';
+import { fetchChapterLevelPdf } from '../modules/service';
 
 /* Creating PdfBook component. */
 export class PdfBook extends Component {
@@ -248,6 +249,7 @@ export class PdfBook extends Component {
         courseId = -1;
       }
       currentbook.courseId = courseId;
+      currentbook.totalpages = this.props.book.bookinfo.book.numberOfPages;
       this.currentbook = currentbook;
   }
 
@@ -334,6 +336,7 @@ export class PdfBook extends Component {
       }
       let bookCallbacks = {};
       bookCallbacks.handleBookshelfClick = this.handleBookshelfClick;
+      bookCallbacks.fetchChapterLevelPdf = fetchChapterLevelPdf;
 
       const tocCompData = {
         separateToggleIcon: true,
@@ -391,6 +394,7 @@ export class PdfBook extends Component {
           basepaths={basepaths}
           bookFeatures={bookFeatures}
           glossary={glossary}
+          location={this.props.location}
         />);
     }
     return (

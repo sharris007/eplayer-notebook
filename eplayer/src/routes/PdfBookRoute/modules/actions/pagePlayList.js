@@ -30,7 +30,7 @@ export const fetchPageInfo = (authObj,currentBook) => {
               title : 'Cover',
               id : 'Cover' 
             };
-            bookState.bookPagesInfo.pages.push(coverPageObj);
+            // bookState.bookPagesInfo.pages.push(coverPageObj);
             response.data.forEach((jsonData) => {
             const pages = jsonData.pdfPlayerPageInfoTOList;
             pages.forEach((page) => {

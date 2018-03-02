@@ -11,11 +11,11 @@ export function displayRegions (hotspots,hotspotFeatures,lodash) {
     {
       regionListData = hotspots;
       lodashFunctions = lodash
-      var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_0');
+      var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex());
       var regionType,mySpan,icon,iconArt,regionElement,iconDiv,tooltip;
       var widthScale,heightScale;
-      var pageWidth = $("#docViewer_ViewContainer_BG_0").width();
-      var pageHeight = $("#docViewer_ViewContainer_BG_0").height();
+      var pageWidth = $("#docViewer_ViewContainer_BG_"+WebPDF.ViewerInstance.getCurPageIndex()).width();
+      var pageHeight = $("#docViewer_ViewContainer_BG_"+WebPDF.ViewerInstance.getCurPageIndex()).height();
       var originalPdfWidth = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageWidth();
       var originalPdfHeight = WebPDF.Tool.readerApp.getPDFDoc().getPage(0).getPageHeight();
       widthScale = pageWidth / originalPdfWidth;

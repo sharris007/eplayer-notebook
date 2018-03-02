@@ -98,6 +98,7 @@ function onDocLoad(){
 
 function onPageChange(){
   Resize();
+  triggerEvent('pageChanged');
   window.addEventListener('resize', Resize);
 }
 
