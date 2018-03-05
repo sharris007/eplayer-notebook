@@ -26,13 +26,13 @@ export function getSelectionInfo(){
         }
           WebPDF.ViewerInstance.highlightText(pageIndex, selectedRect);
       }
-      try{
+      /*try{
         document.querySelector('.docViewer').click();  
-      }catch(e){}
+      }catch(e){}*/
       return highlight
   }
 
-export function restoreHighlights(highlights) {       
+export function restoreHighlights(highlights) { 
         let scrollPercentage = 0;
         try{
           scrollPercentage = WebPDF.ViewerInstance.getDocView().getScrollApi().getPercentScrolledY();           
@@ -230,7 +230,7 @@ function saveHighlight(pageIndex, highlightHash, id, highlightColor, isHighlight
                     finaltop = childHighlightElement.offsetTop;
                     isOverlap = true;
                 }
-                var finalleft = (pageLeft + conatinerWidth) - ($(".fwr-page").offset().left + 271);
+                var finalleft = (pageLeft + conatinerWidth) - ($(".fwr-single-page").offset().left + 271);
                 //var finalleft = 0.9*pageWidth;
                 childElement.style.left = finalleft + "px";
                 childElement.style.top = (finaltop - 5) + "px";
@@ -271,7 +271,7 @@ function saveHighlight(pageIndex, highlightHash, id, highlightColor, isHighlight
         var noteIcon;
         var pageLeft = $("#docViewer_ViewContainer").offset().left;
         var conatinerWidth = $("#docViewer_ViewContainer").width();
-        var originalPosition =((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 271)) + 'px';
+        var originalPosition =((pageLeft + conatinerWidth) - (($(".fwr-single-page").offset().left ) + 271)) + 'px';
         var noteIconCount = $('.annotator-handle').length;
         var noteIconElementList = $('.annotator-handle');
         for (var i=0; i<noteIconCount; i++)
@@ -294,4 +294,13 @@ function saveHighlight(pageIndex, highlightHash, id, highlightColor, isHighlight
               noteIcon.style.left = originalPosition;
             }
         });
+      }
+
+  export  function resetHighlightedText(){
+
+          var selectionElements = document.querySelectorAll('.fwr-search-text-highlight');
+          if(selectionElements){
+          $('.fwr-search-text-highlight').addClass('fwr-hidden');
+        
+        }
       } 

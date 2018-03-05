@@ -8,7 +8,7 @@ import { DrawerComponent } from '@pearson-incubator/vega-drawer';
 import { PreferencesComponent } from '@pearson-incubator/preferences';
 import './PdfPlayer.scss';
 import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
-import { getSelectionInfo,restoreHighlights,reRenderHighlightCornerImages } from './pdfUtility/annotaionsUtil';
+import { getSelectionInfo,restoreHighlights,reRenderHighlightCornerImages, resetHighlightedText } from './pdfUtility/annotaionsUtil';
 import { displayRegions,handleRegionClick} from './pdfUtility/regionsUtil';
 import { languages } from '../../../locale_config/translations/index';
 import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
@@ -49,11 +49,7 @@ class PdfPlayer extends Component {
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
     registerEvent('highlightClicked', this.handleHighlightClick)
     registerEvent('regionClicked', this.fetchClickedRegionData.bind(this));
-    // registerEvent('pageChanged', this.onPageChange.bind(this));
-    /*if(window.Worker){
-      pdfWorker.postMessage([this.props.pageList,0,0]);
-    }*/
-    pdfAnnotatorInstance.init();
+    pdfAnnotatorInstance.init(resetHighlightedText);
   }
 
   componentDidMount(){
@@ -310,7 +306,7 @@ class PdfPlayer extends Component {
          this.props.annotations.load.get(this.props.auth(),this.props.metaData).then(()=> {
           this.props.tocData.load.get(this.props.metaData).then(()=>{
             this.props.basepaths.load.get(this.props.metaData,this.props.auth()).then(()=> {
-              setTimeout(this.displayHighlights(), 1000);
+              this.displayHighlights();
               this.displayHotspots();
             });
           });
@@ -572,6 +568,7 @@ class PdfPlayer extends Component {
     }
     this.resetCurrentZoomLevel(level);
     this.setState({currZoomLevel : currZoomLevel});
+    this.displayHighlights();
     if(this.props.hotspot.data.length > 0 )
     {
       displayRegions(this.props.hotspot.data,this.props.bookFeatures,_);

@@ -44,7 +44,7 @@ var notesMessages;
 var isPopupOpen = false;
 var userRoleTypeID = 0;
 var userCourseID = 0;
-function init()
+function init(resetAnnotTextArea)
 {
   $("body").mousedown(function(e) {
     if(isPopupOpen)
@@ -55,6 +55,7 @@ function init()
                 
         { 
             hide();
+            resetAnnotTextArea();
         }
     }
   });
@@ -77,7 +78,7 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    var pageLeft = $("#docViewer_ViewContainer").offset().left;
    var pageWidth = $("#docViewer_ViewContainer").width();
    notesMessages=NotesMessages;
-   coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
+   coord.left = (pageLeft + pageWidth) - ($(".fwr-single-page").offset().left + 287);
    //coord.left = coord.left + (coord.width * 1.5);
    //coord.top = coord.top + (coord.height * 1.5);
    coord.top = (coord.top + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
@@ -181,8 +182,8 @@ function alignPopup()
    var formLeft = $(".annotator-widget").offset().left;
    var formHeight = $(".annotator-widget").height();
    var formWidth = $(".annotator-widget").width();
-   var pdfPageTop = $("#docViewer_ViewContainer_BG_0").offset().top;
-   var pdfPageheight = $("#docViewer_ViewContainer_BG_0").height();
+   var pdfPageTop = $("#docViewer_ViewContainer_PageContainer_"+WebPDF.ViewerInstance.getCurPageIndex()).offset().top;
+   var pdfPageheight = $("#docViewer_ViewContainer_PageContainer_"+WebPDF.ViewerInstance.getCurPageIndex()).height();
    //Reverting changes made for ETEXT-3966
   /* var pdfPageWidth = $("#docViewer_ViewContainer_BG_0").width();
    var containerWidth = $("#docViewer_ViewContainer").width();
@@ -410,7 +411,7 @@ function onNoteChange(event) {
    //coord.left = coord.left + (coord.width * 1.5);
     var pageLeft = $("#docViewer_ViewContainer").offset().left;
    var pageWidth = $("#docViewer_ViewContainer").width();
-   coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
+   coord.left = (pageLeft + pageWidth) - ($(".fwr-single-page").offset().left + 287);
    //coord.top = coord.top + (coord.height * 1.5);
    coord.top = (coord.top + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
    if(cornerFoldedImageTop!==undefined)
@@ -434,6 +435,7 @@ function onNoteChange(event) {
    userRoleTypeID = roleTypeID;
    userCourseID = courseID;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
+         e.stopPropagation();
          onColorChange(e);
    });
    $("#note-text-area").on('input',function(e){
