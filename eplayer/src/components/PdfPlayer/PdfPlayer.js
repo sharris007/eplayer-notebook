@@ -304,7 +304,7 @@ class PdfPlayer extends Component {
        if(this.state.isFirstPageBeingLoad == true) {
          this.setState({isFirstPageBeingLoad : false});
          this.props.annotations.load.get(this.props.auth(),this.props.metaData).then(()=> {
-            setTimeout(this.displayHighlights(), 1000);
+            setTimeout(this.displayHighlights());
           });
          this.props.basepaths.load.get(this.props.metaData,this.props.auth()).then(()=> {
                  this.displayHotspots();
@@ -312,7 +312,7 @@ class PdfPlayer extends Component {
           this.props.tocData.load.get(this.props.metaData);
           this.props.bookmarks.load.get(this.props.auth(),this.props.metaData);        
        } else {
-          setTimeout(this.displayHighlights(), 1000);
+          setTimeout(this.displayHighlights());
           this.displayHotspots();
        } 
     }
