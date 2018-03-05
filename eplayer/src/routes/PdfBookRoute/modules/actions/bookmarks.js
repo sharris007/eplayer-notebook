@@ -9,7 +9,7 @@ const etextCourseService = resources.links['courseServiceUrl'];
 const envType = domain.getEnvType();
 
 /*bookId, userId, Page, roletypeid, courseId, piSessionKey*/
-export const getBookmarks = (authObj, currentBook, currentPage) => {
+export const getBookmarks = (authObj, currentBook) => {
   const bookState = {
     bookmarkData: {
       bookmarkList: []
@@ -28,11 +28,12 @@ export const getBookmarks = (authObj, currentBook, currentPage) => {
         if (response.status >= 400) {
           bookState.bookmarkData.fetching = false;
           bookState.bookmarkData.fetched = false;
-          return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
+          return dispatch({ type: 'RECEIVE_BOOKMARKS', bookState });
         }
         return response.data.response;
       })
     .then((bookmarkResponseList) => {
+      let Page = 'Page';
       if (bookmarkResponseList.length) {
         bookmarkResponseList.forEach((bookmark) => {
           const extID = Number(bookmark.pageId);
@@ -49,7 +50,7 @@ export const getBookmarks = (authObj, currentBook, currentPage) => {
             uri: extID,
             externalId: extID
           };
-          if (roletypeid == eT1Contants.UserRoleType.Instructor && bookmark.subContextId == currentBook.courseId)
+          if (currentBook.roletypeid == eT1Contants.UserRoleType.Instructor && bookmark.subContextId == currentBook.courseId)
           {
             bookState.bookmarkData.bookmarkList.push(bmObj);
           }
@@ -62,7 +63,7 @@ export const getBookmarks = (authObj, currentBook, currentPage) => {
       bookState.bookmarkData.bookmarkList.sort((bkm1, bkm2) => bkm1.uri - bkm2.uri);
       bookState.bookmarkData.fetching = false;
       bookState.bookmarkData.fetched = true;
-      return dispatch({ type: RECEIVE_BOOKMARKS, bookState });
+      return dispatch({ type: 'RECEIVE_BOOKMARKS', bookState });
     });
   };
 }
@@ -70,8 +71,7 @@ export const getBookmarks = (authObj, currentBook, currentPage) => {
 /*bookmarkId, userId, bookId, piSessionKey*/
 export const deleteBookmark = (bookmarkId, authObj, currentBook) => {
   return (dispatch) => {
-    dispatch(request('bookmarks'));
-    return clients.readerApi[envType].delete('/api/context/'+currentBook.bookId+'/identities/'+currentBook.userId+'/notesX?isBookMark=true', {
+    return clients.readerApi[envType].delete('/api/context/'+currentBook.bookId+'/identities/'+authObj.userid+'/notesX?isBookMark=true', {
       headers: {
         'X-Authorization': authObj.piToken,
         'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ export const deleteBookmark = (bookmarkId, authObj, currentBook) => {
       if (response.status >= 400) {
          // console.log(`Error in remove bookmark: ${response.statusText}`)
       }
-      return dispatch({ type: REMOVE_BOOKMARK, bookmarkId });
+      return dispatch({ type: 'REMOVE_BOOKMARK', bookmarkId });
     });
   };
 }
@@ -94,7 +94,7 @@ export function postBookmark(currentPage, authObj, currentBook) {
     isBookMark:true,
     userId: authObj.userid,
     data: {
-      currentPage.pageId
+      pageId: currentPage.id
     },
     role:currentBook.roletypeid,
     contextId: currentBook.bookId,
@@ -108,8 +108,6 @@ export function postBookmark(currentPage, authObj, currentBook) {
   let bmObj;
 
   return (dispatch) => {
-    dispatch(request('bookmarks'));
-
     return clients.readerApi[envType].post('/api/context/'+currentBook.bookId+'/identities/'+authObj.userId+'/notesX', {"payload":[data]})
     .then((response) => {
       if (response.status >= 400) {
@@ -122,6 +120,7 @@ export function postBookmark(currentPage, authObj, currentBook) {
         bookmarkResponseList.forEach((bookmark) => {
         // const date = new Date(bookmark.updatedTime * 1000);
         const extID = Number(bookmark.pageId);
+        let Page = 'Page';
         bmObj = {
           id: extID,
           bkmarkId: bookmark.id,
@@ -138,7 +137,7 @@ export function postBookmark(currentPage, authObj, currentBook) {
          bookmarkList.push(bmObj);
         })
       }
-      return dispatch({ type: ADD_BOOKMARK, bookmarkList });
+      return dispatch({ type: 'ADD_BOOKMARK', bookmarkList });
     });
   };
 }

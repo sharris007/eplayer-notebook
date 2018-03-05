@@ -22,6 +22,7 @@ import { eT1Contants } from '../../../components/common/et1constants';
 
 export { fetchPageInfo } from './actions/pagePlayList';
 export { getAnnotations, postAnnotation, deleteAnnotation, putAnnotation } from './actions/annotations';
+export { getBookmarks, deleteBookmark, postBookmark } from './actions/bookmarks';
 export { fetchToc } from './actions/tocActions';
 export { fetchRegionsInfo, fetchGlossaryItems } from './actions/regionActions';
 export { search } from './actions/searchActions';
@@ -59,6 +60,8 @@ export const RECEIVE_GLOSSARY_TERM = 'RECEIVE_GLOSSARY_TERM';
 export const RECEIVE_BASEPATH_PENDING= 'RECEIVE_BASEPATH_PENDING';
 export const RECEIVE_BASEPATH_FULFILLED= 'RECEIVE_BASEPATH_FULFILLED';
 export const RECEIVE_BASEPATH_REJECTED= 'RECEIVE_BASEPATH_REJECTED';
+export const ADD_BOOKMARK = 'ADD_BOOKMARK';
+export const REMOVE_BOOKMARK = 'REMOVE_BOOKMARK';
 
 export function request(component) {
   switch (component) {
@@ -437,12 +440,27 @@ const ACTION_HANDLERS = {
     ...state,
     bookmarkData: {
       fetching: true,
-      fetched: false
+      fetched: false,
+      bookmarkList: []
     }
   }),
   [RECEIVE_BOOKMARKS]: (state, action) => ({
     ...state,
     bookmarkData: action.bookState.bookmarkData,
+  }),
+  [ADD_BOOKMARK]: (state, action) => ({
+    ...state,
+    bookmarkData: { ...state.bookmarkData,
+        bookmarkList:[
+            ...state.bookmarkData.bookmarkList
+        ].concat(action.bookmarkList).sort((bkm1, bkm2) => bkm1.uri - bkm2.uri)
+      }
+  }),
+  [REMOVE_BOOKMARK]: (state, action) => ({
+    ...state,
+    bookmarkData: { ...state.bookmarkData,
+        bookmarkList: state.bookmarkData.bookmarkList.filter(bookmark => bookmark.bkmarkId !== action.bookmarkId)
+      }
   }),
   [REQUEST_ANNOTATIONS]: state => ({
     ...state,

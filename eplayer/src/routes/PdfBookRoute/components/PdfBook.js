@@ -334,6 +334,16 @@ export class PdfBook extends Component {
           delete : this.props.actions.deleteAnnotation
         }
       }
+      let bookmarks = {
+        load : {
+          get : this.props.actions.getBookmarks
+        },
+        data : bookmarkData,
+        operation : {
+          post : this.props.actions.postBookmark,
+          delete : this.props.actions.deleteBookmark
+        }
+      }
       let bookCallbacks = {};
       bookCallbacks.handleBookshelfClick = this.handleBookshelfClick;
       bookCallbacks.fetchChapterLevelPdf = fetchChapterLevelPdf;
@@ -383,7 +393,7 @@ export class PdfBook extends Component {
           pageList={bookPagesInfo.pages}
           annotations={annotations}
           auth={this.getAuthDetails}
-          bookmarkList={bookmarkData.bookmarkList}
+          bookmarks={bookmarks}
           tocData={toc}
           metaData={this.currentbook}
           bookCallbacks={bookCallbacks}

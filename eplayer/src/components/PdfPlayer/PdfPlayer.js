@@ -304,14 +304,17 @@ class PdfPlayer extends Component {
        if(this.state.isFirstPageBeingLoad == true) {
          this.setState({isFirstPageBeingLoad : false});
          this.props.annotations.load.get(this.props.auth(),this.props.metaData).then(()=> {
-          this.props.tocData.load.get(this.props.metaData).then(()=>{
-            this.props.basepaths.load.get(this.props.metaData,this.props.auth()).then(()=> {
-              this.displayHighlights();
-              this.displayHotspots();
-            });
+            setTimeout(this.displayHighlights(), 1000);
           });
-         });
-       }  
+         this.props.basepaths.load.get(this.props.metaData,this.props.auth()).then(()=> {
+                 this.displayHotspots();
+          });
+          this.props.tocData.load.get(this.props.metaData);
+          this.props.bookmarks.load.get(this.props.auth(),this.props.metaData);        
+       } else {
+          setTimeout(this.displayHighlights(), 1000);
+          this.displayHotspots();
+       } 
     }
   }
 
@@ -799,9 +802,29 @@ class PdfPlayer extends Component {
     this.props.search.load.get(this.props.metaData,searchTerm,handleResults);
   }
 
-  addBookmarkHandler = () => {}
-  removeBookmarkHandler = () => {}
-  isCurrentPageBookmarked = () => {}
+  addBookmarkHandler = () => {
+    const currentPageId = this.currPageIndex;
+    const currentPage = _.find(this.props.pageList, page => page.id === currentPageId);
+    this.props.bookmarks.operation.post(currentPage,this.props.auth(),this.props.metaData);
+  }
+
+  removeBookmarkHandler = (bookmarkId) => {
+    let currentPageId;
+    if (bookmarkId !== undefined) {
+      currentPageId = bookmarkId;
+    } else {
+      currentPageId = this.currPageIndex;
+    }
+    const targetBookmark = _.find(this.props.bookmarks.data.bookmarkList, bookmark => bookmark.uri === currentPageId);
+    const targetBookmarkId = targetBookmark.bkmarkId;
+    this.props.bookmarks.operation.delete(targetBookmarkId,this.props.auth(),this.props.metaData);
+  }
+
+  isCurrentPageBookmarked = () => {
+    const currentPageId = this.currPageIndex;
+    const targetBookmark = _.find(this.props.bookmarks.data.bookmarkList, bookmark => bookmark.uri === currentPageId);
+    return !(targetBookmark === undefined);
+  }
   removeAnnotationHandler = () => {}
   
   render() {
@@ -840,7 +863,7 @@ class PdfPlayer extends Component {
     };
 
     let bookmarksObj = {
-      bookmarksArr : this.props.bookmarkList ? this.props.bookmarkList : []
+      bookmarksArr : this.props.bookmarks.data.bookmarkList ? this.props.bookmarks.data.bookmarkList : []
     };
     let notesObj = {
       notes : this.props.annotations.data.annotationList ? this.props.annotations.data.annotationList : []
