@@ -41,7 +41,7 @@ export class NoterefBiblioref {
 
     triggerNoteRefService = (url) => {
       PopupApi.getData(url).then((response) => {
-        return response.text();
+        return response.data;
       }).then(this.renderData).catch((err) => {
         console.debug(err);
       });

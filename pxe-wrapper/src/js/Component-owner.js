@@ -25,7 +25,7 @@ class ComponentOwner extends React.Component {
 
   init = () => {  
     PopupApi.getData(this.props.bookUrl).then((response) => {
-      return response.text();
+      return response.data;
     }).then((text) => {
       this.setState({bookHTML : text});
     }).catch((err) => {

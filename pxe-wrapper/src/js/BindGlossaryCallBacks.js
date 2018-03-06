@@ -46,7 +46,7 @@ export class BindGlossaryCallBacks {
   triggerGlossaryService = (glossaryurl) => {
     PopupApi.getData(glossaryurl).then((response) => {
       this.glossayStatus = response.status;
-      return response.text();
+      return response.data;
     }).then(this.renderData).catch((err) => {
         console.debug(err);
       });
