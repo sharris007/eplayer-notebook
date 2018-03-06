@@ -291,7 +291,7 @@ export class PdfBook extends Component {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData, bookmarkData, annotationData} = this.props.book;
     if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
       let preferences = {
-            showHeader: false, 
+            showHeader: true, 
             showFooter: true,
             showDrawer: true,  
             showAnnotation: true,
