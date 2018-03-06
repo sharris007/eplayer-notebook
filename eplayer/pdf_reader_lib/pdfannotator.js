@@ -44,6 +44,7 @@ var notesMessages;
 var isPopupOpen = false;
 var userRoleTypeID = 0;
 var userCourseID = 0;
+var viewerElement;
 function init(resetAnnotTextArea)
 {
   $("body").mousedown(function(e) {
@@ -102,6 +103,7 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    isPopupOpen = true;
    userRoleTypeID = roleTypeID;
    userCourseID = courseID;
+   viewerElement = targetElement;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          onColorChange(e);
    });
@@ -182,12 +184,8 @@ function alignPopup()
    var formLeft = $(".annotator-widget").offset().left;
    var formHeight = $(".annotator-widget").height();
    var formWidth = $(".annotator-widget").width();
-   var pdfPageTop = $("#docViewer_ViewContainer_PageContainer_"+WebPDF.ViewerInstance.getCurPageIndex()).offset().top;
-   var pdfPageheight = $("#docViewer_ViewContainer_PageContainer_"+WebPDF.ViewerInstance.getCurPageIndex()).height();
-   //Reverting changes made for ETEXT-3966
-  /* var pdfPageWidth = $("#docViewer_ViewContainer_BG_0").width();
-   var containerWidth = $("#docViewer_ViewContainer").width();
-   var scrollBarWidth = $(".fwrJspVerticalBar").width();*/
+   var pdfPageTop = $("#"+viewerElement).offset().top;
+   var pdfPageheight = $("#"+viewerElement).height();
    pdfPageheight = pdfPageheight + pdfPageTop;
    if((formTop+formHeight)>pdfPageheight)
    {
@@ -196,18 +194,6 @@ function alignPopup()
     $(".annotator-widget").width(formWidth);
     $(".annotator-widget").height(formHeight);
    }
-   //Reverting changes made for ETEXT-3966
-   /*if((1.5*formWidth + pdfPageWidth) >= containerWidth){
-    if($(".annotator-handle").length > 0){
-      $(".annotator-widget").offset({left: $(".annotator-handle").offset().left - formWidth});
-    }else{
-      $(".annotator-widget").offset({left: $(".fwrJspPane").width() - formWidth});
-    }
-  }else{
-     if($(".annotator-handle").length > 0){
-      $(".annotator-widget").offset({left: $(".annotator-handle").offset().left + $(".annotator-handle").width()});
-    }
-  }*/
 }
 
 function onDeleteClick()
@@ -434,6 +420,7 @@ function onNoteChange(event) {
    currentHighlight = highLightData;
    userRoleTypeID = roleTypeID;
    userCourseID = courseID;
+   viewerElement = targetElement;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          e.stopPropagation();
          onColorChange(e);

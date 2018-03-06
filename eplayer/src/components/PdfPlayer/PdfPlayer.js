@@ -373,7 +373,7 @@ class PdfPlayer extends Component {
       }
     }
     if (selectedHighlight !== undefined && selectedHighlight.meta.roletypeid == 3 &&
-            this.props.metaData.roleTypeID == 2)
+            this.props.metaData.roletypeid == 2)
     {
       return;
     }
@@ -387,7 +387,7 @@ class PdfPlayer extends Component {
       currentHighlight.pageIndex = highlight.pageInformation.pageNumber;
       pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
         this.saveHighlight.bind(this), this.editHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex(),
-        (languages.translations[this.props.preferences.locale]), this.props.metaData.roleTypeID, this.props.metaData.courseId);
+        (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid, this.props.metaData.courseId);
     }
   }
 
@@ -411,7 +411,7 @@ class PdfPlayer extends Component {
     highlightClicked.color = highlightClicked.originalColor;
     pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
       this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex(),
-      (languages.translations[this.props.preferences.locale]), this.props.metaData.roleTypeID,cornerFoldedImageTop, this.props.metaData.courseId);
+      (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid,cornerFoldedImageTop, this.props.metaData.courseId);
   }
 
   deleteHighlight = (id) => {
@@ -801,6 +801,18 @@ class PdfPlayer extends Component {
     } else {
       viewerClassName = '';
     }
+    let notes = [];
+    if(this.props.annotations.data.annotationList){
+      notes = this.props.annotations.data.annotationList.map((annot) => {
+        let note = Object.assign({}, annot);
+        if(note.shared){
+          note.color = 'Instructor'
+        }else{
+          note.color = note.originalColor;
+        }
+        return note;
+      });
+    }
     let moreMenuData = {};
     moreMenuData.menuItem = [];
     let signOutOption = {
@@ -833,7 +845,7 @@ class PdfPlayer extends Component {
       bookmarksArr : this.props.bookmarks.data.bookmarkList ? this.props.bookmarks.data.bookmarkList : []
     };
     let notesObj = {
-      notes : this.props.annotations.data.annotationList ? this.props.annotations.data.annotationList : []
+      notes
     };
     let bookDetails = {
       author : this.props.metaData.authorName,
