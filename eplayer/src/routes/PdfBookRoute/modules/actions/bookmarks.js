@@ -1,7 +1,10 @@
 import { eT1Contants } from '../../../../components/common/et1constants';
 import { clients } from '../../../../components/common/client';
+import { languages } from '../../../../../locale_config/translations/index';
+import languageName from '../../../../../locale_config/configureLanguage';
 import { resources, domain } from '../../../../../const/Settings';
 import { request } from '../pdfbook';
+import { addLocaleData } from 'react-intl';
 
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
@@ -33,7 +36,11 @@ export const getBookmarks = (authObj, currentBook) => {
         return response.data.response;
       })
     .then((bookmarkResponseList) => {
-      let Page = 'Page';
+      const locale = languageName(currentBook.languageid);
+      const localisedData = locale.split('-')[0];
+      addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
+      const { messages } = languages.translations[locale];
+      let Page = messages.page ? messages.page : 'Page';
       if (bookmarkResponseList.length) {
         bookmarkResponseList.forEach((bookmark) => {
           const extID = Number(bookmark.pageId);
@@ -104,9 +111,7 @@ export function postBookmark(currentPage, authObj, currentBook) {
     subContextId: currentBook.courseId,
     shareable: false
   };
-
   let bmObj;
-
   return (dispatch) => {
     return clients.readerApi[envType].post('/api/context/'+currentBook.bookId+'/identities/'+authObj.userId+'/notesX', {"payload":[data]})
     .then((response) => {
@@ -117,10 +122,14 @@ export function postBookmark(currentPage, authObj, currentBook) {
     }).then((bookmarkResponseList) => {
       let bookmarkList = [];
       if (bookmarkResponseList !== undefined) {
+        const locale = languageName(currentBook.languageid);
+        const localisedData = locale.split('-')[0];
+        addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
+        const { messages } = languages.translations[locale];
+        let Page = messages.page ? messages.page : 'Page';
         bookmarkResponseList.forEach((bookmark) => {
         // const date = new Date(bookmark.updatedTime * 1000);
         const extID = Number(bookmark.pageId);
-        let Page = 'Page';
         bmObj = {
           id: extID,
           bkmarkId: bookmark.id,

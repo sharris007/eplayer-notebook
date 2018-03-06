@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { getmd5 } from '../../../../components/Utility/Util';
 import { eT1Contants } from '../../../../components/common/et1constants';
+import { languages } from '../../../../../locale_config/translations/index';
+import languageName from '../../../../../locale_config/configureLanguage';
+import { addLocaleData } from 'react-intl';
 
 /*Params required userid, bookid, bookeditionid,sessionKey, serverDetails, roleTypeID, globalbookid*/
 
@@ -24,7 +27,12 @@ export const fetchPageInfo = (authObj,currentBook) => {
         if (response.status >= 400) {
           // console.log(`FetchPage info error: ${response.statusText}`);
         } else if (response.data.length) {
-           let coverPageObj = {
+            const locale = languageName(currentBook.languageid);
+            const localisedData = locale.split('-')[0];
+            addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
+            const { messages } = languages.translations[locale];
+            let Page = messages.page ? messages.page : 'Page';
+            let coverPageObj = {
               pdfPath : `${currentBook.serverDetails}/ebookassets`
                   + `/ebook${currentBook.globalBookId}${getState().book.bookinfo.book.pdfCoverArt}`,
               title : 'Cover',
@@ -40,7 +48,7 @@ export const fetchPageInfo = (authObj,currentBook) => {
               pageObj.pagenumber = page.bookPageNumber;
               pageObj.pdfPath = `${currentBook.serverDetails}/ebookassets`
                   + `/ebook${currentBook.globalBookId}/ipadpdfs/${page.pdfPath}`;
-              pageObj.title = 'Page ' + page.bookPageNumber;
+              pageObj.title = `${Page} ${page.bookPageNumber}`;
               pageObj.id = page.pageOrder;
               bookState.bookPagesInfo.pages.push(pageObj);
             });

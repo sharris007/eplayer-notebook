@@ -230,20 +230,10 @@ export class PdfBook extends Component {
       currentbook.roletypeid = roleTypeID;
       currentbook.userbookid = this.props.book.bookinfo.userbook.userbookid;
       currentbook.version = this.props.book.bookinfo.book.version;
-      currentbook.hastocflatten = this.props.book.bookinfo.book.hastocflatten
+      currentbook.hastocflatten = this.props.book.bookinfo.book.hastocflatten;
+      currentbook.languageid = this.props.book.bookinfo.book.languageid;
       await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
       this.props.actions.fetchPageInfo(this.getAuthDetails(),currentbook);
-      // this.props.actions.fetchTocAndViewer(
-      //   bookID, currentbook.authorName, currentbook.title, currentbook.thumbnail,
-      //   this.props.book.bookinfo.book.bookeditionid, currentbook.ssoKey, serverDetails,
-      //   this.props.book.bookinfo.book.hastocflatten, this.props.book.bookinfo.book.roleTypeID);
-      const locale = languageName(this.props.book.bookinfo.book.languageid);
-      const localisedData = locale.split('-')[0];
-      addLocaleData((require(`react-intl/locale-data/${localisedData}`)));
-      const { messages } = languages.translations[locale];
-      const PdfbookMessages = {
-        PageMsg: messages.page
-      };
       let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
       if (courseId === undefined || courseId === '' || courseId === null) {
         courseId = -1;
@@ -300,29 +290,15 @@ export class PdfBook extends Component {
   render() {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData, bookmarkData, annotationData} = this.props.book;
     if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
-      // Sample preference. Not used currently
-      let bookPreference = {
-        headerBar: {
-          isVisible: true,
-          isDrawerVisible: true,
-          drawerProperties: {
-            isTocListVisible: true,
-            isBookmarksListVisible: true,
-            isNotesListVisible: true
-          },
-          isBackButtonVisible: true,
-          isBookmarkIconVisible: true,
-          isZoomButtomVisible: true,
-          isSearchOptionVisible: true,
-          isMoremenuItemsVisible: true
-        },
-        footerNavigationBar: {
-          isVisible: true
-        },
-        pageLoading: 'singlepage',
-        isAnnotationsSupported: true,
-        isRegionsSupported: true
-      }
+      let preferences = {
+            showHeader: false, 
+            showFooter: true,
+            showDrawer: true,  
+            showAnnotation: true,
+            showBookmark: true,
+            showHostpot: true,
+            locale: 'en-US'
+      };
       let annotations = {
         load : {
           get : this.props.actions.getAnnotations
@@ -333,7 +309,7 @@ export class PdfBook extends Component {
           put : this.props.actions.putAnnotation,
           delete : this.props.actions.deleteAnnotation
         }
-      }
+      };
       let bookmarks = {
         load : {
           get : this.props.actions.getBookmarks
@@ -343,7 +319,7 @@ export class PdfBook extends Component {
           post : this.props.actions.postBookmark,
           delete : this.props.actions.deleteBookmark
         }
-      }
+      };
       let bookCallbacks = {};
       bookCallbacks.handleBookshelfClick = this.handleBookshelfClick;
       bookCallbacks.fetchChapterLevelPdf = fetchChapterLevelPdf;
@@ -403,6 +379,7 @@ export class PdfBook extends Component {
           search={search}
           basepaths={basepaths}
           bookFeatures={bookFeatures}
+          preferences={preferences}
           glossary={glossary}
           location={this.props.location}
         />);
