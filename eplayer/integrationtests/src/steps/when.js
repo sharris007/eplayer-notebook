@@ -37,6 +37,9 @@ import escapeKey from '../support/action/escapeKey';
 import closeAllButFirstTab from '../support/action/closeAllButFirstTab';
 import appLogin from '../support/action/appLogin';
 import search from '../support/action/search';
+import delNoteHighlight from '../support/action/delNoteHighlight';
+import addHighlight from '../support/action/addHighlight';
+import addNote from '../support/action/addNote';
 
 
 module.exports = function when() {
@@ -162,5 +165,16 @@ module.exports = function when() {
         /^I click on search icon "([^"]*)?" and in element "([^"]*)?" set page as "([^"]*)?" and click on the searched term*$/,
         search
     );
-
+    this.When(
+        /^I delete the (Note|Highlight)*$/,
+        delNoteHighlight
+    );
+    this.When(
+        /^I create highlight on element "([^"]*)?" of "([^"]*)?" color*$/,
+        addHighlight
+    );
+    this.When(
+        /^I create a Note on element "([^"]*)?" of "([^"]*)?" color and with "([^"]*)?" text*$/,
+        addNote
+    );
 };
