@@ -55,6 +55,17 @@
   z-index : 100050;
 }
 
+  .videoContent {
+  position: absolute;
+  margin-top:100px;
+  margin-bottom:100px;
+  left: 25%;
+  right:25%;
+  height:150px;
+  width:150px;
+  z-index : 100050;
+}
+
 .sppModal {
     display: none;
     position: fixed;

@@ -574,6 +574,7 @@ class PdfPlayer extends Component {
                 }
                 catch(e){
                 }
+                document.getElementById('hotspot').className = 'hotspotContent';
               }
               else if(that.state.regionData.hotspotType == 'VIDEO')
               {
@@ -587,6 +588,7 @@ class PdfPlayer extends Component {
                 }
                 catch(e){
                 }
+                document.getElementById('hotspot').className = 'videoContent';
               }
               else if(that.state.regionData.hotspotType == 'URL')
               {
@@ -609,6 +611,7 @@ class PdfPlayer extends Component {
                 }
                 catch(e){
                 }
+                document.getElementById('hotspot').className = 'hotspotContent';
               }
               if(that.state.regionData.hotspotType == 'AUDIO')
               {
@@ -624,6 +627,7 @@ class PdfPlayer extends Component {
                 }
                 catch(e){
                 }
+                document.getElementById('hotspot').className = 'hotspotContent';
               }
             }
             else
@@ -912,7 +916,7 @@ class PdfPlayer extends Component {
           currentPageId={this.currPageIndex}
           /> : null
       }
-      {this.state.regionData ? <div id="hotspot" className='hotspotContent'>{this.renderHotspot(this.state.regionData)}</div> : null }
+      {this.state.regionData ? <div id="hotspot">{this.renderHotspot(this.state.regionData)}</div> : null }
         <div id="main" className="pdf-fwr-pc-main">
             <div id="right" className="pdf-fwr-pc-right">
               <div id="toolbar" className="pdf-fwr-toolbar" />

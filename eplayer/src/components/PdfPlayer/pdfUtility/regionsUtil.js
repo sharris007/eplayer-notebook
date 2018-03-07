@@ -322,7 +322,7 @@ export function handleRegionClick(hotspotID,baseUrl) {
                     if (clickedRegionDetails.regionTypeID == 1) {
                         clickedRegionDetails.hotspotType = 'AUDIO';
                     }
-                    if (clickedRegionDetails.regionTypeID == 5) {
+                    if (clickedRegionDetails.regionTypeID == 6) {
                         clickedRegionDetails.hotspotType = 'IMAGE';
                     }
                     if (clickedRegionDetails.regionTypeID == 8 || clickedRegionDetails.regionTypeID == 11) {
@@ -344,7 +344,7 @@ export function handleRegionClick(hotspotID,baseUrl) {
                     if (clickedRegionDetails.regionTypeID == 1) {
                         clickedRegionDetails.hotspotType = 'AUDIO';
                     }
-                    if (clickedRegionDetails.regionTypeID == 5) {
+                    if (clickedRegionDetails.regionTypeID == 6) {
                         clickedRegionDetails.hotspotType = 'IMAGE';
                     }
                     if (clickedRegionDetails.regionTypeID == 8 || clickedRegionDetails.regionTypeID == 11) {
