@@ -60,3 +60,20 @@ export function getmd5(hash)
   	return '';
   }
 }
+//Funtion to create http to https
+export function createHttps(uri)
+{
+  if(/^http:\/\//i.test(uri))
+    {
+      let link=uri.substring(4);
+      uri = 'https' + link ;
+    }
+    return uri;
+}
+
+//Function to extract text content from XML/HTML
+export function extractTextContent(content) {
+  let span= document.createElement('span');
+  span.innerHTML= content;
+  return span.textContent || span.innerText;
+}

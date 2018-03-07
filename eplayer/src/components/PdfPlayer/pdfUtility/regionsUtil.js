@@ -1,8 +1,8 @@
 import { triggerEvent } from '../webPDFUtil';
 
-let regionListData =[];
-let lodashFunctions;
-
+var regionListData =[];
+var lodashFunctions; 
+var bookFeatures;
 /*Function to render the hotspot icons*/
 export function displayRegions (hotspots,hotspotFeatures,lodash) {
    try
@@ -11,6 +11,7 @@ export function displayRegions (hotspots,hotspotFeatures,lodash) {
     {
       regionListData = hotspots;
       lodashFunctions = lodash
+      bookFeatures = hotspotFeatures;
       var parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex());
       var regionType,mySpan,icon,iconArt,regionElement,iconDiv,tooltip;
       var widthScale,heightScale;
@@ -114,6 +115,7 @@ export function displayRegions (hotspots,hotspotFeatures,lodash) {
   }
   catch(e){}
   }
+
 /*Function to get RGBA Color Values from HEX Color Code*/
  function convertHexToRgba(hex,opacity)
   {
@@ -277,6 +279,7 @@ export function displayRegions (hotspots,hotspotFeatures,lodash) {
   return ('/eplayer' + icon);
   }
 
+/*Function to handle the clicked region and return the details pertaining to it.*/
 export function handleRegionClick(hotspotID,baseUrl) {
     let clickedRegionDetails,basepath,regionData;
     var youtubeRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/;
@@ -396,41 +399,52 @@ export function handleRegionClick(hotspotID,baseUrl) {
     return clickedRegionDetails;
 }
 
-// /*Method to handle mouse hover event for transparent hotsopts*/
-//   handleTransparentRegionHover(hotspotID)
-//   {
-//     let transparentRegion = document.getElementById(hotspotID);
-//     if(this.props.data.book.bookFeatures.isunderlinehotspot == true && transparentRegion.transparent !== true)
-//     {
-//       transparentRegion.style.borderBottomColor = this.props.data.book.bookFeatures.underlinehotppothovercolor;
-//     }
-//     else if(this.props.data.book.bookFeatures.isunderlinehotspot == true && transparentRegion.transparent == true)
-//     {
-//       transparentRegion.style.borderBottomColor = this.props.data.book.bookFeatures.underlinehotppothovercolor;;
-//       transparentRegion.style.borderBottomWidth = this.props.data.book.bookFeatures.underlinehotspotthickness + 'px';
-//       transparentRegion.style.borderBottomStyle = 'solid';
-//     }
-//     else
-//     {
-//       transparentRegion.style.background = convertHexToRgba(this.props.data.book.bookFeatures.hotspotcolor,this.props.data.book.bookFeatures.regionhotspotalpha);
-//     }
-//   }
-// /*Method to handle mouse out event for transparent hotsopts*/
-//   handleTransparentRegionUnhover(hotspotID)
-//   {
-//     let transparentRegion = document.getElementById(hotspotID);
-//     if(this.props.data.book.bookFeatures.isunderlinehotspot == true && transparentRegion.transparent !== true)
-//     {
-//       transparentRegion.style.borderBottomColor = this.props.data.book.bookFeatures.underlinehotspotcolor;
-//     }
-//     else if(this.props.data.book.bookFeatures.isunderlinehotspot == true && transparentRegion.transparent == true)
-//     {
-//       transparentRegion.style.borderBottomColor = convertHexToRgba(this.props.data.book.bookFeatures.underlinehotspotcolor,0);
-//       transparentRegion.style.borderBottomWidth = 0 + 'px';
-//       transparentRegion.style.borderBottomStyle = 'none';
-//     }
-//     else
-//     {
-//       transparentRegion.style.background = convertHexToRgba(this.props.data.book.bookFeatures.hotspotcolor,0);
-//     }
-//   }
+/*Method for removing hotspot content on clicking the close button*/
+export function onHotspotClose() {
+  try
+  {
+    $('#hotspot').empty();
+    $('#player-iframesppModalBody').remove();
+    $('#sppModal').css("display","none");
+  }
+  catch(e){}
+}
+
+/*Method to handle mouse hover event for transparent hotsopts*/
+  export function handleTransparentRegionHover(hotspotID)
+  {
+    let transparentRegion = document.getElementById(hotspotID);
+    if(bookFeatures.isunderlinehotspot == true && transparentRegion.transparent !== true)
+    {
+      transparentRegion.style.borderBottomColor = bookFeatures.underlinehotppothovercolor;
+    }
+    else if(bookFeatures.isunderlinehotspot == true && transparentRegion.transparent == true)
+    {
+      transparentRegion.style.borderBottomColor = bookFeatures.underlinehotppothovercolor;;
+      transparentRegion.style.borderBottomWidth = bookFeatures.underlinehotspotthickness + 'px';
+      transparentRegion.style.borderBottomStyle = 'solid';
+    }
+    else
+    {
+      transparentRegion.style.background = convertHexToRgba(bookFeatures.hotspotcolor,bookFeatures.regionhotspotalpha);
+    }
+  }
+/*Method to handle mouse out event for transparent hotsopts*/
+  export function handleTransparentRegionUnhover(hotspotID)
+  {
+    let transparentRegion = document.getElementById(hotspotID);
+    if(bookFeatures.isunderlinehotspot == true && transparentRegion.transparent !== true)
+    {
+      transparentRegion.style.borderBottomColor = bookFeatures.underlinehotspotcolor;
+    }
+    else if(bookFeatures.isunderlinehotspot == true && transparentRegion.transparent == true)
+    {
+      transparentRegion.style.borderBottomColor = convertHexToRgba(bookFeatures.underlinehotspotcolor,0);
+      transparentRegion.style.borderBottomWidth = 0 + 'px';
+      transparentRegion.style.borderBottomStyle = 'none';
+    }
+    else
+    {
+      transparentRegion.style.background = convertHexToRgba(bookFeatures.hotspotcolor,0);
+    }
+  }

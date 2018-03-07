@@ -232,6 +232,7 @@ export class PdfBook extends Component {
       currentbook.version = this.props.book.bookinfo.book.version;
       currentbook.hastocflatten = this.props.book.bookinfo.book.hastocflatten;
       currentbook.languageid = this.props.book.bookinfo.book.languageid;
+      currentbook.activeCourseID = this.props.book.bookinfo.book.activeCourseID;
       await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
       this.props.actions.fetchPageInfo(this.getAuthDetails(),currentbook);
       let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
@@ -373,7 +374,6 @@ export class PdfBook extends Component {
           tocData={toc}
           metaData={this.currentbook}
           bookCallbacks={bookCallbacks}
-          goToPageNo = {this.props.actions.fetchPagebyPageNumber}
           isPdfPlayer={"Y"}
           hotspot={hotspot}
           search={search}

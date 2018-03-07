@@ -210,60 +210,6 @@ export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, rol
   };
 }
 
-/* Created Action creator for getting page details by page number */
-export function fetchPagebyPageNumber(inputParams,authObj,pageNo) {
-
-  let userid = authObj.userid;
-  let bookServerURL = inputParams.serverDetails;
-  let roleTypeID = inputParams.roletypeid;
-  let bookid = inputParams.bookId;
-  let bookeditionid = inputParams.bookeditionid;
-  let sessionKey = inputParams.ssoKey;
-
-  const bookState = {
-    bookInfo: {
-      pages: []
-    }
-  };
-  let serviceurl = `${bookServerURL}/ebook/pdfplayer/getpagebybookpagenumber?userid=${userid}&userroleid=${roleTypeID}&bookid=${bookid}&bookeditionid=${bookeditionid}&bookpagenumbers=${pageNo}&authkey=${sessionKey}&outputformat=JSON`;
-  // tempurl is starts with http to create hash key for matching with server
-  let tempurl = serviceurl.replace("https","http");
-  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
-  return dispatch =>
-     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-     axios.get(`${serviceurl}&hsid=${hsid}`,
-       {
-         timeout: 20000
-       })
-    .then((response) => {
-      if (response.status >= 400) {
-        // console.log(`FetchPage info error: ${response.statusText}`);
-      } else if (response.data.length) {
-        response.data.forEach((jsonData) => {
-          const pages = jsonData.viewerPageInfoRestTO;
-          pages.forEach((page) => {
-            const pageObj = {
-
-            };
-            pageObj.pageid = page.pageID;
-            pageObj.bookid = page.bookID;
-            pageObj.pagenumber = page.bookPageNumber;
-            pageObj.thumbnailpath = page.thumbnailFilePath;
-            pageObj.pageorder = page.pageOrder;
-            pageObj.bookeditionid = page.bookEditionID;
-            pageObj.chaptername = page.chapterName;
-            pageObj.isbookmark = page.isBookmark;
-            pageObj.pdfPath = page.pdfPath;
-            pageObj.printDisabled = page.printDisabled;
-            pageObj.readerPlusID = page.readerPlusID;
-            bookState.bookInfo.pages.push(pageObj);
-          });
-        });
-      }
-      dispatch({ type: 'RECEIVE_PAGE_INFO', bookState });
-    });
-}
-
 /* Created Action creator for getting basepath of relative regions/hotspots. */
 export function fetchBasepaths(inputParams,authObj) {
 

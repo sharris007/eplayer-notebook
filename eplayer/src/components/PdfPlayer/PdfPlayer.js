@@ -9,11 +9,12 @@ import { PreferencesComponent } from '@pearson-incubator/preferences';
 import './PdfPlayer.scss';
 import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
 import { getSelectionInfo,restoreHighlights,reRenderHighlightCornerImages, resetHighlightedText } from './pdfUtility/annotaionsUtil';
-import { displayRegions,handleRegionClick} from './pdfUtility/regionsUtil';
+import { displayRegions,handleRegionClick,onHotspotClose,handleTransparentRegionHover,handleTransparentRegionUnhover} from './pdfUtility/regionsUtil';
 import { languages } from '../../../locale_config/translations/index';
 import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
 import { eT1Contants } from '../common/et1constants';
+import { createHttps } from '../Utility/Util';
 import Popup from 'react-popup';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 
@@ -49,6 +50,8 @@ class PdfPlayer extends Component {
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
     registerEvent('highlightClicked', this.handleHighlightClick)
     registerEvent('regionClicked', this.fetchClickedRegionData.bind(this));
+    registerEvent('RegionHovered',handleTransparentRegionHover);
+    registerEvent('RegionUnhovered',handleTransparentRegionUnhover);
     pdfAnnotatorInstance.init(resetHighlightedText);
   }
 
@@ -284,12 +287,22 @@ class PdfPlayer extends Component {
   }
 
   onPageRequest = (requestedPageObj) => {
+    try
+    {
+      this.setState({regionData : null});
+    }
+    catch(e){}
      if(_.isObject(requestedPageObj)) {
         this.renderPdf(requestedPageObj.id);
     }
   }
 
   goToPage = (pageNo) => {
+    try
+    {
+      this.setState({regionData : null});
+    }
+    catch(e){}
     if(pageNo !== this.currPageIndex) {
       this.renderPdf(pageNo);
     } else {
@@ -299,29 +312,21 @@ class PdfPlayer extends Component {
     }
   }
 
-  /*Method to navigate to a particular book page number based on bookPageNumber*/
-  // goToPageNumber = (pageNo) => {
-  //   let currentPage = find(pages,page => page.pagenumber == pageNo)
-  //   if(currentPage == undefined)
-  //   {
-  //       this.props.goToPageNo(this.props.metaData,this.props.auth(),pageNo).then(() => {
-  //         if (pages === undefined) {
-  //           pages = this.props.data.book.bookinfo.pages;
-  //           localStorage.setItem('pages', JSON.stringify(pages));
-  //           currentPage = find(pages,page => page.pagenumber == pageNo)
-  //         } else {
-  //           pages = pages.concat(this.props.data.book.bookinfo.pages);
-  //           localStorage.setItem('pages', JSON.stringify(pages));
-  //           currentPage = find(pages,page => page.pagenumber == pageNo)
-  //         }
-  //         this.goToPage(Number(currentPage.pageorder));
-  //     });
-  //   }
-  //   else
-  //   {
-  //     this.goToPage(Number(currentPage.pageorder));
-  //   }
-  // }
+  goToPageNumber = (pageNo) => {
+    var pageToNavigate;
+    var pages = this.props.pageList;
+    for(var i=0;i<pages.length;i++)
+    {
+      if(pages[i].pagenumber == pageNo)
+      {
+        pageToNavigate = pages[i];
+      }
+    }
+    if(pageToNavigate !== undefined)
+    {
+     this.goToPage(pageToNavigate.id);
+    }
+  }
 
   handleSelection = () => {
     let curToolHandlerName = WebPDF.ViewerInstance.getCurToolHandlerName();
@@ -545,27 +550,12 @@ class PdfPlayer extends Component {
     WebPDF.ViewerInstance.zoomTo(level);
   }
 
-/*Method for removing hotspot content on clicking the close button*/
-  onHotspotClose() {
-      try
-      {
-        $('#hotspot').empty();
-        $('#player-iframesppModalBody').remove();
-        $('#sppModal').css("display","none");
-      }
-      catch(e){}
-  }
-
-  createHttps = (uri) => {
-  if(/^http:\/\//i.test(uri))
-    {
-      let link=uri.substring(4);
-      uri = 'https' + link ;
-    }
-    return uri;
-  }
-
   fetchClickedRegionData(id){
+    try
+    {
+      this.setState({regionData : null});
+    }
+    catch(e){}
     const that = this;
     var regionhot = handleRegionClick(id,that.props.basepaths.data);
             /*Checking if the clicked hotspot is Image/Video/Audio/URL and open it in MMI Component */
@@ -647,7 +637,7 @@ class PdfPlayer extends Component {
     let hotspotData,source;
     switch(hotspotDetails.hotspotType) {
       case 'AUDIO':
-                  source = this.createHttps(hotspotDetails.linkValue);
+                  source = createHttps(hotspotDetails.linkValue);
                   hotspotData = {
                     audioSrc :source,
                     audioTitle :hotspotDetails.name
@@ -662,7 +652,7 @@ class PdfPlayer extends Component {
                 parent.location = email;
                 break;
       case 'IMAGE':
-               source = this.createHttps(hotspotDetails.linkValue);
+               source = createHttps(hotspotDetails.linkValue);
                hotspotData = {
                  alt : hotspotDetails.name,
                  src : source,
@@ -674,7 +664,7 @@ class PdfPlayer extends Component {
                regionComponent = <ImageViewerPreview data={hotspotData}/>;
                break;
       case 'VIDEO':
-               source = this.createHttps(hotspotDetails.linkValue);
+               source = createHttps(hotspotDetails.linkValue);
                hotspotData = {
                 title : hotspotDetails.name,
                 src : source,
@@ -699,7 +689,7 @@ class PdfPlayer extends Component {
                sppPlayer.appendChild(sppScript);
                sppPlayer.style.height = (document.documentElement.clientHeight - parseInt(sppHeaderHeight,10)) + 'px';
                sppPlayer.style.width = document.documentElement.clientWidth + 'px';
-               document.getElementById('sppCloseBtn').addEventListener('click',this.onHotspotClose);
+               document.getElementById('sppCloseBtn').addEventListener('click',onHotspotClose);
                 try
                 {
                   document.getElementById('root').appendChild(document.getElementById('sppModal'));
@@ -713,12 +703,12 @@ class PdfPlayer extends Component {
                window.open(source,"_blank");
                break;
       case 'URL':
-               source = this.createHttps(hotspotDetails.linkValue);
+               source = createHttps(hotspotDetails.linkValue);
                hotspotData = {
                  title : hotspotDetails.name,
                  src : source
                };
-               regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={this.onHotspotClose}/>;
+               regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={onHotspotClose}/>;
                break;
       case 'EXTERNALLINK':
                source=hotspotDetails.linkValue;
@@ -726,18 +716,18 @@ class PdfPlayer extends Component {
                break;
       case 'LTILINK':
                let courseId;
-               if (this.props.book.bookinfo.book.activeCourseID === undefined || this.props.data.book.bookinfo.book.activeCourseID === '' || this.props.data.book.bookinfo.book.activeCourseID === null)
+               if (this.props.metaData.activeCourseID === undefined || this.props.metaData.activeCourseID === '' || this.props.metaData.activeCourseID === null)
                {
                 courseId = -1;
                }
                else
                {
-                courseId = this.props.data.book.bookinfo.book.activeCourseID;
+                courseId = this.props.metaData.activeCourseID;
                }
                /*Framing Complete LTI URl*/
-               let link = serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.data.book.bookinfo.book.roleTypeID + '&userlogin=' + this.props.data.book.userInfo.userid ;
+               let link = serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.metaData.roletypeid + '&userlogin=' + this.props.auth().userid ;
                /*Converting URL into https*/
-               let ltiUrl = this.createHttps(link);
+               let ltiUrl = createHttps(link);
                window.open(ltiUrl,"_blank");
                break;
       default :regionComponent = null;
@@ -751,6 +741,13 @@ class PdfPlayer extends Component {
     {
       return;
     }
+    try
+    {
+      $('.hotspot').remove();
+      $('.hotspotIcon').remove();
+      $('.tooltiptext').remove();
+    }
+    catch(e){}
     this.props.hotspot.load.get(this.props.metaData,this.currPageIndex,).then(() => {
       if(this.props.hotspot.data.length > 0 )
       {
