@@ -18173,7 +18173,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             var l = i.getPageView(a);
             if (l.isContentCreated() || i.gotoPage(a, 0, 0), !c) {
                 var m = e(j, l, b);
-                m && i.gotoPage(a, m.x, m.y)
+                //m && i.gotoPage(a, m.x, m.y)
             }
             if (!l || !l.isContentCreated() || !b) return !1;
             var n = d(l);
