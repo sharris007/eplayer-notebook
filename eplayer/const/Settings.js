@@ -204,7 +204,7 @@ export const domain = {
     if (locationOrigin.indexOf('localhost') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('etext-dev.pearson.com') !== -1)
-          { return 'dev'; }
+          { return 'qa'; }
     else if (locationOrigin.indexOf('etext-qa-stg.pearson.com') !== -1)
           { return 'qa'; }
     else if (locationOrigin.indexOf('etext-stg.pearson.com') !== -1)
