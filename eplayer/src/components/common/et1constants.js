@@ -158,6 +158,11 @@ export const eT1Contants = {
     Error_1 :'Either you have entered an incorrect username/password, or you do not have a subscription to this site.',
     Error_2 :'Server error occurred. Please try again later.'
   },
-  printCopyrightInfo : 'Copyright &copy; 2018 Pearson Education'
+  printCopyrightInfo : 'Copyright &copy; 2018 Pearson Education',
+  multipageConfig : {
+    isMultiPageSupported : true,
+    pagesToDownload : 20,
+    pagesToNavigate : 20
+  }
 };
 export default eT1Contants;

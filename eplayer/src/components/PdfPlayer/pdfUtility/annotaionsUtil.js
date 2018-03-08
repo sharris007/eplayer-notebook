@@ -84,7 +84,7 @@ export function restoreHighlights(highlights) {
                }
               try {
                 // page = childDiv[i].getAttribute("page-index");
-                WebPDF.ViewerInstance.highlightText((page -1), pdfRectArray);                
+                WebPDF.ViewerInstance.highlightText(WebPDF.ViewerInstance.getCurPageIndex(), pdfRectArray);                
                 saveHighlight(page, highlightHashes, hId, highlightColor, highlights[i].isHighlightOnly);
               }catch(e){
                 console.log("Error Saving Highlight");
@@ -140,7 +140,7 @@ function saveHighlight(pageIndex, highlightHash, id, highlightColor, isHighlight
           }
           parentElement.appendChild(childElement);
         }
-        let parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_' + String(pageIndex - 1));
+        let parentPageElement = document.getElementById('docViewer_ViewContainer_PageContainer_' + WebPDF.ViewerInstance.getCurPageIndex());
         parentPageElement.appendChild(parentElement);
         $('.fwr-search-text-highlight').remove();
       }

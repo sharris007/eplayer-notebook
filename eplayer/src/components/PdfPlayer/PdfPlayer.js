@@ -186,49 +186,55 @@ class PdfPlayer extends Component {
     this.setState({drawerOpen: false });
     this.setState({prefOpen : false});
     this.setState({searchOpen : false});
-    let openFileParams = {};
-    let currPageIndex; 
-    let chapterSize = parseInt(this.props.location.query.chaptersize ? this.props.location.query.chaptersize : 20, 10);
-    if(this.state.currentChapter !== undefined && this.state.currentChapter.startpageno && 
-              this.state.currentChapter.startpageno <= requestedPage && this.state.currentChapter.endpageno >= requestedPage) {
-      let goToPageNo = requestedPage - this.state.currentChapter.startpageno;
-      if (goToPageNo >= 0) {
-        this.currPageIndex = requestedPage;
-        WebPDF.ViewerInstance.gotoPage(goToPageNo);
-        this.displayHighlights();
-        this.displayHotspots();
-      }
-    } else {
-      let chapterObj;
-      this.state.chapterList.forEach((chapter) => {
-        if(chapter.startpageno <= requestedPage && chapter.endpageno >= requestedPage) {
-          chapterObj = chapter;
-        }
-      });
-      if(chapterObj != undefined) {
-          WebPDF.ViewerInstance.openFileByUri({url:chapterObj.chapterpdf});
-          this.pageNoToLoad = requestedPage - chapterObj.startpageno;
-          let currChapterList = this.state.chapterList;
-          currChapterList.push(chapterObj);
-          this.currPageIndex = requestedPage;
-          this.setState({chapterList:currChapterList,currentChapter:chapterObj,chapterPdfFected:false,pageLoaded:false});
+    let multipageConfig = eT1Contants.multipageConfig;
+    if(multipageConfig.isMultiPageSupported) {
+        if(this.state.currentChapter !== undefined && this.state.currentChapter.startpageno && 
+                  this.state.currentChapter.startpageno <= requestedPage && this.state.currentChapter.endpageno >= requestedPage) {
+          let goToPageNo = requestedPage - this.state.currentChapter.startpageno;
+          if (goToPageNo >= 0) {
+            this.currPageIndex = requestedPage;
+            WebPDF.ViewerInstance.gotoPage(goToPageNo);
+            this.displayHighlights();
+            this.displayHotspots();
+          }
         } else {
-        let pageRangeBucket = Math.ceil(requestedPage/chapterSize);
-        let endpageno = pageRangeBucket * chapterSize;
-        let startpageno = Math.abs(endpageno - (chapterSize - 1));
-        if(endpageno > this.props.metaData.totalpages) {
-          endpageno = this.props.metaData.totalpages;
-        } 
-        this.props.bookCallbacks.fetchChapterLevelPdf(this.props.metaData.bookId,startpageno,endpageno,
-        this.props.metaData.globalBookId,this.props.metaData.serverDetails).then((chapterPdfObj)=>{
-          WebPDF.ViewerInstance.openFileByUri({url:chapterPdfObj.chapterpdf});
-          this.pageNoToLoad = requestedPage - chapterPdfObj.startpageno;
-          let currChapterList = this.state.chapterList;
-          currChapterList.push(chapterPdfObj);
-          this.currPageIndex = requestedPage;
-          this.setState({chapterList:currChapterList,currentChapter:chapterPdfObj,chapterPdfFected:false,pageLoaded:false});
-        });
-      }
+          let chapterObj;
+          this.state.chapterList.forEach((chapter) => {
+            if(chapter.startpageno <= requestedPage && chapter.endpageno >= requestedPage) {
+              chapterObj = chapter;
+            }
+          });
+          if(chapterObj != undefined) {
+              WebPDF.ViewerInstance.openFileByUri({url:chapterObj.chapterpdf});
+              this.pageNoToLoad = requestedPage - chapterObj.startpageno;
+              let currChapterList = this.state.chapterList;
+              currChapterList.push(chapterObj);
+              this.currPageIndex = requestedPage;
+              this.setState({chapterList:currChapterList,currentChapter:chapterObj,chapterPdfFected:false,pageLoaded:false});
+            } else {
+            let pageRangeBucket = Math.ceil(requestedPage/multipageConfig.pagesToDownload);
+            let endpageno = pageRangeBucket * multipageConfig.pagesToDownload;
+            let startpageno = Math.abs(endpageno - (multipageConfig.pagesToDownload - 1));
+            if(endpageno > this.props.metaData.totalpages) {
+              endpageno = this.props.metaData.totalpages;
+            } 
+            this.props.bookCallbacks.fetchChapterLevelPdf(this.props.metaData.bookId,startpageno,endpageno,
+            this.props.metaData.globalBookId,this.props.metaData.serverDetails).then((chapterPdfObj)=>{
+              WebPDF.ViewerInstance.openFileByUri({url:chapterPdfObj.chapterpdf});
+              this.pageNoToLoad = requestedPage - chapterPdfObj.startpageno;
+              let currChapterList = this.state.chapterList;
+              currChapterList.push(chapterPdfObj);
+              this.currPageIndex = requestedPage;
+              this.setState({chapterList:currChapterList,currentChapter:chapterPdfObj,chapterPdfFected:false,pageLoaded:false});
+            });
+          }
+        }
+    } else {
+      this.setState({pageLoaded:false});
+      let index = _.findIndex(this.props.pageList, page => page.id == requestedPage);
+      let requestedPageObj = this.props.pageList[index];
+      this.currPageIndex = requestedPageObj.id;
+      WebPDF.ViewerInstance.openFileByUri({url:requestedPageObj.pdfPath});
     }
     const viewer = this;
     $(document).on('keyup',function(evt) {
@@ -244,21 +250,26 @@ class PdfPlayer extends Component {
         viewer.setState({regionData : null});
       }
     });
-   }
+ }
 
   onPageLoad = () => {
-    let chapterSize = parseInt(this.props.location.query.chaptersize ? this.props.location.query.chaptersize : 20, 10);
     WebPDF.ViewerInstance.setLayoutShowMode(2);
     $(".fwrJspVerticalBar").remove();
-    let webPdfCurrPageIndex = WebPDF.ViewerInstance.getCurPageIndex();
-    if(webPdfCurrPageIndex < (chapterSize-1) && !this.state.chapterPdfFected) {
-      WebPDF.ViewerInstance.gotoPage(webPdfCurrPageIndex+1);
-    } else if(webPdfCurrPageIndex == (chapterSize-1) && !this.state.chapterPdfFected) {
-       WebPDF.ViewerInstance.gotoPage(this.pageNoToLoad);
-       this.setCurrentZoomLevel(this.state.currZoomLevel);
-       this.setState({chapterPdfFected:true,pageLoaded:true});
-       if(this.state.isFirstPageBeingLoad == true) {
-         this.setState({isFirstPageBeingLoad : false});
+    let multipageConfig = eT1Contants.multipageConfig;
+    let callBackForManualNav = false;
+    if (multipageConfig.isMultiPageSupported) {
+        let webPdfCurrPageIndex = WebPDF.ViewerInstance.getCurPageIndex();
+      if(webPdfCurrPageIndex < (multipageConfig.pagesToNavigate-1) && !this.state.chapterPdfFected) {
+        callBackForManualNav = true;
+        WebPDF.ViewerInstance.gotoPage(webPdfCurrPageIndex+1);
+      } else if(webPdfCurrPageIndex == (multipageConfig.pagesToNavigate-1) && !this.state.chapterPdfFected) {
+         WebPDF.ViewerInstance.gotoPage(this.pageNoToLoad);
+         this.setState({chapterPdfFected:true,pageLoaded:true});
+         this.setCurrentZoomLevel(this.state.currZoomLevel);
+      }
+    }
+    if(this.state.isFirstPageBeingLoad == true && !callBackForManualNav) {
+         this.setState({isFirstPageBeingLoad : false, pageLoaded : true});
          if(this.props.preferences.showAnnotation) {
            this.props.annotations.load.get(this.props.auth(),this.props.metaData).then(()=> {
             this.displayHighlights();
@@ -275,11 +286,12 @@ class PdfPlayer extends Component {
          if(this.props.preferences.showBookmark) {
           this.props.bookmarks.load.get(this.props.auth(),this.props.metaData);   
          }   
-       } else {
-          this.displayHighlights();
-          this.displayHotspots();
-       } 
-    }
+    } else if (!callBackForManualNav) {
+        this.setCurrentZoomLevel(this.state.currZoomLevel);
+        this.setState({pageLoaded:true});
+        this.displayHighlights();
+        this.displayHotspots();
+    } 
   }
 
   onPageChange = () => {
