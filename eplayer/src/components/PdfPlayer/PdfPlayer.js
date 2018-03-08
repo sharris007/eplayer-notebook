@@ -683,6 +683,7 @@ class PdfPlayer extends Component {
                break;
       case 'SPPASSET':
                source = hotspotDetails.linkValue;
+               document.getElementById('sppTitle').innerText = hotspotDetails.name;
                var sppHeaderHeight =document.getElementById('sppModalHeader').style.height;
                var sppPlayer = document.getElementById('sppModalBody');
                var lastIndex = source.lastIndexOf("/");
@@ -929,11 +930,11 @@ class PdfPlayer extends Component {
         <div id='sppModal' className='sppModal'>
             <div id='sppModalHeader' className='sppModalHeader' style={{height: 60 + 'px'}}>
               <span id='sppCloseBtn' className='sppCloseBtn'>&times;</span>
-                <p>Smart Pearson Player</p>
+                <p id='sppTitle'></p>
             </div>
             <div id='sppModalBody' className='sppModalBody' />
         </div>
-        {this.state.popUpCollection.length ? <PopUpInfo bookContainerId={bookContainerId} popUpCollection={this.state.popUpCollection} isET1='Y'/> : null }
+        
          {this.state.pageLoaded !== true ?
         <div className="centerCircularBar">
         <RefreshIndicator size={50} left={0.48*$(window).width()} top={200} status="loading" />
