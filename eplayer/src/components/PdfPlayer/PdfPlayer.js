@@ -25,6 +25,7 @@ window.fileIdsList = [];
 
 let docViewerId = 'docViewer';
 let foxitBaseUrl = 'https://foxit-aws.gls.pearson-intl.com/';
+let bookContainerId;
 
 class PdfPlayer extends Component {
 
@@ -43,7 +44,8 @@ class PdfPlayer extends Component {
       chapterPdfFected: false,
       chapterList: [],
       currentChapter: {},
-      currentChapterPageChange: false
+      currentChapterPageChange: false,
+      popUpCollection : []
     }
     this.currPageIndex = 0;
     registerEvent('viewerReady', this.renderPdf.bind(this));
@@ -244,6 +246,7 @@ class PdfPlayer extends Component {
           Popup.close();
           $('#player-iframesppModalBody').remove();
           $('#sppModal').css('display','none');
+          Popup.close();
         }
         catch(e){
         }
@@ -302,6 +305,7 @@ class PdfPlayer extends Component {
     try
     {
       this.setState({regionData : null});
+      this.setState({popUpCollection : []});
     }
     catch(e){}
      if(_.isObject(requestedPageObj)) {
@@ -313,6 +317,7 @@ class PdfPlayer extends Component {
     try
     {
       this.setState({regionData : null});
+      this.setState({popUpCollection : []});
     }
     catch(e){}
     if(pageNo !== this.currPageIndex) {
@@ -515,8 +520,12 @@ class PdfPlayer extends Component {
 
   handleDrawer = () => {
     this.setState({drawerOpen: true });
-    this.setState({prefOpen : false})
-    this.setState({searchOpen : false})
+    this.setState({prefOpen : false});
+    this.setState({searchOpen : false});
+    try{
+      Popup.close();
+    }
+    catch(e){}
   }
 
   hideDrawer = () => {
@@ -529,6 +538,10 @@ class PdfPlayer extends Component {
   handlePreferenceClick = () => {
     let prefIconleft = $('.prefIconBtn').offset().left - 181;
     $('.preferences-container-etext').css('left', prefIconleft);
+    try{
+      Popup.close();
+    }
+    catch(e){}
     if (this.state.prefOpen === true) {
       this.setState({ prefOpen: false });
     } else {
@@ -554,7 +567,7 @@ class PdfPlayer extends Component {
     this.displayHighlights();
     if(this.props.hotspot.data.length > 0 )
     {
-      displayRegions(this.props.hotspot.data,this.props.bookFeatures,_);
+      this.displayHotspots();
     }
   }
 
@@ -565,6 +578,7 @@ class PdfPlayer extends Component {
   fetchClickedRegionData(id){
     try
     {
+      Popup.close();
       this.setState({regionData : null});
     }
     catch(e){}
@@ -763,6 +777,7 @@ class PdfPlayer extends Component {
       $('.hotspot').remove();
       $('.hotspotIcon').remove();
       $('.tooltiptext').remove();
+      Popup.close();
     }
     catch(e){}
     this.props.hotspot.load.get(this.props.metaData,this.currPageIndex,).then(() => {
@@ -770,7 +785,65 @@ class PdfPlayer extends Component {
       {
         displayRegions(this.props.hotspot.data,this.props.bookFeatures,_);
       }
+      let glossaryHotspots = [];
+      for(var i=0;i < this.props.hotspot.data.length;i++)
+      {
+        if(this.props.hotspot.data[i].regionTypeID == 5 && this.props.hotspot.data[i].glossaryEntryID !== null)
+        {
+          glossaryHotspots.push(this.props.hotspot.data[i]);
+        }
+      }
+      if(glossaryHotspots.length > 0)
+      {
+        this.renderGlossary(glossaryHotspots);
+      }
     });
+  }
+
+  renderGlossary = (glossaryHotspots) =>
+  {
+    this.setState({popUpCollection : []});
+    let glossaryEntryIDsToFetch ='';
+    let bookContainer = document.getElementById('docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex());
+    bookContainerId = bookContainer.id;
+    for(var i=0;i<glossaryHotspots.length;i++)
+    {
+      if(glossaryEntryIDsToFetch == '')
+      {
+        glossaryEntryIDsToFetch = glossaryHotspots[i].glossaryEntryID;
+      }
+      else
+      {
+        glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + glossaryHotspots[i].glossaryEntryID;
+      }
+    }
+    if(glossaryEntryIDsToFetch !== '')
+    {
+      this.props.glossary.load.get(this.props.metaData,glossaryEntryIDsToFetch).then(() => {
+        let fetchedGlossaryDetails = [];
+        for(let i=0;i<this.props.glossary.data.length;i++)
+            {
+              for(let k=0 ; k < glossaryHotspots.length ; k++)
+              {
+                if((this.props.glossary.data[i].glossaryEntryID).trim() == (glossaryHotspots[k].glossaryEntryID).trim())
+                {
+                  let glossTerm = {
+                    item : document.getElementById('region_' + glossaryHotspots[k].regionID),
+                    popOverCollection : {
+                      popOverDescription : this.props.glossary.data[i].glossaryDefinition,
+                      popOverTitle : this.props.glossary.data[i].glossaryTerm
+                    }
+                  };
+                  fetchedGlossaryDetails.push(glossTerm);
+                }
+              }
+            }
+        if(fetchedGlossaryDetails.length > 0)
+        {
+          this.setState({popUpCollection : fetchedGlossaryDetails});
+        }
+    });
+    }
   }
 
   handleSearchResultClick = (pageOrder,resultType) =>
@@ -872,7 +945,6 @@ class PdfPlayer extends Component {
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.removeAnnotationHandler = this.deleteHighlight;
     callbacks.goToPageCallback = this.goToPage;
-    let bookContainerId = 'docViewer_ViewContainer_PageContainer_0';
     return (
       <div>
       { this.props.preferences.showHeader ? 
@@ -930,6 +1002,7 @@ class PdfPlayer extends Component {
           /> : null
       }
       {this.state.regionData ? <div id="hotspot">{this.renderHotspot(this.state.regionData)}</div> : null }
+      {this.state.popUpCollection.length ? <PopUpInfo bookContainerId={bookContainerId} popUpCollection={this.state.popUpCollection}/> : null }
         <div id="main" className="pdf-fwr-pc-main">
             <div id="right" className="pdf-fwr-pc-right">
               <div id="toolbar" className="pdf-fwr-toolbar" />
@@ -938,7 +1011,6 @@ class PdfPlayer extends Component {
               </div>
             </div>
         </div>
-      {this.state.popUpCollection.length ? <PopUpInfo bookContainerId={bookContainerId} popUpCollection={this.state.popUpCollection} isET1='Y'/> : null }
         <div id='sppModal' className='sppModal'>
             <div id='sppModalHeader' className='sppModalHeader' style={{height: 60 + 'px'}}>
               <span id='sppCloseBtn' className='sppCloseBtn'>&times;</span>
