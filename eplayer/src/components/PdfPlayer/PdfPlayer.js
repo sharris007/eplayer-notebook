@@ -258,14 +258,22 @@ class PdfPlayer extends Component {
   onPageLoad = () => {
     WebPDF.ViewerInstance.setLayoutShowMode(2);
     $(".fwrJspVerticalBar").remove();
+    let pagesToNavigate;
     let multipageConfig = eT1Contants.multipageConfig;
+    if(multipageConfig.pagesToNavigate > this.props.metaData.totalpages) {
+      pagesToNavigate = this.props.metaData.totalpages;
+    } else if (this.state.currentChapter && multipageConfig.pagesToNavigate > ((this.state.currentChapter.endpageno - this.state.currentChapter.startpageno) + 1)) {
+      pagesToNavigate = (this.state.currentChapter.endpageno - this.state.currentChapter.startpageno) + 1;
+    } else {
+      pagesToNavigate = multipageConfig.pagesToNavigate;
+    }
     let callBackForManualNav = false;
     if (multipageConfig.isMultiPageSupported) {
         let webPdfCurrPageIndex = WebPDF.ViewerInstance.getCurPageIndex();
-      if(webPdfCurrPageIndex < (multipageConfig.pagesToNavigate-1) && !this.state.chapterPdfFected) {
+      if(webPdfCurrPageIndex < (pagesToNavigate-1) && !this.state.chapterPdfFected) {
         callBackForManualNav = true;
         WebPDF.ViewerInstance.gotoPage(webPdfCurrPageIndex+1);
-      } else if(webPdfCurrPageIndex == (multipageConfig.pagesToNavigate-1) && !this.state.chapterPdfFected) {
+      } else if(webPdfCurrPageIndex == (pagesToNavigate-1) && !this.state.chapterPdfFected) {
          WebPDF.ViewerInstance.gotoPage(this.pageNoToLoad);
          this.setState({chapterPdfFected:true,pageLoaded:true});
          this.setCurrentZoomLevel(this.state.currZoomLevel);
