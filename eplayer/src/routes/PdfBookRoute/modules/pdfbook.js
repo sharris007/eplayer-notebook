@@ -412,7 +412,8 @@ const ACTION_HANDLERS = {
     ...state,
     annotationData: {
       fetching: true,
-      fetched: false
+      fetched: false,
+      annotationList: []
     }
   }),
   [RECEIVE_ANNOTATIONS]: (state, action) => ({

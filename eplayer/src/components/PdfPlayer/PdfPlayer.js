@@ -44,8 +44,7 @@ class PdfPlayer extends Component {
       chapterPdfFected: false,
       chapterList: [],
       currentChapter: {},
-      currentChapterPageChange: false,
-      popUpCollection : []
+      currentChapterPageChange: false
     }
     this.currPageIndex = 0;
     registerEvent('viewerReady', this.renderPdf.bind(this));
