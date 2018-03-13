@@ -18,14 +18,13 @@ import piLoginRoute from './Pilogin';
 import bookshelfRoute from './Bookshelf';
 import eTbookshelfRoute from './ETBookshelf';
 import eTbookRoute from './ETBook';
-import pdfbookRoute from './PdfBook';
 import print from './Print';
 import course from './Course';
 import errorRoute from './Error';
 import validateUserRoute from './ValidateUser';
 import pdfbookErrorRoute from './PdfBookError';
 import notebookRoute from './NoteBook';
-import pdfbookRoute1 from './PdfBookRoute';
+import pdfbookRoute from './PdfBookRoute';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -37,7 +36,6 @@ export const createRoutes = store => ({
   childRoutes: [
     loginRoute(store),
     bookshelfRoute(store),
-    pdfbookRoute(store),
     eTbookshelfRoute(store),
     eTbookRoute(store),
     print(store),
@@ -47,7 +45,7 @@ export const createRoutes = store => ({
     validateUserRoute(store),
     pdfbookErrorRoute(store),
     notebookRoute(store),
-    pdfbookRoute1(store)
+    pdfbookRoute(store)
   ]
 });
 

@@ -160,9 +160,9 @@ export const eT1Contants = {
   },
   printCopyrightInfo : 'Copyright &copy; 2018 Pearson Education',
   multipageConfig : {
-    isMultiPageSupported : false,
+    isMultiPageSupported : true,
     pagesToDownload : 20,
     pagesToNavigate : 20
-  }
+  } 
 };
 export default eT1Contants;

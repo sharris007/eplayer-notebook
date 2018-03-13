@@ -212,11 +212,11 @@ export default class BookshelfPage extends React.Component {
          {
             var hsid = getmd5('bookid='+bookId+'&invoketype='+invoketype+eT1Contants.BOOKSHELF_MD5_SECRET_KEY);
             
-            browserHistory.push(`/eplayer/pdfbookroute?bookid=${bookId}&invoketype=${invoketype}&hsid=${hsid}`);
+            browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=${invoketype}&hsid=${hsid}`);
          }
          else
          {
-            browserHistory.push(`/eplayer/pdfbookroute?bookid=${bookId}&invoketype=${invoketype}`);
+            browserHistory.push(`/eplayer/pdfbook?bookid=${bookId}&invoketype=${invoketype}`);
          }      
       }
 

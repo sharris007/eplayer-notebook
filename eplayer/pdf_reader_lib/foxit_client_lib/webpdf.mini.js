@@ -1292,10 +1292,10 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     var b = !0;
                     return 90 == a.keyCode && a.ctrlKey && !h.isJRorMobile() ? (h.annotUndo(!0), b = !1) : 89 == a.keyCode && a.ctrlKey && !h.isJRorMobile() && (h.annotUndo(!1), b = !1), b
                 }), $(document).off("keyup.webpdf").on("keyup.webpdf", function(a) {
-                    if (27 == a.keyCode) {
-                        var b = h.getToolHandlerByName(e.Tools.TOOL_NAME_HAND);
-                        h.setCurToolHandler(b)
-                    }
+                    // if (27 == a.keyCode) {
+                    //     var b = h.getToolHandlerByName(e.Tools.TOOL_NAME_HAND);
+                    //     h.setCurToolHandler(b)
+                    // }
                     var c = h.getCurToolHandler();
                     c && $.isFunction(c.onKeyUp) && c.onKeyUp(a)
                 }), $(document).bind("mouseup", function(a) {

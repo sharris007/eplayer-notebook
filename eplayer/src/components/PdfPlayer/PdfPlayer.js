@@ -58,6 +58,8 @@ class PdfPlayer extends Component {
   }
 
   componentDidMount(){
+    let pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch : 
+                                this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 1;
     if(!window.WebPDF){
         let script1 = document.createElement('SCRIPT');
         script1.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/jquery-1.10.2.min.js';
@@ -94,7 +96,7 @@ class PdfPlayer extends Component {
           };
           WebPDF.ready(docViewerId, optionsParams).then(function(data) {
           addEventListenersForWebPDF();
-          triggerEvent('viewerReady', 1);
+          triggerEvent('viewerReady', pageIndexToLaunch);
          })
         }
         document.body.appendChild(script1);
@@ -115,7 +117,7 @@ class PdfPlayer extends Component {
 
         WebPDF.ready(docViewerId, optionsParams).then(function(data) {
         addEventListenersForWebPDF();
-        triggerEvent('viewerReady', 1);
+        triggerEvent('viewerReady', pageIndexToLaunch);
       })
     }
     if(this.props.preferences.showAnnotation) {
@@ -217,9 +219,12 @@ class PdfPlayer extends Component {
             let pageRangeBucket = Math.ceil(requestedPage/multipageConfig.pagesToDownload);
             let endpageno = pageRangeBucket * multipageConfig.pagesToDownload;
             let startpageno = Math.abs(endpageno - (multipageConfig.pagesToDownload - 1));
-            if(endpageno > this.props.metaData.totalpages) {
-              endpageno = this.props.metaData.totalpages;
-            } 
+            if(endpageno > this.props.metaData.lastPage || this.props.metaData.totalpages <= multipageConfig.pagesToDownload) {
+              endpageno = this.props.metaData.lastPage;
+            }
+            if(startpageno < this.props.metaData.startPageNo){
+              startpageno = this.props.metaData.startPageNo;
+            }
             this.props.bookCallbacks.fetchChapterLevelPdf(this.props.metaData.bookId,startpageno,endpageno,
             this.props.metaData.globalBookId,this.props.metaData.serverDetails).then((chapterPdfObj)=>{
               WebPDF.ViewerInstance.openFileByUri({url:chapterPdfObj.chapterpdf});
@@ -417,7 +422,7 @@ class PdfPlayer extends Component {
       currentHighlight.pageIndex = highlight.pageInformation.pageNumber;
       pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
         this.saveHighlight.bind(this), this.editHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex(),
-        (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid, this.props.metaData.courseId);
+        (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid, this.props.metaData.courseId, this.props.metaData.scenario);
     }
   }
 
@@ -441,7 +446,7 @@ class PdfPlayer extends Component {
     highlightClicked.color = highlightClicked.originalColor;
     pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
       this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex(),
-      (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid,cornerFoldedImageTop, this.props.metaData.courseId);
+      (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid,cornerFoldedImageTop, this.props.metaData.courseId, this.props.metaData.scenario);
   }
 
   deleteHighlight = (id) => {
@@ -962,7 +967,7 @@ class PdfPlayer extends Component {
     }
     moreMenuData.menuItem.push(signOutOption);
     const hideIcons = {
-      backNav: false,
+      backNav: !this.props.preferences.showBookshelfBack,
       hamburger: !this.props.preferences.showDrawer,
       bookmark: !this.props.preferences.showBookmark,
       pref: false,

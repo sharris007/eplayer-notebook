@@ -25,6 +25,7 @@ import { getmd5 } from '../../../components/Utility/Util';
 import { browserHistory } from 'react-router'; 
 import Cookies from 'universal-cookie';
 import { fetchChapterLevelPdf } from '../modules/service';
+import _ from 'lodash';
 
 /* Creating PdfBook component. */
 export class PdfBook extends Component {
@@ -175,12 +176,12 @@ export class PdfBook extends Component {
         await this.props.actions.getlocaluserID(serverDetails,identityId,'sms');
       }
       else {
-        this.props.actions.updateUserID(this.props.location.query.userid);
+        await this.props.actions.updateUserID(this.props.location.query.userid);
       }
       if(this.props.location.query.scenario) {
         if(this.props.location.query.scenario == eT1Contants.SCENARIOS.S1 || this.props.location.query.scenario == eT1Contants.SCENARIOS.S3
-              || this.props.location.query.scenario == eT1Contants.SCENARIOS.S11) {   
-          currentbook.pageNoTolaunch = this.props.location.query.pagenumber;    
+              || this.props.location.query.scenario == eT1Contants.SCENARIOS.S11) { 
+          currentbook.pageNoTolaunch = this.props.location.query.pagenumber   
         }   
         else if(this.props.location.query.scenario == eT1Contants.SCENARIOS.S6 || this.props.location.query.scenario == eT1Contants.SCENARIOS.S88) {  
           currentbook.startpage = this.props.location.query.startpage;    
@@ -233,14 +234,13 @@ export class PdfBook extends Component {
       currentbook.hastocflatten = this.props.book.bookinfo.book.hastocflatten;
       currentbook.languageid = this.props.book.bookinfo.book.languageid;
       currentbook.activeCourseID = this.props.book.bookinfo.book.activeCourseID;
-      await this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
+      this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
       this.props.actions.fetchPageInfo(this.getAuthDetails(),currentbook);
       let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
       if (courseId === undefined || courseId === '' || courseId === null) {
         courseId = -1;
       }
       currentbook.courseId = courseId;
-      currentbook.totalpages = this.props.book.bookinfo.book.numberOfPages;
       this.currentbook = currentbook;
   }
 
@@ -260,7 +260,7 @@ export class PdfBook extends Component {
     {
       piSessionKey = localStorage.getItem('secureToken');
     }
-    sessionId = this.props.book.sessionInfo.ssoKey;
+    sessionId = this.props.book.sessionInfo.ssoKey ? this.props.book.sessionInfo.ssoKey : this.props.location.query.sessionid;
     userId = this.props.book.userInfo.userid;
     return {
       userid:userId,
@@ -290,6 +290,7 @@ export class PdfBook extends Component {
 
   render() {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData, bookmarkData, annotationData} = this.props.book;
+    let pagePlayList = [];
     if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
       let preferences = {
             showHeader: true, 
@@ -298,7 +299,8 @@ export class PdfBook extends Component {
             showAnnotation: true,
             showBookmark: true,
             showHostpot: true,
-            locale: 'en-US'
+            locale: 'en-US',
+            showBookshelfBack: this.props.location.query.scenario ? false : true
       };
       let annotations = {
         load : {
@@ -365,9 +367,26 @@ export class PdfBook extends Component {
         },
         data : this.props.book.glossaryInfoList ? this.props.book.glossaryInfoList : []
       }
+      if(this.currentbook.pageNoTolaunch){
+        let page = _.find(bookPagesInfo.pages , page => page.pagenumber == this.currentbook.pageNoTolaunch);
+        this.currentbook.pageIndexTolaunch = page ? page.id : 1;
+      }
+      if(this.props.location.query.scenario == eT1Contants.SCENARIOS.S6 || this.props.location.query.scenario == eT1Contants.SCENARIOS.S88){
+          let startPageIndex = _.findIndex(this.props.book.bookPagesInfo.pages, page => page.pagenumber == this.props.location.query.startpage);
+          let endPageIndex = _.findIndex(this.props.book.bookPagesInfo.pages, page => page.pagenumber == this.props.location.query.endpage);
+          pagePlayList = this.props.book.bookPagesInfo.pages.slice(startPageIndex, endPageIndex + 1);
+          this.currentbook.startPageNo = startPageIndex + 1;
+          this.currentbook.lastPage = endPageIndex + 1;
+          this.currentbook.totalpages = pagePlayList.length;
+          preferences.showDrawer = false;
+        }else{
+          pagePlayList = bookPagesInfo.pages;
+          this.currentbook.totalpages = this.props.book.bookinfo.book.numberOfPages;
+          this.currentbook.lastPage = bookPagesInfo.pages[this.props.book.bookinfo.book.numberOfPages - 1].id;
+        }
       return (
         <PdfPlayer
-          pageList={bookPagesInfo.pages}
+          pageList={pagePlayList}
           annotations={annotations}
           auth={this.getAuthDetails}
           bookmarks={bookmarks}

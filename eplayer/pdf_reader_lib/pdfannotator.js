@@ -45,6 +45,7 @@ var isPopupOpen = false;
 var userRoleTypeID = 0;
 var userCourseID = 0;
 var viewerElement;
+var integrationScenario;
 function init(resetAnnotTextArea)
 {
   $("body").mousedown(function(e) {
@@ -67,7 +68,7 @@ function init(resetAnnotTextArea)
   });
 }
 
-function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,editHighlightCallback,targetElement,NotesMessages,roleTypeID,courseID)
+function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,editHighlightCallback,targetElement,NotesMessages,roleTypeID,courseID, scenario)
 {
    try{
         document.getElementById('openPopupHighlight').remove();
@@ -104,6 +105,7 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    userRoleTypeID = roleTypeID;
    userCourseID = courseID;
    viewerElement = targetElement;
+   integrationScenario = scenario;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          onColorChange(e);
    });
@@ -247,7 +249,7 @@ function onEditClick()
     $(popupElementId).find('#noteContainer').hide();
     $(popupElementId).find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     $(popupElementId).find('input').css({'pointer-events':'all', 'opacity':'1'});
-    if($(popupElementId).find('textarea').val().length && userRoleTypeID == 3 && userCourseID !=-1){
+    if($(popupElementId).find('textarea').val().length && userRoleTypeID == 3 && userCourseID !=-1 && integrationScenario !== '6' && integrationScenario !== '88'){
       $(popupElementId).find('.annotator-share-text, .annotator-share').show();
     }
     else {
@@ -312,7 +314,7 @@ function onNoteChange(event) {
     if(isEditMode)
     {
       $(popupElementId).addClass('show-edit-options');
-      if(userRoleTypeID==3 && userCourseID !=-1) {
+      if(userRoleTypeID==3 && userCourseID !=-1 && integrationScenario !== '6' && integrationScenario !== '88') {
         $(popupElementId).find('.annotator-share-text, .annotator-share').show();
       }
       else {
@@ -328,7 +330,7 @@ function onNoteChange(event) {
       {
         $(popupElementId).removeClass('show-edit-options');
       }
-      if(userRoleTypeID==3 && userCourseID !=-1 && event.target.value.length) {
+      if(userRoleTypeID==3 && userCourseID !=-1 && event.target.value.length && integrationScenario !== '6' && integrationScenario !== '88') {
         $(popupElementId).find('.annotator-share-text, .annotator-share').show();
       }
       else {
@@ -375,7 +377,7 @@ function onNoteChange(event) {
       $('.annotator-color').removeClass('active');
     }
  }
- function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID,cornerFoldedImageTop,courseID)
+ function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID,cornerFoldedImageTop,courseID, scenario)
  {
   var parentHighlightElement = $('#'+highLightData.id);
   /*  var lastChildElementindex = parentHighlightElement[0].children.length - 1
@@ -421,6 +423,7 @@ function onNoteChange(event) {
    userRoleTypeID = roleTypeID;
    userCourseID = courseID;
    viewerElement = targetElement;
+   integrationScenario = scenario;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          e.stopPropagation();
          onColorChange(e);
