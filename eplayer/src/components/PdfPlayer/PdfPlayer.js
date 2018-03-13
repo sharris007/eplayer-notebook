@@ -44,7 +44,8 @@ class PdfPlayer extends Component {
       chapterPdfFected: false,
       chapterList: [],
       currentChapter: {},
-      currentChapterPageChange: false
+      currentChapterPageChange: false,
+      showHighlight: true
     }
     this.currPageIndex = 0;
     registerEvent('viewerReady', this.renderPdf.bind(this));
@@ -517,6 +518,15 @@ class PdfPlayer extends Component {
     restoreHighlights(highlightList);
     reRenderHighlightCornerImages(noteList);
     this.setState({highlightList});
+    if(this.state.showHighlight == false)
+    {
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","hidden");
+        this.setState({showHighlight : false});
+      }
+      catch(e){}
+    }
   }
 
   handleDrawerkeyselect = (event) => {
@@ -886,6 +896,42 @@ class PdfPlayer extends Component {
     const targetBookmark = _.find(this.props.bookmarks.data.bookmarkList, bookmark => bookmark.uri === currentPageId);
     return !(targetBookmark === undefined);
   }
+
+  getPreference = () => {
+    let isAnnHide = this.state.showHighlight;
+    const prefData = {
+      'value': {
+        theme: 'White',
+        orientation: 'horizontal',
+        zoom: this.state.currZoomLevel,
+        isAnnotationHide: isAnnHide,
+        enableShowHide: this.props.preferences.showAnnotation
+      }
+    };
+    const promiseVal = Promise.resolve(prefData);
+    return promiseVal;
+  }
+  /* Method show or hide highlights/notes. */
+  showHideHighlights = (prefObject) => {
+    if(prefObject.isAnnotationHide == false)
+    {
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","hidden");
+        this.setState({showHighlight : false});
+      }
+      catch(e){}
+    }
+    else
+    {
+      try
+      {
+        $(".fwr-highlight-annot").css("visibility","visible");
+        this.setState({showHighlight : true});
+      }
+      catch(e){}
+    }
+  }
   removeAnnotationHandler = () => {}
   
   render() {
@@ -990,6 +1036,8 @@ class PdfPlayer extends Component {
                 isET1 = {this.props.isPdfPlayer}
                 setCurrentZoomLevel = {this.setCurrentZoomLevel}
                 disableBackgroundColor = {true}
+                fetch={this.getPreference}
+                preferenceUpdate = {this.showHideHighlights}
                 prefKeySelect = {this.handlePreferenceKeySelect}/> : 
               <PreferencesComponent
                 fetch = {this.props.getPreference}
