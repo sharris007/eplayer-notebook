@@ -346,7 +346,7 @@ export class PdfBook extends Component {
         load : {
           get : this.props.actions.fetchRegionsInfo
         },
-        data : this.props.book.regions ? this.props.book.regions : [] 
+        data : this.props.book.regionsData ? this.props.book.regionsData : {} 
       };
 
       let search = {

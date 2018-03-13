@@ -19,6 +19,7 @@ import { clients } from '../../../../components/common/client';
 import { resources, domain } from '../../../../../const/Settings';
 import { getmd5, extractTextContent} from '../../../../components/Utility/Util';
 import { eT1Contants } from '../../../../components/common/et1constants';
+import { request } from '../pdfbook';
 
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
@@ -35,14 +36,17 @@ export function fetchRegionsInfo(inputParams,pageorder){
   let roleTypeID = inputParams.roletypeid;
   let sessionKey = inputParams.ssoKey;
   let bookServerURL = inputParams.serverDetails;
+  let isPageFound = false;
+  let hotspotObj = {};
+  let foundPageId;
 
   const bookState = {
-    regions: [],
-    isFetching: {
-      regions: true
-    }
+    regionsData : {
+      regions: [],
+      }     
   };
   return (dispatch) => {
+    dispatch(request('regions'));
     let serviceurl;
     if (platformId == undefined || platformId == null || platformId == "")
     {
@@ -62,13 +66,16 @@ export function fetchRegionsInfo(inputParams,pageorder){
       if (response.status >= 400)
       {
         console.log(`fetchRegionsInfo error: ${response.statusText}`);
+        bookState.regionsData.fetching = false;
+        bookState.regionsData.fetched = false;
+        return dispatch({ type: 'RECEIVE_REGIONS', bookState });
       }
       else if(response.data.length)
       {
           for (let i=0;i<response.data[0].regionsList.length;i++)
           {
           response.data.forEach((region) => {
-          const regionObj= {};
+          var regionObj= {};
           if(region.regionsList[i].linkTypeID !== 16)
           {
             regionObj.regionID = region.regionsList[i].regionID;
@@ -116,12 +123,41 @@ export function fetchRegionsInfo(inputParams,pageorder){
             regionObj.assetSize=region.regionsList[i].assetSize;
             regionObj.assetLastModifiedDate=region.regionsList[i].assetLastModifiedDate;
             regionObj.downloadURL=region.regionsList[i].downloadURL;
-            bookState.regions.push(regionObj);
+            regionObj.pageorder = pageorder;
+            if(bookState.regionsData.regions.length > 0)
+            {
+              for(var k=0;k < bookState.regionsData.regions.length; k++)
+              {
+                if(bookState.regionsData.regions[k].pageId == regionObj.pageorder)
+                {
+                  isPageFound = true;
+                  foundPageId = regionObj.pageorder
+                }
+              }
+            }
+            if(isPageFound && foundPageId)
+            {
+              for(var k=0;k < bookState.regionsData.regions.length; k++)
+              {
+                if(bookState.regionsData.regions[k].pageId == foundPageId)
+                {
+                  bookState.regionsData.regions[k].hotspotList.push(regionObj)
+                }
+              }
+            }
+            else
+            {
+              hotspotObj.pageId = regionObj.pageorder;
+              hotspotObj.hotspotList = [];
+              hotspotObj.hotspotList.push(regionObj);
+              bookState.regionsData.regions.push(hotspotObj);
+            }
           }
         });
         }
       }
-      bookState.isFetching.regions=false;
+      bookState.regionsData.fetching = false;
+      bookState.regionsData.fetched = true;
       return dispatch({ type: 'RECEIVE_REGIONS',bookState});
     });
     }
@@ -165,3 +201,4 @@ export function fetchGlossaryItems(inputParams,glossaryentryid) {
       dispatch({ type: 'RECEIVE_GLOSSARY_TERM', bookState });
     });
 }
+

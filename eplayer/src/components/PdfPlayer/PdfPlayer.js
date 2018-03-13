@@ -587,7 +587,7 @@ class PdfPlayer extends Component {
     this.resetCurrentZoomLevel(level);
     this.setState({currZoomLevel : currZoomLevel});
     this.displayHighlights();
-    if(this.props.hotspot.data.length > 0 )
+    if(this.props.hotspot.data.regions.length > 0 )
     {
       this.displayHotspots();
     }
@@ -802,41 +802,70 @@ class PdfPlayer extends Component {
       Popup.close();
     }
     catch(e){}
-    this.props.hotspot.load.get(this.props.metaData,this.currPageIndex,).then(() => {
-      if(this.props.hotspot.data.length > 0 )
+    let currentPageRegions;
+    if(this.props.hotspot.data.regions.length > 0)
+    {
+      for(var k=0;k<this.props.hotspot.data.regions.length;k++)
       {
-        displayRegions(this.props.hotspot.data,this.props.bookFeatures,_);
-      }
-      let glossaryHotspots = [];
-      for(var i=0;i < this.props.hotspot.data.length;i++)
-      {
-        if(this.props.hotspot.data[i].regionTypeID == 5 && this.props.hotspot.data[i].glossaryEntryID !== null)
+        if(this.currPageIndex == this.props.hotspot.data.regions[k].pageId)
         {
-          glossaryHotspots.push(this.props.hotspot.data[i]);
+          currentPageRegions = this.props.hotspot.data.regions[k].hotspotList;
+          if(currentPageRegions && currentPageRegions.length > 0)
+          {
+            displayRegions(currentPageRegions,this.props.bookFeatures,_);
+            this.renderGlossary(currentPageRegions);  
+          } 
         }
       }
-      if(glossaryHotspots.length > 0)
-      {
-        this.renderGlossary(glossaryHotspots);
-      }
-    });
+    }
+    if(currentPageRegions == null ||currentPageRegions == '' || currentPageRegions == undefined)
+    {
+      this.props.hotspot.load.get(this.props.metaData,this.currPageIndex).then(() => {
+        if(this.props.hotspot.data.regions.length > 0 )
+        {
+          for(var k=0;k<this.props.hotspot.data.regions.length;k++)
+          {
+            if(this.currPageIndex == this.props.hotspot.data.regions[k].pageId)
+            {
+              currentPageRegions = this.props.hotspot.data.regions[k].hotspotList;
+              if(currentPageRegions && currentPageRegions.length > 0)
+              {
+                displayRegions(currentPageRegions,this.props.bookFeatures,_);
+                this.renderGlossary(currentPageRegions);  
+              } 
+            }
+          }
+        }
+      });
+    }
   }
 
-  renderGlossary = (glossaryHotspots) =>
+  renderGlossary = (currentPageRegions) =>
   {
     this.setState({popUpCollection : []});
     let glossaryEntryIDsToFetch ='';
+    let glossaryHotspots = [];
+    for(var i=0;i < currentPageRegions.length;i++)
+    {
+      if(currentPageRegions[i].regionTypeID == 5 && currentPageRegions[i].glossaryEntryID !== null)
+      {
+        glossaryHotspots.push(currentPageRegions[i]);
+      }
+    }
     let bookContainer = document.getElementById('docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex());
     bookContainerId = bookContainer.id;
-    for(var i=0;i<glossaryHotspots.length;i++)
+    if(glossaryHotspots.length > 0)
     {
-      if(glossaryEntryIDsToFetch == '')
+      for(var i=0;i<glossaryHotspots.length;i++)
       {
-        glossaryEntryIDsToFetch = glossaryHotspots[i].glossaryEntryID;
-      }
-      else
-      {
-        glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + glossaryHotspots[i].glossaryEntryID;
+        if(glossaryEntryIDsToFetch == '')
+        {
+          glossaryEntryIDsToFetch = glossaryHotspots[i].glossaryEntryID;
+        }
+        else
+        {
+          glossaryEntryIDsToFetch = glossaryEntryIDsToFetch + "," + glossaryHotspots[i].glossaryEntryID;
+        }
       }
     }
     if(glossaryEntryIDsToFetch !== '')

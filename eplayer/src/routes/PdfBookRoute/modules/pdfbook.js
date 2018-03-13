@@ -73,6 +73,8 @@ export function request(component) {
       return { type: REQUEST_BOOKMARKS };
     case 'highlights':
       return { type: REQUEST_ANNOTATIONS };
+    case 'regions' :
+      return {type: REQUEST_REGIONS};
     default:
       return {};
   }
@@ -258,7 +260,12 @@ export function restoreBookState() {
       fetching: false,
       fetched: false,
       annotationList: []
-    }
+    },
+    regionsData: {
+      fetching: false,
+      fetched: false,
+      regions: []
+    },
   }
   return { type : RESTORE_BOOK_STATE , bookState };
 }
@@ -471,22 +478,22 @@ const ACTION_HANDLERS = {
     bookFeatures : action.bookState.bookFeatures,
     tocData : action.bookState.tocData,
     bookmarkData: action.bookState.bookmarkData,
-    annotationData: action.bookState.annotationData
+    annotationData: action.bookState.annotationData,
+    regionsData: action.bookState.regionsData
   }),
   [REQUEST_REGIONS]: state => ({
     ...state,
-    isFetching: {
-      ...state.isFetching,
-      regions: true
+    regionsData: {
+      fetching : true,
+      fetched: false,
+      regions: [...state.regionsData.regions]
     }
   }),
   [RECEIVE_REGIONS]: (state, action) => ({
     ...state,
-    regions: action.bookState.regions,
-    isFetching: {
-      ...state.isFetching,
-      regions: action.bookState.isFetching.regions
-    }
+    regionsData : { ...state.regionsData,
+      regions:[
+        ...state.regionsData.regions].concat(action.bookState.regionsData.regions)}
   }),
   [RECEIVE_GLOSSARY_TERM]: (state,action) => ({
     ...state,
@@ -560,7 +567,11 @@ const initialState = {
     fetched: false,
     annotationList: []
   },
-  regions:[],
+  regionsData: {
+    fetching: false,
+    fetched: false,
+    regions: []
+  },
   glossaryInfoList:[],
   basepaths: {
     fetching: false,
