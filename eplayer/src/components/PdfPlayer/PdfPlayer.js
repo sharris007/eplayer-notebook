@@ -778,7 +778,7 @@ class PdfPlayer extends Component {
                 courseId = this.props.metaData.activeCourseID;
                }
                /*Framing Complete LTI URl*/
-               let link = serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.metaData.roletypeid + '&userlogin=' + this.props.auth().userid ;
+               let link = this.props.metaData.serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.metaData.roletypeid + '&userlogin=' + this.props.auth().userid ;
                /*Converting URL into https*/
                let ltiUrl = createHttps(link);
                window.open(ltiUrl,"_blank");
