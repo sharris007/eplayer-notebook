@@ -160,7 +160,7 @@ export const eT1Contants = {
   },
   printCopyrightInfo : 'Copyright &copy; 2018 Pearson Education',
   multipageConfig : {
-    isMultiPageSupported : true,
+    isMultiPageSupported : false,
     pagesToDownload : 20,
     pagesToNavigate : 20
   } 
