@@ -245,6 +245,7 @@ class PdfPlayer extends Component {
       this.currPageNumber = requestedPageObj.pagenumber;
       let d = new Date();
       this.pageLoadStartTime = d.getTime();
+      this.showLog = true;
       // </TestCode>
       WebPDF.ViewerInstance.openFileByUri({url:requestedPageObj.pdfPath});
     }
@@ -267,10 +268,12 @@ class PdfPlayer extends Component {
 
   onPageLoad = () => {
     // <TestCode>
-    let d = new Date();
-    let pageLoadTime = d.getTime() - this.pageLoadStartTime;
-    console.log("Time taken to load the page "+this.currPageNumber+" is "+pageLoadTime+" ms");
-    this.pageLoadStartTime = 0;
+    if (this.showLog) {
+      let d = new Date();
+      let pageLoadTime = d.getTime() - this.pageLoadStartTime;
+      console.log("Time taken to load the page "+this.currPageNumber+" is "+(pageLoadTime/1000)+" secs");
+      this.pageLoadStartTime = 0;
+      this.showLog = false;
     // </TestCode>
     WebPDF.ViewerInstance.setLayoutShowMode(2);
     let multipageConfig = eT1Contants.multipageConfig;
@@ -321,6 +324,7 @@ class PdfPlayer extends Component {
         this.displayHighlights();
         this.displayHotspots();
     } 
+   }
   }
 
   onPageChange = () => {
