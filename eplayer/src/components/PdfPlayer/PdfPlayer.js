@@ -74,7 +74,7 @@ class PdfPlayer extends Component {
         script4.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/jquery.form.min.js';
         script4.async = false;
         let script5 = document.createElement('SCRIPT');
-        script5.src = '/eplayer/pdf/foxit_client_lib/webpdf.tools.mini.js';
+        script5.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/release_websdk/webpdf.tools.mini.js';
         script5.async = false;
         let script6 = document.createElement('SCRIPT');
         script6.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/control/common/common.js';
@@ -241,6 +241,11 @@ class PdfPlayer extends Component {
       let index = _.findIndex(this.props.pageList, page => page.id == requestedPage);
       let requestedPageObj = this.props.pageList[index];
       this.currPageIndex = requestedPageObj.id;
+      // <TestCode>
+      this.currPageNumber = requestedPageObj.pagenumber;
+      let d = new Date();
+      this.pageLoadStartTime = d.getTime();
+      // </TestCode>
       WebPDF.ViewerInstance.openFileByUri({url:requestedPageObj.pdfPath});
     }
     const viewer = this;
@@ -261,10 +266,18 @@ class PdfPlayer extends Component {
  }
 
   onPageLoad = () => {
+    // <TestCode>
+    let d = new Date();
+    let pageLoadTime = d.getTime() - this.pageLoadStartTime;
+    console.log("Time taken to load the page "+this.currPageNumber+" is "+pageLoadTime+" ms");
+    this.pageLoadStartTime = 0;
+    // </TestCode>
     WebPDF.ViewerInstance.setLayoutShowMode(2);
-    $(".fwrJspVerticalBar").remove();
-    let pagesToNavigate;
     let multipageConfig = eT1Contants.multipageConfig;
+    if (multipageConfig.isMultiPageSupported) {
+      $(".fwrJspVerticalBar").remove();
+    }
+    let pagesToNavigate;
     if(multipageConfig.pagesToNavigate > this.props.metaData.totalpages) {
       pagesToNavigate = this.props.metaData.totalpages;
     } else if (this.state.currentChapter && multipageConfig.pagesToNavigate > ((this.state.currentChapter.endpageno - this.state.currentChapter.startpageno) + 1)) {
