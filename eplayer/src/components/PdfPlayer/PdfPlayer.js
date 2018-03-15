@@ -271,7 +271,7 @@ class PdfPlayer extends Component {
     if (this.showLog) {
       let d = new Date();
       let pageLoadTime = d.getTime() - this.pageLoadStartTime;
-      console.log("Time taken to load the page "+this.currPageNumber+" is "+(pageLoadTime/1000)+" secs");
+      console.log("Time taken to load page "+this.currPageNumber+" is "+(pageLoadTime/1000)+" secs");
       this.pageLoadStartTime = 0;
       this.showLog = false;
     // </TestCode>
@@ -321,8 +321,6 @@ class PdfPlayer extends Component {
     } else if (!callBackForManualNav) {
         this.setCurrentZoomLevel(this.state.currZoomLevel);
         this.setState({pageLoaded:true});
-        this.displayHighlights();
-        this.displayHotspots();
     } 
    }
   }
@@ -603,10 +601,10 @@ class PdfPlayer extends Component {
     }
     this.resetCurrentZoomLevel(level);
     this.setState({currZoomLevel : currZoomLevel});
-    this.displayHighlights();
+    // this.displayHighlights();
     if(this.props.hotspot.data.regions.length > 0 )
     {
-      this.displayHotspots();
+      // this.displayHotspots();
     }
   }
 
