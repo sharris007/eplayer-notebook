@@ -293,10 +293,10 @@ export class PdfBook extends Component {
       let preferences = {
             showHeader: true, 
             showFooter: true,
-            showDrawer: true,  
-            showAnnotation: true,
-            showBookmark: true,
-            showHostpot: true,
+            showDrawer: false,  
+            showAnnotation: false,
+            showBookmark: false,
+            showHostpot: false,
             locale: 'en-US',
             showBookshelfBack: this.props.location.query.scenario ? false : true
       };

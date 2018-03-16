@@ -228,12 +228,12 @@ class PdfPlayer extends Component {
 
   onPageLoad = () => {
     // <TestCode>
-    if (this.showLog) {
+    // if (this.showLog) {
       let d = new Date();
       let pageLoadTime = d.getTime() - this.pageLoadStartTime;
       console.log("Time taken to load page "+this.currPageNumber+" is "+(pageLoadTime/1000)+" secs");
       this.pageLoadStartTime = 0;
-      this.showLog = false;
+      // this.showLog = false;
     // </TestCode>
     WebPDF.ViewerInstance.setLayoutShowMode(2);
     let multipageConfig = pdfConstants.multipageConfig;
@@ -285,7 +285,7 @@ class PdfPlayer extends Component {
         this.setCurrentZoomLevel(this.currZoomLevel);
         this.setState({pageLoaded:true});
     } 
-   }
+  // }
   }
 
   onPageChange = () => {

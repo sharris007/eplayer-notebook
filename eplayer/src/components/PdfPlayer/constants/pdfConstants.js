@@ -38,9 +38,9 @@ export const pdfConstants = {
     JAZZASSET : 16
   },
   multipageConfig : {
-    isMultiPageSupported : false,
+    isMultiPageSupported : true,
     pagesToDownload : 20,
-    pagesToNavigate : 20
+    pagesToNavigate : 5
   },
   foxitBaseUrl : {
     nonprod: 'https://foxit-aws.gls.pearson-intl.com/',
