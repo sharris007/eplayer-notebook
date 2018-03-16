@@ -31,22 +31,20 @@ class PdfPlayer extends Component {
     super(props);
     this.state = {
       pageLoaded : false,
-      data : {},
       isFirstPageBeingLoad : true,
       drawerOpen: false,
       prefOpen: false,
       searchOpen: false,
-      currZoomLevel: 1,
-      highlightList: [],
       popUpCollection : [],
       chapterPdfFected: false,
       chapterList: [],
-      currentChapter: {},
-      currentChapterPageChange: false,
-      showHighlight: true
+      currentChapter: {}
     }
     this.currPageIndex = 0;
-    this.envType = this.props.envType ? this.props.envType : 'qa';
+    this.showHighlight = true;
+    this.highlightList = [];
+    this.currZoomLevel = 1,
+    this.envType = this.props.envType ? this.props.envType : 'nonprod';
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
     registerEvent('highlightClicked', this.handleHighlightClick)
@@ -67,7 +65,18 @@ class PdfPlayer extends Component {
     initializeWebPDF(pdfConstants.foxitBaseUrl[this.envType], pageIndexToLaunch);
     if(this.props.preferences.showAnnotation) {
       $('#frame').on('mouseup mousedown dblclick', this.handleSelection);
-    } 
+    }
+    try
+    {
+      $('.searchIconBtn').on('click', () => {
+        this.setState({prefOpen : false});
+        Popup.close();
+      })
+      $('.prefIconBtn').on('click', () => {
+        Popup.close();
+      })
+    }
+    catch(e){} 
   }
 
   componentWillUnmount(){
@@ -95,19 +104,19 @@ class PdfPlayer extends Component {
     let startIndex;
     let endIndex;
     let preFetchPageList = [];
-    if((lowerIndex >= 0) && (upperIndex < this.props.pageList.length)){
+    if((lowerIndex >= 0) && (upperIndex < this.props.pagePlayList.length)){
       startIndex = lowerIndex;
       endIndex = upperIndex;
-    }else if((lowerIndex >= 0) && !(upperIndex < this.props.pageList.length)){
+    }else if((lowerIndex >= 0) && !(upperIndex < this.props.pagePlayList.length)){
       startIndex = lowerIndex;
-      endIndex = this.props.pageList.length - 1
-    }else if(!(lowerIndex >= 0) && (upperIndex < this.props.pageList.length)){
+      endIndex = this.props.pagePlayList.length - 1
+    }else if(!(lowerIndex >= 0) && (upperIndex < this.props.pagePlayList.length)){
       startIndex = 0;
       endIndex = upperIndex;
     }
     if(window.fileIdsList.length){
        for(let i=startIndex ; i<=endIndex ; i++){
-        let a = this.props.pageList[i].pdfPath;
+        let a = this.props.pagePlayList[i].pdfPath;
         let fileIDPresent = false;
         for(let i=0;i<window.fileIdsList.length;i++) {
             let assetObj = fileIdsList[i];
@@ -122,12 +131,12 @@ class PdfPlayer extends Component {
         {
           continue;
         }else{
-          preFetchPageList.push(this.props.pageList[i]);
+          preFetchPageList.push(this.props.pagePlayList[i]);
         }
       }
       this.preLoadPdf(preFetchPageList,0,(preFetchPageList.length - 1));
     }else{
-      this.preLoadPdf(this.props.pageList,startIndex,endIndex);
+      this.preLoadPdf(this.props.pagePlayList,startIndex,endIndex);
     }
     
   }
@@ -136,6 +145,11 @@ class PdfPlayer extends Component {
     this.setState({drawerOpen: false });
     this.setState({prefOpen : false});
     this.setState({searchOpen : false});
+    try{
+      $('#highlightcornerimages').remove();
+      $(".fwr-highlight-annot").remove();
+    }
+    catch(e){}
     let multipageConfig = pdfConstants.multipageConfig;
     if(multipageConfig.isMultiPageSupported) {
         if(this.state.currentChapter !== undefined && this.state.currentChapter.startpageno && 
@@ -184,8 +198,8 @@ class PdfPlayer extends Component {
         }
     } else {
       this.setState({pageLoaded:false});
-      let index = _.findIndex(this.props.pageList, page => page.id == requestedPage);
-      let requestedPageObj = this.props.pageList[index];
+      let index = _.findIndex(this.props.pagePlayList, page => page.id == requestedPage);
+      let requestedPageObj = this.props.pagePlayList[index];
       this.currPageIndex = requestedPageObj.id;
       // <TestCode>
       this.currPageNumber = requestedPageObj.pagenumber;
@@ -203,7 +217,6 @@ class PdfPlayer extends Component {
           Popup.close();
           $('#player-iframesppModalBody').remove();
           $('#sppModal').css('display','none');
-          Popup.close();
         }
         catch(e){
         }
@@ -244,11 +257,14 @@ class PdfPlayer extends Component {
       } else if(webPdfCurrPageIndex == (pagesToNavigate-1) && !this.state.chapterPdfFected) {
          WebPDF.ViewerInstance.gotoPage(this.pageNoToLoad);
          this.setState({chapterPdfFected:true,pageLoaded:true});
-         this.setCurrentZoomLevel(this.state.currZoomLevel);
+         this.setCurrentZoomLevel(this.currZoomLevel);
       }
     }
     if(this.state.isFirstPageBeingLoad == true && !callBackForManualNav) {
          this.setState({isFirstPageBeingLoad : false, pageLoaded : true});
+         $('.moreIconBtn').on('click', this.handleHeaderClick);
+         document.getElementById('frame').addEventListener('click', this.handleHeaderClick);
+         $('.navigation').on('click', this.handleHeaderClick);
          if(this.props.preferences.showAnnotation) {
            this.props.annotations.load.get(this.props.auth,this.props.metaData).then(()=> {
             this.displayHighlights();
@@ -266,7 +282,7 @@ class PdfPlayer extends Component {
           this.props.bookmarks.load.get(this.props.auth,this.props.metaData);   
          }   
     } else if (!callBackForManualNav) {
-        this.setCurrentZoomLevel(this.state.currZoomLevel);
+        this.setCurrentZoomLevel(this.currZoomLevel);
         this.setState({pageLoaded:true});
     } 
    }
@@ -306,7 +322,7 @@ class PdfPlayer extends Component {
 
   goToPageNumber = (pageNo) => {
     var pageToNavigate;
-    var pages = this.props.pageList;
+    var pages = this.props.pagePlayList;
     for(var i=0;i<pages.length;i++)
     {
       if(pages[i].pagenumber == pageNo)
@@ -341,7 +357,7 @@ class PdfPlayer extends Component {
           height: highlightData[0].offsetHeight
         };
         const currentHighlight = {};
-        const highlightList = this.state.highlightList;
+        const highlightList = this.highlightList;
         const curHighlightCords = highlight.highlightHash;
         const curHighlightCordsStr = curHighlightCords.replace('@0.000000', '');
         const curHighlightCordsList = JSON.parse(curHighlightCordsStr);
@@ -405,7 +421,7 @@ class PdfPlayer extends Component {
           hId = highLightClickedData.highlightId;
           cornerFoldedImageTop = highLightClickedData.cornerFoldedImageTop;
         }
-        let highlightClicked = _.find(this.state.highlightList, highlight => highlight.id === hId);
+        let highlightClicked = _.find(this.highlightList, highlight => highlight.id === hId);
         if (highlightClicked.shared === true)
         {
           highlightClicked = _.find(this.props.annotations.data.annotationList, highlight => highlight.id === hId);
@@ -444,7 +460,7 @@ class PdfPlayer extends Component {
         };
         const selectedText = currentHighlight.selection;
         const isShared = highLightMetadata.isShared;
-        const currentPage = _.find(this.props.pageList, page => page.id === currentPageId);
+        const currentPage = _.find(this.props.pagePlayList, page => page.id === currentPageId);
         const highlightData = {
           color: highLightMetadata.currHighlightColor,
           note,
@@ -462,7 +478,7 @@ class PdfPlayer extends Component {
   editHighlight = (id, highLightMetadata) => {
     let currentPage = this.currPageIndex;
     try{
-        let highlightToEdit = _.find(this.state.highlightList, highlight => highlight.id === id);
+        let highlightToEdit = _.find(this.highlightList, highlight => highlight.id === id);
         const note = highLightMetadata.noteText !== undefined ? highLightMetadata.noteText : highlightToEdit.comment;
         const color = highLightMetadata.currHighlightColor !== undefined ? highLightMetadata.currHighlightColor : highlightToEdit.color;
         const isShared = highLightMetadata.isShared !== undefined ? highLightMetadata.isShared : highlightToEdit.shared;
@@ -494,15 +510,21 @@ class PdfPlayer extends Component {
         }
       }
     })
-    restoreHighlights(highlightList);
-    reRenderHighlightCornerImages(noteList);
-    this.setState({highlightList});
-    if(this.state.showHighlight == false)
+    if(highlightList.length > 0)
+    {
+      restoreHighlights(highlightList);
+      this.highlightList = highlightList;
+    }
+    if(noteList.length > 0)
+    {
+      reRenderHighlightCornerImages(noteList);
+    }
+    if(this.showHighlight == false)
     {
       try
       {
         $(".fwr-highlight-annot").css("visibility","hidden");
-        this.setState({showHighlight : false});
+        this.showHighlight = false;
       }
       catch(e){}
     }
@@ -537,7 +559,6 @@ class PdfPlayer extends Component {
     try{
       let prefIconleft = $('.prefIconBtn').offset().left - 181;
       $('.preferences-container-etext').css('left', prefIconleft);
-    
       Popup.close();
     }
     catch(e){}
@@ -555,14 +576,14 @@ class PdfPlayer extends Component {
     }
   }
   setCurrentZoomLevel = (level) => {
-    let currZoomLevel = this.state.currZoomLevel;
+    let currZoomLevel = this.currZoomLevel;
     if(level <= 0.1){
       currZoomLevel = 0.1;
     }else{
       currZoomLevel = level;
     }
     this.resetCurrentZoomLevel(level);
-    this.setState({currZoomLevel : currZoomLevel});
+    this.currZoomLevel = currZoomLevel;
     this.displayHighlights();
     if(this.props.hotspot.data.regions.length > 0 )
     {
@@ -685,8 +706,6 @@ class PdfPlayer extends Component {
                hotspotData = {
                  alt : hotspotDetails.name,
                  src : source,
-                 width : hotspotDetails.mediaWidth,
-                 height : hotspotDetails.mediaHeight,
                  title : hotspotDetails.name,
                  items : hotspotDetails
                };
@@ -789,7 +808,7 @@ class PdfPlayer extends Component {
           currentPageRegions = this.props.hotspot.data.regions[k].hotspotList;
           if(currentPageRegions && currentPageRegions.length > 0)
           {
-            displayRegions(currentPageRegions,this.props.bookFeatures,_);
+            displayRegions(currentPageRegions,this.props.metaData.bookFeatures,_);
             this.renderGlossary(currentPageRegions);  
           } 
         }
@@ -807,7 +826,7 @@ class PdfPlayer extends Component {
               currentPageRegions = this.props.hotspot.data.regions[k].hotspotList;
               if(currentPageRegions && currentPageRegions.length > 0)
               {
-                displayRegions(currentPageRegions,this.props.bookFeatures,_);
+                displayRegions(currentPageRegions,this.props.metaData.bookFeatures,_);
                 this.renderGlossary(currentPageRegions);  
               } 
             }
@@ -886,7 +905,7 @@ class PdfPlayer extends Component {
 
   addBookmarkHandler = () => {
     const currentPageId = this.currPageIndex;
-    const currentPage = _.find(this.props.pageList, page => page.id === currentPageId);
+    const currentPage = _.find(this.props.pagePlayList, page => page.id === currentPageId);
     this.props.bookmarks.operation.post(currentPage,this.props.auth,this.props.metaData);
   }
 
@@ -909,12 +928,12 @@ class PdfPlayer extends Component {
   }
 
   getPreference = () => {
-    let isAnnHide = this.state.showHighlight;
+    let isAnnHide = this.showHighlight;
     const prefData = {
       'value': {
         theme: 'White',
         orientation: 'horizontal',
-        zoom: this.state.currZoomLevel,
+        zoom: this.currZoomLevel,
         isAnnotationHide: isAnnHide,
         enableShowHide: this.props.preferences.showAnnotation
       }
@@ -929,7 +948,7 @@ class PdfPlayer extends Component {
       try
       {
         $(".fwr-highlight-annot").css("visibility","hidden");
-        this.setState({showHighlight : false});
+        this.showHighlight = false;
       }
       catch(e){}
     }
@@ -939,9 +958,19 @@ class PdfPlayer extends Component {
       try
       {
         $(".fwr-highlight-annot").css("visibility","visible");
-        this.setState({showHighlight : true});
+        this.showHighlight = true;
       }
       catch(e){}
+    }
+  }
+
+  handleHeaderClick = () => {
+    try
+    {
+      this.setState({prefOpen : false})
+      this.setState({searchOpen : false})
+    }
+    catch(e){
     }
   }
   
@@ -1063,7 +1092,7 @@ class PdfPlayer extends Component {
       {!this.state.isFirstPageBeingLoad && this.props.preferences.showFooter ? 
         <Navigation
           onPageRequest={this.onPageRequest}
-          pagePlayList={this.props.pageList}
+          pagePlayList={this.props.pagePlayList}
           currentPageId={this.currPageIndex}
           /> : null
       }
@@ -1095,7 +1124,7 @@ class PdfPlayer extends Component {
 }
 
 PdfPlayer.propTypes = {
-  pageList : PropTypes.array.isRequired,
+  pagePlayList : PropTypes.array.isRequired,
   metaData : PropTypes.object,
   bookCallbacks : PropTypes.object,
   coverPage : PropTypes.object

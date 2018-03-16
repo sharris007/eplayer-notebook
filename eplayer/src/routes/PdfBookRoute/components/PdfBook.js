@@ -281,6 +281,15 @@ export class PdfBook extends Component {
         sessionId : this.props.book.sessionInfo.ssoKey ? this.props.book.sessionInfo.ssoKey : this.props.location.query.sessionid,
         piToken : this.getpiSessionKey()
       };
+      var envType;
+      if(domain.getEnvType() == 'qa' || domain.getEnvType() == 'stage')
+      {
+        envType = 'nonprod';
+      }
+      else if(domain.getEnvType() == 'prod')
+      {
+        envType = 'prod'
+      }
       let preferences = {
             showHeader: true, 
             showFooter: true,
@@ -315,6 +324,7 @@ export class PdfBook extends Component {
       let bookCallbacks = {};
       bookCallbacks.handleBookshelfClick = this.handleBookshelfClick;
       bookCallbacks.fetchChapterLevelPdf = fetchChapterLevelPdf;
+      this.currentbook.bookFeatures = bookFeatures;
 
       const tocCompData = {
         separateToggleIcon: true,
@@ -335,7 +345,7 @@ export class PdfBook extends Component {
         load : {
           get : this.props.actions.fetchRegionsInfo
         },
-        data : this.props.book.regionsData ? this.props.book.regionsData : {} 
+        data : this.props.book.regionsData
       };
 
       let search = {
@@ -348,13 +358,13 @@ export class PdfBook extends Component {
         load : {
           get : this.props.actions.fetchBasepaths
         },
-        data : this.props.book.basepaths ? this.props.book.basepaths : {}
+        data : this.props.book.basepaths
       };
       let glossary = {
         load : {
           get : this.props.actions.fetchGlossaryItems
         },
-        data : this.props.book.glossaryInfoList ? this.props.book.glossaryInfoList : []
+        data : this.props.book.glossaryInfoList
       }
       if(this.currentbook.pageNoTolaunch){
         let page = _.find(bookPagesInfo.pages , page => page.pagenumber == this.currentbook.pageNoTolaunch);
@@ -375,7 +385,7 @@ export class PdfBook extends Component {
         }
       return (
         <PdfPlayer
-          pageList={pagePlayList}
+          pagePlayList={pagePlayList}
           annotations={annotations}
           auth={auth}
           bookmarks={bookmarks}
@@ -386,11 +396,10 @@ export class PdfBook extends Component {
           hotspot={hotspot}
           search={search}
           basepaths={basepaths}
-          bookFeatures={bookFeatures}
           preferences={preferences}
           glossary={glossary}
           location={this.props.location}
-          envType={domain.getEnvType()}
+          envType={envType}
         />);
     }
     return (

@@ -43,8 +43,7 @@ export const pdfConstants = {
     pagesToNavigate : 20
   },
   foxitBaseUrl : {
-    qa: 'https://foxit-aws.gls.pearson-intl.com/',
-    stage: '',
-    prod: ''
+    nonprod: 'https://foxit-aws.gls.pearson-intl.com/',
+    prod: 'https://foxit-aws.gls.pearson-intl.com/'
   }
 }
