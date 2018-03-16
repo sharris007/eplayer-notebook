@@ -7,13 +7,13 @@ import { addLocaleData } from 'react-intl';
 
 /*Params required userid, bookid, bookeditionid,sessionKey, serverDetails, roleTypeID, globalbookid*/
 
-export const fetchPageInfo = (authObj,currentBook) => {
+export const fetchPageInfo = (currentBook, userid, smsKey) => {
   const bookState = {
     bookPagesInfo: {
       pages: []
     }
   };
-  let serviceurl = `${currentBook.serverDetails}/ebook/pdfplayer/getpagedetails?userid=${authObj.userid}&userroleid=${currentBook.roletypeid}&bookid=${currentBook.bookId}&bookeditionid=${currentBook.bookeditionid}&authkey=${authObj.smsKey}`;
+  let serviceurl = `${currentBook.serverDetails}/ebook/pdfplayer/getpagedetails?userid=${userid}&userroleid=${currentBook.roletypeid}&bookid=${currentBook.bookId}&bookeditionid=${currentBook.bookeditionid}&authkey=${smsKey}`;
   // tempurl is starts with http to create hash key for matching with server
   let tempurl = serviceurl.replace("https","http");
   let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);

@@ -13,6 +13,11 @@ const envType = domain.getEnvType();
 
 /*bookId, userId, Page, roletypeid, courseId, piSessionKey*/
 export const getBookmarks = (authObj, currentBook) => {
+  if(!currentBook.bookId || !authObj.userid || !authObj.piToken){
+    bookState.bookmarkData.fetching = false;
+    bookState.bookmarkData.fetched = false;
+    return ({ type: 'RECEIVE_BOOKMARKS', bookState });
+  }
   const bookState = {
     bookmarkData: {
       bookmarkList: []
@@ -51,7 +56,6 @@ export const getBookmarks = (authObj, currentBook) => {
             bookId: bookmark.contextId,
             pageId: bookmark.data.pageId,
             pageNo: bookmark.pageNo,
-            roleTypeId: bookmark.role,
             createdTimestamp: bookmark.updatedTime,
             title: `${Page} ${bookmark.pageNo}`,
             uri: extID,
@@ -77,6 +81,9 @@ export const getBookmarks = (authObj, currentBook) => {
 
 /*bookmarkId, userId, bookId, piSessionKey*/
 export const deleteBookmark = (bookmarkId, authObj, currentBook) => {
+   if(!currentBook.bookId || !authObj.userid || !authObj.piToken){
+    return { type:'REMOVE_BOOKMARK' }
+   }
   return (dispatch) => {
     return clients.readerApi[envType].delete('/api/context/'+currentBook.bookId+'/identities/'+authObj.userid+'/notesX?isBookMark=true', {
       headers: {
@@ -95,6 +102,9 @@ export const deleteBookmark = (bookmarkId, authObj, currentBook) => {
 
 /*userId, bookId, pageId, pageNo, externalId, courseId, shared, Page, roleTypeId, piSessionKey*/
 export function postBookmark(currentPage, authObj, currentBook) {
+  if(!currentBook.bookId || !authObj.userid || !authObj.piToken){
+    return { type:'ADD_BOOKMARK' }
+   }
   clients.readerApi[envType].defaults.headers =  {'X-Authorization':authObj.piToken,'Content-Type': 'application/json'};
   const data = {
     clientApp: eT1Contants.clientAppNameForSpectrumApi,
@@ -113,7 +123,7 @@ export function postBookmark(currentPage, authObj, currentBook) {
   };
   let bmObj;
   return (dispatch) => {
-    return clients.readerApi[envType].post('/api/context/'+currentBook.bookId+'/identities/'+authObj.userId+'/notesX', {"payload":[data]})
+    return clients.readerApi[envType].post('/api/context/'+currentBook.bookId+'/identities/'+authObj.userid+'/notesX', {"payload":[data]})
     .then((response) => {
       if (response.status >= 400) {
         // console.log(`Add bookmark error: ${response.statusText}`);
@@ -137,11 +147,9 @@ export function postBookmark(currentPage, authObj, currentBook) {
           bookId: bookmark.contextId,
           pageId: bookmark.data.pageId,
           pageNo: bookmark.pageNo,
-          roleTypeId: bookmark.role,
           createdTimestamp: bookmark.updatedTime,
           title: `${Page} ${bookmark.pageNo}`,
-          uri: extID,
-          externalId: extID
+          uri: extID
          };
          bookmarkList.push(bmObj);
         })

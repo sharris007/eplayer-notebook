@@ -12,6 +12,68 @@ export function registerEvent(eventName, callbackMethod) {
           eventMap[eventName] = callbackMethod;
 }
 
+export function initializeWebPDF(baseUrl, pageToLoad ) {
+if(!window.WebPDF){
+        let script1 = document.createElement('SCRIPT');
+        script1.src = `${baseUrl}scripts/jquery-1.10.2.min.js`;
+        script1.async = false;
+        let script2 = document.createElement('SCRIPT');
+        script2.src = `${baseUrl}scripts/jquery-migrate-1.2.1.js`;
+        script2.async = false;
+        let script3 = document.createElement('SCRIPT');
+        script3.src = `${baseUrl}scripts/jquery-ui.min.js`;
+        script3.async = false;
+        let script4 = document.createElement('SCRIPT');
+        script4.src = `${baseUrl}scripts/jquery.form.min.js`;
+        script4.async = false;
+        let script5 = document.createElement('SCRIPT');
+        script5.src = '/eplayer/pdf/foxit_client_lib/webpdf.tools.mini.js';
+        script5.async = false;
+        let script6 = document.createElement('SCRIPT');
+        script6.src = `${baseUrl}scripts/control/common/common.js`;
+        script6.async = false;
+        let script7 = document.createElement('SCRIPT');
+        script7.src = `${baseUrl}scripts/config/apiConfig.js`;
+        script7.async = false;
+        let script8 = document.createElement('SCRIPT');
+        script8.src = `${baseUrl}scripts/config/config.js`;
+        script8.async = false;
+        let script9 = document.createElement('SCRIPT');
+        script9.src = '/eplayer/pdf/foxit_client_lib/webpdf.mini.js';
+        script9.async = false;
+        script9.onload = function(){
+          let optionsParams = {
+          language: getLanguage(),
+          serverBaseUrl: baseUrl,
+          baseUrl: baseUrl
+          };
+          WebPDF.ready(docViewerId, optionsParams).then(function(data) {
+          addEventListenersForWebPDF();
+          triggerEvent('viewerReady', pageToLoad);
+         })
+        }
+        document.body.appendChild(script1);
+        document.body.appendChild(script2);
+        document.body.appendChild(script3);
+        document.body.appendChild(script4);
+        document.body.appendChild(script5);
+        document.body.appendChild(script6);
+        document.body.appendChild(script7);
+        document.body.appendChild(script8);
+        document.body.appendChild(script9);
+      }else{
+        let optionsParams = {
+          language: getLanguage(),
+          serverBaseUrl: baseUrl,
+          baseUrl: baseUrl
+          };
+        WebPDF.ready(docViewerId, optionsParams).then(function(data) {
+        addEventListenersForWebPDF();
+        triggerEvent('viewerReady', pageToLoad);
+      })
+    }
+}
+
 export function Resize() {
     let height = $(window).height();
 
@@ -74,7 +136,7 @@ function updateLayer() {
     WebPDF.ViewerInstance.updateLayout(viewWidth, viewHeight);
 }
 
-export function addEventListenersForWebPDF() {
+function addEventListenersForWebPDF() {
   /*Document loaded event listener*/
   WebPDF.ViewerInstance.on(WebPDF.EventList.DOCUMENT_LOADED, onDocLoad);
   /*Page change event listener*/

@@ -1,30 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import Popup from 'react-popup';
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import { HeaderComponent } from '@pearson-incubator/vega-core';
 import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { DrawerComponent } from '@pearson-incubator/vega-drawer';
 import { PreferencesComponent } from '@pearson-incubator/preferences';
+import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
+import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
+import { PopUpInfo } from '@pearson-incubator/popup-info';
 import './PdfPlayer.scss';
-import { triggerEvent, registerEvent, Resize, addEventListenersForWebPDF, removeEventListenersForWebPDF } from './webPDFUtil';
+import { initializeWebPDF, triggerEvent, registerEvent, Resize, removeEventListenersForWebPDF } from './webPDFUtil';
 import { getSelectionInfo,restoreHighlights,reRenderHighlightCornerImages, resetHighlightedText } from './pdfUtility/annotaionsUtil';
 import { displayRegions,handleRegionClick,onHotspotClose,handleTransparentRegionHover,handleTransparentRegionUnhover} from './pdfUtility/regionsUtil';
 import { languages } from '../../../locale_config/translations/index';
-import { AudioPlayer,VideoPlayerPreview,ImageViewerPreview} from '@pearson-incubator/aquila-js-media';
-import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
-import { eT1Contants } from '../common/et1constants';
 import { createHttps } from '../Utility/Util';
-import Popup from 'react-popup';
-import { PopUpInfo } from '@pearson-incubator/popup-info';
+import { pdfConstants } from './constants/pdfConstants';
 
 let pdfWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/pdfworker.js');
 let fileIdWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/fileidworker.js');
 
 window.fileIdsList = [];
 
-let docViewerId = 'docViewer';
-let foxitBaseUrl = 'https://foxit-aws.gls.pearson-intl.com/';
 let bookContainerId;
 
 class PdfPlayer extends Component {
@@ -48,6 +46,7 @@ class PdfPlayer extends Component {
       showHighlight: true
     }
     this.currPageIndex = 0;
+    this.envType = this.props.envType ? this.props.envType : 'qa';
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
     registerEvent('highlightClicked', this.handleHighlightClick)
@@ -58,68 +57,14 @@ class PdfPlayer extends Component {
   }
 
   componentDidMount(){
-    let pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch : 
-                                this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 1;
-    if(!window.WebPDF){
-        let script1 = document.createElement('SCRIPT');
-        script1.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/jquery-1.10.2.min.js';
-        script1.async = false;
-        let script2 = document.createElement('SCRIPT');
-        script2.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/jquery-migrate-1.2.1.js';
-        script2.async = false;
-        let script3 = document.createElement('SCRIPT');
-        script3.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/jquery-ui.min.js';
-        script3.async = false;
-        let script4 = document.createElement('SCRIPT');
-        script4.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/jquery.form.min.js';
-        script4.async = false;
-        let script5 = document.createElement('SCRIPT');
-        script5.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/release_websdk/webpdf.tools.mini.js';
-        script5.async = false;
-        let script6 = document.createElement('SCRIPT');
-        script6.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/control/common/common.js';
-        script6.async = false;
-        let script7 = document.createElement('SCRIPT');
-        script7.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/config/apiConfig.js';
-        script7.async = false;
-        let script8 = document.createElement('SCRIPT');
-        script8.src = 'https://foxit-aws.gls.pearson-intl.com/scripts/config/config.js';
-        script8.async = false;
-        let script9 = document.createElement('SCRIPT');
-        script9.src = '/eplayer/pdf/foxit_client_lib/webpdf.mini.js';
-        script9.async = false;
-        script9.onload = function(){
-          let optionsParams = {
-          language: getLanguage(),
-          serverBaseUrl: 'https://foxit-aws.gls.pearson-intl.com/',
-          baseUrl: 'https://foxit-aws.gls.pearson-intl.com/'
-          };
-          WebPDF.ready(docViewerId, optionsParams).then(function(data) {
-          addEventListenersForWebPDF();
-          triggerEvent('viewerReady', pageIndexToLaunch);
-         })
-        }
-        document.body.appendChild(script1);
-        document.body.appendChild(script2);
-        document.body.appendChild(script3);
-        document.body.appendChild(script4);
-        document.body.appendChild(script5);
-        document.body.appendChild(script6);
-        document.body.appendChild(script7);
-        document.body.appendChild(script8);
-        document.body.appendChild(script9);
-      }else{
-        let optionsParams = {
-          language: getLanguage(),
-          serverBaseUrl: 'https://foxit-aws.gls.pearson-intl.com/',
-          baseUrl: 'https://foxit-aws.gls.pearson-intl.com/'
-          };
-
-        WebPDF.ready(docViewerId, optionsParams).then(function(data) {
-        addEventListenersForWebPDF();
-        triggerEvent('viewerReady', pageIndexToLaunch);
-      })
+    let pageIndexToLaunch;
+    if(localStorage.getItem('currPageIndex')){
+      pageIndexToLaunch = localStorage.getItem('currPageIndex');
+    }else{
+      pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch : 
+                            this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 1;
     }
+    initializeWebPDF(pdfConstants.foxitBaseUrl[this.envType], pageIndexToLaunch);
     if(this.props.preferences.showAnnotation) {
       $('#frame').on('mouseup mousedown dblclick', this.handleSelection);
     } 
@@ -130,13 +75,14 @@ class PdfPlayer extends Component {
     removeEventListenersForWebPDF();
     eventMap = [];
     window.fileIdsList = [];
+    localStorage.removeItem('currPageIndex');
   }
 
   preLoadPdf = (preFetchPageList,startIndex, endIndex) => {
     if(window.Worker){
         let g = new SparkMD5.ArrayBuffer;
         fileIdWorker.postMessage([preFetchPageList,window.fileIdsList,startIndex,endIndex,WebPDF.AccountInstance.getUserAccount(),
-                    WebPDF.AccountInstance.getUserId(),g.end(),foxitBaseUrl]);
+                    WebPDF.AccountInstance.getUserId(),g.end(),pdfConstants.foxitBaseUrl[this.envType]]);
         fileIdWorker.onmessage = function(e){
           window.fileIdsList.push(e.data);
         }
@@ -190,7 +136,7 @@ class PdfPlayer extends Component {
     this.setState({drawerOpen: false });
     this.setState({prefOpen : false});
     this.setState({searchOpen : false});
-    let multipageConfig = eT1Contants.multipageConfig;
+    let multipageConfig = pdfConstants.multipageConfig;
     if(multipageConfig.isMultiPageSupported) {
         if(this.state.currentChapter !== undefined && this.state.currentChapter.startpageno && 
                   this.state.currentChapter.startpageno <= requestedPage && this.state.currentChapter.endpageno >= requestedPage) {
@@ -264,6 +210,7 @@ class PdfPlayer extends Component {
         viewer.setState({regionData : null});
       }
     });
+    localStorage.setItem('currPageIndex',this.currPageIndex);
  }
 
   onPageLoad = () => {
@@ -276,7 +223,7 @@ class PdfPlayer extends Component {
       this.showLog = false;
     // </TestCode>
     WebPDF.ViewerInstance.setLayoutShowMode(2);
-    let multipageConfig = eT1Contants.multipageConfig;
+    let multipageConfig = pdfConstants.multipageConfig;
     if (multipageConfig.isMultiPageSupported) {
       $(".fwrJspVerticalBar").remove();
     }
@@ -303,7 +250,7 @@ class PdfPlayer extends Component {
     if(this.state.isFirstPageBeingLoad == true && !callBackForManualNav) {
          this.setState({isFirstPageBeingLoad : false, pageLoaded : true});
          if(this.props.preferences.showAnnotation) {
-           this.props.annotations.load.get(this.props.auth(),this.props.metaData).then(()=> {
+           this.props.annotations.load.get(this.props.auth,this.props.metaData).then(()=> {
             this.displayHighlights();
            });
          }
@@ -311,12 +258,12 @@ class PdfPlayer extends Component {
           this.props.tocData.load.get(this.props.metaData);
          }
          if(this.props.preferences.showHostpot) {
-           this.props.basepaths.load.get(this.props.metaData,this.props.auth()).then(()=> {
+           this.props.basepaths.load.get(this.props.metaData,this.props.auth).then(()=> {
             this.displayHotspots();
           });
          }
          if(this.props.preferences.showBookmark) {
-          this.props.bookmarks.load.get(this.props.auth(),this.props.metaData);   
+          this.props.bookmarks.load.get(this.props.auth,this.props.metaData);   
          }   
     } else if (!callBackForManualNav) {
         this.setCurrentZoomLevel(this.state.currZoomLevel);
@@ -374,100 +321,108 @@ class PdfPlayer extends Component {
   }
 
   handleSelection = () => {
-    let curToolHandlerName = WebPDF.ViewerInstance.getCurToolHandlerName();
-    let selectedText = WebPDF.ViewerInstance.getToolHandlerByName(curToolHandlerName).getTextSelectService().getSelectedText();
-    if(selectedText.toString().trim() !== ''){
-      let selection = document.querySelectorAll('.fwr-text-highlight');
-      let highlight = getSelectionInfo();
-      this.createHighlight(selection, highlight);
-      }
+    try{
+        let curToolHandlerName = WebPDF.ViewerInstance.getCurToolHandlerName();
+        let selectedText = WebPDF.ViewerInstance.getToolHandlerByName(curToolHandlerName).getTextSelectService().getSelectedText();
+        if(selectedText.toString().trim() !== ''){
+          let selection = document.querySelectorAll('.fwr-text-highlight');
+          let highlight = getSelectionInfo();
+          this.createHighlight(selection, highlight);
+        }
+      }catch(e){}
   }
 
   createHighlight = (highlightData, highlight) => {
-    const highLightcordinates = {
-      left: highlightData[0].offsetLeft,
-      top: highlightData[0].offsetTop,
-      width: highlightData[0].offsetWidth,
-      height: highlightData[0].offsetHeight
-    };
-    const currentHighlight = {};
-    const highlightList = this.state.highlightList;
-    const curHighlightCords = highlight.highlightHash;
-    const curHighlightCordsStr = curHighlightCords.replace('@0.000000', '');
-    const curHighlightCordsList = JSON.parse(curHighlightCordsStr);
-    let selectedHighlight;
-    let isExistinghighlightFound = false;
-    for (let i = 0; i < highlightList.length; i++) {
-      const actSt = highlightList[i].highlightHash;
-      const objSt = actSt.replace('@0.000000', '');
-      const cordList = JSON.parse(objSt);
-      for (let j = 0; j < cordList.length; j++) {
-        for (let k = 0; k < curHighlightCordsList.length; k++) {
-          if (parseInt(cordList[j].left, 10) <= parseInt(curHighlightCordsList[k].left, 10)
-                  && parseInt(cordList[j].top, 10) <= parseInt(curHighlightCordsList[k].top, 10)
-                  && parseInt(cordList[j].bottom, 10) >= parseInt(curHighlightCordsList[k].bottom, 10)
-                  && parseInt(cordList[j].right, 10) >= parseInt(curHighlightCordsList[k].right, 10)) {
-            selectedHighlight = highlightList[i];
-            isExistinghighlightFound = true;
+    try{
+        const highLightcordinates = {
+          left: highlightData[0].offsetLeft,
+          top: highlightData[0].offsetTop,
+          width: highlightData[0].offsetWidth,
+          height: highlightData[0].offsetHeight
+        };
+        const currentHighlight = {};
+        const highlightList = this.state.highlightList;
+        const curHighlightCords = highlight.highlightHash;
+        const curHighlightCordsStr = curHighlightCords.replace('@0.000000', '');
+        const curHighlightCordsList = JSON.parse(curHighlightCordsStr);
+        let selectedHighlight;
+        let isExistinghighlightFound = false;
+        for (let i = 0; i < highlightList.length; i++) {
+          const actSt = highlightList[i].highlightHash;
+          const objSt = actSt.replace('@0.000000', '');
+          const cordList = JSON.parse(objSt);
+          for (let j = 0; j < cordList.length; j++) {
+            for (let k = 0; k < curHighlightCordsList.length; k++) {
+              if (parseInt(cordList[j].left, 10) <= parseInt(curHighlightCordsList[k].left, 10)
+                      && parseInt(cordList[j].top, 10) <= parseInt(curHighlightCordsList[k].top, 10)
+                      && parseInt(cordList[j].bottom, 10) >= parseInt(curHighlightCordsList[k].bottom, 10)
+                      && parseInt(cordList[j].right, 10) >= parseInt(curHighlightCordsList[k].right, 10)) {
+                selectedHighlight = highlightList[i];
+                isExistinghighlightFound = true;
+              }
+              if (isExistinghighlightFound) {
+                break;
+              }
+            }
+            if (isExistinghighlightFound) {
+              break;
+            }
           }
           if (isExistinghighlightFound) {
             break;
           }
         }
-        if (isExistinghighlightFound) {
-          break;
+        if (selectedHighlight !== undefined && selectedHighlight.meta.roletypeid == 3 &&
+                this.props.metaData.roletypeid == 2)
+        {
+          return;
         }
-      }
-      if (isExistinghighlightFound) {
-        break;
-      }
-    }
-    if (selectedHighlight !== undefined && selectedHighlight.meta.roletypeid == 3 &&
-            this.props.metaData.roletypeid == 2)
-    {
-      return;
-    }
-    else if (selectedHighlight !== undefined && isExistinghighlightFound) {
-      this.handleHighlightClick(selectedHighlight.id);
-    } else {
-      const highlightsLength = highlightList.length;
-      currentHighlight.id = highlightsLength + 1;
-      currentHighlight.highlightHash = highlight.highlightHash;
-      currentHighlight.selection = highlight.selection;
-      currentHighlight.pageIndex = highlight.pageInformation.pageNumber;
-      pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
-        this.saveHighlight.bind(this), this.editHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex(),
-        (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid, this.props.metaData.courseId, this.props.metaData.scenario);
-    }
+        else if (selectedHighlight !== undefined && isExistinghighlightFound) {
+          this.handleHighlightClick(selectedHighlight.id);
+        } else {
+          const highlightsLength = highlightList.length;
+          currentHighlight.id = highlightsLength + 1;
+          currentHighlight.highlightHash = highlight.highlightHash;
+          currentHighlight.selection = highlight.selection;
+          currentHighlight.pageIndex = highlight.pageInformation.pageNumber;
+          pdfAnnotatorInstance.showCreateHighlightPopup(currentHighlight, highLightcordinates,
+            this.saveHighlight.bind(this), this.editHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex(),
+            (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid, this.props.metaData.courseId, this.props.metaData.scenario);
+        }
+      }catch(e){}
   }
 
   handleHighlightClick = (highLightClickedData) => {
     let hId;
     let cornerFoldedImageTop;
-    if(highLightClickedData.highlightId === undefined)
-    {
-      hId = highLightClickedData;
-    }
-    else
-    {
-      hId = highLightClickedData.highlightId;
-      cornerFoldedImageTop = highLightClickedData.cornerFoldedImageTop;
-    }
-    let highlightClicked = _.find(this.state.highlightList, highlight => highlight.id === hId);
-    if (highlightClicked.shared === true)
-    {
-      highlightClicked = _.find(this.props.annotations.data.annotationList, highlight => highlight.id === hId);
-    }
-    highlightClicked.color = highlightClicked.originalColor;
-    pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
-      this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex(),
-      (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid,cornerFoldedImageTop, this.props.metaData.courseId, this.props.metaData.scenario);
+    try{
+        if(highLightClickedData.highlightId === undefined)
+        {
+          hId = highLightClickedData;
+        }
+        else
+        {
+          hId = highLightClickedData.highlightId;
+          cornerFoldedImageTop = highLightClickedData.cornerFoldedImageTop;
+        }
+        let highlightClicked = _.find(this.state.highlightList, highlight => highlight.id === hId);
+        if (highlightClicked.shared === true)
+        {
+          highlightClicked = _.find(this.props.annotations.data.annotationList, highlight => highlight.id === hId);
+        }
+        highlightClicked.color = highlightClicked.originalColor;
+        pdfAnnotatorInstance.showSelectedHighlight(highlightClicked,
+          this.editHighlight.bind(this), this.deleteHighlight.bind(this), 'docViewer_ViewContainer_PageContainer_'+WebPDF.ViewerInstance.getCurPageIndex(),
+          (languages.translations[this.props.preferences.locale]), this.props.metaData.roletypeid,cornerFoldedImageTop, this.props.metaData.courseId, this.props.metaData.scenario);
+      }catch(e){}
   }
 
   deleteHighlight = (id) => {
-    $('#'+id).remove();
-    $('#'+id+"_cornerimg").remove();
-    this.props.annotations.operation.delete(id,this.props.auth(),this.props.metaData).then(() => {
+    try{
+        $('#'+id).remove();
+        $('#'+id+"_cornerimg").remove();
+      }catch(e){}
+    this.props.annotations.operation.delete(id,this.props.auth,this.props.metaData).then(() => {
       this.displayHighlights();
     });
   }
@@ -475,50 +430,54 @@ class PdfPlayer extends Component {
   saveHighlight = (currentHighlight,highLightMetadata) => {
     const currentPageId = this.currPageIndex;
     let courseId = _.toString(this.props.metaData.courseId);
-    const note = highLightMetadata.noteText;
-    const meta = {
-      userroleid: _.toString(this.props.metaData.roletypeid),
-      userbookid: _.toString(this.props.metaData.userbookid),
-      bookeditionid: _.toString(this.props.metaData.bookeditionid),
-      roletypeid: _.toString(this.props.metaData.roletypeid),
-      colorcode: highLightMetadata.currHighlightColorCode,
-      author: this.props.metaData.authorName,
-      highlightHash: currentHighlight.highlightHash,
-      note
-    };
-    const selectedText = currentHighlight.selection;
-    const isShared = highLightMetadata.isShared;
-    const currentPage = _.find(this.props.pageList, page => page.id === currentPageId);
-    const highlightData = {
-      color: highLightMetadata.currHighlightColor,
-      note,
-      meta,
-      selectedText,
-      isShared
-    }
-    this.props.annotations.operation.post(this.props.auth(),this.props.metaData,currentPage, highlightData).then((newHighlight) => {
-       pdfAnnotatorInstance.setCurrentHighlight(newHighlight);
-        this.displayHighlights();
-    })
+    try{
+        const note = highLightMetadata.noteText;
+        const meta = {
+          userroleid: _.toString(this.props.metaData.roletypeid),
+          userbookid: _.toString(this.props.metaData.userbookid),
+          bookeditionid: _.toString(this.props.metaData.bookeditionid),
+          roletypeid: _.toString(this.props.metaData.roletypeid),
+          colorcode: highLightMetadata.currHighlightColorCode,
+          author: this.props.metaData.authorName,
+          highlightHash: currentHighlight.highlightHash,
+          note
+        };
+        const selectedText = currentHighlight.selection;
+        const isShared = highLightMetadata.isShared;
+        const currentPage = _.find(this.props.pageList, page => page.id === currentPageId);
+        const highlightData = {
+          color: highLightMetadata.currHighlightColor,
+          note,
+          meta,
+          selectedText,
+          isShared
+        }
+        this.props.annotations.operation.post(this.props.auth,this.props.metaData,currentPage, highlightData).then((newHighlight) => {
+           pdfAnnotatorInstance.setCurrentHighlight(newHighlight);
+            this.displayHighlights();
+        })
+      }catch(e){}
   }
 
   editHighlight = (id, highLightMetadata) => {
     let currentPage = this.currPageIndex;
-    let highlightToEdit = _.find(this.state.highlightList, highlight => highlight.id === id);
-    const note = highLightMetadata.noteText !== undefined ? highLightMetadata.noteText : highlightToEdit.comment;
-    const color = highLightMetadata.currHighlightColor !== undefined ? highLightMetadata.currHighlightColor : highlightToEdit.color;
-    const isShared = highLightMetadata.isShared !== undefined ? highLightMetadata.isShared : highlightToEdit.shared;
-    let meta = highlightToEdit.meta;
-    meta.colorcode = color;
-    let highlightData = {
-      note,
-      color,
-      isShared,
-      meta
-    }
-    this.props.annotations.operation.put(this.props.auth(),this.props.metaData,currentPage,highlightData,highlightToEdit).then(()=>{
-      this.displayHighlights();
-    });
+    try{
+        let highlightToEdit = _.find(this.state.highlightList, highlight => highlight.id === id);
+        const note = highLightMetadata.noteText !== undefined ? highLightMetadata.noteText : highlightToEdit.comment;
+        const color = highLightMetadata.currHighlightColor !== undefined ? highLightMetadata.currHighlightColor : highlightToEdit.color;
+        const isShared = highLightMetadata.isShared !== undefined ? highLightMetadata.isShared : highlightToEdit.shared;
+        let meta = highlightToEdit.meta;
+        meta.colorcode = color;
+        let highlightData = {
+          note,
+          color,
+          isShared,
+          meta
+        }
+        this.props.annotations.operation.put(this.props.auth,this.props.metaData,currentPage,highlightData,highlightToEdit).then(()=>{
+          this.displayHighlights();
+        });
+      }catch(e){}
   }
 
   displayHighlights = () => {
@@ -567,15 +526,18 @@ class PdfPlayer extends Component {
 
   hideDrawer = () => {
     if (this.state.drawerOpen) {
-      document.getElementsByClassName('drawerIconBtn')[0].focus();
+      try{
+          document.getElementsByClassName('drawerIconBtn')[0].focus();
+        }catch(e){}
     }
     this.setState({ drawerOpen: false });
   }
 
   handlePreferenceClick = () => {
-    let prefIconleft = $('.prefIconBtn').offset().left - 181;
-    $('.preferences-container-etext').css('left', prefIconleft);
     try{
+      let prefIconleft = $('.prefIconBtn').offset().left - 181;
+      $('.preferences-container-etext').css('left', prefIconleft);
+    
       Popup.close();
     }
     catch(e){}
@@ -663,7 +625,7 @@ class PdfPlayer extends Component {
                 catch(e){
                 }
               }
-              else if(that.state.regionData.hotspotType == 'AUDIO' && that.state.regionData.linkTypeID == eT1Contants.LinkType.FACELESSAUDIO)
+              else if(that.state.regionData.hotspotType == 'AUDIO' && that.state.regionData.linkTypeID == pdfConstants.LinkType.FACELESSAUDIO)
               {
                 try
                 {
@@ -793,7 +755,7 @@ class PdfPlayer extends Component {
                 courseId = this.props.metaData.activeCourseID;
                }
                /*Framing Complete LTI URl*/
-               let link = this.props.metaData.serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.metaData.roletypeid + '&userlogin=' + this.props.auth().userid ;
+               let link = this.props.metaData.serverDetails + '/ebook/toolLaunch.do?json=' + hotspotDetails.linkValue + '&contextid=' + courseId + '&role=' + this.props.metaData.roletypeid + '&userlogin=' + this.props.auth.userid ;
                /*Converting URL into https*/
                let ltiUrl = createHttps(link);
                window.open(ltiUrl,"_blank");
@@ -925,7 +887,7 @@ class PdfPlayer extends Component {
   addBookmarkHandler = () => {
     const currentPageId = this.currPageIndex;
     const currentPage = _.find(this.props.pageList, page => page.id === currentPageId);
-    this.props.bookmarks.operation.post(currentPage,this.props.auth(),this.props.metaData);
+    this.props.bookmarks.operation.post(currentPage,this.props.auth,this.props.metaData);
   }
 
   removeBookmarkHandler = (bookmarkId) => {
@@ -937,7 +899,7 @@ class PdfPlayer extends Component {
     }
     const targetBookmark = _.find(this.props.bookmarks.data.bookmarkList, bookmark => bookmark.uri === currentPageId);
     const targetBookmarkId = targetBookmark.bkmarkId;
-    this.props.bookmarks.operation.delete(targetBookmarkId,this.props.auth(),this.props.metaData);
+    this.props.bookmarks.operation.delete(targetBookmarkId,this.props.auth,this.props.metaData);
   }
 
   isCurrentPageBookmarked = () => {
@@ -973,6 +935,7 @@ class PdfPlayer extends Component {
     }
     else
     {
+
       try
       {
         $(".fwr-highlight-annot").css("visibility","visible");
@@ -981,7 +944,6 @@ class PdfPlayer extends Component {
       catch(e){}
     }
   }
-  removeAnnotationHandler = () => {}
   
   render() {
     let viewerClassName;

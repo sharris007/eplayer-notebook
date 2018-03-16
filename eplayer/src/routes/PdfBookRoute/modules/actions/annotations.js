@@ -16,6 +16,11 @@ export const getAnnotations = (authObj, currentBook) => {
       annotationList: []
     }
   };
+  if(!currentBook.bookId || !authObj.userid || !authObj.piToken){
+    bookState.annotationData.fetching = false;
+    bookState.annotationData.fetched = false;
+    return { type : 'RECEIVE_ANNOTATIONS', bookState}
+  }
   let queryString;
   if (currentBook.roletypeid == eT1Contants.UserRoleType.Student)
   {
@@ -46,7 +51,6 @@ export const getAnnotations = (authObj, currentBook) => {
             };
             const pageid = Number(highlight.pageId);
             hlObj.userId = highlight.userId;
-            hlObj.bookId = highlight.contextId;
             hlObj.pageId = pageid;
             hlObj.courseId = highlight.subContextId;
             hlObj.shared = highlight.shareable;
@@ -57,11 +61,8 @@ export const getAnnotations = (authObj, currentBook) => {
             hlObj.originalColor = highlight.color;
             hlObj.id = highlight.id;
             hlObj.pageNo = highlight.pageNo;
-            hlObj.roleTypeId = highlight.role;
             hlObj.meta = highlight.data;
-            hlObj.meta.colorcode = highlight.shareable ? '#00a4e0' : highlight.data.colorcode
             hlObj.author = highlight.data.author;
-            hlObj.creationTime = highlight.createdTime;
             hlObj.time = highlight.updatedTime;
             if ((currentBook.roletypeid == eT1Contants.UserRoleType.Instructor && (_.toString(hlObj.meta.roletypeid) === _.toString(currentBook.roletypeid))
                   && (_.toString(hlObj.userId) === _.toString(authObj.userid)) && hlObj.courseId == currentBook.courseId)
@@ -92,6 +93,9 @@ export const getAnnotations = (authObj, currentBook) => {
 }
 /*userId, bookId, pageNo,courseId, shared, selectedText, color, meta, currentPageId,roleTypeId, piSessionId*/
 export const postAnnotation = (authObj, currentBook, currentPage, annotation) => {
+  if(!currentBook.bookId || !authObj.userid || !authObj.piToken){
+    return { type : 'SAVE_ANNOTATION' }
+  }
   const axiosInstance = clients.readerApi[envType];
   axiosInstance.defaults.headers = {'X-Authorization':authObj.piToken,'Content-Type': 'application/json'};
   const data = {
@@ -122,9 +126,7 @@ export const postAnnotation = (authObj, currentBook, currentPage, annotation) =>
         const pageid = Number(highlight.pageId);
         let hlObj = {
           userId: highlight.userId,
-          bookId: highlight.contextId,
           pageId: pageid,
-          roleTypeId: highlight.role,
           courseId: highlight.subContextId,
           shared: highlight.shareable,
           highlightHash: highlight.data.highlightHash,
@@ -136,10 +138,8 @@ export const postAnnotation = (authObj, currentBook, currentPage, annotation) =>
           pageNo: highlight.pageNo,
           meta: highlight.data,
           author: highlight.data.author,
-          creationTime: highlight.createdTime,
           time: highlight.updatedTime
         };
-        hlObj.meta.colorcode = highlight.shareable ? '#00a4e0' : highlight.data.colorcode;
         highlightList.push(hlObj);
        });
       }
@@ -151,6 +151,9 @@ export const postAnnotation = (authObj, currentBook, currentPage, annotation) =>
 
 /*id, userId, bookId, authorizationHeaderVal*/
 export const deleteAnnotation = (id, authObj, currentBook) => {
+  if(!currentBook.bookId || !authObj.userid || !authObj.piToken || !id){
+    return { type : 'DELETE_ANNOTATION' }
+  }
   const axiosInstance = clients.readerApi[envType];
   axiosInstance.defaults.headers = {'X-Authorization':authObj.piToken,'Content-Type': 'application/json'};
   return (dispatch) => {
@@ -165,6 +168,9 @@ export const deleteAnnotation = (id, authObj, currentBook) => {
 }
 /*id, note, color, isShared, userId, bookId, pageNo, courseId, selectedText, roleTypeId, meta, currentPageId, authorizationHeaderVal*/
 export const putAnnotation = (authObj, currentBook, currentPage, annotationData, annotationToEdit) => {
+   if(!currentBook.bookId || !authObj.userid || !authObj.piToken || !annotationToEdit){
+    return { type : 'EDIT_ANNOTATION' }
+  }
   const editHightlightURI = '/api/context/'+currentBook.bookId+'/identities/'+authObj.userid+'/notesX';
   const payloadData = {
     id :annotationToEdit.id,
@@ -202,9 +208,7 @@ export const putAnnotation = (authObj, currentBook, currentPage, annotationData,
         const pageid = Number(highlightResponse.pageId);
         highlightObj = {
           userId: highlightResponse.userId,
-          bookId: highlightResponse.contextId,
           pageId: pageid,
-          roleTypeId: highlightResponse.role, 
           courseId: highlightResponse.subContextId,
           shared: highlightResponse.shareable,
           highlightHash: highlightResponse.data.highlightHash,
@@ -216,10 +220,8 @@ export const putAnnotation = (authObj, currentBook, currentPage, annotationData,
           pageNo: highlightResponse.pageNo,
           meta: highlightResponse.data,
           author: highlightResponse.data.author,
-          creationTime: highlightResponse.createdTime,
           time: highlightResponse.updatedTime
         };
-        highlightObj.meta.colorcode = highlightResponse.shareable ? '#00a4e0' : highlightResponse.data.colorcode;
       }
       return dispatch({ type: 'EDIT_ANNOTATION', highlightObj });
     });

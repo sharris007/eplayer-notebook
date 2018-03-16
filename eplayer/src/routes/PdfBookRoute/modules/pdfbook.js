@@ -266,6 +266,11 @@ export function restoreBookState() {
       fetched: false,
       regions: []
     },
+    glossaryInfoList:[],
+    basepaths: {
+      fetching: false,
+      fetched: false
+    }
   }
   return { type : RESTORE_BOOK_STATE , bookState };
 }
@@ -479,7 +484,9 @@ const ACTION_HANDLERS = {
     tocData : action.bookState.tocData,
     bookmarkData: action.bookState.bookmarkData,
     annotationData: action.bookState.annotationData,
-    regionsData: action.bookState.regionsData
+    regionsData: action.bookState.regionsData,
+    glossaryInfoList : action.bookState.glossaryInfoList,
+    basepaths : action.bookState.basepaths
   }),
   [REQUEST_REGIONS]: state => ({
     ...state,

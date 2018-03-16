@@ -235,7 +235,7 @@ export class PdfBook extends Component {
       currentbook.languageid = this.props.book.bookinfo.book.languageid;
       currentbook.activeCourseID = this.props.book.bookinfo.book.activeCourseID;
       this.props.actions.fetchBookFeatures(bookID,currentbook.ssoKey, this.props.book.userInfo.userid, serverDetails, this.props.book.bookinfo.book.roleTypeID,currentbook.scenario); 
-      this.props.actions.fetchPageInfo(this.getAuthDetails(),currentbook);
+      this.props.actions.fetchPageInfo(currentbook, this.props.book.userInfo.userid, authkey);
       let courseId = _.toString(this.props.book.bookinfo.book.activeCourseID);
       if (courseId === undefined || courseId === '' || courseId === null) {
         courseId = -1;
@@ -244,29 +244,13 @@ export class PdfBook extends Component {
       this.currentbook = currentbook;
   }
 
+  componentWillUnmount(){
+    this.props.actions.restoreBookState();
+  }
+
   getPageCount = () => {
     const pagecount = this.props.book.bookinfo.book.numberOfPages;
     return pagecount;
-  }
-
-  getAuthDetails = () => {
-    let piSessionKey, sessionId, userId;
-    piSession.getToken(function(result, userToken){
-          if(result === 'success'){
-            piSessionKey = userToken;
-          }
-    });
-    if(piSessionKey === undefined)
-    {
-      piSessionKey = localStorage.getItem('secureToken');
-    }
-    sessionId = this.props.book.sessionInfo.ssoKey ? this.props.book.sessionInfo.ssoKey : this.props.location.query.sessionid;
-    userId = this.props.book.userInfo.userid;
-    return {
-      userid:userId,
-      piToken:piSessionKey,
-      smsKey:sessionId
-    }
   }
 
   getpiSessionKey = () => {
@@ -292,6 +276,11 @@ export class PdfBook extends Component {
     const {bookinfo, bookPagesInfo, bookFeatures, tocData, bookmarkData, annotationData} = this.props.book;
     let pagePlayList = [];
     if (bookinfo.fetched && bookPagesInfo.fetched && bookFeatures.fetched) {
+      let auth = {
+        userid : this.props.book.userInfo.userid,
+        sessionId : this.props.book.sessionInfo.ssoKey ? this.props.book.sessionInfo.ssoKey : this.props.location.query.sessionid,
+        piToken : this.getpiSessionKey()
+      };
       let preferences = {
             showHeader: true, 
             showFooter: true,
@@ -388,7 +377,7 @@ export class PdfBook extends Component {
         <PdfPlayer
           pageList={pagePlayList}
           annotations={annotations}
-          auth={this.getAuthDetails}
+          auth={auth}
           bookmarks={bookmarks}
           tocData={toc}
           metaData={this.currentbook}
@@ -401,6 +390,7 @@ export class PdfBook extends Component {
           preferences={preferences}
           glossary={glossary}
           location={this.props.location}
+          envType={domain.getEnvType()}
         />);
     }
     return (
