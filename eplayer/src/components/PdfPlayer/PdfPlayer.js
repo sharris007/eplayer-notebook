@@ -601,10 +601,10 @@ class PdfPlayer extends Component {
     }
     this.resetCurrentZoomLevel(level);
     this.setState({currZoomLevel : currZoomLevel});
-    // this.displayHighlights();
+    this.displayHighlights();
     if(this.props.hotspot.data.regions.length > 0 )
     {
-      // this.displayHotspots();
+      this.displayHotspots();
     }
   }
 
