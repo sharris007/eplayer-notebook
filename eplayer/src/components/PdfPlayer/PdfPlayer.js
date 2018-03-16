@@ -585,10 +585,7 @@ class PdfPlayer extends Component {
     this.resetCurrentZoomLevel(level);
     this.currZoomLevel = currZoomLevel;
     this.displayHighlights();
-    if(this.props.hotspot.data.regions.length > 0 )
-    {
-      this.displayHotspots();
-    }
+    this.displayHotspots();
   }
 
   resetCurrentZoomLevel = function(level) {
