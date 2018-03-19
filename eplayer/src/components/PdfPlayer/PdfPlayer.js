@@ -18,8 +18,8 @@ import { languages } from '../../../locale_config/translations/index';
 import { createHttps } from '../Utility/Util';
 import { pdfConstants } from './constants/pdfConstants';
 
-let pdfWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/pdfworker.js');
-let fileIdWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/fileidworker.js');
+// let pdfWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/pdfworker.js');
+// let fileIdWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/fileidworker.js');
 
 window.fileIdsList = [];
 
@@ -169,6 +169,10 @@ class PdfPlayer extends Component {
             }
           });
           if(chapterObj != undefined) {
+              // <TestCode>
+              let d = new Date();
+              this.pageLoadStartTime = d.getTime();
+              // </TestCode>
               WebPDF.ViewerInstance.openFileByUri({url:chapterObj.chapterpdf});
               this.pageNoToLoad = requestedPage - chapterObj.startpageno;
               let currChapterList = this.state.chapterList;
@@ -188,6 +192,10 @@ class PdfPlayer extends Component {
             this.props.bookCallbacks.fetchChapterLevelPdf(this.props.metaData.bookId,startpageno,endpageno,
             this.props.metaData.globalBookId,this.props.metaData.serverDetails).then((chapterPdfObj)=>{
               WebPDF.ViewerInstance.openFileByUri({url:chapterPdfObj.chapterpdf});
+              // <TestCode>
+              let d = new Date();
+              this.pageLoadStartTime = d.getTime();
+              // </TestCode>
               this.pageNoToLoad = requestedPage - chapterPdfObj.startpageno;
               let currChapterList = this.state.chapterList;
               currChapterList.push(chapterPdfObj);
@@ -227,16 +235,19 @@ class PdfPlayer extends Component {
  }
 
   onPageLoad = () => {
+    let multipageConfig = pdfConstants.multipageConfig;
     // <TestCode>
-    // if (this.showLog) {
-      let d = new Date();
-      let pageLoadTime = d.getTime() - this.pageLoadStartTime;
-      console.log("Time taken to load page "+this.currPageNumber+" is "+(pageLoadTime/1000)+" secs");
-      this.pageLoadStartTime = 0;
-      // this.showLog = false;
+    if(!multipageConfig.isMultiPageSupported && this.showLog) {
+          this.showLog = false;
+          let d = new Date();
+          let pageLoadTime = d.getTime() - this.pageLoadStartTime;
+          console.log("Time taken to load the page "+this.currPageNumber+"is "+(pageLoadTime/1000)+" secs");
+          this.pageLoadStartTime = 0;
+    } else if(!multipageConfig.isMultiPageSupported && !this.showLog) {
+          return;
+    }
     // </TestCode>
     WebPDF.ViewerInstance.setLayoutShowMode(2);
-    let multipageConfig = pdfConstants.multipageConfig;
     if (multipageConfig.isMultiPageSupported) {
       $(".fwrJspVerticalBar").remove();
     }
@@ -255,6 +266,10 @@ class PdfPlayer extends Component {
         callBackForManualNav = true;
         WebPDF.ViewerInstance.gotoPage(webPdfCurrPageIndex+1);
       } else if(webPdfCurrPageIndex == (pagesToNavigate-1) && !this.state.chapterPdfFected) {
+         let d = new Date();
+         let pageLoadTime = d.getTime() - this.pageLoadStartTime;
+         console.log("Time taken to load first page of current chapter is "+(pageLoadTime/1000)+" secs");
+         this.pageLoadStartTime = 0;
          WebPDF.ViewerInstance.gotoPage(this.pageNoToLoad);
          this.setState({chapterPdfFected:true,pageLoaded:true});
          this.setCurrentZoomLevel(this.currZoomLevel);
@@ -285,7 +300,6 @@ class PdfPlayer extends Component {
         this.setCurrentZoomLevel(this.currZoomLevel);
         this.setState({pageLoaded:true});
     } 
-  // }
   }
 
   onPageChange = () => {
@@ -1068,9 +1082,9 @@ class PdfPlayer extends Component {
       <div className = "preferences-container-etext">
         {this.state.prefOpen ? 
           <div className = "content">
-            {this.props.isPdfPlayer ? 
+            {this.props.parentType == "eT1" ? 
               <PreferencesComponent
-                isET1 = {this.props.isPdfPlayer}
+                isET1 = {"Y"}
                 setCurrentZoomLevel = {this.setCurrentZoomLevel}
                 disableBackgroundColor = {true}
                 fetch={this.getPreference}

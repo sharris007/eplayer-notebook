@@ -25,6 +25,7 @@ import { getmd5 } from '../../../components/Utility/Util';
 import { browserHistory } from 'react-router'; 
 import Cookies from 'universal-cookie';
 import { fetchChapterLevelPdf } from '../modules/service';
+import PdfViewer from './PdfViewer';
 import _ from 'lodash';
 
 /* Creating PdfBook component. */
@@ -383,23 +384,25 @@ export class PdfBook extends Component {
           this.currentbook.totalpages = this.props.book.bookinfo.book.numberOfPages;
           this.currentbook.lastPage = bookPagesInfo.pages[this.props.book.bookinfo.book.numberOfPages - 1].id;
         }
+      let parentType = "eT1";
       return (
-        <PdfPlayer
-          pagePlayList={pagePlayList}
-          annotations={annotations}
-          auth={auth}
-          bookmarks={bookmarks}
-          tocData={toc}
-          metaData={this.currentbook}
-          bookCallbacks={bookCallbacks}
-          isPdfPlayer={"Y"}
-          hotspot={hotspot}
-          search={search}
-          basepaths={basepaths}
-          preferences={preferences}
-          glossary={glossary}
-          location={this.props.location}
-          envType={envType}
+        <PdfViewer 
+          pdfplayercomp = {<PdfPlayer
+                              pagePlayList={pagePlayList}
+                              annotations={annotations}
+                              auth={auth}
+                              bookmarks={bookmarks}
+                              tocData={toc}
+                              metaData={this.currentbook}
+                              bookCallbacks={bookCallbacks}
+                              parentType={parentType}
+                              hotspot={hotspot}
+                              search={search}
+                              basepaths={basepaths}
+                              preferences={preferences}
+                              glossary={glossary}
+                              envType={envType}
+                          />} 
         />);
     }
     return (
