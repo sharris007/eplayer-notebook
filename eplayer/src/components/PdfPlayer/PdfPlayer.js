@@ -57,7 +57,7 @@ class PdfPlayer extends Component {
   componentDidMount(){
     let pageIndexToLaunch;
     if(localStorage.getItem('currPageIndex')){
-      pageIndexToLaunch = localStorage.getItem('currPageIndex');
+      pageIndexToLaunch = parseInt(localStorage.getItem('currPageIndex'),10);
     }else{
       pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch : 
                             this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 1;
