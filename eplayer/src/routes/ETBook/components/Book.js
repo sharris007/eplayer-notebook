@@ -1359,6 +1359,14 @@ export class Book extends Component {
       audio: true,
       moreIcon: true
     };
+    let environment = 'dev';
+    if(window.location.href.match('etext-qa-stg.pearson.com')) {
+      environment = 'qa';
+    } else if(window.location.href.match('etext-stg.pearson.com')) {
+      environment = 'stg';
+    } else if(window.location.href.match('etext.pearson.com')) {
+      environment = 'prod';
+    }
     return (
       <div onClick={this.closeHeaderPopups}>
         {playlistReceived &&
@@ -1370,7 +1378,8 @@ export class Book extends Component {
             componentFactory={{ getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } }}
             clients={{ page: pxeClient, annotation: annotationClient }}
             metadata={productData.metaData}
-            pxeOptions={productData.pxeOptions}>
+            pxeOptions={productData.pxeOptions}
+            environment = {environment}>
             <div>
               <div>
                 {!this.state.searchOpen && <HeaderComponent
