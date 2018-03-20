@@ -1073,7 +1073,7 @@ class PdfPlayer extends Component {
         isDraweropen={this.state.drawerOpen}
         hideDrawer={this.hideDrawer}
         bookDetails={bookDetails}
-        toc={this.props.toc.data}
+        tocData={this.props.toc.data}
         bookmarkData={bookmarksObj}
         notesData={notesObj}
         currentPageId={pageIdString}

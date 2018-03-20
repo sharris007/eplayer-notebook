@@ -294,6 +294,18 @@ export class PdfBook extends Component {
       } else {
         envType = 'nonprod';
       }
+      /*let preferences = {
+            showHeader: (bookFeatures.hassearchbutton || bookFeatures.hasbookshelflink || bookFeatures.hasbookmarkpagebutton
+              || bookFeatures.haslogoutlink || bookFeatures.haszoomoutbutton || bookFeatures.haszoominbutton || bookFeatures.hasdrawerbutton) ? true : false,
+            showFooter: (bookFeatures.hasprevnavpagebutton || bookFeatures.hasnextnavpagebutton) ? true : false, 
+            showDrawer: bookFeatures.hasdrawerbutton ? true : false,  
+            showAnnotation: (bookFeatures.hashighlightingtoolbutton || bookFeatures.hasnotetoolbutton) ? true : false,
+            showBookmark: bookFeatures.hasbookmarkpagebutton ? true : false,
+            showHostpot: true,
+            locale: 'en-US',
+            showBookshelfBack: (this.props.location.query.scenario || !bookFeatures.hasbookshelflink) ? false : true
+      };*/
+      // For preference setting for testing
       let preferences = {
             showHeader: true, 
             showFooter: true,
@@ -302,7 +314,7 @@ export class PdfBook extends Component {
             showBookmark: false,
             showHostpot: false,
             locale: 'en-US',
-            showBookshelfBack: this.props.location.query.scenario ? false : true
+            showBookshelfBack: true
       };
       let annotations = {
         load : {
