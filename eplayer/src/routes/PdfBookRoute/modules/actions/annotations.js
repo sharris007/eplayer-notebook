@@ -57,7 +57,7 @@ export const getAnnotations = (authObj, currentBook) => {
             hlObj.highlightHash = highlight.data.highlightHash;
             hlObj.comment = highlight.data.note;
             hlObj.text = highlight.selectedText;
-            hlObj.color = highlight.shareable ? '#00a4e0' : highlight.color;
+            hlObj.color = highlight.color;
             hlObj.originalColor = highlight.color;
             hlObj.id = highlight.id;
             hlObj.pageNo = highlight.pageNo;
@@ -132,7 +132,7 @@ export const postAnnotation = (authObj, currentBook, currentPage, annotation) =>
           highlightHash: highlight.data.highlightHash,
           comment: highlight.data.note,
           text: highlight.selectedText,
-          color: highlight.shareable ? '#00a4e0' : highlight.color,
+          color: highlight.color,
           originalColor: highlight.color,
           id: highlight.id,
           pageNo: highlight.pageNo,
@@ -214,7 +214,7 @@ export const putAnnotation = (authObj, currentBook, currentPage, annotationData,
           highlightHash: highlightResponse.data.highlightHash,
           comment: highlightResponse.data.note,
           text: highlightResponse.selectedText,
-          color: highlightResponse.shareable ? '#00a4e0' : highlightResponse.color,
+          color: highlightResponse.color,
           originalColor: highlightResponse.color,
           id: highlightResponse.id,
           pageNo: highlightResponse.pageNo,

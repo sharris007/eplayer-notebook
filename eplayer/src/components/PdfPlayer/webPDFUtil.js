@@ -2,7 +2,7 @@ window.eventMap = [];
 let docViewerId = 'docViewer';
 
 export function triggerEvent (eventName, eventData) {
-    var eventCallback = eventMap[eventName];
+    let eventCallback = eventMap[eventName];
     if (eventCallback != null) {
         eventCallback(eventData);
       }
@@ -137,6 +137,7 @@ function updateLayer() {
 }
 
 function addEventListenersForWebPDF() {
+  //setInterval(loadAccessibilityContent, 1000);
   /*Document loaded event listener*/
   WebPDF.ViewerInstance.on(WebPDF.EventList.DOCUMENT_LOADED, onDocLoad);
   /*Page change event listener*/
@@ -146,6 +147,7 @@ function addEventListenersForWebPDF() {
 }
 
 export function removeEventListenersForWebPDF() {
+  //clearInterval(loadAccessibilityContent, 1000);
  /*Document loaded event listener*/
   WebPDF.ViewerInstance.off(WebPDF.EventList.DOCUMENT_LOADED, onDocLoad);
   /*Page change event listener*/
@@ -166,4 +168,38 @@ function onPageChange(){
 
 function onPageLoad(){
   triggerEvent('pageLoaded');
+}
+
+function loadAccessibilityContent(){
+   try{
+    let currentPage = WebPDF.ViewerInstance.getCurPageIndex();
+    let divElement = $('.screenReaderText');
+    if(divElement.length == 0){
+      divElement = document.createElement('div');
+      divElement.className = "screenReaderText";
+      divElement.setAttribute('tabindex', 1);
+    }else{
+      divElement = divElement[0];
+    }
+    let textForElement = '';
+    let currTextPage = WebPDF.ViewerInstance.getToolHandlerByName(WebPDF.ViewerInstance.getCurToolHandlerName()).getTextSelectService().getTextPage(currentPage).textPage;
+    if(currTextPage){
+      textForElement = currTextPage.getPageAllText();
+    }
+    if(textForElement != window.textForElement){
+      try{
+        let docViewer = $('.docViewer');
+        let firstElement = docViewer[0];
+        firstElement.setAttribute('aria-label', textForElement);
+        firstElement.setAttribute('tabindex', '1');
+      }catch(e){}
+      divElement.innerText = textForElement;
+      let docViewerElement = $('#docViewer');
+      let firstChild = docViewerElement[0].firstChild;
+      if($('.screenReaderText').length == 0){
+        docViewerElement[0].insertBefore(divElement, firstChild);
+      }
+      window.textForElement = textForElement;
+    }
+  }catch(e){}
 }

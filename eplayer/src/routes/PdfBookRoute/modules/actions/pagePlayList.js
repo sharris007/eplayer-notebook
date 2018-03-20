@@ -4,6 +4,7 @@ import { eT1Contants } from '../../../../components/common/et1constants';
 import { languages } from '../../../../../locale_config/translations/index';
 import languageName from '../../../../../locale_config/configureLanguage';
 import { addLocaleData } from 'react-intl';
+import { pdfConstants } from '../../../../components/PdfPlayer/constants/pdfConstants';
 
 /*Params required userid, bookid, bookeditionid,sessionKey, serverDetails, roleTypeID, globalbookid*/
 
@@ -36,9 +37,12 @@ export const fetchPageInfo = (currentBook, userid, smsKey) => {
               pdfPath : `${currentBook.serverDetails}/ebookassets`
                   + `/ebook${currentBook.globalBookId}${getState().book.bookinfo.book.pdfCoverArt}`,
               title : 'Cover',
-              id : 'Cover' 
+              id : 'cover' 
             };
-            // bookState.bookPagesInfo.pages.push(coverPageObj);
+            //Temporary condition for supporting multiPage config
+            if(!pdfConstants.multipageConfig.isMultiPageSupported){
+              bookState.bookPagesInfo.pages.push(coverPageObj);
+            }
             response.data.forEach((jsonData) => {
             const pages = jsonData.pdfPlayerPageInfoTOList;
             pages.forEach((page) => {

@@ -58,9 +58,17 @@ class PdfPlayer extends Component {
     let pageIndexToLaunch;
     if(localStorage.getItem('currPageIndex')){
       pageIndexToLaunch = parseInt(localStorage.getItem('currPageIndex'),10);
+      if(isNaN(pageIndexToLaunch)){
+        pageIndexToLaunch = localStorage.getItem('currPageIndex');
+      }
     }else{
-      pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch : 
+      if(this.props.pagePlayList[0].id == 'cover'){
+        pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch : 
+                            this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 'cover';
+      }else{
+        pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch : 
                             this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 1;
+      }
     }
     initializeWebPDF(pdfConstants.foxitBaseUrl[this.envType], pageIndexToLaunch);
     if(this.props.preferences.showAnnotation) {
@@ -518,6 +526,14 @@ class PdfPlayer extends Component {
     let noteList = [];
     this.props.annotations.data.annotationList.forEach((annotation) => {
       if(annotation.pageId === this.currPageIndex){
+        if(annotation.shared){
+          annotation.color = '#00a4e0';
+          annotation.meta.colorcode = '#00a4e0';
+        }
+        else{
+          annotation.color = annotation.originalColor;
+          annotation.meta.colorcode = annotation.originalColor;
+        }
         highlightList.push(annotation);
         if(!annotation.isHighlightOnly){
           noteList.push(annotation);
@@ -670,7 +686,7 @@ class PdfPlayer extends Component {
                 }
                 document.getElementById('hotspot').className = 'hotspotContent';
               }
-              if(that.state.regionData.hotspotType == 'AUDIO')
+              if(that.state.regionData.hotspotType == 'AUDIO' && that.state.regionData.linkTypeID != pdfConstants.LinkType.FACELESSAUDIO)
               {
                 try
                 {
