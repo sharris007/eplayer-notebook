@@ -286,7 +286,7 @@ class PdfPlayer extends Component {
            });
          }
          if(this.props.preferences.showDrawer) {
-          this.props.tocData.load.get(this.props.metaData);
+          this.props.toc.load.get(this.props.metaData);
          }
          if(this.props.preferences.showHostpot) {
            this.props.basepaths.load.get(this.props.metaData,this.props.auth).then(()=> {
@@ -810,13 +810,13 @@ class PdfPlayer extends Component {
     }
     catch(e){}
     let currentPageRegions;
-    if(this.props.hotspot.data.regions.length > 0)
+    if(this.props.hotspots.data.regions.length > 0)
     {
-      for(var k=0;k<this.props.hotspot.data.regions.length;k++)
+      for(var k=0;k<this.props.hotspots.data.regions.length;k++)
       {
-        if(this.currPageIndex == this.props.hotspot.data.regions[k].pageId)
+        if(this.currPageIndex == this.props.hotspots.data.regions[k].pageId)
         {
-          currentPageRegions = this.props.hotspot.data.regions[k].hotspotList;
+          currentPageRegions = this.props.hotspots.data.regions[k].hotspotList;
           if(currentPageRegions && currentPageRegions.length > 0)
           {
             displayRegions(currentPageRegions,this.props.metaData.bookFeatures,_);
@@ -827,14 +827,14 @@ class PdfPlayer extends Component {
     }
     if(currentPageRegions == null ||currentPageRegions == '' || currentPageRegions == undefined)
     {
-      this.props.hotspot.load.get(this.props.metaData,this.currPageIndex).then(() => {
-        if(this.props.hotspot.data.regions.length > 0 )
+      this.props.hotspots.load.get(this.props.metaData,this.currPageIndex).then(() => {
+        if(this.props.hotspots.data.regions.length > 0 )
         {
-          for(var k=0;k<this.props.hotspot.data.regions.length;k++)
+          for(var k=0;k<this.props.hotspots.data.regions.length;k++)
           {
-            if(this.currPageIndex == this.props.hotspot.data.regions[k].pageId)
+            if(this.currPageIndex == this.props.hotspots.data.regions[k].pageId)
             {
-              currentPageRegions = this.props.hotspot.data.regions[k].hotspotList;
+              currentPageRegions = this.props.hotspots.data.regions[k].hotspotList;
               if(currentPageRegions && currentPageRegions.length > 0)
               {
                 displayRegions(currentPageRegions,this.props.metaData.bookFeatures,_);
@@ -1067,13 +1067,13 @@ class PdfPlayer extends Component {
         onSearchResultClick={this.handleSearchResultClick}
         autoComplete={this.searchCallback}
         moreIconData={moreMenuData} /> : null}
-      {this.props.tocData.data.data.fetched && <DrawerComponent
+      {this.props.toc.data.data.fetched && <DrawerComponent
         isDocked={false}
         drawerWidth={400}
         isDraweropen={this.state.drawerOpen}
         hideDrawer={this.hideDrawer}
         bookDetails={bookDetails}
-        tocData={this.props.tocData.data}
+        toc={this.props.toc.data}
         bookmarkData={bookmarksObj}
         notesData={notesObj}
         currentPageId={pageIdString}
@@ -1134,14 +1134,78 @@ class PdfPlayer extends Component {
   }
 }
 
+const PROVIDER = PropTypes.shape({
+  get: PropTypes.func.isRequired
+});
+
+const CLIENT = PropTypes.shape({
+  put: PropTypes.func.isRequired,
+  post: PropTypes.func.isRequired,
+  delete: PropTypes.func.isRequired
+});
+
 PdfPlayer.propTypes = {
   pagePlayList : PropTypes.array.isRequired,
-  metaData : PropTypes.object,
+
+  annotations : PropTypes.shape({
+    load : PROVIDER.isRequired,
+    data : PropTypes.object.isRequired,
+    operation : CLIENT.isRequired
+  }),
+
+  bookmarks : PropTypes.shape({
+    load : PROVIDER.isRequired,
+    data : PropTypes.object.isRequired,
+    operation : CLIENT.isRequired
+  }),
+
+  hotspots : PropTypes.shape({
+    load : PROVIDER.isRequired,
+    data : PropTypes.object.isRequired
+  }),
+
+  toc : PropTypes.shape({
+    load : PROVIDER.isRequired,
+    data : PropTypes.object.isRequired
+  }),
+
+  metaData : PropTypes.object.isRequired,
+
   bookCallbacks : PropTypes.object,
-  coverPage : PropTypes.object
+
+  search : PropTypes.shape({
+    load : PROVIDER.isRequired
+  }),
+
+  parentType : PropTypes.string.isRequired,
+
+  basepaths : PropTypes.shape({
+    load : PROVIDER.isRequired,
+    data : PropTypes.object.isRequired
+  }),
+
+  glossary : PropTypes.shape({
+    load : PROVIDER.isRequired,
+    data : PropTypes.array.isRequired
+  }),
+
+  preferences : PropTypes.object.isRequired,
+
+  auth : PropTypes.shape({
+    userid : PropTypes.number.isRequired,
+    sessionId : PropTypes.string,
+    piToken : PropTypes.string.isRequired,
+  }).isRequired,
+
+  envType : PropTypes.string
 }
 
 PdfPlayer.defaultProps = {
-  
+  pagePlayList: [],
+  metaData: {},
+  preferences: {},
+  auth : {},
+  envType : 'nonprod',
+  bookCallbacks : {}
 }
 export default PdfPlayer;

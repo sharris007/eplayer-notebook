@@ -15,16 +15,18 @@ PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  /**
  * This Pdf Viewer renders PdfPlayer component.
  */
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class PdfViewer extends Component {
- render() {
- 	return(<div>{this.props.pdfplayercomp}</div>);
- }
+export default function PdfViewer(props) {
+  return (
+    <div>{props.pdfplayercomp}</div>
+  );
 }
 
 PdfViewer.propTypes = {
-	pdfplayercomp : PropTypes.element.isRequired
+ /**
+ * The pdfplayercomp prop holds PdfPlayer component
+ */
+  pdfplayercomp: PropTypes.element.isRequired
 };
-

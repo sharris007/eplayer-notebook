@@ -26,6 +26,7 @@ import { browserHistory } from 'react-router';
 import Cookies from 'universal-cookie';
 import { fetchChapterLevelPdf } from '../modules/service';
 import PdfViewer from './PdfViewer';
+// import { PdfViewer } from '@pearson-incubator/vega-viewer';
 import _ from 'lodash';
 
 /* Creating PdfBook component. */
@@ -290,6 +291,8 @@ export class PdfBook extends Component {
       else if(domain.getEnvType() == 'prod')
       {
         envType = 'prod'
+      } else {
+        envType = 'nonprod';
       }
       let preferences = {
             showHeader: true, 
@@ -342,7 +345,7 @@ export class PdfBook extends Component {
         data : tocCompData
       };
 
-      let hotspot = {
+      let hotspots = {
         load : {
           get : this.props.actions.fetchRegionsInfo
         },
@@ -392,11 +395,11 @@ export class PdfBook extends Component {
                               annotations={annotations}
                               auth={auth}
                               bookmarks={bookmarks}
-                              tocData={toc}
+                              toc={toc}
                               metaData={this.currentbook}
                               bookCallbacks={bookCallbacks}
                               parentType={parentType}
-                              hotspot={hotspot}
+                              hotspots={hotspots}
                               search={search}
                               basepaths={basepaths}
                               preferences={preferences}
