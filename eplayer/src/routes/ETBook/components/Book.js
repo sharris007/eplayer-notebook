@@ -975,6 +975,16 @@ export class Book extends Component {
     scriptSrc += pearsonMathjax;
     return scriptSrc;
   };
+
+  getGtmSnippet = () => {
+    let gtmId = 'GTM-MVKSFLM'; // DEV GTM ID
+    if(window.location.href.match('etext-qa-stg.pearson.com') || window.location.href.match('etext-stg.pearson.com')) {
+      gtmId = 'GTM-W8SHCX2';
+    } else if(window.location.href.match('etext.pearson.com')) {
+      gtmId = 'GTM-NMNBZDC'
+    }
+    return "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer'," + "'" + gtmId + "'" + ");";
+  }
   closeHeaderPopups = (e) => {
     if (!this.state.drawerOpen) {
       const eleSearch = $(e.target).closest('.searchIconBtn');
@@ -1244,6 +1254,7 @@ export class Book extends Component {
     }
     if (playlistReceived && bookdetailsdata) {
       const getMathjaxJs = this.loadMathjax();
+      const getGTM = this.getGtmSnippet();
       let i;
       if (bookdetailsdata.roles === undefined) {
         this.userType = bookdetailsdata.userCourseSectionDetail.authgrouptype;
@@ -1312,7 +1323,8 @@ export class Book extends Component {
           scriptsToAdd: [`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
           `${window.location.origin}/${annJsPath}`,
             getMathjaxJs],
-          stylesToAdd: [`${window.location.origin}/${annCssPath}`]
+          stylesToAdd: [`${window.location.origin}/${annCssPath}`],
+          scriptFuntionToAdd1: [this.getGtmSnippet()]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
@@ -1359,14 +1371,7 @@ export class Book extends Component {
       audio: true,
       moreIcon: true
     };
-    let environment = 'dev';
-    if(window.location.href.match('etext-qa-stg.pearson.com')) {
-      environment = 'qa';
-    } else if(window.location.href.match('etext-stg.pearson.com')) {
-      environment = 'stg';
-    } else if(window.location.href.match('etext.pearson.com')) {
-      environment = 'prod';
-    }
+    
     return (
       <div onClick={this.closeHeaderPopups}>
         {playlistReceived &&
@@ -1378,8 +1383,7 @@ export class Book extends Component {
             componentFactory={{ getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } }}
             clients={{ page: pxeClient, annotation: annotationClient }}
             metadata={productData.metaData}
-            pxeOptions={productData.pxeOptions}
-            environment = {environment}>
+            pxeOptions={productData.pxeOptions}>
             <div>
               <div>
                 {!this.state.searchOpen && <HeaderComponent
