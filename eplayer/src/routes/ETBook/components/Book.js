@@ -1324,7 +1324,7 @@ export class Book extends Component {
           `${window.location.origin}/${annJsPath}`,
             getMathjaxJs],
           stylesToAdd: [`${window.location.origin}/${annCssPath}`],
-          scriptFuntionToAdd1: [this.getGtmSnippet()]
+          scriptFuntionToAdd: [this.getGtmSnippet()]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
