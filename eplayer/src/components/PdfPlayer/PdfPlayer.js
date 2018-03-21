@@ -45,6 +45,7 @@ class PdfPlayer extends Component {
     this.highlightList = [];
     this.currZoomLevel = 1,
     this.envType = this.props.envType ? this.props.envType : 'nonprod';
+
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
     registerEvent('highlightClicked', this.handleHighlightClick)
@@ -56,10 +57,10 @@ class PdfPlayer extends Component {
 
   componentDidMount(){
     let pageIndexToLaunch;
-    if(localStorage.getItem('currPageIndex')){
-      pageIndexToLaunch = parseInt(localStorage.getItem('currPageIndex'),10);
+    if(sessionStorage.getItem('currPageIndex')){
+      pageIndexToLaunch = parseInt(sessionStorage.getItem('currPageIndex'),10);
       if(isNaN(pageIndexToLaunch)){
-        pageIndexToLaunch = localStorage.getItem('currPageIndex');
+        pageIndexToLaunch = sessionStorage.getItem('currPageIndex');
       }
     }else{
       if(this.props.pagePlayList[0].id == 'cover'){
@@ -92,7 +93,7 @@ class PdfPlayer extends Component {
     removeEventListenersForWebPDF();
     eventMap = [];
     window.fileIdsList = [];
-    localStorage.removeItem('currPageIndex');
+    sessionStorage.removeItem('currPageIndex');
   }
 
   preLoadPdf = (preFetchPageList,startIndex, endIndex) => {
@@ -239,7 +240,7 @@ class PdfPlayer extends Component {
         viewer.setState({regionData : null});
       }
     });
-    localStorage.setItem('currPageIndex',this.currPageIndex);
+    sessionStorage.setItem('currPageIndex',this.currPageIndex);
  }
 
   onPageLoad = () => {
@@ -329,6 +330,8 @@ class PdfPlayer extends Component {
   goToPage = (pageNo) => {
     try
     {
+      $('#printFrame').remove();
+
       this.setState({regionData : null});
       this.setState({popUpCollection : []});
     }
@@ -1000,6 +1003,49 @@ class PdfPlayer extends Component {
     catch(e){
     }
   }
+
+  handleMoreMenuChange = (e) => {
+    console.log(e.target.textContent);
+    if(e.target.textContent == 'Print'){
+      this.printPage();
+    }
+  }
+
+  printPage = () => {
+    let date = new Date();
+    let currDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
+    date = new Date(this.props.metaData.expirationDate);
+    let expirationDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
+    let userEmailId = this.props.metaData.userEmailId ? this.props.metaData.userEmailId : 'etextqa@pearson.com';
+    let copyrightViolationMsg = `Printed by ${this.props.metaData.firstName} ${this.props.metaData.firstName} (${userEmailId}) on ${currDate} autorized to use until ${expirationDate}. 
+    Use beyond the authorized user or valid subscription date represents copyright violation.`;
+    let printWatermark = pdfConstants.printCopyrightInfo; 
+    let prtContent = document.getElementById("docViewer_ViewContainer_BG_"+WebPDF.ViewerInstance.getCurPageIndex());
+    let pageSrc = prtContent.currentSrc;
+    let printFrame = document.createElement('iframe');
+    printFrame.id = "printFrame";
+    //printFrame.style.display = "none";
+    printFrame.style.width = "0px";
+    printFrame.style.height = "0px";
+    document.body.appendChild(printFrame);
+    let frameContentCss = '#watermark{ top:30%; left:2%; position:absolute; transform: rotate(30deg); font-size:50px; font-weight:20px; opacity:0.3; display:none;} #footer{ bottom:0; position:absolute; display:none; font-size:14px}';
+    if(this.props.metaData.bookFeatures.printWithFooter && this.props.metaData.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #footer{ display:block; } #watermark{ display:block; }}';
+    }else if(this.props.metaData.bookFeatures.printWithFooter && !this.props.metaData.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #footer{ display:block; }}';
+    }else if(!this.props.metaData.bookFeatures.printWithFooter && this.props.metaData.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;} #watermark{ display:block; }}';
+    }else if(!this.props.metaData.bookFeatures.printWithFooter && !this.props.metaData.bookFeatures.printWithWatermark){
+      frameContentCss = frameContentCss + '@media print { @page { size:auto; page-break-after:avoid; margin:0;} img{ max-height: 29cm; max-width: 21cm; margin:0;}}';
+    }
+    printFrame.contentWindow.document.open();
+    printFrame.contentWindow.document.write('<style type="text/css">'+frameContentCss+'</style>');
+    printFrame.contentWindow.document.write('<div><img src="' + pageSrc + '" onload="window.print();"><div id=watermark>'+printWatermark+'</div><div id=footer>'+copyrightViolationMsg+'</div></div>');
+    printFrame.contentWindow.document.close();
+    window.onafterprint = function(){
+      document.body.removeChild(document.getElementById('printFrame'));
+    }
+  }
   
   render() {
     let viewerClassName;
@@ -1027,7 +1073,17 @@ class PdfPlayer extends Component {
       value : 'SignOut',
       text : 'Sign Out',
     }
+    let printOption = {
+      type : 'menuItem',
+      value : 'Print',
+      text : 'Print',
+    }
+    if(this.props.metaData.bookFeatures.hasPrintLink){
+      moreMenuData.menuItem.push(printOption);
+      moreMenuData.menuItem.push({ type:'divider' });
+    }
     moreMenuData.menuItem.push(signOutOption);
+    moreMenuData.handleChange = this.handleMoreMenuChange;
     const hideIcons = {
       backNav: !this.props.preferences.showBookshelfBack,
       hamburger: !this.props.preferences.showDrawer,

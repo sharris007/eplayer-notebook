@@ -390,8 +390,13 @@ export class PdfBook extends Component {
           let startPageIndex = _.findIndex(this.props.book.bookPagesInfo.pages, page => page.pagenumber == this.props.location.query.startpage);
           let endPageIndex = _.findIndex(this.props.book.bookPagesInfo.pages, page => page.pagenumber == this.props.location.query.endpage);
           pagePlayList = this.props.book.bookPagesInfo.pages.slice(startPageIndex, endPageIndex + 1);
-          this.currentbook.startPageNo = startPageIndex + 1;
-          this.currentbook.lastPage = endPageIndex + 1;
+          if(bookPagesInfo.pages.length ==  this.props.book.bookinfo.book.numberOfPages + 1){
+            this.currentbook.startPageNo = startPageIndex;
+            this.currentbook.lastPage = endPageIndex
+          }else{
+            this.currentbook.startPageNo = startPageIndex + 1;
+            this.currentbook.lastPage = endPageIndex + 1;
+          }
           this.currentbook.totalpages = pagePlayList.length;
           preferences.showDrawer = false;
         }else{
