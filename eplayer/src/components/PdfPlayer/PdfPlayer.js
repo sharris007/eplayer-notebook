@@ -748,6 +748,7 @@ class PdfPlayer extends Component {
                 src : source,
                 caption : hotspotDetails.description || "",
                 id : hotspotDetails.regionID,
+                embeddedMode : true,
                 thumbnail : {
                   src : "",
                },
@@ -1010,7 +1011,9 @@ class PdfPlayer extends Component {
       this.printPage();
     }
   }
-
+  onSignOutClick = () => {
+    alert("Sign Out");
+  }
   printPage = () => {
     let date = new Date();
     let currDate = (date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear();
@@ -1072,6 +1075,7 @@ class PdfPlayer extends Component {
       type : 'menuItem',
       value : 'SignOut',
       text : 'Sign Out',
+      handleChange : this.onSignOutClick
     }
     let printOption = {
       type : 'menuItem',
