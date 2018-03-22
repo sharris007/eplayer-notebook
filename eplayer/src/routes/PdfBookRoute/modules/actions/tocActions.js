@@ -1,30 +1,6 @@
-/*******************************************************************************
- * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *
- *  *  Copyright © 2017 Pearson Education, Inc.
- *  *  All Rights Reserved.
- *  *
- *  * NOTICE:  All information contained herein is, and remains
- *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
- *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
- *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
- *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
- *******************************************************************************/
 import axios from 'axios';
-import Hawk from 'hawk';
-import find from 'lodash/find';
-import { browserHistory } from 'react-router';
-import { clients } from '../../../../components/common/client';
-import { resources, domain } from '../../../../../const/Settings';
 import { getmd5 } from '../../../../components/Utility/Util';
 import { eT1Contants } from '../../../../components/common/et1constants';
-
-const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
-const etextService = resources.links[security];
-const etextCourseService = resources.links['courseServiceUrl'];
-const envType = domain.getEnvType();
-
 
 /* Method for creating node in Toc. */
 function Node() {
@@ -138,74 +114,75 @@ function constructTree(input) {
 }
 
 export function fetchToc(inputParams) {
-  
-  let bookId = inputParams.bookId;
-  let authorName = inputParams.authorName;
-  let title = inputParams.title;
-  let thumbnail = inputParams.thumbnail;
-  let bookeditionid = inputParams.bookeditionid;
-  let sessionKey = inputParams.ssoKey;
-  let bookServerURL = inputParams.serverDetails;
-  let hastocflatten = inputParams.hastocflatten;
-  let roleTypeID = inputParams.roletypeid;
+  const bookId = inputParams.bookId;
+  const authorName = inputParams.authorName;
+  const title = inputParams.title;
+  const thumbnail = inputParams.thumbnail;
+  const bookeditionid = inputParams.bookeditionid;
+  const sessionKey = inputParams.ssoKey;
+  const bookServerURL = inputParams.serverDetails;
+  const hastocflatten = inputParams.hastocflatten;
+  const roleTypeID = inputParams.roletypeid;
 
   const bookState = {
     tocData: {
       content: {}
     }
   };
-  return (dispatch,getState) => {
+  return (dispatch, getState) => {
     // dispatch(request('toc'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
-    let serviceurl = `${bookServerURL}/ebook/pdfplayer/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
+    const serviceurl = `${bookServerURL}/ebook/pdfplayer/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}` +
+    `&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
     // tempurl is starts with http to create hash key for matching with server
-    let tempurl = serviceurl.replace("https","http");
-    let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+    const tempurl = serviceurl.replace('https', 'http');
+    const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
     return axios.get(`${serviceurl}&hsid=${hsid}`,
       {
         timeout: 100000
       })
     .then((response) => {
-      if(getState().location.query.bookid === bookId){
-          response.data.forEach((allBaskets) => {
-        const basketData = allBaskets.basketsInfoTOList;
-        bookState.tocData.content.id = basketData[0].bookID || '';
-        bookState.tocData.content.mainTitle = title ;
-        bookState.tocData.content.author = authorName ;
-        bookState.tocData.content.thumbnail = thumbnail
+      if (getState().location.query.bookid === bookId) {
+        response.data.forEach((allBaskets) => {
+          const basketData = allBaskets.basketsInfoTOList;
+          bookState.tocData.content.id = basketData[0].bookID || '';
+          bookState.tocData.content.mainTitle = title;
+          bookState.tocData.content.author = authorName;
+          bookState.tocData.content.thumbnail = thumbnail
         ||
         'http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/'
         + 'ebookCM21254346/assets/1256799653_Iannone_thumbnail.png';
-        bookState.tocData.content.list = [];
-        basketData.forEach((tocLevel1) => {
-          const tocLevel1ChildData = tocLevel1.document;
-          const tocLevel1ChildList = [];
-          tocLevel1ChildData.forEach((tocLevel2) => {
-            const tocLevel2ChildData = tocLevel2.bc.b.be;
-            if(tocLevel2ChildData !== undefined)
-            {
-              if (tocLevel2ChildData.length === undefined) {
-                const childList = constructTree(tocLevel2ChildData);
-                tocLevel1ChildList.push(childList);
-              } else {
-                tocLevel2ChildData.forEach((tocLevel3) => {
-                  const childList = constructTree(tocLevel3);
+          bookState.tocData.content.list = [];
+          basketData.forEach((tocLevel1) => {
+            const tocLevel1ChildData = tocLevel1.document;
+            const tocLevel1ChildList = [];
+            tocLevel1ChildData.forEach((tocLevel2) => {
+              const tocLevel2ChildData = tocLevel2.bc.b.be;
+              if (tocLevel2ChildData !== undefined) {
+                if (tocLevel2ChildData.length === undefined) {
+                  const childList = constructTree(tocLevel2ChildData);
                   tocLevel1ChildList.push(childList);
-                });
+                } else {
+                  tocLevel2ChildData.forEach((tocLevel3) => {
+                    const childList = constructTree(tocLevel3);
+                    tocLevel1ChildList.push(childList);
+                  });
+                }
               }
+            });
+            if (hastocflatten === 'Y' && tocLevel1ChildList.length !== 0) {
+              bookState.tocData.content.list = flatten1(tocLevel1ChildList);
+            } else {
+              bookState.tocData.content.list = tocLevel1ChildList;
             }
           });
-          if (hastocflatten === 'Y' && tocLevel1ChildList.length !== 0) {
-            bookState.tocData.content.list = flatten1(tocLevel1ChildList);
-          } else {
-            bookState.tocData.content.list = tocLevel1ChildList;
-          }
         });
-      });
-      bookState.tocData.fetching = false;
-      bookState.tocData.fetched = true;
-      dispatch({ type: 'RECEIVE_TOC', bookState });
+        bookState.tocData.fetching = false;
+        bookState.tocData.fetched = true;
+        dispatch({ type: 'RECEIVE_TOC', bookState });
       }
     });
   };
 }
+
+export default fetchToc;

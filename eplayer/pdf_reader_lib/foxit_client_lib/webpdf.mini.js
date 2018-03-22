@@ -42512,9 +42512,9 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                             }),
                             g = URL.createObjectURL(f);
                         $("#" + d.getPageBackgroundImgID()).attr("src", g).load(function (){
-                         /*   let dd1 = new Date();
+                            let dd1 = new Date();
                             let pageLoadTime = dd1.getTime() - window.openFileBufStartTime;
-                            console.log("Time taken to create the blob from pdf is "+(pageLoadTime/1000)+" secs");*/
+                            console.log("Time taken to create the blob from pdf is "+(pageLoadTime/1000)+" secs");
                             d.show(), d.setPageLoaded(!0), d.setAnnotLoad(!0);
                             var h = (d.isThumb() || !d.isThumbnailLoaded() ? "thumb" : "page") + b.pageIndex;
                             c[h] = null, $(a).trigger(WebPDF.EventList.PAGE_SHOW_COMPLETE, {

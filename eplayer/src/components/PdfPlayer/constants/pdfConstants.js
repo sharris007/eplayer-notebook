@@ -38,12 +38,13 @@ export const pdfConstants = {
     JAZZASSET : 16
   },
   multipageConfig : {
-    isMultiPageSupported : true,
+    isMultiPageSupported : false,
     pagesToDownload : 20,
     pagesToNavigate : 5
   },
   foxitBaseUrl : {
     nonprod: 'https://foxit-aws.gls.pearson-intl.com/',
     prod: 'https://foxit-aws.gls.pearson-intl.com/'
-  }
+  },
+  printCopyrightInfo : 'Copyright &copy; 2018 Pearson Education'
 }
