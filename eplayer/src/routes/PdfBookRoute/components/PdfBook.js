@@ -306,7 +306,7 @@ export class PdfBook extends Component {
             showBookmark: bookFeatures.hasbookmarkpagebutton ? true : false,
             showHostpot: true,
             locale: 'en-US',
-            showBookshelfBack: (this.props.location.query.scenario || !bookFeatures.hasbookshelflink) ? false : true
+            showBookshelfBack: true
       };
       // For preference setting for testing
       /*let preferences = {

@@ -13,7 +13,7 @@ import { PopUpInfo } from '@pearson-incubator/popup-info';
 import './PdfPlayer.scss';
 import { initializeWebPDF, triggerEvent, registerEvent, Resize, removeEventListenersForWebPDF } from './webPDFUtil';
 import { getSelectionInfo,restoreHighlights,reRenderHighlightCornerImages, resetHighlightedText } from './pdfUtility/annotaionsUtil';
-import { displayRegions,handleRegionClick,onHotspotClose,handleTransparentRegionHover,handleTransparentRegionUnhover} from './pdfUtility/regionsUtil';
+import { displayRegions,handleRegionClick,handleTransparentRegionHover,handleTransparentRegionUnhover} from './pdfUtility/regionsUtil';
 import { languages } from '../../../locale_config/translations/index';
 import { createHttps } from '../Utility/Util';
 import { pdfConstants } from './constants/pdfConstants';
@@ -150,6 +150,20 @@ class PdfPlayer extends Component {
     
   }
 
+/* Method for removing hotspot content on clicking the close button*/
+  onHotspotCloseButton = () => {
+    try {
+      $('#hotspot').empty();
+      $('#player-iframesppModalBody').remove();
+      $('#sppModal').css('display', 'none');
+      if(this.state.regionData)
+      {
+        this.setState({regionData:null});
+      }
+    } catch (e) {
+      // error
+    }
+  }
   renderPdf = (requestedPage) => {
     this.setState({drawerOpen: false });
     this.setState({prefOpen : false});
@@ -257,9 +271,9 @@ class PdfPlayer extends Component {
     }
     // </TestCode>
     if (multipageConfig.isMultiPageSupported) {
-      WebPDF.ViewerInstance.setLayoutShowMode(2);
       $(".fwrJspVerticalBar").remove();
     }
+    WebPDF.ViewerInstance.setLayoutShowMode(2);
     let pagesToNavigate;
     if(multipageConfig.pagesToNavigate > this.props.metaData.totalpages) {
       pagesToNavigate = this.props.metaData.totalpages;
@@ -657,7 +671,7 @@ class PdfPlayer extends Component {
                 try
                 {
                   $('.poster-play-icon').hide();
-                  // $('.thumb-nail').hide();
+                  $('.thumb-nail').hide();
                   jQuery(function(){
                    jQuery('.poster-play-icon').click();
                   });
@@ -748,13 +762,12 @@ class PdfPlayer extends Component {
                 src : source,
                 caption : hotspotDetails.description || "",
                 id : hotspotDetails.regionID,
-                embeddedMode : true,
                 thumbnail : {
                   src : "",
                },
                alt : hotspotDetails.name,
                };
-               regionComponent = <VideoPlayerPreview data={hotspotData}/>;
+               regionComponent = <VideoPlayerPreview data={hotspotData} embeddedMode={false} onClose={this.onHotspotCloseButton}/>;
                break;
       case 'SPPASSET':
                source = hotspotDetails.linkValue;
@@ -769,7 +782,7 @@ class PdfPlayer extends Component {
                sppPlayer.appendChild(sppScript);
                sppPlayer.style.height = (document.documentElement.clientHeight - parseInt(sppHeaderHeight,10)) + 'px';
                sppPlayer.style.width = document.documentElement.clientWidth + 'px';
-               document.getElementById('sppCloseBtn').addEventListener('click',onHotspotClose);
+               document.getElementById('sppCloseBtn').addEventListener('click',this.onHotspotCloseButton);
                 try
                 {
                   document.getElementById('root').appendChild(document.getElementById('sppModal'));
@@ -788,7 +801,7 @@ class PdfPlayer extends Component {
                  title : hotspotDetails.name,
                  src : source
                };
-               regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={onHotspotClose}/>;
+               regionComponent = <ExternalLink title={hotspotData.title} src={hotspotData.src} onClose={this.onHotspotCloseButton}/>;
                break;
       case 'EXTERNALLINK':
                source=hotspotDetails.linkValue;
@@ -924,10 +937,17 @@ class PdfPlayer extends Component {
     }
   }
 
-  handleSearchResultClick = (pageOrder,resultType) =>
+handleSearchResultClick = (pageOrder,resultType) =>
   {
-    this.goToPage(pageOrder);
-  }
+    if(this.props.metaData.startPageNo){
+      if(pageOrder >= this.props.metaData.startPageNo 
+          && pageOrder <= this.props.metaData.lastPage){
+        this.goToPage(pageOrder);
+      }
+    }else{
+      this.goToPage(pageOrder);
+    }
+  } 
 
   searchCallback = (searchTerm,handleResults) =>
   {
@@ -1051,6 +1071,9 @@ class PdfPlayer extends Component {
   }
   
   render() {
+    if($('.backIconBtn') && this.props.metaData.startPageNo){
+          $('.backIconBtn').hide();
+        } 
     let viewerClassName;
     if (this.state.pageLoaded !== true) {
       viewerClassName = 'hideViewerContent';
