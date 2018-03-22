@@ -295,17 +295,22 @@ export class PdfBook extends Component {
         envType = 'nonprod';
       }
       let preferences = {
-            // showHeader holds true if any of header menu item is visible for title 
+            // showHeader holds true if any of header menu item made visible from authoring application for a specific title 
             showHeader: (bookFeatures.hassearchbutton || bookFeatures.hasbookshelflink || bookFeatures.hasbookmarkpagebutton
               || bookFeatures.haslogoutlink || bookFeatures.haszoomoutbutton || bookFeatures.haszoominbutton || bookFeatures.hasdrawerbutton) ? true : false,
-            // showFooter holds true if next or previous navigation button is visible for title 
+            // showFooter holds true if next or previous navigation button made visible from authoring application for a specific title
             showFooter: (bookFeatures.hasprevnavpagebutton || bookFeatures.hasnextnavpagebutton) ? true : false, 
+            // showDrawer holds true if drawer icon made visible from authoring application for a specific title
             showDrawer: bookFeatures.hasdrawerbutton ? true : false,  
-            // showAnnotation holds true if highlight or note feature is enabled for title
+            // showAnnotation holds true if highlight or note feature is enabled from authoring application for a specific title
             showAnnotation: (bookFeatures.hashighlightingtoolbutton || bookFeatures.hasnotetoolbutton) ? true : false,
+            // showBookmark holds true if bookmark feature is enabled from authoring application for a specific title
             showBookmark: bookFeatures.hasbookmarkpagebutton ? true : false,
+            // showHostpot is always true since we do not have any option to disable it from authoring application
             showHostpot: true,
+            // Locale of text used in pdfplayer decided by locale value passed here.
             locale: 'en-US',
+            // if showBookshelfBack is true then backtobookshelf button will be visible in header component and vice versa.
             showBookshelfBack: true
       };
       // For preference setting for testing
