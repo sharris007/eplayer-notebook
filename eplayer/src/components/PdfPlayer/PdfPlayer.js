@@ -1071,7 +1071,7 @@ handleSearchResultClick = (pageOrder,resultType) =>
   }
   
   render() {
-    if($('.backIconBtn') && this.props.metaData.startPageNo){
+    if($('.backIconBtn') && (this.props.metaData.startPageNo || this.props.metaData.pageIndexTolaunch)){
           $('.backIconBtn').hide();
         } 
     let viewerClassName;
