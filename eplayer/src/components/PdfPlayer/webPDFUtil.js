@@ -27,7 +27,7 @@ if(!window.WebPDF){
         script4.src = `${baseUrl}scripts/jquery.form.min.js`;
         script4.async = false;
         let script5 = document.createElement('SCRIPT');
-        script5.src = '/eplayer/pdf/foxit_client_lib/webpdf.tools.mini.js';
+        script5.src = `${baseUrl}scripts/release_websdk/webpdf.tools.mini.js`;
         script5.async = false;
         let script6 = document.createElement('SCRIPT');
         script6.src = `${baseUrl}scripts/control/common/common.js`;

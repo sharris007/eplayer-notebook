@@ -294,19 +294,22 @@ export class PdfBook extends Component {
       } else {
         envType = 'nonprod';
       }
-      /*let preferences = {
+      let preferences = {
+            // showHeader holds true if any of header menu item is visible for title 
             showHeader: (bookFeatures.hassearchbutton || bookFeatures.hasbookshelflink || bookFeatures.hasbookmarkpagebutton
               || bookFeatures.haslogoutlink || bookFeatures.haszoomoutbutton || bookFeatures.haszoominbutton || bookFeatures.hasdrawerbutton) ? true : false,
+            // showFooter holds true if next or previous navigation button is visible for title 
             showFooter: (bookFeatures.hasprevnavpagebutton || bookFeatures.hasnextnavpagebutton) ? true : false, 
             showDrawer: bookFeatures.hasdrawerbutton ? true : false,  
+            // showAnnotation holds true if highlight or note feature is enabled for title
             showAnnotation: (bookFeatures.hashighlightingtoolbutton || bookFeatures.hasnotetoolbutton) ? true : false,
             showBookmark: bookFeatures.hasbookmarkpagebutton ? true : false,
             showHostpot: true,
             locale: 'en-US',
             showBookshelfBack: (this.props.location.query.scenario || !bookFeatures.hasbookshelflink) ? false : true
-      };*/
+      };
       // For preference setting for testing
-      let preferences = {
+      /*let preferences = {
             showHeader: true, 
             showFooter: true,
             showDrawer: false,  
@@ -315,7 +318,7 @@ export class PdfBook extends Component {
             showHostpot: false,
             locale: 'en-US',
             showBookshelfBack: true
-      };
+      };*/
       let annotations = {
         load : {
           get : this.props.actions.getAnnotations

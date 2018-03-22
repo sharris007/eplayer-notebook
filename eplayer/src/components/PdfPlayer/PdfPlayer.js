@@ -222,7 +222,7 @@ class PdfPlayer extends Component {
       this.currPageNumber = requestedPageObj.pagenumber;
       let d = new Date();
       this.pageLoadStartTime = d.getTime();
-      this.showLog = true;
+      this.isPageLoaded = true;
       // </TestCode>
       WebPDF.ViewerInstance.openFileByUri({url:requestedPageObj.pdfPath});
     }
@@ -246,18 +246,18 @@ class PdfPlayer extends Component {
   onPageLoad = () => {
     let multipageConfig = pdfConstants.multipageConfig;
     // <TestCode>
-    if(!multipageConfig.isMultiPageSupported && this.showLog) {
-          this.showLog = false;
+    if(!multipageConfig.isMultiPageSupported && this.isPageLoaded) {
+          this.isPageLoaded = false;
           let d = new Date();
           let pageLoadTime = d.getTime() - this.pageLoadStartTime;
-          console.log("Time taken to load the page "+this.currPageNumber+"is "+(pageLoadTime/1000)+" secs");
+          console.log("Time taken to load the page "+this.currPageNumber+" is "+(pageLoadTime/1000)+" secs");
           this.pageLoadStartTime = 0;
-    } else if(!multipageConfig.isMultiPageSupported && !this.showLog) {
+    } else if(!multipageConfig.isMultiPageSupported && !this.isPageLoaded) {
           return;
     }
     // </TestCode>
-    WebPDF.ViewerInstance.setLayoutShowMode(2);
     if (multipageConfig.isMultiPageSupported) {
+      WebPDF.ViewerInstance.setLayoutShowMode(2);
       $(".fwrJspVerticalBar").remove();
     }
     let pagesToNavigate;
@@ -1221,58 +1221,103 @@ const CLIENT = PropTypes.shape({
 });
 
 PdfPlayer.propTypes = {
+  /**
+  * pagePlayList is array which contains complete page list for a book
+  */
   pagePlayList : PropTypes.array.isRequired,
-
+  /**
+  * annotations is object which has load,data & operation object fields
+  * load is the PROVIDER object type which holds get method to load the annotations to data field
+  * data is the object which holds annotations list and it's status
+  * operation is the CLIENT object type which holds put,post,delete methods for annotations CRUD operations
+  */
   annotations : PropTypes.shape({
     load : PROVIDER.isRequired,
     data : PropTypes.object.isRequired,
     operation : CLIENT.isRequired
   }),
-
+  /**
+  * bookmarks is object which has load,data & operation object fields
+  * load is the PROVIDER object type which holds get method to load the bookmarks to data field
+  * data is the object which holds bookmarks list and it's status
+  * operation is the CLIENT object type which holds put,post,delete methods for bookmarks CRUD operations
+  */
   bookmarks : PropTypes.shape({
     load : PROVIDER.isRequired,
     data : PropTypes.object.isRequired,
     operation : CLIENT.isRequired
   }),
-
+  /**
+  * hotspots is object which has load,data object fields
+  * load is the PROVIDER object type which holds get method to load the hotspots to data field
+  * data is the object which holds hotspots list and it's status
+  */
   hotspots : PropTypes.shape({
     load : PROVIDER.isRequired,
     data : PropTypes.object.isRequired
   }),
-
+  /**
+  * toc is object which has load,data object fields
+  * load is the PROVIDER object type which holds get method to load the toc to data field
+  * data is the object which holds toc data and it's status
+  */
   toc : PropTypes.shape({
     load : PROVIDER.isRequired,
     data : PropTypes.object.isRequired
   }),
-
+  /**
+  * metaData is plain object which contains book meta data. 
+  * It will be passed back to all callback methods from consumer component of this PdfPlayer component
+  */
   metaData : PropTypes.object.isRequired,
-
+  /**
+  * bookCallbacks is object which contains callback methods from consumer component of this PdfPlayer component 
+  */
   bookCallbacks : PropTypes.object,
-
+  /**
+  * search is object which has load object field
+  * load is the PROVIDER object type which holds get method to load the search results
+  */
   search : PropTypes.shape({
     load : PROVIDER.isRequired
   }),
-
+  /**
+  * parentType is string value which holds parent type value. For ex: parentType is 'eT1' for eText 1 team
+  */
   parentType : PropTypes.string.isRequired,
-
+  /**
+  * basepaths is object which has load,data object fields
+  * load is the PROVIDER object type which holds get method to load base paths to data field
+  * data is the object which holds basepaths and it's status
+  */
   basepaths : PropTypes.shape({
     load : PROVIDER.isRequired,
     data : PropTypes.object.isRequired
   }),
-
+  /**
+  * glossary is object which has load,data object fields
+  * load is the PROVIDER object type which holds get method to load glossary information to data field
+  * data is the object which holds glossary information and it's status
+  */
   glossary : PropTypes.shape({
     load : PROVIDER.isRequired,
     data : PropTypes.array.isRequired
   }),
-
+  /**
+  * preferences is object which holds preference details for book.
+  */
   preferences : PropTypes.object.isRequired,
-
+  /**
+  * auth is object which holds user specific authentication data 
+  */
   auth : PropTypes.shape({
     userid : PropTypes.number.isRequired,
     sessionId : PropTypes.string,
     piToken : PropTypes.string.isRequired,
   }).isRequired,
-
+  /**
+  * envType indicates environment type which holds either prod or nonprod
+  */
   envType : PropTypes.string
 }
 

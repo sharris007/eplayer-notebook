@@ -38,7 +38,7 @@ export const pdfConstants = {
     JAZZASSET : 16
   },
   multipageConfig : {
-    isMultiPageSupported : true,
+    isMultiPageSupported : false,
     pagesToDownload : 20,
     pagesToNavigate : 5
   },
