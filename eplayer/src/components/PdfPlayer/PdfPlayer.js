@@ -576,11 +576,11 @@ class PdfPlayer extends Component {
     });
     if (highlightList.length > 0) {
       restoreHighlights(highlightList);
-      this.highlightList = highlightList;
     }
     if (noteList.length > 0) {
       reRenderHighlightCornerImages(noteList);
     }
+    this.highlightList = highlightList;
     if (this.showHighlight === false) {
       try {
         $('.fwr-highlight-annot').css('visibility', 'hidden');
