@@ -39,7 +39,9 @@ export const fetchPageInfo = (currentBook, userid, smsKey) => {
             pdfPath: `${currentBook.serverDetails}/ebookassets`
                   + `/ebook${currentBook.globalBookId}${getState().book.bookinfo.book.pdfCoverArt}`,
             title: 'Cover',
-            id: 'cover'
+            id: 'cover',
+            printDisabled: true,
+            isCover: true
           };
             // Temporary condition for supporting multiPage config
           if (!pdfConstants.multipageConfig.isMultiPageSupported) {
@@ -56,6 +58,8 @@ export const fetchPageInfo = (currentBook, userid, smsKey) => {
                   + `/ebook${currentBook.globalBookId}/ipadpdfs/${page.pdfPath}`;
               pageObj.title = `${Page} ${page.bookPageNumber}`;
               pageObj.id = page.pageOrder;
+              pageObj.printDisabled = page.printDisabled;
+              pageObj.isCover = false;
               bookState.bookPagesInfo.pages.push(pageObj);
             });
           });

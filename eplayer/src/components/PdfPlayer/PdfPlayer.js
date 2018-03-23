@@ -41,7 +41,8 @@ class PdfPlayer extends Component {
       popUpCollection: [],
       chapterPdfFected: false,
       chapterList: [],
-      currentChapter: {}
+      currentChapter: {},
+      currPageObj: {}
     };
     this.currPageIndex = 0;
     this.showHighlight = true;
@@ -65,7 +66,7 @@ class PdfPlayer extends Component {
       if (isNaN(pageIndexToLaunch)) {
         pageIndexToLaunch = sessionStorage.getItem('currPageIndex');
       }
-    } else if (this.props.pagePlayList[0].id === 'cover') {
+    } else if (this.props.pagePlayList[0].isCover) {
       pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch :
                             this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 'cover';
     } else {
@@ -173,17 +174,20 @@ class PdfPlayer extends Component {
     } catch (e) {
       // error
     }
+    sessionStorage.setItem('currPageIndex',requestedPage);
     const multipageConfig = pdfConstants.multipageConfig;
     if (multipageConfig.isMultiPageSupported) {
+      let requestedPageObj = _.find(this.props.pagePlayList, page => page.id == requestedPage);
       if (this.state.currentChapter !== undefined && this.state.currentChapter.startpageno &&
           this.state.currentChapter.startpageno <= requestedPage &&
           this.state.currentChapter.endpageno >= requestedPage) {
         const goToPageNo = requestedPage - this.state.currentChapter.startpageno;
         if (goToPageNo >= 0) {
-          this.currPageIndex = requestedPage;
           WebPDF.ViewerInstance.gotoPage(goToPageNo);
-          this.displayHighlights();
-          this.displayHotspots();
+          this.setState({currPageObj : requestedPageObj}, function(){
+              this.displayHighlights();
+              this.displayHotspots();
+            });
         }
       } else {
         let chapterObj;
@@ -201,9 +205,8 @@ class PdfPlayer extends Component {
           this.pageNoToLoad = requestedPage - chapterObj.startpageno;
           const currChapterList = this.state.chapterList;
           currChapterList.push(chapterObj);
-          this.currPageIndex = requestedPage;
-          this.setState({ chapterList: currChapterList, currentChapter: chapterObj,
-            chapterPdfFected: false, pageLoaded: false });
+          this.setState({ currPageObj : requestedPageObj, chapterList: currChapterList, 
+            currentChapter: chapterObj, chapterPdfFected: false, pageLoaded: false });
         } else {
           const pageRangeBucket = Math.ceil(requestedPage / multipageConfig.pagesToDownload);
           let endpageno = pageRangeBucket * multipageConfig.pagesToDownload;
@@ -225,9 +228,8 @@ class PdfPlayer extends Component {
               this.pageNoToLoad = requestedPage - chapterPdfObj.startpageno;
               const currChapterList = this.state.chapterList;
               currChapterList.push(chapterPdfObj);
-              this.currPageIndex = requestedPage;
-              this.setState({ chapterList: currChapterList, currentChapter: chapterPdfObj,
-                chapterPdfFected: false, pageLoaded: false });
+              this.setState({ currPageObj : requestedPageObj, chapterList: currChapterList, 
+                currentChapter: chapterPdfObj, chapterPdfFected: false, pageLoaded: false });
             });
         }
       }
@@ -235,13 +237,13 @@ class PdfPlayer extends Component {
       this.setState({ pageLoaded: false });
       const index = _.findIndex(this.props.pagePlayList, page => page.id === requestedPage);
       const requestedPageObj = this.props.pagePlayList[index];
-      this.currPageIndex = requestedPageObj.id;
       // <TestCode>
       this.currPageNumber = requestedPageObj.pagenumber;
       const d = new Date();
       this.pageLoadStartTime = d.getTime();
       this.isPageLoaded = true;
       // </TestCode>
+      this.setState({currPageObj: requestedPageObj});
       WebPDF.ViewerInstance.openFileByUri({ url: requestedPageObj.pdfPath });
     }
     const viewer = this;
@@ -257,7 +259,6 @@ class PdfPlayer extends Component {
         viewer.setState({ regionData: null });
       }
     });
-    sessionStorage.setItem('currPageIndex', this.currPageIndex);
   }
 
   onPageLoad = () => {
@@ -354,7 +355,7 @@ class PdfPlayer extends Component {
     } catch (e) {
       // error
     }
-    if (pageNo !== this.currPageIndex) {
+    if (pageNo !== this.state.currPageObj.id) {
       this.renderPdf(pageNo);
     } else {
       this.setState({ drawerOpen: false });
@@ -491,7 +492,7 @@ class PdfPlayer extends Component {
   }
 
   saveHighlight = (currentHighlight, highLightMetadata) => {
-    const currentPageId = this.currPageIndex;
+    const currentPageId = this.state.currPageObj.id;
     // const courseId = _.toString(this.props.metaData.courseId);
     try {
       const note = highLightMetadata.noteText;
@@ -526,7 +527,7 @@ class PdfPlayer extends Component {
   }
 
   editHighlight = (id, highLightMetadata) => {
-    const currentPage = this.currPageIndex;
+    const currentPage = this.state.currPageObj.id;
     try {
       const highlightToEdit = _.find(this.highlightList, highlight => highlight.id === id);
       const note = highLightMetadata.noteText !== undefined ? highLightMetadata.noteText : highlightToEdit.comment;
@@ -559,7 +560,7 @@ class PdfPlayer extends Component {
     const noteList = [];
     this.props.annotations.data.annotationList.forEach((annotation) => {
       const annotationItem = annotation;
-      if (annotationItem.pageId === this.currPageIndex) {
+      if (annotationItem.pageId === this.state.currPageObj.id) {
         if (annotationItem.shared) {
           annotationItem.color = '#00a4e0';
           annotationItem.meta.colorcode = '#00a4e0';
@@ -858,7 +859,7 @@ class PdfPlayer extends Component {
     let currentPageRegions;
     if (this.props.hotspots.data.regions.length > 0) {
       for (let k = 0; k < this.props.hotspots.data.regions.length; k++) {
-        if (this.currPageIndex === this.props.hotspots.data.regions[k].pageId) {
+        if (this.state.currPageObj.id === this.props.hotspots.data.regions[k].pageId) {
           currentPageRegions = this.props.hotspots.data.regions[k].hotspotList;
           if (currentPageRegions && currentPageRegions.length > 0) {
             displayRegions(currentPageRegions, this.props.metaData.bookFeatures, _);
@@ -868,10 +869,10 @@ class PdfPlayer extends Component {
       }
     }
     if (currentPageRegions === null || currentPageRegions === '' || currentPageRegions === undefined) {
-      this.props.hotspots.load.get(this.props.metaData, this.currPageIndex).then(() => {
+      this.props.hotspots.load.get(this.props.metaData, this.state.currPageObj.id).then(() => {
         if (this.props.hotspots.data.regions.length > 0) {
           for (let k = 0; k < this.props.hotspots.data.regions.length; k++) {
-            if (this.currPageIndex === this.props.hotspots.data.regions[k].pageId) {
+            if (this.state.currPageObj.id === this.props.hotspots.data.regions[k].pageId) {
               currentPageRegions = this.props.hotspots.data.regions[k].hotspotList;
               if (currentPageRegions && currentPageRegions.length > 0) {
                 displayRegions(currentPageRegions, this.props.metaData.bookFeatures, _);
@@ -945,7 +946,7 @@ class PdfPlayer extends Component {
   }
 
   addBookmarkHandler = () => {
-    const currentPageId = this.currPageIndex;
+    const currentPageId = this.state.currPageObj.id;
     const currentPage = _.find(this.props.pagePlayList, page => page.id === currentPageId);
     this.props.bookmarks.operation.post(currentPage, this.props.auth, this.props.metaData);
   }
@@ -955,7 +956,7 @@ class PdfPlayer extends Component {
     if (bookmarkId !== undefined) {
       currentPageId = bookmarkId;
     } else {
-      currentPageId = this.currPageIndex;
+      currentPageId = this.state.currPageObj.id;
     }
     const targetBookmark = _.find(this.props.bookmarks.data.bookmarkList, bookmark => bookmark.uri === currentPageId);
     const targetBookmarkId = targetBookmark.bkmarkId;
@@ -963,7 +964,7 @@ class PdfPlayer extends Component {
   }
 
   isCurrentPageBookmarked = () => {
-    const currentPageId = this.currPageIndex;
+    const currentPageId = this.state.currPageObj.id;
     const targetBookmark = _.find(this.props.bookmarks.data.bookmarkList, bookmark => bookmark.uri === currentPageId);
     return !(targetBookmark === undefined);
   }
@@ -1107,7 +1108,7 @@ class PdfPlayer extends Component {
     const hideIcons = {
       backNav: !this.props.preferences.showBookshelfBack,
       hamburger: !this.props.preferences.showDrawer,
-      bookmark: !this.props.preferences.showBookmark,
+      bookmark: this.state.currPageObj.isCover ? true : !this.props.preferences.showBookmark,
       pref: false,
       search: false,
       audio: true,
@@ -1115,7 +1116,7 @@ class PdfPlayer extends Component {
     };
     const headerTitleData = {
       params: {
-        pageId: this.currPageIndex ? this.currPageIndex : '1',
+        pageId: this.state.currPageObj.id ? this.state.currPageObj.id : '1',
         bookId: this.props.metaData.bookId ? this.props.metaData.bookId : '12345'
       },
       classname: 'headerBar',
@@ -1134,7 +1135,7 @@ class PdfPlayer extends Component {
       author: this.props.metaData.authorName,
       title: this.props.metaData.title
     };
-    const pageIdString = this.currPageIndex.toString();
+    const pageIdString = this.state.currPageObj.id ? this.state.currPageObj.id.toString() : '0';
     const callbacks = {};
     callbacks.addBookmarkHandler = this.addBookmarkHandler;
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
@@ -1199,7 +1200,7 @@ class PdfPlayer extends Component {
           <Navigation
             onPageRequest={this.onPageRequest}
             pagePlayList={this.props.pagePlayList}
-            currentPageId={this.currPageIndex}
+            currentPageId={this.state.currPageObj.id}
           /> : null
       }
         {this.state.regionData ? <div id="hotspot">{this.renderHotspot(this.state.regionData)}</div> : null }
