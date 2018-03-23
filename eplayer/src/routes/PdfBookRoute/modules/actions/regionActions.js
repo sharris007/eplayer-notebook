@@ -35,12 +35,12 @@ export function fetchRegionsInfo(inputParams, pageorder) {
     dispatch(request('regions'));
     let serviceurl;
     if (platformId === undefined || platformId === null || platformId === '') {
-      serviceurl = `${bookServerURL}/ebook/pdfplayer/getregionbypageorder?bookid=${bookid}&bookeditionid=${
-      bookeditionid}&listval=${pageorder}&scenario=${scenarioId}&userroleid=${roleTypeID}` +
+      serviceurl = `${bookServerURL}/ebook/pdfplayer/getregionbypageorder?bookid=${bookid}&bookeditionid=` +
+      `${bookeditionid}&listval=${pageorder}&scenario=${scenarioId}&userroleid=${roleTypeID}` +
       `&authkey=${sessionKey}&outputformat=JSON`;
     } else {
-      serviceurl = `${bookServerURL}/ebook/pdfplayer/getregionbypageorder?bookid=${bookid}&bookeditionid=${
-      bookeditionid}&listval=${pageorder}&platformid=${platformId}&scenario=${scenarioId}&userroleid=${roleTypeID}`
+      serviceurl = `${bookServerURL}/ebook/pdfplayer/getregionbypageorder?bookid=${bookid}&bookeditionid=` +
+      `${bookeditionid}&listval=${pageorder}&platformid=${platformId}&scenario=${scenarioId}&userroleid=${roleTypeID}`
       + `&authkey=${sessionKey}&outputformat=JSON`;
     }
     // tempurl is starts with http to create hash key for matching with server
