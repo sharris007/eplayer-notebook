@@ -1059,23 +1059,6 @@ export class Book extends Component {
     dataLayer.push(obj);
   }
 
-  getChapterDetails = (pageId) => {
-    const filterChapterObject=(children, pageId)=>{
-      return _.find(children,(c)=>{
-        if(c.id===pageId){
-          return true;
-        }else if(c.children) {
-          return filterChapterObject(c.children, pageId);
-        }else {
-          return undefined;
-        }
-      })
-    };
-    return _.find(this.props.tocData.content.list, (l)=>{
-      return filterChapterObject(l.children, pageId);
-    });
-  }
-
   render() {
     const callbacks = {};
     let annJsPath, annCssPath, productData;
@@ -1384,7 +1367,7 @@ export class Book extends Component {
             contentType={productData.product.toUpperCase()}
             contentStatus={productData.contentStatus}
             providers={productData.providers}
-            componentFactory={{ getChapterDetails:  this.getChapterDetails}}
+            componentFactory={{ getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } }}
             clients={{ page: pxeClient, annotation: annotationClient }}
             metadata={productData.metaData}
             pxeOptions={productData.pxeOptions}>
