@@ -1,4 +1,4 @@
-/*******************************************************************************
+/** *****************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  *
  *  *  Copyright © 2017 Pearson Education, Inc.
@@ -12,10 +12,10 @@
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 import axios from 'axios';
-import Hawk from 'hawk';
-import find from 'lodash/find';
-import { browserHistory } from 'react-router';
-import { clients } from '../../../components/common/client';
+// import Hawk from 'hawk';
+// import find from 'lodash/find';
+// import { browserHistory } from 'react-router';
+// import { clients } from '../../../components/common/client';
 import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
 import { eT1Contants } from '../../../components/common/et1constants';
@@ -27,22 +27,22 @@ export { fetchToc } from './actions/tocActions';
 export { fetchRegionsInfo, fetchGlossaryItems } from './actions/regionActions';
 export { search } from './actions/searchActions';
 
-const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
-const etextService = resources.links[security];
-const etextCourseService = resources.links['courseServiceUrl'];
+// const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
+// const etextService = resources.links[security];
+const etextCourseService = resources.links.courseServiceUrl;
 const envType = domain.getEnvType();
 
 export const RECEIVE_USER_INFO_PENDING = 'RECEIVE_USER_INFO_PENDING';
 export const RECEIVE_USER_INFO_REJECTED = 'RECEIVE_USER_INFO_REJECTED';
 export const RECEIVE_USER_INFO_FULFILLED = 'RECEIVE_USER_INFO_FULFILLED';
 export const UPDATE_USER_ID = 'UPDATE_USER_ID';
-export const UPDATE_AUTH_KEY= 'UPDATE_AUTH_KEY';
+export const UPDATE_AUTH_KEY = 'UPDATE_AUTH_KEY';
 export const RECEIVEBOOKINFO_PENDING = 'RECEIVEBOOKINFO_PENDING';
 export const RECEIVEBOOKINFO_FAILED = 'RECEIVEBOOKINFO_FAILED';
 export const RECEIVEBOOKINFO_SUCCESS = 'RECEIVEBOOKINFO_SUCCESS';
-export const RECEIVE_BOOK_FEATURES_PENDING= 'RECEIVE_BOOK_FEATURES_PENDING';
-export const RECEIVE_BOOK_FEATURES_FULFILLED= 'RECEIVE_BOOK_FEATURES_FULFILLED';
-export const RECEIVE_BOOK_FEATURES_REJECTED='RECEIVE_BOOK_FEATURES_REJECTED';
+export const RECEIVE_BOOK_FEATURES_PENDING = 'RECEIVE_BOOK_FEATURES_PENDING';
+export const RECEIVE_BOOK_FEATURES_FULFILLED = 'RECEIVE_BOOK_FEATURES_FULFILLED';
+export const RECEIVE_BOOK_FEATURES_REJECTED = 'RECEIVE_BOOK_FEATURES_REJECTED';
 export const RECEIVE_PAGE_INFO = 'RECEIVE_PAGE_INFO';
 export const REQUEST_TOC = 'REQUEST_TOC';
 export const RECEIVE_TOC = 'RECEIVE_TOC';
@@ -57,16 +57,16 @@ export const RESTORE_BOOK_STATE = 'RESTORE_BOOK_STATE';
 export const REQUEST_REGIONS = 'REQUEST_REGIONS';
 export const RECEIVE_REGIONS = 'RECEIVE_REGIONS';
 export const RECEIVE_GLOSSARY_TERM = 'RECEIVE_GLOSSARY_TERM';
-export const RECEIVE_BASEPATH_PENDING= 'RECEIVE_BASEPATH_PENDING';
-export const RECEIVE_BASEPATH_FULFILLED= 'RECEIVE_BASEPATH_FULFILLED';
-export const RECEIVE_BASEPATH_REJECTED= 'RECEIVE_BASEPATH_REJECTED';
+export const RECEIVE_BASEPATH_PENDING = 'RECEIVE_BASEPATH_PENDING';
+export const RECEIVE_BASEPATH_FULFILLED = 'RECEIVE_BASEPATH_FULFILLED';
+export const RECEIVE_BASEPATH_REJECTED = 'RECEIVE_BASEPATH_REJECTED';
 export const ADD_BOOKMARK = 'ADD_BOOKMARK';
 export const REMOVE_BOOKMARK = 'REMOVE_BOOKMARK';
 
 export function request(component) {
   switch (component) {
     case 'bookInfo' :
-      return {type: RECEIVEBOOKINFO_PENDING};
+      return { type: RECEIVEBOOKINFO_PENDING };
     case 'toc':
       return { type: REQUEST_TOC };
     case 'bookmarks':
@@ -74,7 +74,7 @@ export function request(component) {
     case 'highlights':
       return { type: REQUEST_ANNOTATIONS };
     case 'regions' :
-      return {type: REQUEST_REGIONS};
+      return { type: REQUEST_REGIONS };
     default:
       return {};
   }
@@ -84,30 +84,32 @@ export function fetchbookDetails(urn, piToken, bookID) {
   const url = `${etextCourseService[envType]}/web/compositeBookShelf`;
   return dispatch =>
      axios.get(url, {
-      headers: { 'Content-Type': 'application/json',
-        'X-Authorization': piToken }
-      }).then((response) => {
-      let bookDetails;
-      if (response.status >= 400) {
-        console.log(`bookshelf error`);
-      } else if (response.data) {
-        let booksArray = response.data.entries;
-        for(let i=0; i<booksArray.length; i++) {
-          if(booksArray[i].bookId === bookID) {
-            bookDetails = booksArray[i];
-            break;
-          }
-        }
-      }
-      return bookDetails;
-    });
+       headers: { 'Content-Type': 'application/json',
+         'X-Authorization': piToken }
+     }).then((response) => {
+       let bookDetails;
+       if (response.status >= 400) {
+         // console.log('bookshelf error');
+         // bookshelf error
+       } else if (response.data) {
+         const booksArray = response.data.entries;
+         for (let i = 0; i < booksArray.length; i++) {
+           if (booksArray[i].bookId === bookID) {
+             bookDetails = booksArray[i];
+             break;
+           }
+         }
+       }
+       return bookDetails;
+     });
 }
 
 export function getlocaluserID(bookServerURL, globaluserid, type) {
-  let serviceurl = ''+bookServerURL+'/ebook/ipad/getlocaluserid?globaluserid=' + globaluserid + '&type=' +  type + '&outputformat=JSON';
+  const serviceurl = `${bookServerURL}/ebook/ipad/getlocaluserid?globaluserid=${globaluserid}` +
+    `&type=${type}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
-  let tempurl = serviceurl.replace("https","http");
-  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  const tempurl = serviceurl.replace('https', 'http');
+  const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
   return {
     type: 'RECEIVE_USER_INFO',
     payload: axios.get(`${serviceurl}&hsid=${hsid}`),
@@ -115,128 +117,131 @@ export function getlocaluserID(bookServerURL, globaluserid, type) {
   };
 }
 
-export function updateUserID(userID)
-{
+export function updateUserID(userID) {
   return (dispatch) => {
     dispatch({ type: UPDATE_USER_ID, userID });
   };
 }
 
-export function validateUser(userid,scenario,invoketype,bookid,roletypeid,piToken,bookServerURL) {
-  let serviceurl = ''+bookServerURL+'/ebook/pdfplayer/validateuser?values=bookid::' + bookid + '::scenario::' +  scenario + '::invoketype::'
-                        +invoketype+'::userid::'+userid+'::roletypeid::'+roletypeid+'&key='+piToken+'&outputformat=JSON';
+export function validateUser(userid, scenario, invoketype, bookid, roletypeid, piToken, bookServerURL) {
+  const serviceurl = `${bookServerURL}/ebook/pdfplayer/validateuser?values=bookid::${bookid}::scenario::` +
+    `${scenario}::invoketype::${invoketype}::userid::${userid}::roletypeid::${roletypeid}` +
+    `&key=${piToken}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
-  let tempurl = serviceurl.replace("https","http");
-  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  const tempurl = serviceurl.replace('https', 'http');
+  const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
   return dispatch =>
-    axios.get(''+serviceurl+'&hsid='+hsid).then((response) => {
+    axios.get(`${serviceurl}&hsid=${hsid}`).then((response) => {
       if (response.status >= 400) {
-        console.log(`validateuser service error`);
-      }
-      else if(response.data) {
+        // console.log('validateuser service error');
+        // validateuser service error
+      } else if (response.data) {
         const ssoKey = response.data[0].authKey;
         return dispatch({ type: UPDATE_AUTH_KEY, ssoKey });
       }
     });
 }
 
-export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeId, uid, ubd, ubsd, globaluserid, authkey) {
+export function fetchBookInfo(bookid, scenario, userid, bookServerURL, roleTypeId, uid, ubd, ubsd,
+  globaluserid, authkey) {
   let roleTypeID = roleTypeId;
   if (roleTypeID === undefined || roleTypeID === null || roleTypeID === '') {
     roleTypeID = eT1Contants.UserRoleType.Student;
   }
   const bookState = {
     bookInfo: {
-      userbook : {},
+      userbook: {},
       book: {}
-    },
+    }
   };
   return (dispatch) => {
     dispatch(request('bookInfo'));
-      let serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenario}&userinfolastmodifieddate=${uid}&userbooklastmodifieddate=${ubd}&userbookscenariolastmodifieddate=${ubsd}&globaluserid=${globaluserid}&authkey=${authkey}&outputformat=JSON`;
+    const serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookinfo?userid=${userid}&bookid=${bookid}` +
+      `&userroleid=${roleTypeID}&scenario=${scenario}&userinfolastmodifieddate=${uid}` +
+      `&userbooklastmodifieddate=${ubd}&userbookscenariolastmodifieddate=${ubsd}&globaluserid=${globaluserid}` +
+      `&authkey=${authkey}&outputformat=JSON`;
     // tempurl is starts with http to create hash key for matching with server
-    let tempurl = serviceurl.replace("https","http");
-    let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
-    return axios.get(''+serviceurl+'&hsid='+hsid,
-  {
-  timeout: 20000
-  }).then((response) => {
-      if (response.data.code >= 400)
+    const tempurl = serviceurl.replace('https', 'http');
+    const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
+    return axios.get(`${serviceurl}&hsid=${hsid}`,
       {
-        return dispatch({ type: 'RECEIVEBOOKINFO_FAILED',bookState});
-      }
-      else if(response.data.length)
-      {
-        const userbookObj = {};
+        timeout: 20000
+      }).then((response) => {
+        if (response.data.code >= 400) {
+          return dispatch({ type: 'RECEIVEBOOKINFO_FAILED', bookState });
+        } else if (response.data.length) {
+          const userbookObj = {};
           const bookObj = {};
-          let author = (response.data[0].userBookTOList[0].authorList[0].firstName+' '+response.data[0].userBookTOList[0].authorList[0].lastName);
-          let authorListLen = response.data[0].userBookTOList[0].authorList.length;
-          for(let i=1; i<authorListLen; i++)
-          {
-            author += '/ ' + (response.data[0].userBookTOList[0].authorList[i].firstName+' '+response.data[0].userBookTOList[0].authorList[i].lastName);
+          let author = (`${response.data[0].userBookTOList[0].authorList[0].firstName}` +
+            ` ${response.data[0].userBookTOList[0].authorList[0].lastName}`);
+          const authorListLen = response.data[0].userBookTOList[0].authorList.length;
+          for (let i = 1; i < authorListLen; i++) {
+            author += `/ ${response.data[0].userBookTOList[0].authorList[i].firstName}` +
+            ` ${response.data[0].userBookTOList[0].authorList[i].lastName}`;
           }
-        userbookObj.userbookid = response.data[0].userBookTOList[0].userBookID,
-        bookObj.globalbookid= response.data[0].userBookTOList[0].globalBookID,
-        bookObj.numberOfPages= response.data[0].userBookTOList[0].numberOfPages,
-        bookObj.bookid= response.data[0].userBookTOList[0].bookID,
-        bookObj.bookeditionid= response.data[0].userBookTOList[0].bookEditionID,
-        bookObj.hastocflatten= response.data[0].userBookTOList[0].hastocflatten,
-        bookObj.languageid= response.data[0].userBookTOList[0].languageID,
-        bookObj.roleTypeID= response.data[0].userBookTOList[0].roleTypeID,
-        bookObj.activeCourseID= response.data[0].userBookTOList[0].lastAccessedCourseActivityID,
-        bookObj.version= response.data[0].userBookTOList[0].version,
-        bookObj.author=author,
-        bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt,
-        bookObj.title = response.data[0].userBookTOList[0].title,
-        bookObj.pdfCoverArt = response.data[0].userBookTOList[0].pdfCoverArt,
-        bookObj.ssoKey= response.data[0].userBookTOList[0].sessionID
-        bookState.bookInfo.userbook = userbookObj;
-        bookState.bookInfo.book = bookObj;
-        bookState.bookInfo.fetching = false;
-        bookState.bookInfo.fetched = true;
-      return dispatch({ type: 'RECEIVEBOOKINFO_SUCCESS',bookState});
-      }
-    });
-    }
+          userbookObj.userbookid = response.data[0].userBookTOList[0].userBookID;
+          bookObj.globalbookid = response.data[0].userBookTOList[0].globalBookID;
+          bookObj.numberOfPages = response.data[0].userBookTOList[0].numberOfPages;
+          bookObj.bookid = response.data[0].userBookTOList[0].bookID;
+          bookObj.bookeditionid = response.data[0].userBookTOList[0].bookEditionID;
+          bookObj.hastocflatten = response.data[0].userBookTOList[0].hastocflatten;
+          bookObj.languageid = response.data[0].userBookTOList[0].languageID;
+          bookObj.roleTypeID = response.data[0].userBookTOList[0].roleTypeID;
+          bookObj.activeCourseID = response.data[0].userBookTOList[0].lastAccessedCourseActivityID;
+          bookObj.version = response.data[0].userBookTOList[0].version;
+          bookObj.author = author;
+          bookObj.thumbnailimg = response.data[0].userBookTOList[0].thumbnailArt;
+          bookObj.title = response.data[0].userBookTOList[0].title;
+          bookObj.pdfCoverArt = response.data[0].userBookTOList[0].pdfCoverArt;
+          bookObj.ssoKey = response.data[0].userBookTOList[0].sessionID;
+          bookState.bookInfo.userbook = userbookObj;
+          bookState.bookInfo.book = bookObj;
+          bookState.bookInfo.fetching = false;
+          bookState.bookInfo.fetched = true;
+          return dispatch({ type: 'RECEIVEBOOKINFO_SUCCESS', bookState });
+        }
+      });
+  };
 }
 
-export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, roleTypeID,scenarioId) {
-  let serviceurl = ''+bookServerURL+'/ebook/pdfplayer/getbookfeatures?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&scenario=' + scenarioId + '&outputformat=JSON';
+export function fetchBookFeatures(bookid, sessionKey, userid, bookServerURL, roleTypeID, scenarioId) {
+  const serviceurl = `${bookServerURL}/ebook/pdfplayer/getbookfeatures?authkey=${sessionKey}` +
+  `&userid=${userid}&bookid=${bookid}&userroleid=${roleTypeID}&scenario=${scenarioId}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
-  let tempurl = serviceurl.replace("https","http");
-  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  const tempurl = serviceurl.replace('https', 'http');
+  const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
   return {
     type: 'RECEIVE_BOOK_FEATURES',
-    payload: axios.get(''+serviceurl+'&hsid='+hsid),
+    payload: axios.get(`${serviceurl}&hsid=${hsid}`),
     timeout: 20000
   };
 }
 
 /* Created Action creator for getting basepath of relative regions/hotspots. */
-export function fetchBasepaths(inputParams,authObj) {
+export function fetchBasepaths(inputParams, authObj) {
+  const bookServerURL = inputParams.serverDetails;
+  const sessionKey = inputParams.ssoKey;
+  const userid = authObj.userid;
+  const bookid = inputParams.bookId;
+  const roleTypeID = inputParams.roletypeid;
 
-  let bookServerURL = inputParams.serverDetails;
-  let sessionKey = inputParams.ssoKey;
-  let userid = authObj.userid;
-  let bookid = inputParams.bookId;
-  let roleTypeID = inputParams.roletypeid;
-
-  let serviceurl = ''+bookServerURL+'/ebook/pdfplayer/launchbook?authkey=' + sessionKey + '&userid=' +  userid + '&bookid=' + bookid + '&userroleid=' + roleTypeID + '&outputformat=JSON';
+  const serviceurl = `${bookServerURL}/ebook/pdfplayer/launchbook?authkey=${sessionKey}&userid=${userid}` +
+  `&bookid=${bookid}&userroleid=${roleTypeID}&outputformat=JSON`;
   // tempurl is starts with http to create hash key for matching with server
-  let tempurl = serviceurl.replace("https","http");
-  let hsid = getmd5(eT1Contants.MD5_SECRET_KEY+tempurl);
+  const tempurl = serviceurl.replace('https', 'http');
+  const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
   return {
     type: 'RECEIVE_BASEPATH',
-    payload: axios.get(''+serviceurl+'&hsid='+hsid),
+    payload: axios.get(`${serviceurl}&hsid=${hsid}`),
     timeout: 20000
   };
 }
 
 export function restoreBookState() {
-  let bookState = {
+  const bookState = {
     bookinfo: {
-    fetching: false,
-    fetched: false
+      fetching: false,
+      fetched: false
     },
     bookPagesInfo: {
       pages: [],
@@ -266,13 +271,13 @@ export function restoreBookState() {
       fetched: false,
       regions: []
     },
-    glossaryInfoList:[],
+    glossaryInfoList: [],
     basepaths: {
       fetching: false,
       fetched: false
     }
-  }
-  return { type : RESTORE_BOOK_STATE , bookState };
+  };
+  return { type: RESTORE_BOOK_STATE, bookState };
 }
 
 const ACTION_HANDLERS = {
@@ -308,7 +313,7 @@ const ACTION_HANDLERS = {
   }),
   [UPDATE_AUTH_KEY]: (state, action) => ({
     ...state,
-    sessionInfo : {
+    sessionInfo: {
       ssoKey: action.ssoKey
     }
   }),
@@ -321,7 +326,7 @@ const ACTION_HANDLERS = {
   }),
   [RECEIVEBOOKINFO_SUCCESS]: (state, action) => ({
     ...state,
-    bookinfo: action.bookState.bookInfo,
+    bookinfo: action.bookState.bookInfo
   }),
   [RECEIVEBOOKINFO_FAILED]: state => ({
     ...state,
@@ -337,20 +342,20 @@ const ACTION_HANDLERS = {
       fetched: false
     }
   }),
-  [RECEIVE_BOOK_FEATURES_FULFILLED]: (state,action) => ({
+  [RECEIVE_BOOK_FEATURES_FULFILLED]: (state, action) => ({
     ...state,
     bookFeatures: {
       fetching: false,
       fetched: true,
-      hotspotcolor : action.payload.data[0].ipadFeaturesTO.hotSpotColor,
-      isunderlinehotspot : action.payload.data[0].generalFeaturesTO.isUnderLineHotspot,
-      hassearchbutton : action.payload.data[0].generalFeaturesTO.hasSearchButton,
-      hasnotesmanager : action.payload.data[0].generalFeaturesTO.hasNotesManager,
-      iconhotspotalpha : action.payload.data[0].ipadFeaturesTO.iconHotSpotAlpha,
-      regionhotspotalpha : action.payload.data[0].ipadFeaturesTO.regionHotSpotAlpha,
-      underlinehotspotcolor : action.payload.data[0].ipadFeaturesTO.underLineHotSpotColor,
-      underlinehotspotthickness : action.payload.data[0].ipadFeaturesTO.underLineHotSpotThickness,
-      underlinehotppothovercolor : action.payload.data[0].ipadFeaturesTO.underLineHotSpotHoverColor,
+      hotspotcolor: action.payload.data[0].ipadFeaturesTO.hotSpotColor,
+      isunderlinehotspot: action.payload.data[0].generalFeaturesTO.isUnderLineHotspot,
+      hassearchbutton: action.payload.data[0].generalFeaturesTO.hasSearchButton,
+      hasnotesmanager: action.payload.data[0].generalFeaturesTO.hasNotesManager,
+      iconhotspotalpha: action.payload.data[0].ipadFeaturesTO.iconHotSpotAlpha,
+      regionhotspotalpha: action.payload.data[0].ipadFeaturesTO.regionHotSpotAlpha,
+      underlinehotspotcolor: action.payload.data[0].ipadFeaturesTO.underLineHotSpotColor,
+      underlinehotspotthickness: action.payload.data[0].ipadFeaturesTO.underLineHotSpotThickness,
+      underlinehotppothovercolor: action.payload.data[0].ipadFeaturesTO.underLineHotSpotHoverColor,
       hasbookshelflink: action.payload.data[0].headerFeaturesTO.hasBookshelfLink,
       haslogoutlink: action.payload.data[0].headerFeaturesTO.hasLogoutLink,
       hasprevnavpagebutton: action.payload.data[0].toolBarFeaturesTO.hasPreviousNavigatePageButton,
@@ -385,7 +390,7 @@ const ACTION_HANDLERS = {
   }),
   [REQUEST_TOC]: state => ({
     ...state,
-    tocData : {
+    tocData: {
       fetching: true,
       fetched: false
     }
@@ -404,21 +409,21 @@ const ACTION_HANDLERS = {
   }),
   [RECEIVE_BOOKMARKS]: (state, action) => ({
     ...state,
-    bookmarkData: action.bookState.bookmarkData,
+    bookmarkData: action.bookState.bookmarkData
   }),
   [ADD_BOOKMARK]: (state, action) => ({
     ...state,
     bookmarkData: { ...state.bookmarkData,
-        bookmarkList:[
-            ...state.bookmarkData.bookmarkList
-        ].concat(action.bookmarkList).sort((bkm1, bkm2) => bkm1.uri - bkm2.uri)
-      }
+      bookmarkList: [
+        ...state.bookmarkData.bookmarkList
+      ].concat(action.bookmarkList).sort((bkm1, bkm2) => bkm1.uri - bkm2.uri)
+    }
   }),
   [REMOVE_BOOKMARK]: (state, action) => ({
     ...state,
     bookmarkData: { ...state.bookmarkData,
-        bookmarkList: state.bookmarkData.bookmarkList.filter(bookmark => bookmark.bkmarkId !== action.bookmarkId)
-      }
+      bookmarkList: state.bookmarkData.bookmarkList.filter(bookmark => bookmark.bkmarkId !== action.bookmarkId)
+    }
   }),
   [REQUEST_ANNOTATIONS]: state => ({
     ...state,
@@ -436,7 +441,7 @@ const ACTION_HANDLERS = {
     ...state,
     annotationData: {
       ...state.annotationData,
-      annotationList :[
+      annotationList: [
         ...state.annotationData.annotationList
       ].concat(action.highlightList).sort((hl1, hl2) => hl2.time - hl1.time)
     }
@@ -445,9 +450,9 @@ const ACTION_HANDLERS = {
     ...state,
     annotationData: {
       ...state.annotationData,
-      annotationList :[
+      annotationList: [
         ...state.annotationData.annotationList.filter(highlight => highlight.id !== action.highlightObj.id),
-          {
+        {
           userId: action.highlightObj.userId,
           bookId: action.highlightObj.bookId,
           pageId: action.highlightObj.pageId,
@@ -473,36 +478,36 @@ const ACTION_HANDLERS = {
     ...state,
     annotationData: {
       ...state.annotationData,
-      annotationList :state.annotationData.annotationList.filter(highlight => highlight.id !== action.id)
+      annotationList: state.annotationData.annotationList.filter(highlight => highlight.id !== action.id)
     }
   }),
-  [RESTORE_BOOK_STATE]: (state,action) => ({
+  [RESTORE_BOOK_STATE]: (state, action) => ({
     ...state,
-    bookinfo : action.bookState.bookinfo,
-    bookPagesInfo : action.bookState.bookPagesInfo,
-    bookFeatures : action.bookState.bookFeatures,
-    tocData : action.bookState.tocData,
+    bookinfo: action.bookState.bookinfo,
+    bookPagesInfo: action.bookState.bookPagesInfo,
+    bookFeatures: action.bookState.bookFeatures,
+    tocData: action.bookState.tocData,
     bookmarkData: action.bookState.bookmarkData,
     annotationData: action.bookState.annotationData,
     regionsData: action.bookState.regionsData,
-    glossaryInfoList : action.bookState.glossaryInfoList,
-    basepaths : action.bookState.basepaths
+    glossaryInfoList: action.bookState.glossaryInfoList,
+    basepaths: action.bookState.basepaths
   }),
   [REQUEST_REGIONS]: state => ({
     ...state,
     regionsData: {
-      fetching : true,
+      fetching: true,
       fetched: false,
       regions: [...state.regionsData.regions]
     }
   }),
   [RECEIVE_REGIONS]: (state, action) => ({
     ...state,
-    regionsData : { ...state.regionsData,
-      regions:[
-        ...state.regionsData.regions].concat(action.bookState.regionsData.regions)}
+    regionsData: { ...state.regionsData,
+      regions: [
+        ...state.regionsData.regions].concat(action.bookState.regionsData.regions) }
   }),
-  [RECEIVE_GLOSSARY_TERM]: (state,action) => ({
+  [RECEIVE_GLOSSARY_TERM]: (state, action) => ({
     ...state,
     glossaryInfoList: action.bookState.bookInfo.glossaryInfoList
   }),
@@ -513,7 +518,7 @@ const ACTION_HANDLERS = {
       fetched: false
     }
   }),
-  [RECEIVE_BASEPATH_FULFILLED]: (state,action) => ({
+  [RECEIVE_BASEPATH_FULFILLED]: (state, action) => ({
     ...state,
     basepaths: {
       fetching: false,
@@ -545,7 +550,7 @@ const initialState = {
     userid: ''
   },
   sessionInfo: {
-    ssoKey:''
+    ssoKey: ''
   },
   bookinfo: {
     fetching: false,
@@ -579,11 +584,11 @@ const initialState = {
     fetched: false,
     regions: []
   },
-  glossaryInfoList:[],
+  glossaryInfoList: [],
   basepaths: {
     fetching: false,
     fetched: false
-  },
+  }
 };
 
 export default function book(state = initialState, action) {

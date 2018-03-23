@@ -16,7 +16,9 @@ export function getSelectionInfo() {
         highlightHash += ',';
       }
       const PDFRect = selectedRect[j];
-      highlightHash = `${highlightHash}{"left":"${parseFloat(PDFRect.left).toFixed(6)}","top":"${parseFloat(PDFRect.top).toFixed(6)}","right":"${parseFloat(PDFRect.right).toFixed(6)}","bottom":"${parseFloat(PDFRect.bottom).toFixed(6)}"}`;
+      highlightHash = `${highlightHash}{"left":"${parseFloat(PDFRect.left).toFixed(6)}",` +
+      `"top":"${parseFloat(PDFRect.top).toFixed(6)}","right":"${parseFloat(PDFRect.right).toFixed(6)}",` +
+      `"bottom":"${parseFloat(PDFRect.bottom).toFixed(6)}"}`;
     }
     highlightHash = `${highlightHash}]` + '@0.000000';
     // console.log(highlightHash);

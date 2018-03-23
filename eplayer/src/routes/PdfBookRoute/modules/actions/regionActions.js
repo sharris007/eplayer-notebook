@@ -36,7 +36,7 @@ export function fetchRegionsInfo(inputParams, pageorder) {
     let serviceurl;
     if (platformId === undefined || platformId === null || platformId === '') {
       serviceurl = `${bookServerURL}/ebook/pdfplayer/getregionbypageorder?bookid=${bookid}&bookeditionid=${
-      bookeditionid}&listval=${pageorder}&scenario=${scenarioId}&userroleid=${roleTypeID}` + 
+      bookeditionid}&listval=${pageorder}&scenario=${scenarioId}&userroleid=${roleTypeID}` +
       `&authkey=${sessionKey}&outputformat=JSON`;
     } else {
       serviceurl = `${bookServerURL}/ebook/pdfplayer/getregionbypageorder?bookid=${bookid}&bookeditionid=${

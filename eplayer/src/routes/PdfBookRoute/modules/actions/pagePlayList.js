@@ -68,3 +68,5 @@ export const fetchPageInfo = (currentBook, userid, smsKey) => {
       });
   };
 };
+
+export default fetchPageInfo;
