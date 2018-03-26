@@ -10,7 +10,7 @@ export function fetchChapterLevelPdf(bookId, startPage, endPage, globalbookid, b
   axios.get(`${serviceurl}`, { timeout: 20000 }).then((response) => {
     if (response.status >= 400) {
       // Nothing doing
-      return;
+      return {};
     } else if (response.data.length) {
       return ({
         startpageno: startPage,
@@ -19,6 +19,7 @@ export function fetchChapterLevelPdf(bookId, startPage, endPage, globalbookid, b
                   + `/ebook${globalbookid}/chapterpdf/${response.data[0].chapterPdfList[0].chapterPdfFileName}`
       });
     }
+    return {};
   });
 }
 

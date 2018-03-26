@@ -88,6 +88,45 @@ function onPageLoad() {
   triggerEvent('pageLoaded');
 }
 
+function loadAccessibilityContent() {
+  try {
+    const currentPage = WebPDF.ViewerInstance.getCurPageIndex();
+    let divElement = $('.screenReaderText');
+    if (divElement.length === 0) {
+      divElement = document.createElement('div');
+      divElement.className = 'screenReaderText';
+      divElement.setAttribute('tabindex', 1);
+    } else {
+      divElement = divElement[0];
+    }
+    let textForElement = '';
+    const currTextPage = WebPDF.ViewerInstance.getToolHandlerByName(WebPDF.ViewerInstance
+       .getCurToolHandlerName()).getTextSelectService().getTextPage(currentPage).textPage;
+    if (currTextPage) {
+      textForElement = currTextPage.getPageAllText();
+    }
+    if (textForElement !== window.textForElement) {
+      try {
+        const docViewer = $(`#docViewer_ViewContainer_PageContainer_${currentPage}`);
+        const firstElement = docViewer[0];
+        firstElement.setAttribute('aria-label', textForElement);
+        firstElement.setAttribute('tabindex', '1');
+      } catch (e) {
+         // error
+      }
+      divElement.innerText = textForElement;
+      const docViewerElement = $('#docViewer');
+      const firstChild = docViewerElement[0].firstChild;
+      if ($('.screenReaderText').length === 0) {
+        docViewerElement[0].insertBefore(divElement, firstChild);
+      }
+      window.textForElement = textForElement;
+    }
+  } catch (e) {
+     // error
+  }
+}
+
 function addEventListenersForWebPDF() {
   setInterval(loadAccessibilityContent, 1000);
   /* Document loaded event listener*/
@@ -125,7 +164,7 @@ export function initializeWebPDF(baseUrl, pageToLoad) {
     script8.src = `${baseUrl}scripts/config/config.js`;
     script8.async = false;
     const script9 = document.createElement('SCRIPT');
-    script9.src = '/eplayer/pdf/foxit_client_lib/webpdf.mini.js';
+    script9.src = '/pdf/foxit_client_lib/webpdf.mini.js';
     script9.async = false;
     script9.onload = () => {
       const optionsParams = {
@@ -161,7 +200,7 @@ export function initializeWebPDF(baseUrl, pageToLoad) {
 }
 
 export function removeEventListenersForWebPDF() {
- clearInterval(loadAccessibilityContent, 1000);
+  clearInterval(loadAccessibilityContent, 1000);
  /* Document loaded event listener*/
   WebPDF.ViewerInstance.off(WebPDF.EventList.DOCUMENT_LOADED, onDocLoad);
   /* Page change event listener*/
@@ -170,41 +209,3 @@ export function removeEventListenersForWebPDF() {
   WebPDF.ViewerInstance.off(WebPDF.EventList.PAGE_SHOW_COMPLETE, onPageLoad);
 }
 
- function loadAccessibilityContent() {
-   try {
-     const currentPage = WebPDF.ViewerInstance.getCurPageIndex();
-     let divElement = $('.screenReaderText');
-     if (divElement.length === 0) {
-       divElement = document.createElement('div');
-       divElement.className = 'screenReaderText';
-       divElement.setAttribute('tabindex', 1);
-    } else {
-       divElement = divElement[0];
-     }
-     let textForElement = '';
-     const currTextPage = WebPDF.ViewerInstance.getToolHandlerByName(WebPDF.ViewerInstance
-       .getCurToolHandlerName()).getTextSelectService().getTextPage(currentPage).textPage;
-     if (currTextPage) {
-       textForElement = currTextPage.getPageAllText();
-     }
-     if (textForElement !== window.textForElement) {
-       try {
-         const docViewer = $(`#docViewer_ViewContainer_PageContainer_${currentPage}`);
-         const firstElement = docViewer[0];
-         firstElement.setAttribute('aria-label', textForElement);
-         firstElement.setAttribute('tabindex', '1');
-       } catch (e) {
-         // error
-       }
-       divElement.innerText = textForElement;
-       const docViewerElement = $('#docViewer');
-       const firstChild = docViewerElement[0].firstChild;
-       if ($('.screenReaderText').length === 0) {
-         docViewerElement[0].insertBefore(divElement, firstChild);
-       }
-       window.textForElement = textForElement;
-     }
-   } catch (e) {
-     // error
-   }
- }

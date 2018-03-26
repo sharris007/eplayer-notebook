@@ -1,7 +1,9 @@
-/* global sessionStorage, pdfAnnotatorInstance, $, fileIdsList, eventMap, SparkMD5, WebPDF, fileIdWorker, jQuery, parent */
+/* global sessionStorage, localStorage, pdfAnnotatorInstance, piSession, $, fileIdsList, eventMap, SparkMD5, WebPDF, fileIdWorker, jQuery, parent */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import Cookies from 'universal-cookie';
+import { browserHistory } from 'react-router';
 import Popup from 'react-popup'; // eslint-disable-line import/no-extraneous-dependencies
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import { HeaderComponent } from '@pearson-incubator/vega-core';
@@ -20,6 +22,9 @@ import { displayRegions, handleRegionClick, handleTransparentRegionHover, handle
 import { languages } from '../../../locale_config/translations/index';
 import { createHttps } from '../Utility/Util';
 import { pdfConstants } from './constants/pdfConstants';
+import { resources } from '../../../const/Settings';
+
+const queryString = require('query-string');
 
 // let pdfWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/pdfworker.js');
 // let fileIdWorker = new Worker('/eplayer/pdf/foxit_client_lib/pdfPlayerWorkers/fileidworker.js');
@@ -27,6 +32,7 @@ import { pdfConstants } from './constants/pdfConstants';
 window.fileIdsList = [];
 
 let bookContainerId;
+const consoleUrl = resources.links.consoleUrl;
 
 class PdfPlayer extends Component {
 
@@ -1043,6 +1049,8 @@ class PdfPlayer extends Component {
   handleMoreMenuChange = (e) => {
     if (e.target.textContent === 'Print') {
       this.printPage();
+    } else if (e.target.textContent === 'Sign Out') {
+      this.onSignOutClick();
     }
   }
   printPage = () => {
@@ -1093,6 +1101,70 @@ class PdfPlayer extends Component {
     };
   }
 
+  onSignOutClick = () => {
+    sessionStorage.clear();
+    const langQuery = localStorage.getItem('bookshelfLang');
+    const cookies = new Cookies();
+    let i = localStorage.length;
+    while (i--) {
+      const key = localStorage.key(i);
+      if ((key)) {
+        localStorage.removeItem(key);
+      }
+    }
+    const storagAarr = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      if (localStorage.key(i).indexOf('bookId') === 0) {
+        storagAarr.push(localStorage.key(i));
+      }
+    }
+    for (let i = 0; i < storagAarr.length; i++) {
+      localStorage.removeItem(storagAarr[i]);
+    }
+    if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+      piSession.logout();
+      localStorage.removeItem('secureToken');
+      const redirectCourseUrl = consoleUrl[this.envType];
+      piSession.login(redirectCourseUrl);
+    } else {
+      const parsedQueryStrings = queryString.parse(window.location.search);
+      if (langQuery && langQuery !== '?languageid=1') {
+        if (parsedQueryStrings.invoketype === 'et1') {
+          cookies.remove('ReactPlayerCookie', { path: '/' });
+          localStorage.removeItem('secureToken');
+          browserHistory.push('/eplayer/');
+        } else {
+          if (parsedQueryStrings.invoketype === 'pi') {
+            try {
+              piSession.logout();
+            } catch (e) {
+              // error
+            }
+          }
+          localStorage.removeItem('secureToken');
+          browserHistory.push(`/eplayer/${langQuery}`);
+        }
+      } else if (parsedQueryStrings.invoketype === 'et1') {
+        cookies.remove('ReactPlayerCookie', { path: '/' });
+        localStorage.removeItem('secureToken');
+        browserHistory.push('/eplayer/');
+      } else {
+        if (parsedQueryStrings.invoketype === 'pi') {
+          try {
+            piSession.logout();
+          } catch (e) {
+            // error
+          }
+        }
+        localStorage.removeItem('secureToken');
+        const appPath = window.location.origin;
+        const redirectCourseUrl = `${appPath}/eplayer/bookshelf`;
+        piSession.login(redirectCourseUrl);
+      }
+    }
+  this.props.logoutUserSession(this.props.metaData, this.props.auth); // eslint-disable-line
+  }
+
   render() {
     if ($('.backIconBtn') && (this.props.metaData.startPageNo || this.props.metaData.pageIndexTolaunch)) {
       $('.backIconBtn').hide();
@@ -1120,8 +1192,7 @@ class PdfPlayer extends Component {
     const signOutOption = {
       type: 'menuItem',
       value: 'SignOut',
-      text: 'Sign Out',
-      handleChange: this.onSignOutClick
+      text: 'Sign Out'
     };
     const printOption = {
       type: 'menuItem',
@@ -1215,8 +1286,8 @@ class PdfPlayer extends Component {
                   prefKeySelect={this.handlePreferenceKeySelect}
                 /> :
                 <PreferencesComponent
-                  fetch={this.props.getPreference}
-                  preferenceUpdate={this.props.updatePreference}
+                  fetch={this.props.getPreference} // eslint-disable-line
+                  preferenceUpdate={this.props.updatePreference} // eslint-disable-line
                   disableBackgroundColor={false}
                   locale={this.props.preferences.locale}
                 />
@@ -1362,13 +1433,17 @@ PdfPlayer.propTypes = {
   */
   auth: PropTypes.shape({
     userid: PropTypes.number.isRequired,
-    sessionId: PropTypes.string,
-    piToken: PropTypes.string.isRequired
+    sessionId: PropTypes.string, // eslint-disable-line
+    piToken: PropTypes.string.isRequired // eslint-disable-line
   }).isRequired,
   /**
   * envType indicates environment type which holds either prod or nonprod
   */
-  envType: PropTypes.string
+  envType: PropTypes.string,
+  /**
+  * logoutUserSession is a function to delete the active user session on logout
+  */
+  logoutUserSession: PropTypes.func.isRequired
 };
 
 PdfPlayer.defaultProps = {

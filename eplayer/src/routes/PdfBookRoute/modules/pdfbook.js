@@ -16,7 +16,6 @@ import axios from 'axios';
 // import find from 'lodash/find';
 // import { browserHistory } from 'react-router';
 // import { clients } from '../../../components/common/client';
-// import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
 import { eT1Contants } from '../../../components/common/et1constants';
 
@@ -25,12 +24,6 @@ export { getAnnotations, postAnnotation, deleteAnnotation, putAnnotation } from 
 export { getBookmarks, deleteBookmark, postBookmark } from './actions/bookmarks';
 export { fetchToc } from './actions/tocActions';
 export { fetchRegionsInfo, fetchGlossaryItems } from './actions/regionActions';
-// export { search } from './actions/searchActions';
-
-// const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
-// const etextService = resources.links[security];
-// const etextCourseService = resources.links.courseServiceUrl;
-// const envType = domain.getEnvType();
 
 export const RECEIVE_USER_INFO_PENDING = 'RECEIVE_USER_INFO_PENDING';
 export const RECEIVE_USER_INFO_REJECTED = 'RECEIVE_USER_INFO_REJECTED';
@@ -212,6 +205,24 @@ export function fetchBasepaths(inputParams, authObj) {
     type: 'RECEIVE_BASEPATH',
     payload: axios.get(`${serviceurl}&hsid=${hsid}`),
     timeout: 20000
+  };
+}
+
+export function logoutUserSession(inputParams, authObj) {
+  const userid = authObj.userid;
+  const scenario = inputParams.scenario;
+  const sessionKey = inputParams.ssoKey;
+  const serverDetails = inputParams.serverDetails;
+  const serviceurl = `${serverDetails}/ebook/pdfplayer/logout?values=userid::${userid}::sessionid::` +
+  `${sessionKey}::scenario::${scenario}::authservice::sso::authkey::${sessionKey}&authkey=${sessionKey}`;
+  // tempurl is starts with http to create hash key for matching with server
+  const tempurl = serviceurl.replace('https', 'http');
+  const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
+  return (dispatch) => {
+    axios.get(`${serviceurl}&hsid=${hsid}`).then(() => {
+      const ssoKey = '';
+      dispatch({ type: UPDATE_AUTH_KEY, ssoKey });
+    });
   };
 }
 

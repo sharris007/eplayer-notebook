@@ -422,6 +422,7 @@ export class PdfBook extends Component {
             preferences={preferences}
             glossary={glossary}
             envType={envType}
+            logoutUserSession={this.props.actions.logoutUserSession}
           />}
         />);
     }
