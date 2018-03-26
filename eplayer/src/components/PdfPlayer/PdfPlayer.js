@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import Popup from 'react-popup';
+import Popup from 'react-popup'; // eslint-disable-line import/no-extraneous-dependencies
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 import { HeaderComponent } from '@pearson-incubator/vega-core';
 import { Navigation } from '@pearson-incubator/aquila-js-core';
@@ -12,7 +12,7 @@ import { AudioPlayer, VideoPlayerPreview, ImageViewerPreview } from '@pearson-in
 import { ExternalLink } from '@pearson-incubator/aquila-js-basics';
 import { PopUpInfo } from '@pearson-incubator/popup-info';
 import './PdfPlayer.scss';
-import { initializeWebPDF, registerEvent, Resize, removeEventListenersForWebPDF } from './webPDFUtil';
+import { initializeWebPDF, registerEvent, resize, removeEventListenersForWebPDF } from './webPDFUtil';
 import { getSelectionInfo, restoreHighlights, reRenderHighlightCornerImages, resetHighlightedText }
   from './pdfUtility/annotaionsUtil';
 import { displayRegions, handleRegionClick, handleTransparentRegionHover, handleTransparentRegionUnhover }
@@ -67,10 +67,10 @@ class PdfPlayer extends Component {
         pageIndexToLaunch = sessionStorage.getItem('currPageIndex');
       }
     } else if (this.props.pagePlayList[0].isCover) {
-      pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch :
+      pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch : // eslint-disable-line no-nested-ternary
                             this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 'cover';
     } else {
-      pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch :
+      pageIndexToLaunch = this.props.metaData.pageIndexTolaunch ? this.props.metaData.pageIndexTolaunch :// eslint-disable-line no-nested-ternary
                             this.props.metaData.startPageNo ? this.props.metaData.startPageNo : 1;
     }
     initializeWebPDF(pdfConstants.foxitBaseUrl[this.envType], pageIndexToLaunch);
@@ -91,9 +91,9 @@ class PdfPlayer extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', Resize);
+    window.removeEventListener('resize', resize);
     removeEventListenersForWebPDF();
-    eventMap = [];
+    eventMap = []; // eslint-disable-line no-global-assign
     window.fileIdsList = [];
     sessionStorage.removeItem('currPageIndex');
   }
@@ -184,7 +184,7 @@ class PdfPlayer extends Component {
         const goToPageNo = requestedPage - this.state.currentChapter.startpageno;
         if (goToPageNo >= 0) {
           WebPDF.ViewerInstance.gotoPage(goToPageNo);
-          this.setState({ currPageObj: requestedPageObj }, function () {
+          this.setState({ currPageObj: requestedPageObj }, () => {
             this.displayHighlights();
             this.displayHotspots();
           });
@@ -862,6 +862,29 @@ class PdfPlayer extends Component {
     } catch (e) {
       // error
     }
+    const lowerIndex = this.state.currPageObj.id;
+    const upperIndex = lowerIndex + 5;
+    let startIndex;
+    let endIndex;
+    if ((lowerIndex >= 0) && (upperIndex < this.props.pagePlayList.length)) {
+      startIndex = lowerIndex;
+      endIndex = upperIndex;
+    } else if ((lowerIndex >= 0) && !(upperIndex < this.props.pagePlayList.length)) {
+      startIndex = lowerIndex;
+      endIndex = this.props.pagePlayList.length - 1;
+    } else if (lowerIndex < 0) {
+      return;
+    }
+    let pageIdsToFetch;
+    if (startIndex && endIndex) {
+      for (let arrIndex = startIndex; arrIndex < endIndex; arrIndex++) {
+        if (pageIdsToFetch === null || pageIdsToFetch === undefined || pageIdsToFetch === '') {
+          pageIdsToFetch = arrIndex;
+        } else if (pageIdsToFetch !== null && pageIdsToFetch !== undefined && pageIdsToFetch !== '') {
+          pageIdsToFetch = `${pageIdsToFetch},${arrIndex}`;
+        }
+      }
+    }
     let currentPageRegions;
     if (this.props.hotspots.data.regions.length > 0) {
       for (let k = 0; k < this.props.hotspots.data.regions.length; k++) {
@@ -875,7 +898,7 @@ class PdfPlayer extends Component {
       }
     }
     if (currentPageRegions === null || currentPageRegions === '' || currentPageRegions === undefined) {
-      this.props.hotspots.load.get(this.props.metaData, this.state.currPageObj.id).then(() => {
+      this.props.hotspots.load.get(this.props.metaData, pageIdsToFetch).then(() => {
         if (this.props.hotspots.data.regions.length > 0) {
           for (let k = 0; k < this.props.hotspots.data.regions.length; k++) {
             if (this.state.currPageObj.id === this.props.hotspots.data.regions[k].pageId) {
@@ -936,7 +959,7 @@ class PdfPlayer extends Component {
     }
   }
 
-  handleSearchResultClick = (pageOrder, resultType) => {
+  handleSearchResultClick = (pageOrder) => {
     if (this.props.metaData.startPageNo) {
       if (pageOrder >= this.props.metaData.startPageNo
           && pageOrder <= this.props.metaData.lastPage) {

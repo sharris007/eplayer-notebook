@@ -22,8 +22,9 @@ import PdfPlayer from '../../../components/PdfPlayer';
 import { eT1Contants } from '../../../components/common/et1constants';
 import { domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
-import { fetchChapterLevelPdf } from '../modules/service';
+import { fetchChapterLevelPdf, fetchbookDetails } from '../modules/service';
 import PdfViewer from './PdfViewer';
+import { search } from '../modules/actions/searchActions';
 // import { PdfViewer } from '@pearson-incubator/vega-viewer';
 
 /* Creating PdfBook component. */
@@ -108,7 +109,7 @@ export class PdfBook extends Component {
         });
         const secureToken = localStorage.getItem('secureToken');
         const urn = 'compositeBookShelf';
-        await this.props.actions.fetchbookDetails(urn, secureToken, bookID).then((bookDetails) => {
+        await fetchbookDetails(urn, secureToken, bookID).then((bookDetails) => {
           if (bookDetails) {
             bookData = bookDetails;
           }
@@ -360,9 +361,9 @@ export class PdfBook extends Component {
         data: this.props.book.regionsData
       };
 
-      const search = {
+      const searchBook = {
         load: {
-          get: this.props.actions.search
+          get: search
         }
       };
 
@@ -416,7 +417,7 @@ export class PdfBook extends Component {
             bookCallbacks={bookCallbacks}
             parentType={parentType}
             hotspots={hotspots}
-            search={search}
+            search={searchBook}
             basepaths={basepaths}
             preferences={preferences}
             glossary={glossary}
