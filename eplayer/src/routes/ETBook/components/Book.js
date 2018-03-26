@@ -110,6 +110,7 @@ export class Book extends Component {
     this.productType = '';
     this.userType = '';
     this.productModel= '';
+    this.gtmPath = '';
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
     this.state.pageDetails.currentPageURL = '';
@@ -126,6 +127,7 @@ export class Book extends Component {
     this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
     window.isDisableAnnotation = resources.constants.isDisableAnnotation;
     window.iseUrl = resources.links.iseUrl[domain.getEnvType()]+'/courses/'+ this.props.params.bookId +'/notes';
+    this.getGTMPath();
   }
   componentWillMount = () => {
     let isSessionLoaded = false;
@@ -976,14 +978,15 @@ export class Book extends Component {
     return scriptSrc;
   };
 
-  getGtmSnippet = () => {
-    let gtmId = 'GTM-MVKSFLM'; // DEV GTM ID
-    if(window.location.href.match('etext-qa-stg.pearson.com') || window.location.href.match('etext-stg.pearson.com')) {
-      gtmId = 'GTM-W8SHCX2';
-    } else if(window.location.href.match('etext.pearson.com')) {
-      gtmId = 'GTM-NMNBZDC'
+  getGTMPath = () => {
+    this.gtmPath = `${window.location.origin}/eplayer/gtmPath/DEV.js`; // DEV
+    if(window.location.href.match('etext-qa-stg.pearson.com')) {
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/QA.js`;
+    } else if(window.location.href.match('etext-stg.pearson.com')) { 
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/STG.js`;
+    }else if(window.location.href.match('etext.pearson.com')) {
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/PROD.js`;
     }
-    return "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer'," + "'" + gtmId + "'" + ");";
   }
   closeHeaderPopups = (e) => {
     if (!this.state.drawerOpen) {
@@ -1254,7 +1257,6 @@ export class Book extends Component {
     }
     if (playlistReceived && bookdetailsdata) {
       const getMathjaxJs = this.loadMathjax();
-      const getGTM = this.getGtmSnippet();
       let i;
       if (bookdetailsdata.roles === undefined) {
         this.userType = bookdetailsdata.userCourseSectionDetail.authgrouptype;
@@ -1322,9 +1324,8 @@ export class Book extends Component {
           ],
           scriptsToAdd: [`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
           `${window.location.origin}/${annJsPath}`,
-            getMathjaxJs],
-          stylesToAdd: [`${window.location.origin}/${annCssPath}`],
-          scriptFuntionToAdd: [this.getGtmSnippet()]
+            getMathjaxJs,this.gtmPath],
+          stylesToAdd: [`${window.location.origin}/${annCssPath}`]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
