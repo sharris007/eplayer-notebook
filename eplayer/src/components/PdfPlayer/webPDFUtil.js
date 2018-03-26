@@ -164,7 +164,7 @@ export function initializeWebPDF(baseUrl, pageToLoad) {
     script8.src = `${baseUrl}scripts/config/config.js`;
     script8.async = false;
     const script9 = document.createElement('SCRIPT');
-    script9.src = '/pdf/foxit_client_lib/webpdf.mini.js';
+    script9.src = '/eplayer/pdf/foxit_client_lib/webpdf.mini.js';
     script9.async = false;
     script9.onload = () => {
       const optionsParams = {
