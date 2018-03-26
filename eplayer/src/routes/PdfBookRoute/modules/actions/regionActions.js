@@ -25,7 +25,6 @@ export function fetchRegionsInfo(inputParams, pageorder) {
   const sessionKey = inputParams.ssoKey;
   const bookServerURL = inputParams.serverDetails;
   let isPageFound = false;
-  const hotspotObj = {};
   let foundPageId;
   let arrIndex;
   let k;
@@ -56,7 +55,7 @@ export function fetchRegionsInfo(inputParams, pageorder) {
           return dispatch({ type: 'RECEIVE_REGIONS', bookState });
         } else if (response.data.length) {
           for (arrIndex = 0; arrIndex < response.data[0].regionsList.length; arrIndex++) {
-            response.data.forEach((region) => {
+            response.data.forEach((region) => { // eslint-disable-line no-loop-func
               const regionObj = {};
               if (region.regionsList[arrIndex].linkTypeID !== 16) {
                 regionObj.regionID = region.regionsList[arrIndex].regionID;
@@ -75,7 +74,7 @@ export function fetchRegionsInfo(inputParams, pageorder) {
                 regionObj.imagePath = region.regionsList[arrIndex].imagePath;
                 regionObj.platformID = region.regionsList[arrIndex].platformID;
                 regionObj.transparent = region.regionsList[arrIndex].transparent;
-                regionObj.pageorder = pageorder;
+                regionObj.pageorder = region.regionsList[arrIndex].pageOrder;
                 if (bookState.regionsData.regions.length > 0) {
                   for (k = 0; k < bookState.regionsData.regions.length; k++) {
                     if (bookState.regionsData.regions[k].pageId === regionObj.pageorder) {
@@ -90,7 +89,9 @@ export function fetchRegionsInfo(inputParams, pageorder) {
                       bookState.regionsData.regions[k].hotspotList.push(regionObj);
                     }
                   }
+                  isPageFound = false;
                 } else {
+                  const hotspotObj = {};
                   hotspotObj.pageId = regionObj.pageorder;
                   hotspotObj.hotspotList = [];
                   hotspotObj.hotspotList.push(regionObj);
@@ -127,12 +128,13 @@ export function fetchGlossaryItems(inputParams, glossaryentryid) {
   const tempurl = serviceurl.replace('https', 'http');
   const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
   return dispatch =>
-     axios.get(`${serviceurl}&hsid=${hsid}`,
-       {
-         timeout: 20000
-       })
+    axios.get(`${serviceurl}&hsid=${hsid}`,
+      {
+        timeout: 20000
+      })
     .then((response) => {
       if (response.status >= 400) {
+        // error;
         return;
       } else if (response.data.length) {
         for (let arrIndex = 0; arrIndex < response.data[0].glossaryList.length; arrIndex++) {

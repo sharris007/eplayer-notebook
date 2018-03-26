@@ -143,8 +143,8 @@ export function displayRegions(hotspots, hotspotFeatures, lodash) {
       const heightScale = pageHeight / originalPdfHeight;
       for (let i = 0; i < hotspots.length; i++) {
         try {
-          $(`${'#' + 'region_'}${hotspots[i].regionID}`).remove();
-          $(`${'#' + 'icon_'}${hotspots[i].regionID}`).remove();
+          $(`${'#' + 'region_'}${hotspots[i].regionID}`).remove(); // eslint-disable-line no-useless-concat
+          $(`${'#' + 'icon_'}${hotspots[i].regionID}`).remove(); // eslint-disable-line no-useless-concat
         } catch (e) {
           // error
         }
@@ -226,7 +226,7 @@ export function handleRegionClick(hotspotID, baseUrl) {
   let clickedRegionDetails;
   let basepath;
   let regionData;
-  const youtubeRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/;
+  const youtubeRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/; // eslint-disable-line no-useless-escape,max-len
   if (regionListData.length > 0) {
     for (let i = 0; i < regionListData.length; i++) {
       if (hotspotID === (`region_${regionListData[i].regionID}`)) {

@@ -16,7 +16,7 @@ import axios from 'axios';
 // import find from 'lodash/find';
 // import { browserHistory } from 'react-router';
 // import { clients } from '../../../components/common/client';
-import { resources, domain } from '../../../../const/Settings';
+// import { resources, domain } from '../../../../const/Settings';
 import { getmd5 } from '../../../components/Utility/Util';
 import { eT1Contants } from '../../../components/common/et1constants';
 
@@ -25,12 +25,12 @@ export { getAnnotations, postAnnotation, deleteAnnotation, putAnnotation } from 
 export { getBookmarks, deleteBookmark, postBookmark } from './actions/bookmarks';
 export { fetchToc } from './actions/tocActions';
 export { fetchRegionsInfo, fetchGlossaryItems } from './actions/regionActions';
-export { search } from './actions/searchActions';
+// export { search } from './actions/searchActions';
 
 // const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 // const etextService = resources.links[security];
-const etextCourseService = resources.links.courseServiceUrl;
-const envType = domain.getEnvType();
+// const etextCourseService = resources.links.courseServiceUrl;
+// const envType = domain.getEnvType();
 
 export const RECEIVE_USER_INFO_PENDING = 'RECEIVE_USER_INFO_PENDING';
 export const RECEIVE_USER_INFO_REJECTED = 'RECEIVE_USER_INFO_REJECTED';
@@ -80,30 +80,6 @@ export function request(component) {
   }
 }
 
-export function fetchbookDetails(urn, piToken, bookID) {
-  const url = `${etextCourseService[envType]}/web/compositeBookShelf`;
-  return dispatch =>
-     axios.get(url, {
-       headers: { 'Content-Type': 'application/json',
-         'X-Authorization': piToken }
-     }).then((response) => {
-       let bookDetails;
-       if (response.status >= 400) {
-         // console.log('bookshelf error');
-         // bookshelf error
-       } else if (response.data) {
-         const booksArray = response.data.entries;
-         for (let i = 0; i < booksArray.length; i++) {
-           if (booksArray[i].bookId === bookID) {
-             bookDetails = booksArray[i];
-             break;
-           }
-         }
-       }
-       return bookDetails;
-     });
-}
-
 export function getlocaluserID(bookServerURL, globaluserid, type) {
   const serviceurl = `${bookServerURL}/ebook/ipad/getlocaluserid?globaluserid=${globaluserid}` +
     `&type=${type}&outputformat=JSON`;
@@ -133,11 +109,13 @@ export function validateUser(userid, scenario, invoketype, bookid, roletypeid, p
   return dispatch =>
     axios.get(`${serviceurl}&hsid=${hsid}`).then((response) => {
       if (response.status >= 400) {
+        // return;
         // console.log('validateuser service error');
         // validateuser service error
       } else if (response.data) {
         const ssoKey = response.data[0].authKey;
-        return dispatch({ type: UPDATE_AUTH_KEY, ssoKey });
+        // return dispatch({ type: UPDATE_AUTH_KEY, ssoKey })
+        dispatch({ type: UPDATE_AUTH_KEY, ssoKey });
       }
     });
 }
