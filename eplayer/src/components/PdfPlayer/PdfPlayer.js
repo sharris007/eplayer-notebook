@@ -166,6 +166,7 @@ class PdfPlayer extends Component {
       if (this.state.regionData) {
         this.setState({ regionData: null });
       }
+      $('.ReactModalPortalAnimated').remove();
       $('.regionContainer').css('display','none');
     } catch (e) {
       // error
@@ -267,7 +268,9 @@ class PdfPlayer extends Component {
           $('#player-iframesppModalBody').remove();
           $('#sppModal').css('display', 'none');
           viewer.setState({ regionData: null });
+          $('.ReactModalPortalAnimated').remove();
           $('.regionContainer').css('display','none');
+
         } catch (e) {
           // error
         }     
@@ -350,7 +353,7 @@ class PdfPlayer extends Component {
 
   onPageRequest = (requestedPageObj) => {
     try {
-      this.setState({ regionData: null });
+      this.onHotspotCloseButton();
       this.setState({ popUpCollection: [] });
     } catch (e) {
       // error
@@ -364,7 +367,7 @@ class PdfPlayer extends Component {
     try {
       $('#printFrame').remove();
 
-      this.setState({ regionData: null });
+      this.onHotspotCloseButton();
       this.setState({ popUpCollection: [] });
     } catch (e) {
       // error
@@ -677,7 +680,7 @@ class PdfPlayer extends Component {
   fetchClickedRegionData(id) {
     try {
       Popup.close();
-      this.setState({ regionData: null });
+      this.onHotspotCloseButton();
     } catch (e) {
       // error
     }
