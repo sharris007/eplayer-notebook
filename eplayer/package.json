@@ -114,6 +114,7 @@
     "@pearson-incubator/toc": "0.1.60",
     "@pearson-incubator/vega-core": "0.0.97",
     "@pearson-incubator/vega-drawer": "^0.0.2",
+    "@pearson-incubator/vega-pxe-scripts":"0.0.x",
     "@pearson-incubator/vega-viewer": "0.0.98",
     "@pearson-incubator/viewer": "0.1.44",
     "axios": "^0.15.3",
