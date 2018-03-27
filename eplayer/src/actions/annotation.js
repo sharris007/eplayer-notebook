@@ -26,25 +26,25 @@ const gotNotes = notes => ({
 });
 export const annStructureChange = (annTotalList) => {
   const colorArr = {
-    '#55DF49': 'Green',
-    '#FC92CF': 'Pink',
-    '#FFD232': 'Yellow',
-    '#ccf5fd': 'Instructor'
+    QUESTIONS: 'Yellow',
+    MAIN_IDEAS: 'Green',
+    OBSERVATIONS: 'Pink',
+    FROM_INSTRUCTOR: 'Instructor'
   };
   const annListArray = [];
   if (annTotalList && annTotalList.length > 0) {
     for (let i = 0; i < annTotalList.length; i++) {
-      if (!annTotalList[i].data.isCustomAnotation) {
+      if (annTotalList[i].pageId) {
         const setArray = {
-        pageId: annTotalList[i].data.source.id,
-        id: annTotalList[i].id,
-        author: annTotalList[i].data.user,
-        time: annTotalList[i].createdTime,
-        text: annTotalList[i].data.quote,
-        comment: annTotalList[i].data.text || '',
-        color: colorArr[annTotalList[i].data.colorCode] || 'Green'
+          pageId: annTotalList[i].pageId,
+          id: annTotalList[i].id,
+          author: annTotalList[i].userId,
+          time: annTotalList[i].createdTime,
+          text: annTotalList[i].data.quote,
+          comment: annTotalList[i].data.text || '',
+          color: colorArr[annTotalList[i].noteType]
         };
-      annListArray.push(setArray);
+        annListArray.push(setArray);
       }
     }
   }

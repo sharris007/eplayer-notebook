@@ -83,6 +83,7 @@ function getTocUrlOnResp(resp) {
   }
   return tocUrl ? tocUrl.replace('http:', 'https:') : null;
 }
+
 export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
   PlaylistApi.doGetPiUserDetails(data).then(response => response.json())
     .then((response) => {
@@ -130,7 +131,9 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
                 subItems = itemObj.items.map((n) => {
                   let children = [];
                   if (n.items && n.items.length) {
-                    children = n.items.map(child => Object.assign({...child}, {level:2}));
+                    children = n.items.map(child => Object.assign(
+                      { ...child }, { level: 2, additionalInfo: { key: 'chapterId', chapterId: itemObj.id } }
+                      ));
                   }
                   return {
                     urn: n.id,
@@ -138,9 +141,10 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
                     id: n.id,
                     playOrder: n.playOrder,
                     title: n.title,
-                    children: children,
-                    level:1
-                  }
+                    children,
+                    level: 1,
+                    additionalInfo: { key: 'chapterId', chapterId: itemObj.id }
+                  };
                 });
               }
               return {
@@ -151,7 +155,8 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
                 playOrder: itemObj.playOrder,
                 children: subItems,
                 href: itemObj.href,
-                level: 0
+                level: 0,
+                additionalInfo: { key: 'chapterId', chapterId: itemObj.id }
               };
             });
             tocResponse.list = listData;
@@ -159,7 +164,7 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
             const tocFinalModifiedData = { content: tocResponse, bookDetails };
             dispatch(getTocCompleteDetails(tocFinalModifiedData));
             const result = [];
-            const resultAttr = ['id', 'title', 'href'];
+            const resultAttr = ['id', 'title', 'href', 'additionalInfo'];
             const playlistData = {};
             function prepareFlatten(items) {
               _.forEach(items, (item) => {
@@ -306,7 +311,7 @@ export const getCourseCallServiceForRedirect = data => dispatch => PlaylistApi.d
   .then(response => response.json())
   .then((response) => {
     if (response.status >= 400) {
-      //dispatch(getBookDetails(response));
+      // dispatch(getBookDetails(response));
       browserHistory.push(`/eplayer/error/${response.status}`);
       return false;
     }
@@ -406,7 +411,9 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
           subItems = itemObj.items.map((n) => {
             let children = [];
             if (n.items && n.items.length) {
-              children = n.items.map(child => Object.assign({...child}, {level:2}));
+              children = n.items.map(child => Object.assign(
+                { ...child }, { level: 2, additionalInfo: { key: 'chapterId', chapterId: itemObj.id } }
+                ));
             }
             return {
               urn: n.id,
@@ -414,9 +421,10 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
               id: n.id,
               playOrder: n.playOrder,
               title: n.title,
-              children: children,
-              level:1
-            }
+              children,
+              level: 1,
+              additionalInfo: { key: 'chapterId', chapterId: itemObj.id }
+            };
           });
         }
         return {
@@ -427,7 +435,8 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
           playOrder: itemObj.playOrder,
           children: subItems,
           href: itemObj.href,
-          level: 0
+          level: 0,
+          additionalInfo: { key: 'chapterId', chapterId: itemObj.id }
         };
       });
       tocResponse.list = listData;
@@ -435,7 +444,7 @@ export const getCourseCallService = (data, isFromCustomToc) => dispatch => Playl
       const tocFinalModifiedData = { content: tocResponse, bookDetails };
       dispatch(getTocCompleteDetails(tocFinalModifiedData));
       const result = [];
-      const resultAttr = ['id', 'title', 'href'];
+      const resultAttr = ['id', 'title', 'href', 'additionalInfo'];
       const playlistData = {};
       function prepareFlatten(items) {
         _.forEach(items, (item) => {
