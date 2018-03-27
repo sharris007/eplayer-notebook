@@ -110,6 +110,7 @@ export class Book extends Component {
     this.productType = '';
     this.userType = '';
     this.productModel= '';
+    this.gtmPath = '';
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
     this.state.pageDetails.currentPageURL = '';
@@ -126,6 +127,7 @@ export class Book extends Component {
     this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
     window.isDisableAnnotation = resources.constants.isDisableAnnotation;
     window.iseUrl = resources.links.iseUrl[domain.getEnvType()]+'/courses/'+ this.props.params.bookId +'/notes';
+    this.getGTMPath();
   }
   componentWillMount = () => {
     let isSessionLoaded = false;
@@ -975,6 +977,17 @@ export class Book extends Component {
     scriptSrc += pearsonMathjax;
     return scriptSrc;
   };
+
+  getGTMPath = () => {
+    this.gtmPath = `${window.location.origin}/eplayer/gtmPath/DEV.js`; // DEV
+    if(window.location.href.match('etext-qa-stg.pearson.com')) {
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/QA.js`;
+    } else if(window.location.href.match('etext-stg.pearson.com')) { 
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/STG.js`;
+    }else if(window.location.href.match('etext.pearson.com')) {
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/PROD.js`;
+    }
+  }
   closeHeaderPopups = (e) => {
     if (!this.state.drawerOpen) {
       const eleSearch = $(e.target).closest('.searchIconBtn');
@@ -1311,7 +1324,7 @@ export class Book extends Component {
           ],
           scriptsToAdd: [`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
           `${window.location.origin}/${annJsPath}`,
-            getMathjaxJs],
+            getMathjaxJs,this.gtmPath],
           stylesToAdd: [`${window.location.origin}/${annCssPath}`]
         },
         metaData: {
@@ -1359,6 +1372,7 @@ export class Book extends Component {
       audio: true,
       moreIcon: true
     };
+    
     return (
       <div onClick={this.closeHeaderPopups}>
         {playlistReceived &&
