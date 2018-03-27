@@ -166,6 +166,7 @@ class PdfPlayer extends Component {
       if (this.state.regionData) {
         this.setState({ regionData: null });
       }
+      $('.regionContainer').css('display','none');
     } catch (e) {
       // error
     }
@@ -260,15 +261,16 @@ class PdfPlayer extends Component {
     }
     const viewer = this;
     $(document).on('keyup', (evt) => {
-      if (evt.keyCode === 27 && $('#hotspot')) {
+      if (evt.keyCode === 27) {
         try {
           Popup.close();
           $('#player-iframesppModalBody').remove();
           $('#sppModal').css('display', 'none');
+          viewer.setState({ regionData: null });
+          $('.regionContainer').css('display','none');
         } catch (e) {
           // error
-        }
-        viewer.setState({ regionData: null });
+        }     
       }
     });
   }
@@ -730,8 +732,10 @@ class PdfPlayer extends Component {
             jQuery('.play-pause').click();
           });
           $.getScript('https://code.jquery.com/ui/1.12.1/jquery-ui.js', () => {
-            $('.aquila-audio-player').draggable();
+            $('.regionContainer').draggable();
           });
+          $('.regionContainer').css('display','block');
+          $('#regionCloseBtn').css('display','block');
         } catch (e) {
           // error
         }
@@ -1303,7 +1307,11 @@ class PdfPlayer extends Component {
             currentPageId={this.state.currPageObj.id}
           /> : null
       }
-        {this.state.regionData ? <div id="hotspot">{this.renderHotspot(this.state.regionData)}</div> : null }
+        {this.state.regionData ?
+          <div className='regionContainer'>
+            <span id='regionCloseBtn' className='regionCloseBtn' onClick={this.onHotspotCloseButton}>&times;</span>
+            <div id="hotspot">{this.renderHotspot(this.state.regionData)}</div>
+          </div> : null }
         {this.state.popUpCollection.length ?
           <PopUpInfo bookContainerId={bookContainerId} popUpCollection={this.state.popUpCollection} /> : null }
         <div id="main" className="pdf-fwr-pc-main">
