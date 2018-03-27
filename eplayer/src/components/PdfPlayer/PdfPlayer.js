@@ -1199,7 +1199,7 @@ class PdfPlayer extends Component {
       value: 'Print',
       text: 'Print'
     };
-    if (this.props.metaData.bookFeatures.hasPrintLink) {
+    if (this.props.metaData.bookFeatures.hasPrintLink && !this.state.currPageObj.printDisabled) {
       moreMenuData.menuItem.push(printOption);
       moreMenuData.menuItem.push({ type: 'divider' });
     }
