@@ -55,6 +55,7 @@ class PdfPlayer extends Component {
     this.highlightList = [];
     this.currZoomLevel = 1;
     this.envType = this.props.envType ? this.props.envType : 'nonprod';
+    this.searchTerm = null;
 
     registerEvent('viewerReady', this.renderPdf.bind(this));
     registerEvent('pageLoaded', this.onPageLoad.bind(this));
@@ -345,6 +346,10 @@ class PdfPlayer extends Component {
       this.setCurrentZoomLevel(this.currZoomLevel);
       this.setState({ pageLoaded: true });
     }
+    if(this.searchTerm){
+      this.searchTextFunc(this.searchTerm);
+    }
+    this.searchTerm = null;
   }
 
   onPageChange = () => {
@@ -361,6 +366,7 @@ class PdfPlayer extends Component {
     if (_.isObject(requestedPageObj)) {
       this.renderPdf(requestedPageObj.id);
     }
+    this.searchTerm = null;
   }
 
   goToPage = (pageNo) => {
@@ -392,6 +398,7 @@ class PdfPlayer extends Component {
     if (pageToNavigate !== undefined) {
       this.goToPage(pageToNavigate.id);
     }
+    this.searchTerm = null;
   }
 
   handleSelection = () => {
@@ -670,6 +677,9 @@ class PdfPlayer extends Component {
     if(this.state.currPageObj.isCover !== true)
     {
       this.displayHotspots();
+    }
+    if($('.fwr-search-result-highlight').length){
+      WebPDF.ViewerInstance.highlightSearchResult();
     }
   }
 
@@ -987,7 +997,19 @@ class PdfPlayer extends Component {
   }
 
   searchCallback = (searchTerm, handleResults) => {
-    this.props.search.load.get(this.props.metaData, searchTerm, handleResults);
+    this.props.search.load.get(this.props.metaData, searchTerm, handleResults).then((searchResult) => {
+      if(searchResult[0].results.length){
+         this.searchTextFunc(searchTerm);
+      }else{
+        $('.fwr-search-result-highlight').remove();
+      }
+    });
+    this.searchTerm = searchTerm;
+  }
+
+  searchTextFunc = (searchTerm) => {
+    $('.fwr-search-result-highlight').remove();
+    WebPDF.ViewerInstance.searchAllText(searchTerm,WebPDF.ViewerInstance.getCurPageIndex() + 1);
   }
 
   addBookmarkHandler = () => {

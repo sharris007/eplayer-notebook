@@ -449,16 +449,25 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             }, this.getPluginByName = function(a) {
                 return r.getPluginByName(a)
             }, this.searchText = function(a, b, c) {
-                var e = r.getPluginByName(d.FindToolPluginName);
+                //var e = r.getPluginByName(d.FindToolPluginName);
+                var e = ss.createSearchServie(d.Tool.getReaderApp());
                 return e ? r.isLargeFile() ? void r.isLargeFileReady().then(function(c) {
                     return c ? b === d.SearchDirection.Down ? e.searchTextDown(a) : b === d.SearchDirection.Up ? e.searchTextUp(a) : (console.warn("Invalid direction parameter for searching text."), !1) : void d.alert(null, null, i18n.t("ParseError.DocumentIsProcessing"))
                 }) : b === d.SearchDirection.Down ? e.searchTextDown(a) : b === d.SearchDirection.Up ? e.searchTextUp(a) : (console.warn("Invalid direction parameter for searching text."), !1) : (console.warn("Find tool is not enabled."), !1)
             }, this.searchAllText = function(a, b, c, e) {
-                var f = r.getPluginByName(d.FindToolPluginName),
+                //var f = r.getPluginByName(d.FindToolPluginName),
+                var f = ss.createSearchServie(d.Tool.getReaderApp()),
                     g = this.getPageCount();
-                return null == a || "" == a || null == e || null == b || 0 == b || e > g ? null : void(f ? r.isLargeFile() ? r.isLargeFileReady().then(function(g) {
+                return null == a || "" == a || null === e || null == b || 0 == b || e > g ? null : void(f ? r.isLargeFile() ? r.isLargeFileReady().then(function(g) {
                     g ? f.searchAllText(a, b, c, e) : d.alert(null, null, i18n.t("ParseError.DocumentIsProcessing"))
                 }) : f.searchAllText(a, b, c, e) : console.warn("Find tool is not enabled."))
+            }, this.highlightSearchResult = function() {            /*added for highligting searched text ETEXT-3942*/
+                 if(WebPDF.searchResult.count()){
+                        $('.fwr-search-result-highlight').remove();
+                        for(let i=0; i<WebPDF.searchResult.count(); i++){
+                            sv.prototype.highlightSearchResult(0, WebPDF.searchResult.getRects(i));
+                        }
+                    }
             }, this.isDocLoaded = function() {
                 return r.isDocLoaded()
             }, this.print = function() {
@@ -1447,15 +1456,15 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                                     i = h.indexOf("("),
                                     j = h.indexOf(")"),
                                     k = h.substring(0, i + 1) + f + h.substring(j, h.length);
-                                e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), k), e.closeWaiting(wa), ua = 1;
+                                e.alert(wa, '', k), e.closeWaiting(wa), ua = 1;
                                 var c = '{"DocSecurity":"cDRMEncryption","Status":"Attempt to open FoxitConnectedPDFDRM protected file without authorization."}';
                                 wa.addRecord("ReadOnly", "Open", c)
                             } else if (b == e.PDFError.ERROR_NETWORK_ERROR) {
-                                e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), i18n.t("cPDFError.NetWorkOrServerError")), e.closeWaiting(wa);
+                                e.alert(wa, '', i18n.t("cPDFError.NetWorkOrServerError")), e.closeWaiting(wa);
                                 var c = '{"Status":"Failed to open the file for the network not avaiable."}';
                                 wa.addRecord("ReadOnly", "Open", c)
                             } else if (b === e.PDFError.ERROR_PDFPARSE_FOXITCONNECTEDDRM) {
-                                if (!e.ConnectPdf) return e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), i18n.t("ParseError.ErrHandle")), void e.closeWaiting(wa)
+                                if (!e.ConnectPdf) return e.alert(wa, '', i18n.t("ParseError.ErrHandle")), void e.closeWaiting(wa)
                             } else {
                                 var l = a.status;
                                 if (e.Common.isNeedRetry(l)) Ta--, setTimeout(function() {
@@ -1469,7 +1478,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                             }
                         }
                 } else {
-                    e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), i18n.t("ParseError.LoadError")), e.closeWaiting(wa);
+                    e.alert(wa, '', i18n.t("ParseError.LoadError")), e.closeWaiting(wa);
                     var c = '{"Status":"Failed to open the file."}';
                     wa.addRecord("ReadOnly", "Open", c)
                 }
@@ -1478,7 +1487,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             function y(a, b) {
                 if (e.closeWaiting(wa), e.endConfirmPassword(), S.setReaderApp(wa), S.setImageRenderEngine(), !a) {
                     var c = '{"Status":"Failed to open the file."}';
-                    return wa.addRecord("ReadOnly", "Open", c), void e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), i18n.t("ParseError.LoadError"))
+                    return wa.addRecord("ReadOnly", "Open", c), void e.alert(wa, '', i18n.t("ParseError.LoadError"))
                 }
                 try {
                     O = a, Ma = !0;
@@ -2250,7 +2259,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     success: function(a) {
                         if (!a) return console.error("failed to get user permission!"), !1;
                         var b = a.error;
-                        return 0 == b ? (ka = a.permission, w(e.UserPermission.DOCUMENT_VIEW) ? (A(), e.waiting(wa, null, i18n.t("Load.Opening")), Ta = g.defaults.maxManifestRetryCount, z(null, !1), !0) : void e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), i18n.t("User.NoViewPermission"))) : (console.error("failed to get user permission!"), !1)
+                        return 0 == b ? (ka = a.permission, w(e.UserPermission.DOCUMENT_VIEW) ? (A(), e.waiting(wa, null, i18n.t("Load.Opening")), Ta = g.defaults.maxManifestRetryCount, z(null, !1), !0) : void e.alert(wa, '', i18n.t("User.NoViewPermission"))) : (console.error("failed to get user permission!"), !1)
                     },
                     error: function() {
                         console.error("failed to get user permission!");
@@ -2261,7 +2270,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                 // For poc
                 let aa = {error: 0, permission: -1};
                 let bb = aa.error;
-                return 0 == bb ? (ka = aa.permission, w(e.UserPermission.DOCUMENT_VIEW) ? (A(), e.waiting(wa, null, i18n.t("Load.Opening")), Ta = g.defaults.maxManifestRetryCount, z(null, !1), !0) : void e.alert(wa, i18n.t("CommonDialog.DefaultDlgTitle"), i18n.t("User.NoViewPermission"))) : (console.error("failed to get user permission!"), !1)
+                return 0 == bb ? (ka = aa.permission, w(e.UserPermission.DOCUMENT_VIEW) ? (A(), e.waiting(wa, null, i18n.t("Load.Opening")), Ta = g.defaults.maxManifestRetryCount, z(null, !1), !0) : void e.alert(wa, '', i18n.t("User.NoViewPermission"))) : (console.error("failed to get user permission!"), !1)
             }, this.onResize = function(a, b) {
                 U && U.onResize(a, b), $(wa).trigger(e.EventList.MAINFRAME_RESIZE, {})
             }, this.registerToolHandler = function(a) {
@@ -4292,7 +4301,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
         }, WebPDF.PDFMatrix
     }), define("core/Common/CommonDialog", ["core/WebPDF"], function(a, b, c) {
         function d(a, b, c, d, e) {
-            v = i18n.t("CommonDialog.DefaultDlgTitle");
+            v = ''
             var g = "fwrTextCopyArea",
                 h = "fwrTextCopyDlg",
                 i = "fwrTextCopyClose",
@@ -4369,7 +4378,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             null == a && (a = f.Tool.getReaderApp()), null == b && (b = "fwr-ajax-loading"), c || (c = "");
             var d = $("#" + f.Tool.getReaderApp().getMainFrameId());
             if (!d.hasClass("fwr-doc-viewer-loading")) {
-                v = i18n.t("CommonDialog.DefaultDlgTitle");
+                v = ''
                 var e = "LoadingDlg" + b,
                     g = !1;
                 if (u[b] ? g = !0 : (a.addIgnoreMouseEventClass(b), s[b] = "<div id='" + e + "' class='fwr-modal fwr-hide fwr-fade fwr-in " + b + "'><span id='fwr_loadingText' class='fwr-ajax-loading-text'>" + c + "</span></div>", t[b] = $(s[b]), u[b] = !0), t[b]) {
@@ -4389,7 +4398,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
         }, f.uploading = function(a, b) {
             var c = $("#" + f.Tool.getReaderApp().getMainFrameId()),
                 d = "fwr-ajax-uploading";
-            null == a && (a = f.Tool.getReaderApp()), v = i18n.t("CommonDialog.DefaultDlgTitle");
+            null == a && (a = f.Tool.getReaderApp()), v = ''
             var e = {
                 waitingDlgId: "LoadingDlg_" + d,
                 loadingCss: d,
@@ -4419,7 +4428,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
         }, f.downloading = function(a) {
             var b = $("#" + f.Tool.getReaderApp().getMainFrameId()),
                 c = "fwr-ajax-uploading";
-            null == a && (a = f.Tool.getReaderApp()), v = i18n.t("CommonDialog.DefaultDlgTitle");
+            null == a && (a = f.Tool.getReaderApp()), v = ''
             var d = {
                 waitingDlgId: "DownloadingDlg_" + c,
                 loadingCss: c,
@@ -4469,7 +4478,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                 q = null,
                 r = "fwrAlertDialogTitle",
                 s = null;
-            if (v = i18n.t("CommonDialog.DefaultDlgTitle"), !i) {
+            if (v = '', !i) {
                 a.addIgnoreMouseEventClass("fwr-alert"), g = "<div id='" + m + "' class='fwr-modal fwr-hide fwr-fade fwr-in fwr-alert' style='display: none;'><div class='fwr-modal-header'><a class='close' webpdf-data-dismiss='modal'></a><h4 id='" + r + "'>Foxit Web PDF</h4></div><div class='fwr-modal-body'><p id='" + p + "'>Msg Body</p></div><div class='fwr-modal-footer' ><a href='#' id='" + n + "' class='btn margin-right-30' webpdf-data-dismiss='modal' data-i18n='CommonDialog.DefaultOKBtnTitle'>Close</a></div></div>", $("#" + a.getMainFrameId()).append(g), h = $("#" + m);
                 var t = h.height(),
                     u = Math.round(t / 2);
@@ -4505,7 +4514,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
         }, f.endAlert = function() {
             h && h.webPDFModal("hide")
         }, f.confirm = function(a, b, c, d, e, g) {
-            v = i18n.t("CommonDialog.DefaultDlgTitle");
+            v = ''
             var h = "fwrConfirmDlg",
                 i = "fwrConfirmDlgMsgHolder",
                 m = null,
@@ -4563,7 +4572,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
         var w = "fwrPasswordDlgPasswordInput",
             x = null;
         f.confirmPassword = function(a, b, c, d, e, g) {
-            v = i18n.t("CommonDialog.DefaultDlgTitle");
+            v = ''
             var h = "fwrPasswordDlg",
                 i = "fwrPasswordDlgMsgHolder",
                 j = "fwrPasswordDlgErrorLabel",
@@ -18201,6 +18210,26 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                 h.normalize(t), t = l.pdfRectToDevice(t, !0), r += "<div id='highlight_" + a + "_" + s + "'class='fwr-search-text-highlight' style='left:" + t.left + "px;top:" + t.top + "px;width:" + h.width(t) + "px;height:" + h.height(t) + "px' ></div>"
             }
             q.append(r)
+        }, k.prototype.highlightSearchResult = function(a, b, c) {    /*added for highligting searched text ETEXT-3942*/
+            var i = j.getMainView().getDocView(),   
+                k = i.getPageCount();
+            if (0 > a || a >= k) return !1;
+            var l = i.getPageView(a);
+            if (!l || !l.isContentCreated() || !b) return !1;
+            var p = $("#" + l.getPageViewContainerID());
+            // var n = d(l);
+            // if (g = n, null == f[a] || !$("#" + n).length) {
+            //     var o = "<div id='" + n + "' style='z-index:7;'></div>",
+            //         p = $("#" + l.getPageViewContainerID());
+            //     p.append(o), f[a] = !0
+            // }
+            // var q = $("#" + n);
+            //q.empty();
+            for (var r = "", s = 0; s < b.length; s++) {
+                var t = b[s];
+                h.normalize(t), t = l.pdfRectToDevice(t, !0), r += "<div id='highlight_" + new Date().getUTCMilliseconds() + "_" + s + "'class='fwr-search-result-highlight' style='left:" + t.left + "px;top:" + t.top + "px;width:" + h.width(t) + "px;height:" + h.height(t) + "px' ></div>"
+            }
+            p.append(r)
         }, k.prototype.delHighlightSearchResult = function(a) {
             var b = $("#" + j.getMainView().getMainFrameID()),
                 c = this;
@@ -18417,6 +18446,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
             }(p)
         }), d
     }), define("core/Plugins/FindTool/SearchService", ["core/Plugins/FindTool/SearchResult"], function(a, b, c) {
+        var sv = a('core/Plugins/FindTool/SearchView');
         function d(a) {
             function b(a, b) {
                 return b ? !(F === a) : !(E === a)
@@ -18701,6 +18731,13 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                         }), WebPDF.Environment.mobile
                     } catch (k) {
                         return null
+                    }
+                    if(j.count()){                         /*added for highligting searched text ETEXT-3942*/
+                        WebPDF.searchResult = j;
+                        $('.fwr-search-result-highlight').remove();
+                        for(let i=0; i<j.count(); i++){
+                            sv.prototype.highlightSearchResult(0, j.getRects(i));
+                        }
                     }
                 }
 

@@ -532,6 +532,15 @@ input.fwr_search_box::-ms-clear {
     z-index: 7;
 }
 
+.fwr-search-result-highlight{
+     position: absolute;
+   /* background-color: #FFEE00;*/
+    background-color: yellow;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    z-index: 7;
+}
+
 /* end text find tool*/
 
 /* begin navigation bar*/
