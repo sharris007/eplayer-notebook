@@ -92,11 +92,11 @@
   "author": "David Zukowski <david@zuko.me> (http://zuko.me)",
   "license": "MIT",
   "dependencies": {
-    "@pearson-incubator/aquila-js-basics": "*",
+    "@pearson-incubator/aquila-js-basics": "0.0.38",
     "@pearson-incubator/aquila-js-core": "0.2.98",
     "@pearson-incubator/aquila-js-flashcards": "*",
     "@pearson-incubator/aquila-js-graph": "0.0.41",
-    "@pearson-incubator/aquila-js-media": "*",
+    "@pearson-incubator/aquila-js-media": "0.1.60",
     "@pearson-incubator/aquila-js-quiz": "*",
     "@pearson-incubator/aquila-js-timeline": "*",
     "@pearson-incubator/bookmark-icon": "0.1.31",

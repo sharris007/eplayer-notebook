@@ -163,6 +163,7 @@ class PdfPlayer extends Component {
     try {
       $('#hotspot').empty();
       $('#player-iframesppModalBody').remove();
+      $('.link-model').remove();
       $('#sppModal').css('display', 'none');
       if (this.state.regionData) {
         this.setState({ regionData: null });
@@ -267,11 +268,11 @@ class PdfPlayer extends Component {
         try {
           Popup.close();
           $('#player-iframesppModalBody').remove();
+          $('.link-model').remove();
           $('#sppModal').css('display', 'none');
           viewer.setState({ regionData: null });
           $('.ReactModalPortalAnimated').remove();
           $('.regionContainer').css('display','none');
-
         } catch (e) {
           // error
         }     
@@ -724,7 +725,9 @@ class PdfPlayer extends Component {
         document.getElementById('hotspot').className = 'videoContent';
       } else if (that.state.regionData.hotspotType === 'URL') {
         try {
+
           const ExternalLinkComponent = document.getElementsByClassName('link-model')[0];
+          document.getElementById('root').appendChild(ExternalLinkComponent);
           ExternalLinkComponent.style.backgroundColor = '#ffffff';
         } catch (e) {
           // error
@@ -889,21 +892,23 @@ class PdfPlayer extends Component {
       // error
     }
     const lowerIndex = this.state.currPageObj.id;
-    const upperIndex = lowerIndex + 5;
     let startIndex;
     let endIndex;
-    if ((lowerIndex >= 0) && (upperIndex < this.props.pagePlayList.length)) {
+    const lastPage = this.props.pagePlayList.length - 1;
+    endIndex = this.props.pagePlayList[lastPage].id;
+    const upperIndex = lowerIndex + 5;
+    if ((lowerIndex >= 0) && (upperIndex < endIndex)) {
       startIndex = lowerIndex;
       endIndex = upperIndex;
-    } else if ((lowerIndex >= 0) && !(upperIndex < this.props.pagePlayList.length)) {
+    } else if ((lowerIndex >= 0) && (upperIndex > endIndex)) {
       startIndex = lowerIndex;
-      endIndex = this.props.pagePlayList.length - 1;
+      endIndex = endIndex;
     } else if (lowerIndex < 0) {
       return;
     }
     let pageIdsToFetch;
     if (startIndex && endIndex) {
-      for (let arrIndex = startIndex; arrIndex < endIndex; arrIndex++) {
+      for (let arrIndex = startIndex; arrIndex <= endIndex; arrIndex++) {
         if (pageIdsToFetch === null || pageIdsToFetch === undefined || pageIdsToFetch === '') {
           pageIdsToFetch = arrIndex;
         } else if (pageIdsToFetch !== null && pageIdsToFetch !== undefined && pageIdsToFetch !== '') {
@@ -924,6 +929,7 @@ class PdfPlayer extends Component {
       }
     }
     if (currentPageRegions === null || currentPageRegions === '' || currentPageRegions === undefined) {
+      try{
       this.props.hotspots.load.get(this.props.metaData, pageIdsToFetch).then(() => {
         if (this.props.hotspots.data.regions.length > 0) {
           for (let k = 0; k < this.props.hotspots.data.regions.length; k++) {
@@ -937,6 +943,10 @@ class PdfPlayer extends Component {
           }
         }
       });
+    }
+    catch(e) {
+      // error
+    }
     }
   }
 
