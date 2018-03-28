@@ -895,14 +895,14 @@ class PdfPlayer extends Component {
     let startIndex;
     let endIndex;
     const lastPage = this.props.pagePlayList.length - 1;
-    endIndex = this.props.pagePlayList[lastPage].id;
+    const lastPageIndex = this.props.pagePlayList[lastPage].id;
     const upperIndex = lowerIndex + 5;
-    if ((lowerIndex >= 0) && (upperIndex < endIndex)) {
+    if ((lowerIndex >= 0) && (upperIndex < lastPageIndex)) {
       startIndex = lowerIndex;
       endIndex = upperIndex;
-    } else if ((lowerIndex >= 0) && (upperIndex > endIndex)) {
+    } else if ((lowerIndex >= 0) && (upperIndex > lastPageIndex)) {
       startIndex = lowerIndex;
-      endIndex = endIndex;
+      endIndex = lastPageIndex;
     } else if (lowerIndex < 0) {
       return;
     }

@@ -57,7 +57,7 @@ export class PdfBook extends Component {
     } else if (this.props.location.query.invoketype !== undefined && this.props.location.query.invoketype === 'et1') {
       const cookieValue = cookies.get('ReactPlayerCookie');
       if (cookieValue !== undefined && cookieValue !== 'ReactPlayerCookie') {
-        browserHistory.push('/eplayer/login');
+        browserHistory.push('/eplayer');
       }
     } else {
       browserHistory.push('/eplayer/pdfbookerror?errorcode=2');
