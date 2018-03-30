@@ -470,7 +470,7 @@ Annotator = (function(_super) {
       height = $(annElement).offset().top+noteIconHght;
     }
     else
-      height = location.top+39;
+      height = location.top;
     var selctionOverlap = '';
     if(window.getSelection().rangeCount > 0) {
       selctionOverlap = window.getSelection().getRangeAt(0);
@@ -479,7 +479,7 @@ Annotator = (function(_super) {
     if (iscolorPanel && isAdderClick == false && $('.annotator-editor .annotator-panel-2 .annotator-listing').css('display') == 'none')
       isAdderClick = true;
     var position= {
-      top:(height+(!isAdderClick?140:0))
+      top:(height+(!isAdderClick?160:50))
     }
     this.editor.element.css(position);
     this.editor.load(annotation,this.isShareable);
