@@ -979,13 +979,13 @@ export class Book extends Component {
   };
 
   getGTMPath = () => {
-    this.gtmPath = `${window.location.origin}/eplayer/gtmSnippet/DEV.js`; // DEV
+    this.gtmPath = `${window.location.origin}/eplayer/gtmPath/DEV.js`; // DEV
     if(window.location.href.match('etext-qa-stg.pearson.com')) {
-      this.gtmPath = `${window.location.origin}/eplayer/gtmSnippet/QA.js`;
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/QA.js`;
     } else if(window.location.href.match('etext-stg.pearson.com')) { 
-      this.gtmPath = `${window.location.origin}/eplayer/gtmSnippet/STG.js`;
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/STG.js`;
     }else if(window.location.href.match('etext.pearson.com')) {
-      this.gtmPath = `${window.location.origin}/eplayer/gtmSnippet/PROD.js`;
+      this.gtmPath = `${window.location.origin}/eplayer/gtmPath/PROD.js`;
     }
   }
   closeHeaderPopups = (e) => {
