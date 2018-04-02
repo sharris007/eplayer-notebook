@@ -262,9 +262,12 @@ Range.NormalizedRange = (function() {
   };
 
   NormalizedRange.prototype.toRange = function() {
-    var range;
+    var range, nAgt = navigator.userAgent.toLowerCase();
     range = document.createRange();
     range.setStartBefore(this.start);
+    if(nAgt.indexOf("firefox") !==-1) {
+      this.end = this.start;
+    }
     range.setEndAfter(this.end);
     return range;
   };
