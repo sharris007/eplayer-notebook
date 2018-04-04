@@ -39,8 +39,7 @@ function getHotspotType(regionUrl, _) {
   if (_.endsWith(regionLink, '.pdf') === true) {
     regiontype.icon = '/hotspot_icons/pdf.png';
     regiontype.region = 'DOCUMENT';
-  } else if (_.endsWith(regionLink, '.mp4') === true || _.endsWith(regionLink, '.m4v') === true ||
-    _.endsWith(regionLink, '.flv') === true) {
+  } else if (_.endsWith(regionLink, '.mp4') === true || _.endsWith(regionLink, '.m4v') === true) {
     regiontype.icon = '/hotspot_icons/video.png';
     regiontype.region = 'VIDEO';
   } else if (_.endsWith(regionLink, '.mp3') === true) {
@@ -236,11 +235,6 @@ export function handleRegionClick(hotspotID, baseUrl) {
           clickedRegionDetails.hotspotType = 'IMAGE';
           if (baseUrl.imagepath !== null && baseUrl.imagepath !== '' && baseUrl.imagepath !== undefined) {
             basepath = baseUrl.imagepath;
-          }
-        } else if (clickedRegionDetails.linkTypeID === 2) {
-          clickedRegionDetails.hotspotType = 'VIDEO';
-          if (baseUrl.flvpath !== null && baseUrl.flvpath !== '' && baseUrl.flvpath !== undefined) {
-            basepath = baseUrl.flvpath;
           }
         } else if (clickedRegionDetails.linkTypeID === 4 || clickedRegionDetails.linkTypeID === 12) {
           clickedRegionDetails.hotspotType = 'AUDIO';

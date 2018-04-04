@@ -52,6 +52,7 @@ class PdfPlayer extends Component {
     };
     this.currPageIndex = 0;
     this.showHighlight = true;
+    this.showHotspot = this.props.preferences.showHostpot;
     this.highlightList = [];
     this.currZoomLevel = 1;
     this.envType = this.props.envType ? this.props.envType : 'nonprod';
@@ -948,6 +949,16 @@ class PdfPlayer extends Component {
       // error
     }
     }
+    if(this.showHotspot !== true) {
+      try {
+        $(".hotspot").hide();
+        $(".hotspotIcon").hide();
+        this.showHotspot = false;
+      }
+      catch (e) {
+        // error
+      }
+    }
   }
 
   renderGlossary = (currentPageRegions) => {
@@ -1060,7 +1071,7 @@ class PdfPlayer extends Component {
     const promiseVal = Promise.resolve(prefData);
     return promiseVal;
   }
-  /* Method show or hide highlights/notes. */
+/* Method show or hide highlights/notes. */
   showHideHighlights = (prefObject) => {
     if (prefObject.isAnnotationHide === false) {
       try {
@@ -1079,6 +1090,31 @@ class PdfPlayer extends Component {
     }
   }
 
+/* Method to show or hide hotspots. */
+  showHideRegions = () => {
+    if(this.showHotspot === true)
+    {
+      try{
+        $(".hotspot").hide();
+        $(".hotspotIcon").hide();
+        this.showHotspot = false;
+      }
+      catch(e){}
+    }
+    else
+    {
+      try{
+        $(".hotspot").show();
+        $(".hotspotIcon").show();
+        this.showHotspot = true;        
+      }
+      catch(e) {
+        // error
+      }
+    }
+  }
+
+
   handleHeaderClick = () => {
     try {
       this.setState({ prefOpen: false });
@@ -1093,6 +1129,8 @@ class PdfPlayer extends Component {
       this.printPage();
     } else if (e.target.textContent === 'Sign Out') {
       this.onSignOutClick();
+    } else if (e.target.textContent === 'Hide Links' || e.target.textContent === 'Show Links') {
+      this.showHideRegions();
     }
   }
   printPage = () => {
@@ -1241,6 +1279,16 @@ class PdfPlayer extends Component {
       value: 'Print',
       text: 'Print'
     };
+    let showHideLinksOption = {
+      type : 'menuItem',
+      value : 'showHideHotspots',
+      text : this.showHotspot ? 'Hide Links' : 'Show Links'
+    };
+    if (this.props.metaData.bookFeatures.hasShowLinksButton)
+    {
+      moreMenuData.menuItem.push(showHideLinksOption);
+      moreMenuData.menuItem.push({ type: 'divider' });     
+    }
     if (this.props.metaData.bookFeatures.hasPrintLink && !this.state.currPageObj.printDisabled) {
       moreMenuData.menuItem.push(printOption);
       moreMenuData.menuItem.push({ type: 'divider' });

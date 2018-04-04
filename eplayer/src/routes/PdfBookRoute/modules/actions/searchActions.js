@@ -1,4 +1,4 @@
-import _ from 'lodash/find';
+import _ from 'lodash';
 import fetch from 'isomorphic-fetch';
 import { getmd5 } from '../../../../components/Utility/Util';
 import { eT1Contants } from '../../../../components/common/et1constants';
