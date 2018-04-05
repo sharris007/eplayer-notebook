@@ -387,6 +387,7 @@ export class Book extends Component {
     bookmarksParams.currentPageId=this.props.params.pageId
     bookmarksParams.xAuth = localStorage.getItem('secureToken');
     bookmarksParams.body = { ids: [id] };
+    bookmarksParams.productModel = this.productModel;
     this.props.dispatch(deleteBookmarkCallService(bookmarksParams));
 
     const deletedBookmarkData = find(this.props.book.bookmarks, bookmark => bookmark.id === bookmarkId);
@@ -450,6 +451,7 @@ export class Book extends Component {
       }
       let bookmarksParams = this.state.urlParams;
       bookmarksParams.xAuth = localStorage.getItem('secureToken');
+      bookmarksParams.productModel = this.productModel;
       this.props.dispatch(getBookmarkCallService(bookmarksParams));
       // this.props.dispatch(getAnnCallService(this.state.urlParams));
     });
@@ -634,7 +636,7 @@ export class Book extends Component {
           let params = this.state.urlParams;
           params.xAuth = localStorage.getItem('secureToken');
           // this.props.dispatch(getBookTocCallService());
-          this.props.dispatch(getTotalBookmarkCallService(this.state.urlParams));
+          this.props.dispatch(getTotalBookmarkCallService({...this.state.urlParams,productModel:this.productModel}));
           params.annHeaders = this.annHeaders;
           this.props.dispatch(getTotalAnnCallService(params));
           this.state.asynCallLoaded = true;
@@ -1233,17 +1235,6 @@ export class Book extends Component {
       timeout: 5000,
       headers: {}
     });
-    this.annHeaders = this.courseBook ? {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Authorization': localStorage.getItem('secureToken')
-    } :
-      {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',     //'idpName': 'SMS',
-        'X-Authorization': localStorage.getItem('secureToken')
-      };
-      
     let annotationClient;
     let headerTitleData={ params: '', classname: '', chapterTitle: '', pageTitle: '', isChapterOpener: '' };
     if (this.state.headerDataloaded) {
@@ -1275,6 +1266,13 @@ export class Book extends Component {
           localStorage.setItem('secureToken', piSession.currentToken());
         }
       }
+      this.annHeaders = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Authorization': localStorage.getItem('secureToken'),
+        'X-Caller': resources.links.xCaller[domain.getEnvType()].ETEXT2_WEB[this.productModel]
+      };
+      
       annotationClient = axios.create({
         baseURL: `${bootstrapParams.pageDetails.endPoints.spectrumServices}/${this.state.urlParams.context}/identities/${this.state.urlParams.user}/notesX`,
         headers: this.annHeaders,

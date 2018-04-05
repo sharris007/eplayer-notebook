@@ -1,28 +1,29 @@
-/*******************************************************************************
+/** *****************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
- *   
+ *
  *  *  Copyright © 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
- *  * 
+ *  *
  *  * NOTICE:  All information contained herein is, and remains
  *  * the property of Pearson Education, Inc.  The intellectual and technical concepts contained
  *  * herein are proprietary to Pearson Education, Inc. and may be covered by U.S. and Foreign Patents,
  *  * patent applications, and are protected by trade secret or copyright law.
- *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
+ *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 /* global fetch */
 import { resources, domain } from '../../const/Settings';
-import Utilities from '../components/utils'
+import Utilities from '../components/utils';
 
 const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
 const etextService = resources.links[security];
-const etextServiceUrl = resources.links['etextServiceUrl'];
+const etextServiceUrl = resources.links.etextServiceUrl;
 const pxeService = resources.links.pxeServiceUrl;
 const spectrumService = resources.links.spectrumServiceUrl;
 const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
+const xCaller = resources.links.xCaller;
 
 export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
   method: 'GET',
@@ -38,13 +39,13 @@ export const getAnndata = data => fetch(`${pxeService[envType]}/context/${data.c
   }
 });// eslint-disable-line
 
-export const getAuthToken = (piToken) => fetch(`${etextServiceUrl[envType]}/nextext/eps/authtoken`, {
-    method: 'GET',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-Authorization': piToken 
-    } 
-  });
+export const getAuthToken = piToken => fetch(`${etextServiceUrl[envType]}/nextext/eps/authtoken`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Authorization': piToken
+  }
+});
 
 export const postAnnData = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations`, { // eslint-disable-line no-undef
   method: 'POST',
@@ -114,7 +115,7 @@ export const getCourseDetails = bookDetails =>
        'X-Authorization': bookDetails.piToken
      }
    });
- export const getCourseRedirctionDetails = bookDetails =>
+export const getCourseRedirctionDetails = bookDetails =>
  fetch(`${courseServiceUrl[envType]}/courses/${bookDetails.courseId}/sectionDetails/?toc=false&passport=false`,
    {
      method: 'GET',
@@ -124,14 +125,15 @@ export const getCourseDetails = bookDetails =>
        'X-Authorization': bookDetails.piToken
      }
    });
- 
+
 // Bookmark Api Total GET Call,
 export const getTotalBookmarkData = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX?isBookMark=true`, {  // eslint-disable-line max-len
   method: 'GET',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'X-Authorization': data.xAuth
+    'X-Authorization': data.xAuth,
+    'X-Caller': xCaller[envType].ETEXT2_WEB[data.productModel]
   }
 });
 
@@ -141,24 +143,26 @@ export const getBookmarkData = data => fetch(`${spectrumService[envType]}/${data
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'X-Authorization': data.xAuth
+    'X-Authorization': data.xAuth,
+    'X-Caller': xCaller[envType].ETEXT2_WEB[data.productModel]
   }
 });
 // Bookmark Api Post Call,
 
-export const postBookmarkData = postData => {
-  let payload = Object.assign({},postData);
+export const postBookmarkData = (postData) => {
+  const payload = Object.assign({}, postData);
   delete payload.xAuth;
   return fetch(`${spectrumService[envType]}/${postData.context}/identities/${postData.user}/notesX?pageId=${postData.id}&isBookMark=true`, {  // eslint-disable-line max-len
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-Authorization': postData.xAuth
+      'X-Authorization': postData.xAuth,
+      'X-Caller': xCaller[envType].ETEXT2_WEB[postData.productModel]
     },
     body: Utilities.formBookmarkPayload(payload)
   });
-}
+};
 // Bookmark Api Delete Call,
 
 export const deleteBookmarkData = deleteData => fetch(`${spectrumService[envType]}/${deleteData.context}/identities/${deleteData.user}/notesX?pageId=${deleteData.uri}&isBookMark=true`, {  // eslint-disable-line max-len
@@ -166,7 +170,8 @@ export const deleteBookmarkData = deleteData => fetch(`${spectrumService[envType
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'X-Authorization': deleteData.xAuth
+    'X-Authorization': deleteData.xAuth,
+    'X-Caller': xCaller[envType].ETEXT2_WEB[deleteData.productModel]
   },
   body: JSON.stringify(deleteData.body)
 });
@@ -182,7 +187,7 @@ export const getGotoPage = data => fetch(`${pxeService[envType]}/context/${data.
 
 
 // Pi User Profile
-export const getPiUserProfile = data =>fetch(`${etextService[envType]}/nextext/getUsername`, {  // eslint-disable-line max-len
+export const getPiUserProfile = data => fetch(`${etextService[envType]}/nextext/getUsername`, {  // eslint-disable-line max-len
   method: 'GET',
   headers: {
     Accept: 'application/json',
@@ -190,7 +195,7 @@ export const getPiUserProfile = data =>fetch(`${etextService[envType]}/nextext/g
   }
 });
 
-//getPreferencedata
+// getPreferencedata
 export const getPreferencedata = data => fetch(`${etextService[envType]}/nextext/users/${data.userId}/preferences/?bookId=${data.bookId}`, {
   method: 'GET',
   headers: {
@@ -201,7 +206,7 @@ export const getPreferencedata = data => fetch(`${etextService[envType]}/nextext
   }
 });
 
-//postPreferencedata
+// postPreferencedata
 export const postPreferencedata = data => fetch(`${etextService[envType]}/nextext/users/${data.userId}/preferences/?bookId=${data.bookId}`, { // eslint-disable-line no-undef
   method: 'POST',
   headers: {
@@ -213,14 +218,14 @@ export const postPreferencedata = data => fetch(`${etextService[envType]}/nextex
   body: JSON.stringify(data.preferenceObj)
 });
 
-//putCustomTocDetails
+// putCustomTocDetails
 export const putCustomTocDetails = (tocContents, piToken, bookId) => fetch(`${resources.links.updateCustomTocUrl[envType]}/${bookId}/publish`, { // eslint-disable-line no-undef
   method: 'PUT',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-Authorization': piToken,
-    'productType':'ETEXT2_PXE'
+    productType: 'ETEXT2_PXE'
   },
   body: JSON.stringify(tocContents)
 });
