@@ -45,6 +45,13 @@ export const fetchPageInfo = (currentBook, userid, smsKey) => {
           };
             // Temporary condition for supporting multiPage config
           if (!pdfConstants.multipageConfig.isMultiPageSupported) {
+            const coverpagefile = getState().book.bookinfo.book.pdfCoverArt.replace('/assets/', '');
+            let pageserviceurl = `${currentBook.serverDetails}/ebook/pdfplayer/getpdfpage?globalbookid=` +
+                        `${currentBook.globalBookId}&pdfpage=${coverpagefile}&iscover=Y&authkey=${smsKey}`;
+            const tempurl = pageserviceurl.replace('https', 'http');
+            const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
+            pageserviceurl = `${pageserviceurl}&hsid=${hsid}`;
+            coverPageObj.pageServiceUrl = pageserviceurl;
             bookState.bookPagesInfo.pages.push(coverPageObj);
           }
           response.data.forEach((jsonData) => {
@@ -60,6 +67,12 @@ export const fetchPageInfo = (currentBook, userid, smsKey) => {
               pageObj.id = page.pageOrder;
               pageObj.printDisabled = page.printDisabled;
               pageObj.isCover = false;
+              let pageserviceurl = `${currentBook.serverDetails}/ebook/pdfplayer/getpdfpage?globalbookid=` +
+                          `${currentBook.globalBookId}&pdfpage=${page.pdfPath}&iscover=N&authkey=${smsKey}`;
+              const tempurl = pageserviceurl.replace('https', 'http');
+              const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
+              pageserviceurl = `${pageserviceurl}&hsid=${hsid}`;
+              pageObj.pageServiceUrl = pageserviceurl;
               bookState.bookPagesInfo.pages.push(pageObj);
             });
           });

@@ -260,7 +260,8 @@ class PdfPlayer extends Component {
       this.isPageLoaded = true;
       // </TestCode>
       this.setState({ currPageObj: requestedPageObj });
-      WebPDF.ViewerInstance.openFileByUri({ url: requestedPageObj.pdfPath });
+      // WebPDF.ViewerInstance.openFileByUri({ url: requestedPageObj.pdfPath });
+      WebPDF.ViewerInstance.openFileByUri({ url: requestedPageObj.pageServiceUrl });
     }
     const viewer = this;
     $(document).on('keyup', (evt) => {

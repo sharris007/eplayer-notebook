@@ -8887,7 +8887,10 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                 return d.Tool.getReaderApp().isOffline() ? void i(null) : void d.Common.getFileId(a, b, c, e, f, g, h, i)
             },
             getFileId: function(a, b, c, e, f, g, h, i) {
-                var j = d.optionParameters.serverBaseUrl,
+                // File id service call is removed since it is not required 
+                // and dummyfileid is passed to i callback 
+                i('dummyfileid');
+                /*var j = d.optionParameters.serverBaseUrl,
                     k = null,
                     l = null;
                 d.AccountInstance && (k = d.AccountInstance.getUserAccount(), l = d.AccountInstance.getUserId());
@@ -8955,7 +8958,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     })
                 }else{
                     i(fileID);
-                }
+                }*/
                 
             },
             openFileUrlByJR: function(a, b) {
