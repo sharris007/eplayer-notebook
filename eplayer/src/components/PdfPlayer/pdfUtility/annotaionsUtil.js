@@ -16,9 +16,11 @@ export function getSelectionInfo() {
         highlightHash += ',';
       }
       const PDFRect = selectedRect[j];
-      highlightHash = `${highlightHash}{"left":"${parseFloat(PDFRect.left).toFixed(6)}","top":"${parseFloat(PDFRect.top).toFixed(6)}","right":"${parseFloat(PDFRect.right).toFixed(6)}","bottom":"${parseFloat(PDFRect.bottom).toFixed(6)}"}`;
+      highlightHash = `${highlightHash}{"left":"${parseFloat(PDFRect.left).toFixed(6)}",` +
+      `"top":"${parseFloat(PDFRect.top).toFixed(6)}","right":"${parseFloat(PDFRect.right).toFixed(6)}",` +
+      `"bottom":"${parseFloat(PDFRect.bottom).toFixed(6)}"}`;
     }
-    highlightHash = `${highlightHash}]` + '@0.000000';
+    highlightHash = `${highlightHash}]` + '@0.000000'; // eslint-disable-line no-useless-concat
     // console.log(highlightHash);
     highlight.highlightHash = highlightHash;
     highlight.selection = WebPDF.ViewerInstance
@@ -177,7 +179,7 @@ function handleNoteIconClick(event) {
   }
         // noteIcon.style.left = ((pageLeft + conatinerWidth) - (($(".fwr-page").offset().left ) + 287 + 32)) + 'px';
   noteIcon.style.left = `${parseInt(originalPosition, 10) - 48}px`;
-  $('body').on('click', (e) => {
+  $('body').on('click', (e) => { // eslint-disable-line no-unused-vars
     if ($('#openPopupHighlight').is(':hidden') && noteIcon.style.left !== originalPosition) {
       noteIcon.style.left = originalPosition;
     }
@@ -213,7 +215,7 @@ export function reRenderHighlightCornerImages(highlight) {
               if (parseInt(linewiseHighlightList[k].top, 10) >= parseInt(highlightHashList[l].offsetTop, 10) &&
                   parseInt(linewiseHighlightList[k].bottom, 10) <= parseInt((highlightHashList[l].offsetHeight
                     + highlightHashList[l].offsetTop), 10)) {
-                linewiseHighlightList[k].totalNoOfhighlights = linewiseHighlightList[k].totalNoOfhighlights + 1;
+                linewiseHighlightList[k].totalNoOfhighlights = linewiseHighlightList[k].totalNoOfhighlights + 1; // eslint-disable-line operator-assignment
                 highlights[i].leftpos = highlightHashList[0].offsetLeft;
                 linewiseHighlightList[k].highlightList.push(highlights[i]);
                 isCurHighlightOnSameLine = true;

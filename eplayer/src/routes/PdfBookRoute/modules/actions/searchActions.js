@@ -27,7 +27,7 @@ export function search(inputParams, searchText, handleResults) {
     const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
     searchServiceURL = `${searchServiceURL}&hsid=${hsid}`;
   }
-  fetch(searchServiceURL)
+  return  fetch(searchServiceURL)
     .then(response => response.json())
     .then((response) => {
       if (response && response.hits && response.wordHits.length > 0 && searchText.length >= 4) {
@@ -76,6 +76,7 @@ export function search(inputParams, searchText, handleResults) {
       resultData.results = resultsList;
       searchData.push(resultData);
       handleResults(searchData);
+      return searchData;
     });
 }
 

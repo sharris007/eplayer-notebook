@@ -412,7 +412,10 @@ Annotator = (function(_super) {
       node = _ref[_i];
       if (!white.test(node.nodeValue)) {
         if (!$(node).closest('.biblioref').length && !$(node).closest('.noteref').length && !$(node).closest('.noteref_footnote').length) {
-          _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
+          if($(node).closest('.annotator-hl').length)
+            _results.push($(node).wrapAll(hl).parent().prepend('').show()[0]);
+          else
+            _results.push($(node).wrapAll(hl).parent().prepend(handle).show()[0]);
           if($(node).closest('.pxereaderSearchHighlight').length > 0) {
             $(node).parent().find('.annotator-handle').css('background-color', normedRange.color);
           }
@@ -470,7 +473,7 @@ Annotator = (function(_super) {
       height = $(annElement).offset().top+noteIconHght;
     }
     else
-      height = location.top+39;
+      height = location.top;
     var selctionOverlap = '';
     if(window.getSelection().rangeCount > 0) {
       selctionOverlap = window.getSelection().getRangeAt(0);
@@ -479,7 +482,7 @@ Annotator = (function(_super) {
     if (iscolorPanel && isAdderClick == false && $('.annotator-editor .annotator-panel-2 .annotator-listing').css('display') == 'none')
       isAdderClick = true;
     var position= {
-      top:(height+(!isAdderClick?140:0))
+      top:(height+(!isAdderClick?160:50))
     }
     this.editor.element.css(position);
     this.editor.load(annotation,this.isShareable);

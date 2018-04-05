@@ -44,7 +44,9 @@ var notesMessages;
 var isPopupOpen = false;
 var userRoleTypeID = 0;
 var userCourseID = 0;
-function init()
+var viewerElement;
+var integrationScenario;
+function init(resetAnnotTextArea)
 {
   $("body").mousedown(function(e) {
     if(isPopupOpen)
@@ -55,6 +57,7 @@ function init()
                 
         { 
             hide();
+            resetAnnotTextArea();
         }
     }
   });
@@ -65,7 +68,7 @@ function init()
   });
 }
 
-function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,editHighlightCallback,targetElement,NotesMessages,roleTypeID,courseID)
+function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,editHighlightCallback,targetElement,NotesMessages,roleTypeID,courseID, scenario)
 {
    try{
         document.getElementById('openPopupHighlight').remove();
@@ -77,10 +80,10 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    var pageLeft = $("#docViewer_ViewContainer").offset().left;
    var pageWidth = $("#docViewer_ViewContainer").width();
    notesMessages=NotesMessages;
-   coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
+   coord.left = (pageLeft + pageWidth) - ($(".fwr-single-page").offset().left + 287);
    //coord.left = coord.left + (coord.width * 1.5);
    //coord.top = coord.top + (coord.height * 1.5);
-   coord.top = (coord.top + document.getElementsByClassName('eT1headerBar')[0].clientHeight) - 20;
+   coord.top = (coord.top + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
    var id = 'openPopupHighlight';
    var parentElement = document.createElement('div');
    parentElement.setAttribute('id', id);
@@ -101,6 +104,8 @@ function showCreateHighlightPopup(currHighLightdata,coord,saveHighlightCallback,
    isPopupOpen = true;
    userRoleTypeID = roleTypeID;
    userCourseID = courseID;
+   viewerElement = targetElement;
+   integrationScenario = scenario;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
          onColorChange(e);
    });
@@ -181,12 +186,8 @@ function alignPopup()
    var formLeft = $(".annotator-widget").offset().left;
    var formHeight = $(".annotator-widget").height();
    var formWidth = $(".annotator-widget").width();
-   var pdfPageTop = $("#docViewer_ViewContainer_BG_0").offset().top;
-   var pdfPageheight = $("#docViewer_ViewContainer_BG_0").height();
-   //Reverting changes made for ETEXT-3966
-  /* var pdfPageWidth = $("#docViewer_ViewContainer_BG_0").width();
-   var containerWidth = $("#docViewer_ViewContainer").width();
-   var scrollBarWidth = $(".fwrJspVerticalBar").width();*/
+   var pdfPageTop = $("#"+viewerElement).offset().top;
+   var pdfPageheight = $("#"+viewerElement).height();
    pdfPageheight = pdfPageheight + pdfPageTop;
    if((formTop+formHeight)>pdfPageheight)
    {
@@ -195,18 +196,6 @@ function alignPopup()
     $(".annotator-widget").width(formWidth);
     $(".annotator-widget").height(formHeight);
    }
-   //Reverting changes made for ETEXT-3966
-   /*if((1.5*formWidth + pdfPageWidth) >= containerWidth){
-    if($(".annotator-handle").length > 0){
-      $(".annotator-widget").offset({left: $(".annotator-handle").offset().left - formWidth});
-    }else{
-      $(".annotator-widget").offset({left: $(".fwrJspPane").width() - formWidth});
-    }
-  }else{
-     if($(".annotator-handle").length > 0){
-      $(".annotator-widget").offset({left: $(".annotator-handle").offset().left + $(".annotator-handle").width()});
-    }
-  }*/
 }
 
 function onDeleteClick()
@@ -260,7 +249,7 @@ function onEditClick()
     $(popupElementId).find('#noteContainer').hide();
     $(popupElementId).find('textarea').css({'pointer-events':'all', 'opacity':'1'});
     $(popupElementId).find('input').css({'pointer-events':'all', 'opacity':'1'});
-    if($(popupElementId).find('textarea').val().length && userRoleTypeID == 3 && userCourseID !=-1){
+    if($(popupElementId).find('textarea').val().length && userRoleTypeID == 3 && userCourseID !=-1 && integrationScenario !== '6' && integrationScenario !== '88'){
       $(popupElementId).find('.annotator-share-text, .annotator-share').show();
     }
     else {
@@ -325,7 +314,7 @@ function onNoteChange(event) {
     if(isEditMode)
     {
       $(popupElementId).addClass('show-edit-options');
-      if(userRoleTypeID==3 && userCourseID !=-1) {
+      if(userRoleTypeID==3 && userCourseID !=-1 && integrationScenario !== '6' && integrationScenario !== '88') {
         $(popupElementId).find('.annotator-share-text, .annotator-share').show();
       }
       else {
@@ -341,7 +330,7 @@ function onNoteChange(event) {
       {
         $(popupElementId).removeClass('show-edit-options');
       }
-      if(userRoleTypeID==3 && userCourseID !=-1 && event.target.value.length) {
+      if(userRoleTypeID==3 && userCourseID !=-1 && event.target.value.length && integrationScenario !== '6' && integrationScenario !== '88') {
         $(popupElementId).find('.annotator-share-text, .annotator-share').show();
       }
       else {
@@ -388,7 +377,7 @@ function onNoteChange(event) {
       $('.annotator-color').removeClass('active');
     }
  }
- function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID,cornerFoldedImageTop,courseID)
+ function showSelectedHighlight(highLightData,editHighlightCallback,deleteHighlightCallback,targetElement,NotesMessages,roleTypeID,cornerFoldedImageTop,courseID, scenario)
  {
   var parentHighlightElement = $('#'+highLightData.id);
   /*  var lastChildElementindex = parentHighlightElement[0].children.length - 1
@@ -410,12 +399,12 @@ function onNoteChange(event) {
    //coord.left = coord.left + (coord.width * 1.5);
     var pageLeft = $("#docViewer_ViewContainer").offset().left;
    var pageWidth = $("#docViewer_ViewContainer").width();
-   coord.left = (pageLeft + pageWidth) - ($(".fwr-page").offset().left + 287);
+   coord.left = (pageLeft + pageWidth) - ($(".fwr-single-page").offset().left + 287);
    //coord.top = coord.top + (coord.height * 1.5);
-   coord.top = (coord.top + document.getElementsByClassName('eT1headerBar')[0].clientHeight) - 20;
+   coord.top = (coord.top + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
    if(cornerFoldedImageTop!==undefined)
    {
-     coord.top = (cornerFoldedImageTop + document.getElementsByClassName('eT1headerBar')[0].clientHeight) - 20;
+     coord.top = (cornerFoldedImageTop + document.getElementsByClassName('headerBar')[0].clientHeight) - 20;
    }
    var id = 'openPopupHighlight';
    var parentElement = document.createElement('div');
@@ -433,7 +422,10 @@ function onNoteChange(event) {
    currentHighlight = highLightData;
    userRoleTypeID = roleTypeID;
    userCourseID = courseID;
+   viewerElement = targetElement;
+   integrationScenario = scenario;
    $("#color-button-yellow, #color-button-green, #color-button-pink").on('click',function(e){
+         e.stopPropagation();
          onColorChange(e);
    });
    $("#note-text-area").on('input',function(e){

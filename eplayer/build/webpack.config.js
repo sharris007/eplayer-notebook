@@ -24,6 +24,7 @@ const path = require('path');
 const locatePath = require('locate-path');
 
 const annotationLibPath = path.join(__dirname, '../node_modules/@pearson-incubator/pxe-annotation/demo/ann-plugin/output');
+const gtmPath = path.join(__dirname, '../gtmSnippet');
 const webInfPath = path.join(__dirname, '../WEB-INF');
 
 const paths = config.utils_paths;
@@ -96,7 +97,8 @@ webpackConfig.plugins = [
       { from: annotationLibPath, to: 'annotation-lib' },
       { from: webInfPath, to: 'WEB-INF' },
       { from: path.join(__dirname, '../public/pxe'), to: 'pxe_scripts' },
-      { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/demo/assets/js'), to: 'bxix_scripts' }/* ,
+      { from: path.join(__dirname, '../node_modules/@pearson-incubator/vega-viewer/demo/assets/js'), to: 'bxix_scripts' },
+      { from: gtmPath, to: 'gtmPath' }/* ,
       { from: path.join(__dirname, '../css'), to: 'css'}*/
   ]),
   new webpack.ProvidePlugin({
