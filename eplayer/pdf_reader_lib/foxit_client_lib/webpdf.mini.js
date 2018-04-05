@@ -8879,8 +8879,6 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                         url: g
                     });
                     var h = j + "asserts/" + c;
-                    let dd = new Date();
-                    window.openFileBufStartTime = dd.getTime();
                     d.ViewerInstance.openFileByBuffer(f, e, h)
                 }
                 var j = d.optionParameters.serverBaseUrl;
@@ -8920,16 +8918,11 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     }
                 }
                 if(!isfileIDPresent){
-                    let tt2 = new Date();
-                    let fileIdCallStartTime = tt2.getTime();
                     $.ajax({
                     type: "GET",
                     url: j + "api/file/id",
                     data: n,
                     success: function(a) {
-                        let tt3 = new Date();
-                        let fileIdCallEndTime = tt3.getTime() - fileIdCallStartTime;
-                        console.log("Time taken for file id service call is "+(fileIdCallEndTime/1000)+" secs");
                         var b = a.id;
                         if ("" == b && h) {
                             var c = new SparkMD5.ArrayBuffer;
@@ -8984,12 +8977,7 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     f = a.indexOf("blob") ? "blob" : "arraybuffer";
                 e.open("GET", a, !0), e.responseType = f;
                 var g = new SparkMD5.ArrayBuffer;
-                var tt = new Date();
-                var pdfFetchStartTime = tt.getTime();
                 e.addEventListener("load", function(e) {
-                    let tt1 = new Date();
-                    let pdfLoadTime = tt1.getTime() - pdfFetchStartTime;
-                    console.log("Time taken to download the pdf is "+(pdfLoadTime/1000)+" secs");
                     var f = this.getResponseHeader("Last-Modified"),
                         h = this.response,
                         i = h.size,
@@ -42552,9 +42540,6 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                             }),
                             g = URL.createObjectURL(f);
                         $("#" + d.getPageBackgroundImgID()).attr("src", g).load(function (){
-                            let dd1 = new Date();
-                            let pageLoadTime = dd1.getTime() - window.openFileBufStartTime;
-                            console.log("Time taken to create the blob from pdf is "+(pageLoadTime/1000)+" secs");
                             d.show(), d.setPageLoaded(!0), d.setAnnotLoad(!0);
                             var h = (d.isThumb() || !d.isThumbnailLoaded() ? "thumb" : "page") + b.pageIndex;
                             c[h] = null, $(a).trigger(WebPDF.EventList.PAGE_SHOW_COMPLETE, {
