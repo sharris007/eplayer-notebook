@@ -1,6 +1,6 @@
 /* global $, WebPDF */
 import { triggerEvent } from '../webPDFUtil';
-
+import _ from 'lodash';
 let regionListData = [];
 let lodashFunctions;
 let bookFeatures;
@@ -223,18 +223,32 @@ export function displayRegions(hotspots, hotspotFeatures, lodash) {
 /* Function to handle the clicked region and return the details pertaining to it.*/
 export function handleRegionClick(hotspotID, baseUrl) {
   let clickedRegionDetails;
-  let basepath;
-  let regionData;
-  const youtubeRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/; // eslint-disable-line no-useless-escape,max-len
   if (regionListData.length > 0) {
     for (let i = 0; i < regionListData.length; i++) {
       if (hotspotID === (`region_${regionListData[i].regionID}`)) {
-        clickedRegionDetails = regionListData[i];
-        clickedRegionDetails.hotspotType = '';
+        clickedRegionDetails = getRegionDetails(regionListData[i], baseUrl);
+        break;
+      }
+    }
+  }
+  return clickedRegionDetails;
+}
+
+export function getRegionDetails(regionClicked, baseUrl) {
+   let basepath;
+  let regionData;
+  const youtubeRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/; // eslint-disable-line no-useless-escape,max-len
+    let clickedRegionDetails = regionClicked;
+    clickedRegionDetails.hotspotType = '';
         if (clickedRegionDetails.linkTypeID === 1) {
           clickedRegionDetails.hotspotType = 'IMAGE';
           if (baseUrl.imagepath !== null && baseUrl.imagepath !== '' && baseUrl.imagepath !== undefined) {
             basepath = baseUrl.imagepath;
+          }
+        } else if (clickedRegionDetails.linkTypeID === 2) {
+          clickedRegionDetails.hotspotType = 'VIDEO';
+          if (baseUrl.flvpath !== null && baseUrl.flvpath !== '' && baseUrl.flvpath !== undefined) {
+            basepath = baseUrl.flvpath;
           }
         } else if (clickedRegionDetails.linkTypeID === 4 || clickedRegionDetails.linkTypeID === 12) {
           clickedRegionDetails.hotspotType = 'AUDIO';
@@ -260,7 +274,7 @@ export function handleRegionClick(hotspotID, baseUrl) {
             clickedRegionDetails.hotspotType = 'IMAGE';
           }
           if (clickedRegionDetails.regionTypeID === 8 || clickedRegionDetails.regionTypeID === 11) {
-            regionData = getHotspotType(clickedRegionDetails.linkValue, lodashFunctions);
+            regionData = getHotspotType(clickedRegionDetails.linkValue, _ );
             clickedRegionDetails.hotspotType = regionData.region;
           }
           if (clickedRegionDetails.regionTypeID === 14 || clickedRegionDetails.regionTypeID === 15 ||
@@ -281,7 +295,7 @@ export function handleRegionClick(hotspotID, baseUrl) {
             clickedRegionDetails.hotspotType = 'IMAGE';
           }
           if (clickedRegionDetails.regionTypeID === 8 || clickedRegionDetails.regionTypeID === 11) {
-            regionData = getHotspotType(clickedRegionDetails.linkValue, lodashFunctions);
+            regionData = getHotspotType(clickedRegionDetails.linkValue, _ );
             clickedRegionDetails.hotspotType = regionData.region;
           }
           if (clickedRegionDetails.regionTypeID === 14 || clickedRegionDetails.regionTypeID === 15 ||
@@ -296,7 +310,7 @@ export function handleRegionClick(hotspotID, baseUrl) {
             basepath = baseUrl.virtuallearningassetpath;
           }
         } else if (clickedRegionDetails.linkTypeID === 15) {
-          regionData = getHotspotType(clickedRegionDetails.linkValue, lodashFunctions);
+          regionData = getHotspotType(clickedRegionDetails.linkValue, _ );
           clickedRegionDetails.hotspotType = regionData.region;
           if (baseUrl.chromelessurlpath !== null && baseUrl.chromelessurlpath !== ''
             && baseUrl.chromelessurlpath !== undefined) {
@@ -305,34 +319,30 @@ export function handleRegionClick(hotspotID, baseUrl) {
         }
         if (clickedRegionDetails.hotspotType !== 'PAGENUMBER' || clickedRegionDetails.hotspotType !== 'EMAIL'
           || clickedRegionDetails.hotspotType !== 'LTILINK') {
-          if (!(lodashFunctions.startsWith(clickedRegionDetails.linkValue, 'http'))
-            && !(lodashFunctions.startsWith(clickedRegionDetails.linkValue, 'https'))) {
+          if (!(_.startsWith(clickedRegionDetails.linkValue, 'http'))
+            && !(_.startsWith(clickedRegionDetails.linkValue, 'https'))) {
             if (basepath !== undefined) {
               clickedRegionDetails.linkValue = basepath + clickedRegionDetails.linkValue;
             }
           }
-          if (lodashFunctions.startsWith(clickedRegionDetails.linkValue, 'https://mediaplayer.pearsoncmg.com/assets') ||
-            lodashFunctions.startsWith(clickedRegionDetails.linkValue, 'http://mediaplayer.pearsoncmg.com/assets')) {
+          if (_.startsWith(clickedRegionDetails.linkValue, 'https://mediaplayer.pearsoncmg.com/assets') ||
+            _.startsWith(clickedRegionDetails.linkValue, 'http://mediaplayer.pearsoncmg.com/assets')) {
             clickedRegionDetails.hotspotType = 'SPPASSET';
           }
           if (clickedRegionDetails.hotspotType === 'URL') {
             if ((clickedRegionDetails.linkValue).indexOf('pearson') === -1) {
               clickedRegionDetails.hotspotType = 'EXTERNALLINK';
             } else if ((clickedRegionDetails.linkValue).indexOf('pearson') !== -1
-              && (lodashFunctions.endsWith(clickedRegionDetails.linkValue, '.htm') ||
-                lodashFunctions.endsWith(clickedRegionDetails.linkValue, '.html'))) {
+              && (_.endsWith(clickedRegionDetails.linkValue, '.htm') ||
+                _.endsWith(clickedRegionDetails.linkValue, '.html'))) {
               clickedRegionDetails.hotspotType = 'EXTERNALLINK';
             }
             if (youtubeRegex.test(clickedRegionDetails.linkValue)) {
               clickedRegionDetails.hotspotType = 'VIDEO';
             }
           }
-        }
-        break;
-      }
-    }
-  }
-  return clickedRegionDetails;
+        }        
+     return clickedRegionDetails;
 }
 
 /* Method for removing hotspot content on clicking the close button*/

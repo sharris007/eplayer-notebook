@@ -96,10 +96,14 @@ function constructTree(input) {
   const output = new Node();
   output.id = input.i;
   output.title = input.n;
-  if (input.lv !== undefined) {
-    output.urn = input.lv.pageorder;
+  if (input.lv) {
+    if(input.lv.pageorder){
+      output.urn = {pageorder : input.lv.pageorder, linkTypeID : input.lv.t};
+    }else{
+      output.urn = {linkValue : input.lv.content, linkTypeID : input.lv.t, regionTypeID : input.t, name : input.n}
+    }
   }
-  if (input.be !== undefined) {
+  if (input.be) {
     if (input.be.length === undefined) {
       output.children.push(
             constructTree(input.be));
@@ -133,7 +137,7 @@ export function fetchToc(inputParams) {
     // dispatch(request('toc'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     const serviceurl = `${bookServerURL}/ebook/pdfplayer/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}` +
-    `&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
+    `&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=all`;
     // tempurl is starts with http to create hash key for matching with server
     const tempurl = serviceurl.replace('https', 'http');
     const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
@@ -153,11 +157,16 @@ export function fetchToc(inputParams) {
         'http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/'
         + 'ebookCM21254346/assets/1256799653_Iannone_thumbnail.png';
           bookState.tocData.content.list = [];
+          let tocLevel1ChildList = [];
           basketData.forEach((tocLevel1) => {
             const tocLevel1ChildData = tocLevel1.document;
-            const tocLevel1ChildList = [];
             tocLevel1ChildData.forEach((tocLevel2) => {
-              const tocLevel2ChildData = tocLevel2.bc.b.be;
+              let tocLevel2ChildData = {};
+              if(tocLevel1.basketTypeID == '1'){
+                 tocLevel2ChildData = tocLevel2.bc.b.be;
+              }else{
+                 tocLevel2ChildData = tocLevel2.bc.b;
+              }
               if (tocLevel2ChildData !== undefined) {
                 if (tocLevel2ChildData.length === undefined) {
                   const childList = constructTree(tocLevel2ChildData);
@@ -170,12 +179,11 @@ export function fetchToc(inputParams) {
                 }
               }
             });
-            if (hastocflatten === 'Y' && tocLevel1ChildList.length !== 0) {
-              bookState.tocData.content.list = flatten1(tocLevel1ChildList);
-            } else {
-              bookState.tocData.content.list = tocLevel1ChildList;
-            }
+              if(tocLevel1.basketTypeID == '1' && hastocflatten === 'Y' && tocLevel1ChildList.length !== 0){
+                    tocLevel1ChildList = flatten1(tocLevel1ChildList);
+              }
           });
+              bookState.tocData.content.list = tocLevel1ChildList;
         });
         bookState.tocData.fetching = false;
         bookState.tocData.fetched = true;
