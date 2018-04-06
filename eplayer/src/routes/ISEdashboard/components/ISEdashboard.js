@@ -11,17 +11,45 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-  /* eslint-disable */
+/* eslint-disable */
 import React, { Component } from 'react';
-
+import { HeaderMenuComponent } from '@pearson-incubator/vega-core';
+import { MaterialsComponent } from '@pearson-incubator/vega-drawer';
 
 export default class ISEdashboard extends Component {
   constructor(props) {
-      super(props);
+    super(props);
+  }
+  OnChange = () => {
+
+  }
+  viewTitle = () =>{
+
   }
   render() {
-    return(
-      <div> <h4>ISE Dashboard </h4></div>
-      )
+    const headerTabs = ['scheduled', 'materials', 'notes', 'tools'];
+    const title = '';
+    const pageSelected = 'materials';
+    const inkBarColor = 'teal';
+    return (
+      <div>
+        <HeaderMenuComponent
+          title={title}
+          onChange={this.onChange}
+          page={pageSelected}
+          headerTabs={headerTabs}
+          inkBarColor={inkBarColor}
+        />
+         <MaterialsComponent
+          viewTitle={this.viewTitle}
+          courseData={[]}
+          showTitle={'SHOW_TITLE'}
+          cardHeader={'CARD_HEADER'}
+          cardFooter={'CARD_FOOTER'}
+          tocData={[]}
+          showCourse={'SHOW_COURSE_IN_MATERIALS'}
+        />
+      </div>
+    )
   }
 }
