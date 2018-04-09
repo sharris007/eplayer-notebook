@@ -93,28 +93,37 @@ function flatten1(input) {
 
 /* Method for constructing tree for Toc. */
 function constructTree(input) {
-  const output = new Node();
-  output.id = input.i;
-  output.title = input.n;
-  if (input.lv) {
-    if(input.lv.pageorder){
-      output.urn = {pageorder : input.lv.pageorder, linkTypeID : input.lv.t};
+  if(input.lv && (input.lv.t === eT1Contants.LinkType.FLV || input.lv.t === eT1Contants.LinkType.SWF 
+        || input.lv.t === eT1Contants.LinkType.JAZZASSET || input.lv.t === eT1Contants.LinkType.IPADAPP)){
+      return undefined;
     }else{
-      output.urn = {linkValue : input.lv.content, linkTypeID : input.lv.t, regionTypeID : input.t, name : input.n}
+        const output = new Node();
+        output.id = input.i;
+        output.title = input.n;
+        if (input.lv) {
+          if(input.lv.pageorder){
+            output.urn = {pageorder : input.lv.pageorder, linkTypeID : input.lv.t};
+          }else{
+            output.urn = {linkValue : input.lv.content, linkTypeID : input.lv.t, regionTypeID : input.t, name : input.n}
+          }
+        }
+        if (input.be) {
+          if (input.be.length === undefined) {
+            let childNode = constructTree(input.be);
+            childNode && output.children.push(childNode);
+          } else {
+            input.be.forEach((node) => {
+            let childNode = constructTree(node);
+            childNode && output.children.push(childNode);
+            });
+          }
+        }
+        if(!output.urn.linkTypeID && !output.children.length){
+          return undefined;
+        }else{
+          return output;
+        }
     }
-  }
-  if (input.be) {
-    if (input.be.length === undefined) {
-      output.children.push(
-            constructTree(input.be));
-    } else {
-      input.be.forEach((node) => {
-        output.children.push(
-               constructTree(node));
-      });
-    }
-  }
-  return output;
 }
 
 export function fetchToc(inputParams) {
@@ -170,11 +179,11 @@ export function fetchToc(inputParams) {
               if (tocLevel2ChildData !== undefined) {
                 if (tocLevel2ChildData.length === undefined) {
                   const childList = constructTree(tocLevel2ChildData);
-                  tocLevel1ChildList.push(childList);
+                  childList && tocLevel1ChildList.push(childList);
                 } else {
                   tocLevel2ChildData.forEach((tocLevel3) => {
                     const childList = constructTree(tocLevel3);
-                    tocLevel1ChildList.push(childList);
+                    childList && tocLevel1ChildList.push(childList);
                   });
                 }
               }
