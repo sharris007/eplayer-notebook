@@ -91,14 +91,6 @@ function onPageLoad() {
 function loadAccessibilityContent() {
   try {
     const currentPage = WebPDF.ViewerInstance.getCurPageIndex();
-    let divElement = $('.screenReaderText');
-    if (divElement.length === 0) {
-      divElement = document.createElement('div');
-      divElement.className = 'screenReaderText';
-      divElement.setAttribute('tabindex', 1);
-    } else {
-      divElement = divElement[0];
-    }
     let textForElement = '';
     const currTextPage = WebPDF.ViewerInstance.getToolHandlerByName(WebPDF.ViewerInstance
        .getCurToolHandlerName()).getTextSelectService().getTextPage(currentPage).textPage;
@@ -113,12 +105,6 @@ function loadAccessibilityContent() {
         firstElement.setAttribute('tabindex', '1');
       } catch (e) {
          // error
-      }
-      divElement.innerText = textForElement;
-      const docViewerElement = $('#docViewer');
-      const firstChild = docViewerElement[0].firstChild;
-      if ($('.screenReaderText').length === 0) {
-        docViewerElement[0].insertBefore(divElement, firstChild);
       }
       window.textForElement = textForElement;
     }
