@@ -6,6 +6,8 @@ import Cookies from 'universal-cookie';
 import { browserHistory } from 'react-router';
 import Popup from 'react-popup'; // eslint-disable-line import/no-extraneous-dependencies
 import RefreshIndicator from 'material-ui/RefreshIndicator';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import { HeaderComponent } from '@pearson-incubator/vega-core';
 import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { DrawerComponent } from '@pearson-incubator/vega-drawer';
@@ -48,7 +50,8 @@ class PdfPlayer extends Component {
       chapterPdfFected: false,
       chapterList: [],
       currentChapter: {},
-      currPageObj: {}
+      currPageObj: {},
+      isDialogOpen: false
     };
     this.currPageIndex = 0;
     this.showHighlight = true;
@@ -1018,10 +1021,16 @@ class PdfPlayer extends Component {
       if (pageOrder >= this.props.metaData.startPageNo
           && pageOrder <= this.props.metaData.lastPage) {
         this.goToPage(pageOrder);
+      }else{
+        this.setState({isDialogOpen : true})
       }
     } else {
       this.goToPage(pageOrder);
     }
+  }
+
+  handleDialogClose = () => {
+    this.setState({isDialogOpen : false})
   }
 
   searchCallback = (searchTerm, handleResults) => {
@@ -1072,7 +1081,7 @@ class PdfPlayer extends Component {
         orientation: 'horizontal',
         zoom: this.currZoomLevel,
         isAnnotationHide: isAnnHide,
-        enableShowHide: this.props.preferences.showAnnotation
+        enableShowHide: this.state.currPageObj.isCover ? false : this.props.preferences.showAnnotation
       }
     };
     const promiseVal = Promise.resolve(prefData);
@@ -1366,6 +1375,15 @@ class PdfPlayer extends Component {
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.removeAnnotationHandler = this.deleteHighlight;
     callbacks.goToPageCallback = this.handleDrawerEntryClick;
+
+    const dialogActions = [
+      <FlatButton
+        label="Close"
+        primary={true}
+        onClick={this.handleDialogClose}
+      />
+    ];
+    const noAccessDialogText = "This page you have attempted to navigate to is outside of the page range of this eText.";
     return (
       <div>
         { this.props.preferences.showHeader ?
@@ -1449,7 +1467,15 @@ class PdfPlayer extends Component {
           </div>
           <div id="sppModalBody" className="sppModalBody" />
         </div>
-
+        <Dialog
+          actions={dialogActions}
+          modal={false}
+          open={this.state.isDialogOpen}
+          onRequestClose={this.handleDialogClose}
+          contentStyle={{width : '50%'}}
+        >
+          {noAccessDialogText}
+        </Dialog>
         {this.state.pageLoaded !== true ?
           <div className="centerCircularBar">
             <RefreshIndicator size={50} left={0.48 * $(window).width()} top={200} status="loading" />
