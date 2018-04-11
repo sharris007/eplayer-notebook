@@ -20,7 +20,6 @@ export default class BookshelfPage extends React.Component {
    used to pass props for communication with other components. */
   constructor(props) {
     super(props);
-    debugger
     setTimeout(()=>{
       this.props.doTokenLogin();
     },1000)
@@ -30,7 +29,7 @@ export default class BookshelfPage extends React.Component {
   render() {
     return (
       <div id="bookshelf-page">
-        {this.props.DEEPLINK.bookshelf1.data ? this.props.DEEPLINK.bookshelf1.data.json: 'KVYDSGHSDFKJKLJVLKFVBJKLDFJKVYDSGHSDFKJKLJVLKFVBJKLDFJ' }
+        {this.props.DEEPLINK.launcheplayer.data ? this.props.DEEPLINK.launcheplayer.data.json: 'KVYDSGHSDFKJKLJVLKFVBJKLDFJKVYDSGHSDFKJKLJVLKFVBJKLDFJ' }
       </div>
     );
   }
