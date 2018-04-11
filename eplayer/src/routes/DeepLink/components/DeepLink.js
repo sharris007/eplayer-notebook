@@ -26,29 +26,29 @@ export default class DeepLink extends React.Component {
     this.qparams = [];
     this.redirectURL = '';
     setTimeout(()=>{
-      this.props.doTokenLogin();
+      //this.props.doTokenLogin();
     },1000)    
   }
 
   componentWillMount = () => {
     console.log(">>>>>>>>>> componentWillMount");
-    /*this.qparams = deepLinkService.getParams();
+    this.qparams = deepLinkService.getParams();
     const isErrorRoute = deepLinkService.checkErrorNavigation(this.qparams);
     if(isErrorRoute === false) {
       this.authenticateUser(this.qparams);
-    }*/
+    }
   }
 
   componentWillReceiveProps(props) {
     console.log(">>>>>>>>>> componentWillReceiveProps(props) ", props);
-    // if(resources.constants.authorizationCheck) {
-    //   if(props.deeplink.deepLink.idpName === "SMS") {
-    //     piSession.getToken((result, userToken)=> {
-    //       console.log("piSession : result, userToken",result, userToken)
-    //     });
-    //     //browserHistory.push(this.redirectURL);
-    //   }
-    // }
+    if(resources.constants.authorizationCheck) {
+      if(props.deeplinkProps.launcheplayer.idpName === "SMS") {
+        piSession.getToken((result, userToken)=> {
+          console.log("piSession : result, userToken",result, userToken)
+        });
+        //browserHistory.push(this.redirectURL);
+      }
+    }
   }
 
   authenticateUser = (qparams) => {

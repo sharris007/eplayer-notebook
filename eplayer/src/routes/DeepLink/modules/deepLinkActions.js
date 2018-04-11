@@ -1,6 +1,6 @@
 import { resources, domain, typeConstants } from '../../../../const/Settings';
 
-export const doTokenLogin = () => (dispatch) => {
+export const doTokenLogin1 = () => (dispatch) => {
   dispatch( 
           {type: 'DEEPLINK_TOKEN_LOGIN',
           data: {json : "zzzzzzzzzzzzzzzzzzzzzzzzz"} 
@@ -11,7 +11,7 @@ export const doTokenLogin = () => (dispatch) => {
 
 const etextServiceUrl = resources.links['etextServiceUrl'];
 const envType = domain.getEnvType();
-export const doTokenLogin1 = (qparams) => (dispatch) => {
+export const doTokenLogin = (qparams) => (dispatch) => {
 	let payLoad = {
 		token: qparams.token,
         serviceUrl: qparams.serviceUrl,
