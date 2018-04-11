@@ -22,8 +22,8 @@ export default store => ({
     require.ensure([], (require) => {
       /*  Webpack - use require callback to define
           dependencies for bundling   */
-      const LaunchEplayer = require('./containers/BookshelfContainer').default;
-      const reducer = require('./modules/bookshelfReducer').default;
+      const LaunchEplayer = require('./containers/DeepLinkContainer').default;
+      const reducer = require('./modules/deepLinkReducer').default;
 
       /*  Add the reducer to the store on key 'bookshelf'  */
       injectReducer(store, { key: 'launcheplayer', reducer });

@@ -1,12 +1,8 @@
 import { connect } from 'react-redux'; /* Importing the react-redux library, connect method for connecting the react and redux-store. */
 import { injectIntl } from 'react-intl';
 
-
-import { loadState } from '../../../localStorage';
-
-
-import {doTokenLogin} from '../modules/bookshelfActions';
-import BookshelfPage from '../components/Bookshelf';
+import {doTokenLogin} from '../modules/deepLinkActions';
+import DeepLink from '../components/DeepLink';
 
 
 
@@ -22,4 +18,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(BookshelfPage);
+export default connect(mapStateToProps, mapDispatchToProps)(DeepLink);

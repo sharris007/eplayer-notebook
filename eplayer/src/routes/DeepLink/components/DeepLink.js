@@ -1,7 +1,7 @@
 /*******************************************************************************
  * PEARSON PROPRIETARY AND CONFIDENTIAL INFORMATION SUBJECT TO NDA
  *   
- *  *  Copyright © 2017 Pearson Education, Inc.
+ *  *  Copyright Â© 2017 Pearson Education, Inc.
  *  *  All Rights Reserved.
  *  * 
  *  * NOTICE:  All information contained herein is, and remains
@@ -11,12 +11,26 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-#bookshelf-page {
-  background-color: #f5f5f5;
-  #bookshelf {
-  	margin: 0 8%;
+/* global piSession ,localStorage */
+import React from 'react';/* Importing the react library, for using the react methods and keywords. */
+
+/* Method for loading the bookshelf component. */
+export default class DeepLink extends React.Component {
+  /* constructor and super have used in class based React component,
+   used to pass props for communication with other components. */
+  constructor(props) {
+    super(props);
+    setTimeout(()=>{
+      this.props.doTokenLogin();
+    },1000)
+    
   }
-}
-.book .bookContainer .title{
-    word-break: break-all;
+
+  render() {
+    return (
+      <div id="bookshelf-page">
+        {this.props.DEEPLINK.launcheplayer.data ? this.props.DEEPLINK.launcheplayer.data.json: 'KVYDSGHSDFKJKLJVLKFVBJKLDFJKVYDSGHSDFKJKLJVLKFVBJKLDFJ' }
+      </div>
+    );
+  }
 }
