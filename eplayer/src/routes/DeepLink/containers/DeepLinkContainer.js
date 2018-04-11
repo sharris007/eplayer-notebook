@@ -14,7 +14,7 @@ const mapDispatchToProps = {
 to access your reducer state objects from within your React components. */
 
 const mapStateToProps = state => ({
-  DEEPLINK: state
+  deeplinkProps: state
 });
 
 

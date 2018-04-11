@@ -21,7 +21,8 @@ export const resources = {
     idcDashboardEnabled: true,
     iseEnabled: true,
     zeppelinEnabled: true,
-    isDisableAnnotation: false
+    isDisableAnnotation: false,
+    authorizationCheck:true
   },
   links: {
     legalNotice: 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',

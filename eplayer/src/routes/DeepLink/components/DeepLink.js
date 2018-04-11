@@ -12,24 +12,66 @@
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
 /* global piSession ,localStorage */
-import React from 'react';/* Importing the react library, for using the react methods and keywords. */
+import React from 'react';
+import { browserHistory } from 'react-router';
 
-/* Method for loading the bookshelf component. */
+import deepLinkService from '../modules/deepLinkService';
+import { resources } from '../../../../const/Settings';
+
 export default class DeepLink extends React.Component {
-  /* constructor and super have used in class based React component,
-   used to pass props for communication with other components. */
   constructor(props) {
     super(props);
+    console.clear();
+    console.log(">>>>>>>>>>>>>>>>> deeplink Props : ", props);
+    this.qparams = [];
+    this.redirectURL = '';
     setTimeout(()=>{
       this.props.doTokenLogin();
-    },1000)
-    
+    },1000)    
+  }
+
+  componentWillMount = () => {
+    console.log(">>>>>>>>>> componentWillMount");
+    /*this.qparams = deepLinkService.getParams();
+    const isErrorRoute = deepLinkService.checkErrorNavigation(this.qparams);
+    if(isErrorRoute === false) {
+      this.authenticateUser(this.qparams);
+    }*/
+  }
+
+  componentWillReceiveProps(props) {
+    console.log(">>>>>>>>>> componentWillReceiveProps(props) ", props);
+    // if(resources.constants.authorizationCheck) {
+    //   if(props.deeplink.deepLink.idpName === "SMS") {
+    //     piSession.getToken((result, userToken)=> {
+    //       console.log("piSession : result, userToken",result, userToken)
+    //     });
+    //     //browserHistory.push(this.redirectURL);
+    //   }
+    // }
+  }
+
+  authenticateUser = (qparams) => {
+    let queryParams = {
+                "token" : qparams.smsTicket ? qparams.smsTicket : '',
+                "serviceUrl" : qparams.serviceUrl ? qparams.serviceUrl : '',
+                "idpName":  qparams.idpName ? qparams.idpName: '',
+                "platforms_id" : qparams.platforms_id ? qparams.platforms_id:'',
+                "bookId" : qparams.bookId ? qparams.bookId : '',
+                "pageNo" : qparams.pageNo ? qparams.pageNo : '',
+                "courseName" : qparams.courseName ? qparams.courseName : '',
+                "smsUserId" :qparams.smsUserId ? qparams.smsUserId : '',
+                "contextId" : qparams.contextId ? qparams.contextId : '',
+                "role" : qparams.role ? qparams.role : ''
+              }
+    this.redirectURL = deepLinkService.getUrlString(queryParams);
+    this.props.doTokenLogin(queryParams);
   }
 
   render() {
     return (
       <div id="bookshelf-page">
-        {this.props.DEEPLINK.launcheplayer.data ? this.props.DEEPLINK.launcheplayer.data.json: 'KVYDSGHSDFKJKLJVLKFVBJKLDFJKVYDSGHSDFKJKLJVLKFVBJKLDFJ' }
+        {this.props.deeplinkProps.launcheplayer.data ? this.props.deeplinkProps.launcheplayer.data.json: 'KVYDSGHSDFKJKLJVLKFVBJKLDFJKVYDSGHSDFKJKLJVLKFVBJKLDFJ' }
       </div>
     );
   }
