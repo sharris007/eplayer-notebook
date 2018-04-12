@@ -44,9 +44,8 @@ export default class DeepLink extends React.Component {
     if(resources.constants.authorizationCheck) {
       if(props.deeplinkProps.launcheplayer.idpName === "SMS") {
         piSession.getToken((result, userToken)=> {
-          console.log("piSession : result, userToken",result, userToken)
+          browserHistory.push(this.redirectURL);
         });
-        //browserHistory.push(this.redirectURL);
       }
     }
   }
