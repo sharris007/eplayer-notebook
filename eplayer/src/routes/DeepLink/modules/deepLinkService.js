@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { browserHistory } from 'react-router';
 export default class DeepLinkService {
 
   static getParams() {

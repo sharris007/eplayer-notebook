@@ -49,6 +49,7 @@ export class Book extends Component {
     let redirectCourseUrl = window.location.href;
     redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
     piSession.getToken(function (result, userToken) {
+      console.log(">> piSession.getToken : ", result, userToken);
       if (!userToken) {
         if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
           browserHistory.push('/eplayer/pilogin');
@@ -127,6 +128,7 @@ export class Book extends Component {
     this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
     window.isDisableAnnotation = resources.constants.isDisableAnnotation;
     window.iseUrl = resources.links.iseUrl[domain.getEnvType()]+'/courses/'+ this.props.params.bookId +'/notes';
+    this.isDeeplinkBook = window.location.search.match('deeplink');
     this.getGTMPath();
   }
   componentWillMount = () => {
@@ -173,7 +175,8 @@ export class Book extends Component {
           context: this.state.urlParams.context,
           piToken: getSecureToken,
           bookId: this.props.params.bookId,
-          pageId: this.props.params.pageId ? this.props.params.pageId :''
+          pageId: this.props.params.pageId ? this.props.params.pageId :'',
+          isDeeplink: false
         }
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
@@ -209,6 +212,11 @@ export class Book extends Component {
             else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
 
           } else {
+          console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", this.props);
+
+          if(this.isDeeplinkBook) {
+            this.bookDetailsData.isDeeplink = true;;
+          }
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
       }

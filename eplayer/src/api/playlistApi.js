@@ -17,7 +17,7 @@ class PlaylistApi {
   static doGetPiUserDetails = piUserDetails => getPiUserProfile(piUserDetails)
   static doGetBookDetails = bookDetails => getBookDetails(bookDetails)
   static doGetPlaylistDetails = (bookId, tocurl, piToken) => getPlaylistDetails(bookId, tocurl, piToken)
-  static doGetTocDetails = (bookId, tocurl, piToken) => getTocDetails(bookId, tocurl, piToken)
+  static doGetTocDetails = (bookId, tocurl, piToken, data) => getTocDetails(bookId, tocurl, piToken, data)
   static doGetCourseDetails = courseDetails => getCourseDetails(courseDetails)
   static doPutCustomTocDetails = (tocContents, piToken, bookId) => putCustomTocDetails(tocContents, piToken, bookId)
   static doGetAuthToken = (secureToken) => getAuthToken(secureToken)
