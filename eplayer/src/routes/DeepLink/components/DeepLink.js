@@ -24,10 +24,7 @@ export default class DeepLink extends React.Component {
     console.clear();
     console.log(">>>>>>>>>>>>>>>>> deeplink Props : ", props);
     this.qparams = [];
-    this.redirectURL = '';
-    setTimeout(()=>{
-      //this.props.doTokenLogin();
-    },1000)    
+    this.redirectURL = ''; 
   }
 
   componentWillMount = () => {
