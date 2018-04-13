@@ -74,21 +74,24 @@ function getSearchFormat(response) {
       if(pageResult){
         searchResults[0].results.unshift(pageResult);
        }
+
     });
     pushSearchInfoToDataLayer(payLoad.queryString,searchResultLength);
+   
     console.log(searchResults);
     return searchResults;
   }
-   if(pageResult && response.searchResults.length == 0){
+   if(pageResult && (response.length == 0 || response.searchResults.length == 0)) {
       let pageObj = {  
         "category":"", 
         "results":[],           
       };     
       searchResults.push(pageObj);      
       searchResults[0].results.unshift(pageResult);
+     
       return searchResults;
     }
-
+  
   pushSearchInfoToDataLayer(payLoad.queryString,0);
   return searchResults;
 }
@@ -106,13 +109,13 @@ function pushSearchInfoToDataLayer(queryString,searchResultslength) {
 function  getPageNumberSearchResult(searchcontent){   
     let content = '';let id='';
     if(pageContent){
-      let pageData = pageContent.tocNode.pages.filter(result => result.title === searchcontent);
+      let pageData = pageContent.tocNode.pages.filter(result => result.title === searchcontent.value);
               if(pageData.length >0){                 
                 const pageIdData = pageData[0].href.split("#");                  
                 let filterResult = playlistData.content.filter(result => result.href.split("#")[0] === pageIdData[0])
                 if(filterResult){                    
                   const obj = {
-                    content: 'Page'+ " " + searchcontent+": "+filterResult[0].title,
+                    content: 'Page'+ " " + searchcontent.value+": "+filterResult[0].title,
                     id: pageData[0].href 
                   };
                     pageResult = obj; 
@@ -122,7 +125,7 @@ function  getPageNumberSearchResult(searchcontent){
 } 
 
 function fetchSearchInfo(searchcontent, handleResults, payLoad) {
-   pageResult = "";  
+  pageResult =''
   if(pageContent.baseUrl != playlistData.baseUrl){
     pageContent = "";
   }
@@ -143,7 +146,7 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
     getPageNumberSearchResult(searchcontent);   
   }
 
-  payLoad.queryString = searchcontent;
+  payLoad.queryString = searchcontent.value;
   payLoad.filter=[];
   payLoad.filter.push("indexid:"+window.localStorage.getItem('searchIndexId'));
   requestId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -165,12 +168,14 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
    .then((response) => {
      if(response && response.requestId && requestId === response.requestId) {
       handleResults((getSearchFormat(response)));
-     }   
+     } else {
+       handleResults((getSearchFormat([])))
+     }
    });
 }
 
 function fetchMoreResults(searchcontent,handleResults) {
-  let searchUrl= resources.links.etextSearchMoreResults[domain.getEnvType()] + '/search?indexId=' + window.localStorage.getItem('searchIndexId') + '&q='+searchcontent+'&s=0&n=' + resources.constants.TextSearchLimit;
+  let searchUrl= resources.links.etextSearchMoreResults[domain.getEnvType()] + '/search?indexId=' + window.localStorage.getItem('searchIndexId') + '&q='+searchcontent.value+'&s=0&n=' + resources.constants.TextSearchLimit;
   fetch(searchUrl)
       .then(response => response.json())
       .then((response) => {
@@ -196,7 +201,7 @@ function fetchMoreResults(searchcontent,handleResults) {
             searchObj.results = searchMoreResults;
             searchResults.push(searchObj);
             handleResults(searchResults);
-            pushSearchInfoToDataLayer(searchcontent,searchResultLength);
+            pushSearchInfoToDataLayer(searchcontent.value,searchResultLength);
           }
         }   
       });
