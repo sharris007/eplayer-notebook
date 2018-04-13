@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash/find';
 import fetch from 'isomorphic-fetch';
 import { getmd5 } from '../../../../components/Utility/Util';
 import { eT1Contants } from '../../../../components/common/et1constants';
@@ -17,10 +17,15 @@ export function search(inputParams, searchText, handleResults) {
   const globalbookid = inputParams.globalBookId;
   const version = inputParams.version;
   const ssoKey = inputParams.ssoKey;
-
+  var termToSearch;
+  if (searchText.value !== undefined) {
+    termToSearch = searchText.value;
+  } else {
+    termToSearch = searchText;
+  }
   const searchUrl = `${serverDetails}/ebook/pdfplayer/searchbook?bookid=${bookid}`
         + `&globalbookid=${globalbookid}&searchtext=searchTerm&sortby=1&version=${version}&authkey=${ssoKey}`;
-  let searchServiceURL = searchUrl.replace('searchTerm', searchText);
+  let searchServiceURL = searchUrl.replace('searchTerm', termToSearch);
   if (searchServiceURL.indexOf('/ebook/pdfplayer/searchbook') !== -1) {
     // tempurl is starts with http to create hash key for matching with server
     const tempurl = searchServiceURL.replace('https', 'http');
@@ -75,7 +80,11 @@ export function search(inputParams, searchText, handleResults) {
       resultData.category = 'Search Results';
       resultData.results = resultsList;
       searchData.push(resultData);
-      handleResults(searchData);
+      if (searchText.requestID !== undefined) {
+        handleResults(searchData,searchText.requestID);
+      } else {
+        handleResults(searchData);
+      }
       return searchData;
     });
 }
