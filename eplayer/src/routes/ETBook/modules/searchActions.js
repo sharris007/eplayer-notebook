@@ -79,7 +79,7 @@ function getSearchFormat(response) {
     console.log(searchResults);
     return searchResults;
   }
-   if(pageResult && response.searchResults.length == 0){
+   if(pageResult && (response.length == 0 || response.searchResults.length == 0)) {
       let pageObj = {  
         "category":"", 
         "results":[],           
@@ -106,13 +106,13 @@ function pushSearchInfoToDataLayer(queryString,searchResultslength) {
 function  getPageNumberSearchResult(searchcontent){   
     let content = '';let id='';
     if(pageContent){
-      let pageData = pageContent.tocNode.pages.filter(result => result.title === searchcontent);
+      let pageData = pageContent.tocNode.pages.filter(result => result.title === searchcontent.value);
               if(pageData.length >0){                 
                 const pageIdData = pageData[0].href.split("#");                  
                 let filterResult = playlistData.content.filter(result => result.href.split("#")[0] === pageIdData[0])
                 if(filterResult){                    
                   const obj = {
-                    content: 'Page'+ " " + searchcontent+": "+filterResult[0].title,
+                    content: 'Page'+ " " + searchcontent.value+": "+filterResult[0].title,
                     id: pageData[0].href 
                   };
                     pageResult = obj; 
@@ -122,7 +122,7 @@ function  getPageNumberSearchResult(searchcontent){
 } 
 
 function fetchSearchInfo(searchcontent, handleResults, payLoad) {
-   pageResult = "";  
+
   if(pageContent.baseUrl != playlistData.baseUrl){
     pageContent = "";
   }
@@ -165,7 +165,9 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
    .then((response) => {
      if(response && response.requestId && requestId === response.requestId) {
       handleResults((getSearchFormat(response)));
-     }   
+     } else {
+       handleResults((getSearchFormat([])))
+     }
    });
 }
 
