@@ -1,5 +1,6 @@
 import { resources, domain, typeConstants } from '../../../../const/Settings';
 import message from '../../../defaultMessages';
+import { connect } from 'react-redux';
 
 const searchFilters = {
   indexType: 'nextcontent',
@@ -21,6 +22,8 @@ const payLoad = {
 let searchResults = [];
 let searchResultLength = 0;
 let requestId = '';
+let pageResult = '';
+let pageContent = '';
 
 function keyIndex(arr, key) {
   return arr.findIndex(item => (key === item.category));
@@ -68,11 +71,24 @@ function getSearchFormat(response) {
         results
       }
       searchResults.push(searchObj);
+      if(pageResult){
+        searchResults[0].results.unshift(pageResult);
+       }
     });
     pushSearchInfoToDataLayer(payLoad.queryString,searchResultLength);
     console.log(searchResults);
     return searchResults;
   }
+   if(pageResult && response.searchResults.length == 0){
+      let pageObj = {  
+        "category":"", 
+        "results":[],           
+      };     
+      searchResults.push(pageObj);      
+      searchResults[0].results.unshift(pageResult);
+      return searchResults;
+    }
+
   pushSearchInfoToDataLayer(payLoad.queryString,0);
   return searchResults;
 }
@@ -87,7 +103,46 @@ function pushSearchInfoToDataLayer(queryString,searchResultslength) {
   console.log(obj);
 }
 
+function  getPageNumberSearchResult(searchcontent){   
+    let content = '';let id='';
+    if(pageContent){
+      let pageData = pageContent.tocNode.pages.filter(result => result.title === searchcontent);
+              if(pageData.length >0){                 
+                const pageIdData = pageData[0].href.split("#");                  
+                let filterResult = playlistData.content.filter(result => result.href.split("#")[0] === pageIdData[0])
+                if(filterResult){                    
+                  const obj = {
+                    content: 'Page'+ " " + searchcontent+": "+filterResult[0].title,
+                    id: pageData[0].href 
+                  };
+                    pageResult = obj; 
+                }
+              }
+    }        
+} 
+
 function fetchSearchInfo(searchcontent, handleResults, payLoad) {
+   pageResult = "";  
+  if(pageContent.baseUrl != playlistData.baseUrl){
+    pageContent = "";
+  }
+  if(!pageContent){
+    let UrlString = window.location.href.split('/page')[0];
+    //splitString
+    let contextId = UrlString.substr(UrlString.lastIndexOf('/')+1);
+     contextId ? contextId : 'contextid_2';
+    let searchUrl = resources.links.pageNumberSearchService[domain.getEnvType()];
+    fetch(searchUrl+"/services-api/api/context/"+contextId+"/toc/items/root?itemContext=false&metadata=true&provider="+playlistData.provider+"&providerType=epub&pageContext=true")     
+        .then(response => response.json())
+              .then((response) => { 
+              pageContent =  response;         
+              getPageNumberSearchResult(searchcontent);    
+        });  
+  } 
+  else if(pageContent){
+    getPageNumberSearchResult(searchcontent);   
+  }
+
   payLoad.queryString = searchcontent;
   payLoad.filter=[];
   payLoad.filter.push("indexid:"+window.localStorage.getItem('searchIndexId'));
@@ -158,4 +213,17 @@ const searchActions = {
   }
 };
 
-export default searchActions;
+const mapStateToProps = state => {
+  return {   
+    playlistData: state.playlistReducer.data,
+    playlistReceived: state.playlistReducer.playlistReceived,
+    tocData: state.playlistReducer.tocdata,
+    tocResponse: state.playlistReducer.tocresponse
+     
+  }
+};
+
+export default connect(
+  mapStateToProps,
+  
+)(searchActions)

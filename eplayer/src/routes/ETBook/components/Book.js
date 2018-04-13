@@ -112,6 +112,7 @@ export class Book extends Component {
     this.userType = '';
     this.productModel= '';
     this.gtmPath = '';
+    this.pageTitleId = '';
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
     this.state.pageDetails.currentPageURL = '';
@@ -800,6 +801,7 @@ export class Book extends Component {
   }
 
   onPageRequest = (page) => {
+    this.pageTitleId = '';
     const pageDetails = { ...this.state.pageDetails };
     pageDetails.annId = null;
     this.setState({
@@ -850,6 +852,7 @@ export class Book extends Component {
   };
 
   handleDrawerkeyselect = (event) => {
+    this.pageTitleId = ''
     if ((event.which || event.keyCode) === 13) {
       this.setState({ drawerOpen: true });
     }
@@ -857,6 +860,7 @@ export class Book extends Component {
   }
 
   handleDrawer = () => {
+    this.pageTitleId = ''
     this.setState({ drawerOpen: true,idc: false,publishedToc:false});
     this.viewerContentCallBack(false);
   }
@@ -1059,7 +1063,10 @@ export class Book extends Component {
     if(searchInfo.split('##')[1]) {
       searchHref = searchInfo.split('##')[0]; // For search SVC
       searchCombination=searchInfo.split('##')[1].split(',')
-    } else {
+    }else if(searchInfo.split('#')[1]){
+        searchHref = searchInfo.split('#')[0];
+        this.pageTitleId=searchInfo.split('#')[1];
+      } else {
       searchHref = searchInfo.split('*')[0];// For Auto complete search SVC
       if(searchInfo.split('*')[2] && searchInfo.split('*')[2].match('key')) {
         searchCombination = [`${searchInfo.split('*')[1]}*${searchInfo.split('*')[2]}`];
@@ -1074,7 +1081,7 @@ export class Book extends Component {
       }
     });
     //bookObj = this.state.pageDetails.playListURL[306];
-    this.goToPageCallback(bookObj.id, '', searchCombination);
+    this.goToPageCallback(bookObj.id, '', searchCombination, this.pageTitleId);
     let obj = {};
     obj.event = "searchResultClicked";
     obj.term = searchCombination.toString();
@@ -1342,7 +1349,8 @@ export class Book extends Component {
             fontSize: bootstrapParams.pageDetails.pageFontSize,
             isAnnotationHide: bootstrapParams.pageDetails.isAnnotationHide
           },
-          searchText: bootstrapParams.pageDetails.searchText
+          searchText: bootstrapParams.pageDetails.searchText,
+          searchByPageId: this.pageTitleId
         }
       };
     }

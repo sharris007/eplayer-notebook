@@ -148,6 +148,13 @@ export const resources = {
       stage: 'https://etext-ise-stg.pearson.com',
       prod: 'https://etext-ise.pearson.com'
     },
+     pageNumberSearchService : {
+      local        :"https://pxe-services-dev.pearson.com",
+      dev          :"https://pxe-services-dev.pearson.com",
+      qa           :"https://pxe-services-qa-stg.pearson.com",
+      stage        :"https://pxe-services-stg.pearson.com",
+      prod         :"https://pxe-sdk.openclass.com/"
+    },
     xCaller: {
       local: {
         ETEXT2_WEB: {
