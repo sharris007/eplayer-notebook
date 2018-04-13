@@ -74,8 +74,10 @@ function getSearchFormat(response) {
       if(pageResult){
         searchResults[0].results.unshift(pageResult);
        }
+
     });
     pushSearchInfoToDataLayer(payLoad.queryString,searchResultLength);
+   
     console.log(searchResults);
     return searchResults;
   }
@@ -86,9 +88,10 @@ function getSearchFormat(response) {
       };     
       searchResults.push(pageObj);      
       searchResults[0].results.unshift(pageResult);
+     
       return searchResults;
     }
-
+  
   pushSearchInfoToDataLayer(payLoad.queryString,0);
   return searchResults;
 }
@@ -122,7 +125,7 @@ function  getPageNumberSearchResult(searchcontent){
 } 
 
 function fetchSearchInfo(searchcontent, handleResults, payLoad) {
-
+  pageResult =''
   if(pageContent.baseUrl != playlistData.baseUrl){
     pageContent = "";
   }
@@ -143,7 +146,7 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
     getPageNumberSearchResult(searchcontent);   
   }
 
-  payLoad.queryString = searchcontent;
+  payLoad.queryString = searchcontent.value;
   payLoad.filter=[];
   payLoad.filter.push("indexid:"+window.localStorage.getItem('searchIndexId'));
   requestId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -172,7 +175,7 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
 }
 
 function fetchMoreResults(searchcontent,handleResults) {
-  let searchUrl= resources.links.etextSearchMoreResults[domain.getEnvType()] + '/search?indexId=' + window.localStorage.getItem('searchIndexId') + '&q='+searchcontent+'&s=0&n=' + resources.constants.TextSearchLimit;
+  let searchUrl= resources.links.etextSearchMoreResults[domain.getEnvType()] + '/search?indexId=' + window.localStorage.getItem('searchIndexId') + '&q='+searchcontent.value+'&s=0&n=' + resources.constants.TextSearchLimit;
   fetch(searchUrl)
       .then(response => response.json())
       .then((response) => {
@@ -198,7 +201,7 @@ function fetchMoreResults(searchcontent,handleResults) {
             searchObj.results = searchMoreResults;
             searchResults.push(searchObj);
             handleResults(searchResults);
-            pushSearchInfoToDataLayer(searchcontent,searchResultLength);
+            pushSearchInfoToDataLayer(searchcontent.value,searchResultLength);
           }
         }   
       });
