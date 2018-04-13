@@ -1,6 +1,6 @@
 {
   "name": "@pearson-incubator/pxe-wrapper",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "",
   "main": "./main.js",
   "scripts": {
