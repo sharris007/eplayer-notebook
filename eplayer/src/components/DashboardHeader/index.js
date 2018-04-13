@@ -11,22 +11,6 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-// import { injectReducer } from '../../store/reducers';
+import DashboardHeader from './DashboardHeader';
 
-export default () => ({
-   path: '/eplayer/ISEdashboard/:bookId(/page/:pageId)',
-  /*  Async getComponent is only invoked when route matches   */
-  getComponent(nextState, cb) {
-    /*  Webpack - use 'require.ensure' to create a split point
-        and embed an async module loader (jsonp) when bundling   */
-    require.ensure([], (require) => {
-      /*  Webpack - use require callback to define
-          dependencies for bundling   */
-      const Print = require('./components/ISEdashboard').default;
-      /*  Return getComponent   */
-      cb(null, Print);
-
-    /* Webpack named bundle   */
-    }, 'isedashboard');
-  }
-});
+export default DashboardHeader;

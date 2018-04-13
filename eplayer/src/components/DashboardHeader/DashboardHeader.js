@@ -11,22 +11,20 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-// import { injectReducer } from '../../store/reducers';
+import React from 'react';
+// import ReactDOM from 'react-dom';
+import './DashboardHeader.css';
 
-export default () => ({
-   path: '/eplayer/ISEdashboard/:bookId(/page/:pageId)',
-  /*  Async getComponent is only invoked when route matches   */
-  getComponent(nextState, cb) {
-    /*  Webpack - use 'require.ensure' to create a split point
-        and embed an async module loader (jsonp) when bundling   */
-    require.ensure([], (require) => {
-      /*  Webpack - use require callback to define
-          dependencies for bundling   */
-      const Print = require('./components/ISEdashboard').default;
-      /*  Return getComponent   */
-      cb(null, Print);
 
-    /* Webpack named bundle   */
-    }, 'isedashboard');
+class DashboardHeader extends React.Component { // eslint-disable-line react/prefer-stateless-function
+  render() {
+    /* eslint-disable */
+    return (
+      <div className="headerContainer">
+          <img src={require('./images/ico-pearson-logo.svg')} className="pearson" alt="pearson logo" /> 
+      </div>
+    );
+    /* eslint-enable */
   }
-});
+}
+export default DashboardHeader;

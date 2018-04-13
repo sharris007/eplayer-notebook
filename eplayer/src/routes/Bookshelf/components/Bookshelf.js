@@ -221,7 +221,8 @@ export default class BookshelfPage extends React.Component {
       }
 
     }  else if( type === 'et2'){
-      browserHistory.push(`/eplayer/ETbook/${bookId}`);
+      // browserHistory.push(`/eplayer/ETbook/${bookId}`);
+      browserHistory.push(`/eplayer/ISEdashboard/${bookId}`);
     }
     else if( type === 'course') {
       localStorage.setItem('sourceUrl', 'bookshelf');

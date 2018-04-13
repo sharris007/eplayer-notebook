@@ -13,28 +13,173 @@
  *******************************************************************************/
 /* eslint-disable */
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import { HeaderMenuComponent } from '@pearson-incubator/vega-core';
 import { MaterialsComponent } from '@pearson-incubator/vega-drawer';
+import languageName from '../../../../locale_config/configureLanguage';
+import { languages } from '../../../../locale_config/translations/index';
+import DashboardHeader from '../../../components/DashboardHeader';
+import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
+import { browserHistory } from 'react-router';
+import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken, getParameterByName, getCourseCallServiceForRedirect, updateProdType } from '../../../actions/playlist';
+import { getGotoPageCall } from '../../../actions/gotopage';
+import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
+import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 
-export default class ISEdashboard extends Component {
+import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
+
+let languageid;
+const url = window.location.href;
+const n = url.search('languageid');
+if (n > 0) {
+  const urlSplit = url.split('languageid=');
+  languageid = Number(urlSplit[1]);
+} else {
+  languageid = 1;
+}
+const locale = languageName(languageid);
+const { messages } = languages.translations[locale];
+
+export class ISEdashboard extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      urlParams: {
+        context: this.props.params.bookId,
+        user: ''
+      },
+      piToken: localStorage.getItem('secureToken')
+    }
+  }
+ 
+  componentWillMount = () => {
+    const getSecureToken = localStorage.getItem('secureToken');
+    this.bookDetailsData = {
+      context: this.state.urlParams.context,
+      piToken: getSecureToken,
+      bookId: this.props.params.bookId,
+      pageId: this.props.params.pageId ? this.props.params.pageId :''
+    }
+    if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+          this.bookDetailsData.courseId = this.props.params.bookId;
+            this.courseBook = true;
+            const url = window.location.href;
+            const n = url.search('prdType');
+            let prdType = '';
+            let iseSource = '';
+            const checkSource = url.search('Source=');
+            if (n > 0) {
+              const urlSplit = url.split('prdType=');
+              prdType = getParameterByName('prdType');
+              console.log("prdType", prdType);
+              this.bookDetailsData.prdType = prdType;
+              this.props.dispatch(updateProdType(prdType));
+            }
+            if (checkSource > 0){
+              const getIseSource = getParameterByName('Source');
+              this.bookDetailsData.prdType = getIseSource;
+              iseSource = true;
+              this.props.dispatch(updateProdType(getIseSource));
+            }
+            if (!prdType && !iseSource) {
+              localStorage.setItem('backUrl', '');
+            }
+            let checkReturnUrl = url.search('returnurl=');
+            if (checkReturnUrl === -1) {
+              checkReturnUrl = url.search('returnUrl=');
+            }
+            if(  ((resources.constants.idcDashboardEnabled && !prdType && !iseSource && (checkReturnUrl > 0)) || ( resources.constants.iseEnabled && !iseSource && !prdType && (checkReturnUrl > 0))) ) {
+              this.props.dispatch(getCourseCallServiceForRedirect(this.bookDetailsData));
+            }
+            else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
+
+          } else {
+          this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
+        }
+  }
+  componentWillUnmount = () => {
+      this.props.dispatch({ type: "CLEAR_PLAYLIST" });
+      this.props.dispatch({ type: "CLEAR_ANNOTATIONS" });
+      this.props.dispatch({ type: "CLEAR_BOOKMARKS" });
+      this.props.dispatch({ type: "CLEAR_SEARCH" });
+  }
+  componentWillReceiveProps = (nextProps) => {
   }
   OnChange = () => {
-
+    console.log('OnChange called');
   }
-  viewTitle = () =>{
-
+  viewTitle = () => {
+    console.log('viewTitle called');
+  }
+  goToPageCallback = () => {
+    console.log('goToPageCallback called');
+  }
+  handleTocExpand = () => {
+    console.log('handleTocExpand called');
   }
   render() {
+     const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props;
+    // eslint-disable-line react/prop-types
+    let title = '';
+    let tocContent = {};
+    let courseData = {
+    "id": "5a8ecc4be4b093a7a8ec7fe8",
+    "title": "CITE - Financial Management",
+    "code": "",
+    "bookTitle": "CITE - Financial Management",
+    "startDate": 1519295400000,
+    "endDate": 1525084200000,
+    "schedule": "",
+    "source": null,
+    "avatar": "https://www.pearsonhighered.com/assets/bigcovers/0/1/3/4/0134640845.jpg",
+    "prefix": "https://epspqa.stg-openclass.com/eps/sanvan/api/item/aecd13f0-1fbd-466d-bcda-9574cceaed32/1/file",
+    "tocProvider": [
+      "https://content.stg-openclass.com/eps/pearson-reader/api/item/a2055aee-a3db-42d8-8183-0c18884ac229/1/file/titman-fmpaa-13e_etext_v6/OPS/toc.ncx",
+      "https://content.stg-openclass.com/eps/pearson-reader/api/item/a2055aee-a3db-42d8-8183-0c18884ac229/1/file/titman-fmpaa-13e_etext_v6/OPS/package.opf",
+      "https://content.stg-openclass.com/eps/pearson-reader/api/item/a2055aee-a3db-42d8-8183-0c18884ac229/1/file/titman-fmpaa-13e_etext_v6/OPS/xhtml/toc.xhtml"
+    ],
+    "institutionId": "54dbc7b53004d01c8d3b74c7",
+    "launchUrl": "https://etext-stg.pearson.com/eplayer/Course/5a8ecc4be4b093a7a8ec7fe8",
+    "authorName": "Sheridan Titman",
+    "isStudent": true,
+    "passportDetails": {
+      "access": true,
+      "productId": "x-urn:etext2_pxe:a2055aee-a3db-42d8-8183-0c18884ac229",
+      "userId": "x-urn:pi:ffffffff5a34cf7ee4b0c0a61adb00bf"
+    },
+    "isLoaded": true,
+    "indexId": "9cf85af597186c765a0648af50cd44d2",
+    "isError": false,
+    "contentType": "CITE",
+    "productId": "urn:pearson:isbn:9780205956579"
+  };
+    if(tocReceived){
+      title = tocData.bookDetails.title;
+      tocContent = tocData.content;
+    }
+  
     const headerTabs = ['scheduled', 'materials', 'notes', 'tools'];
-    const title = '';
     const pageSelected = 'materials';
     const inkBarColor = 'teal';
-    const tocData = {'data':{ 'content' : {'mainTitle' : "Book",'author':'testauthor','list' : [{"id":"ae4508a54575d13ee5c25964b671129ff64199ed6","coPage":"true","urn":"ae4508a54575d13ee5c25964b671129ff64199ed6","title":"Preface","playOrder":1,"items":[{"id":"ae4508a54575d13ee5c25964b671129ff64199ed6-id_toc2","urn":"ae4508a54575d13ee5c25964b671129ff64199ed6-id_toc2","title":"Cover","playOrder":2,"href":"OPS/xhtml/fm01_pg0001.xhtml#id_toc2","hidden":false,"childHidden":false},{"id":"a4c9aca7c1c7b5d32619a28a898667614ba793dad","urn":"a4c9aca7c1c7b5d32619a28a898667614ba793dad","title":"Title","playOrder":6,"href":"OPS/xhtml/fm01_pg0004.xhtml","hidden":false,"childHidden":false},{"id":"ae854594dda7ed30e9c47398bab6de983a2ffe7f6","urn":"ae854594dda7ed30e9c47398bab6de983a2ffe7f6","title":"Copyright","playOrder":7,"href":"OPS/xhtml/fm01_pg0005.xhtml","hidden":false,"childHidden":false},{"id":"ac580ba64b90074e84ecf3fb8d61eea06b69ab8ad","urn":"ac580ba64b90074e84ecf3fb8d61eea06b69ab8ad","title":"Preface","playOrder":8,"href":"OPS/xhtml/fm01_pg0006.xhtml","hidden":false,"childHidden":false},{"id":"a15c65ab484d8e9af486cd015e941680fa3a056d0","urn":"a15c65ab484d8e9af486cd015e941680fa3a056d0","title":"About the Authors","playOrder":9,"href":"OPS/xhtml/fm01_pg0007.xhtml","hidden":false,"childHidden":false},{"id":"a951095f3d2f79914fc76a6db85cb051f8f85620a","urn":"a951095f3d2f79914fc76a6db85cb051f8f85620a","title":"Brief Contents","playOrder":10,"href":"OPS/xhtml/fm01_pg0008.xhtml","hidden":false,"childHidden":false},{"id":"a3cd53921625376d4b2ab6aead89b088c48707963","urn":"a3cd53921625376d4b2ab6aead89b088c48707963","title":"Acknowledgements","playOrder":11,"href":"OPS/xhtml/fm01_pg0009.xhtml","hidden":false,"childHidden":false}],"href":"OPS/xhtml/fm01_pg0001.xhtml","hidden":false,"childHidden":false}]}}}
-    const courseData = {'title' : 'test', 'courseId' : '12345'};
+    // courseData = { 'title': 'test', 'courseId': '12345' };
+
+    this.tocCompData = {
+      separateToggleIcon: true,
+      data: {
+        content: tocData.content
+      },
+      depth: 2,
+      childField: 'content',
+      isTocWrapperRequired: false,
+      clickTocHandler: this.goToPageCallback,
+      handleTocExpand: this.handleTocExpand
+    };
     return (
       <div>
+        <DashboardHeader/>
+        {tocReceived ? <div>
         <HeaderMenuComponent
           title={title}
           onChange={this.onChange}
@@ -42,16 +187,50 @@ export default class ISEdashboard extends Component {
           headerTabs={headerTabs}
           inkBarColor={inkBarColor}
         />
-        <MaterialsComponent
+          <MaterialsComponent
           viewTitle={this.viewTitle}
           courseData={courseData}
-          showTitle={'SHOW_TITLE'}
-          cardHeader={'CARD_HEADER'}
-          cardFooter={'CARD_FOOTER'}
-          tocData={tocData}
-          showCourse={'SHOW_COURSE_IN_MATERIALS'}
-        />
+          showTitle={true}
+          cardHeader={true}
+          cardFooter={true}
+          tocData={this.tocCompData}
+          showCourse={false}
+        />  
+        </div> : null
+        }
       </div>
     )
   }
 }
+ISEdashboard.propTypes = {
+   fetchTocAndViewer: React.PropTypes.func,
+  fetchAnnotations: React.PropTypes.func,
+  removeAnnotation: React.PropTypes.func,
+  fetchBookmarks: React.PropTypes.func,
+  addBookmark: React.PropTypes.func,
+  removeBookmark: React.PropTypes.func,
+  fetchPreferences: React.PropTypes.func,
+  book: React.PropTypes.object,
+  params: React.PropTypes.object,
+  dispatch: React.PropTypes.func
+};
+  ISEdashboard.contextTypes = {
+  store: React.PropTypes.object.isRequired,
+  muiTheme: React.PropTypes.object.isRequired
+};
+  const mapStateToProps = state => {
+  return {
+    playlistData: state.playlistReducer.data,
+    playlistReceived: state.playlistReducer.playlistReceived,
+    tocData: state.playlistReducer.tocdata,
+    tocResponse: state.playlistReducer.tocresponse,
+    updatedToc: state.playlistReducer.updatedToc,
+    tocReceived: state.playlistReducer.tocReceived,
+    bookdetailsdata: state.playlistReducer.bookdetailsdata,
+    customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived,
+    prodType:state.playlistReducer.prodType  ,
+    playListWithOutDuplicates:state.playlistReducer.playListWithOutDuplicates
+  }
+}; // eslint-disable-line max-len
+ISEdashboard = connect(mapStateToProps)(ISEdashboard); // eslint-disable-line no-class-assign
+export default ISEdashboard;
