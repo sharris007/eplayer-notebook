@@ -260,6 +260,11 @@ export class PdfBook extends Component {
   }
 
   handleBookshelfClick = () => {
+    try {
+      $('#sppModal').remove();
+    } catch (e) {
+      //error
+    }
     this.props.actions.restoreBookState();
     browserHistory.push('/eplayer/bookshelf');
   }
