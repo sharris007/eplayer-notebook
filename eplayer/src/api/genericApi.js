@@ -83,8 +83,7 @@ export const getBookDetails = bookDetails =>
      headers: {
        Accept: 'application/json',
        'Content-Type': 'application/json',
-       'X-Authorization': bookDetails.piToken,
-       isDeeplink: bookDetails.isDeeplink
+       'X-Authorization': bookDetails.piToken
      }
    });
 
@@ -93,8 +92,7 @@ export const getTocDetails = (bookId, tocurl, piToken, data) => fetch(`${etextSe
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'X-Authorization': piToken,
-    isDeeplink: data.isDeeplink
+    'X-Authorization': piToken
   }
 });
 
@@ -193,8 +191,7 @@ export const getPiUserProfile = data => fetch(`${etextService[envType]}/nextext/
   method: 'GET',
   headers: {
     Accept: 'application/json',
-    'X-Authorization': data.piToken,
-    isDeeplink: data.isDeeplink
+    'X-Authorization': data.piToken
   }
 });
 
