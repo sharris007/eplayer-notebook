@@ -153,7 +153,7 @@ export const resources = {
       dev          :"https://pxe-services-dev.pearson.com",
       qa           :"https://pxe-services-qa-stg.pearson.com",
       stage        :"https://pxe-services-stg.pearson.com",
-      prod         :"https://pxe-sdk.openclass.com/"
+      prod         :"https://pxe-sdk.openclass.com"
     },
     xCaller: {
       local: {
