@@ -95,4 +95,16 @@ export default class Utilities {
       return updUrlList;
     }
   }
+
+  static secureTochangeContentUrl = (urlList) => {
+    const updUrlList = [];
+    if (typeof(urlList) === "string") {     
+      return urlList.replace(contentUrl.SecuredUrl[domain.getEnvType()],contentUrl.openClass[domain.getEnvType()]);
+    } else if (urlList && urlList.length > 0) {
+      urlList.forEach((url) => {
+        updUrlList.push(contentUrl.SecuredUrl[domain.getEnvType()],url.replace(contentUrl.openClass[domain.getEnvType()]));
+      });
+      return updUrlList;
+    }
+  }
 }

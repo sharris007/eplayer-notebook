@@ -1,6 +1,7 @@
 import { resources, domain, typeConstants } from '../../../../const/Settings';
 import message from '../../../defaultMessages';
 import { connect } from 'react-redux';
+import Utilities from '../../../components/utils';
 
 const searchFilters = {
   indexType: 'nextcontent',
@@ -135,7 +136,8 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
     let contextId = UrlString.substr(UrlString.lastIndexOf('/')+1);
      contextId ? contextId : 'contextid_2';
     let searchUrl = resources.links.pageNumberSearchService[domain.getEnvType()];
-    fetch(searchUrl+"/services-api/api/context/"+contextId+"/toc/items/root?itemContext=false&metadata=true&provider="+playlistData.provider+"&providerType=epub&pageContext=true")     
+    let getContentUrl = Utilities.secureTochangeContentUrl(playlistData.provider);
+    fetch(searchUrl+"/services-api/api/context/"+contextId+"/toc/items/root?itemContext=false&metadata=true&provider="+getContentUrl+"&providerType=epub&pageContext=true")     
         .then(response => response.json())
               .then((response) => { 
               pageContent =  response;         
@@ -175,7 +177,7 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
 }
 
 function fetchMoreResults(searchcontent,handleResults) {
-  let searchUrl= resources.links.etextSearchMoreResults[domain.getEnvType()] + '/search?indexId=' + window.localStorage.getItem('searchIndexId') + '&q='+searchcontent.value+'&s=0&n=' + resources.constants.TextSearchLimit;
+  let searchUrl= resources.links.etextSearchMoreResults[domain.getEnvType()] + '/search?indexId=' + window.localStorage.getItem('searchIndexId') + '&q='+searchcontent+'&s=0&n=' + resources.constants.TextSearchLimit;
   fetch(searchUrl)
       .then(response => response.json())
       .then((response) => {
