@@ -127,7 +127,8 @@ function  getPageNumberSearchResult(searchcontent){
 
 function fetchSearchInfo(searchcontent, handleResults, payLoad) {
   pageResult =''
-  if(pageContent.baseUrl != playlistData.baseUrl){
+  let getbaseUrl = Utilities.secureTochangeContentUrl(playlistData.baseUrl);
+  if(pageContent.baseUrl != getbaseUrl){
     pageContent = "";
   }
   if(!pageContent){
