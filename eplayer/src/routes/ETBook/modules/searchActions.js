@@ -111,17 +111,17 @@ function  getPageNumberSearchResult(searchcontent){
     let content = '';let id='';
     if(pageContent){
       let pageData = pageContent.tocNode.pages.filter(result => result.title === searchcontent.value);
-              if(pageData.length === 1){                 
-                const pageIdData = pageData[0].href.split("#");                  
-                let filterResult = playlistData.content.filter(result => result.href.split("#")[0] === pageIdData[0])
-                if(filterResult.length === 1){                    
-                  const obj = {
-                    content: 'Page'+ " " + searchcontent.value+": "+filterResult[0].title,
-                    id: pageData[0].href 
-                  };
-                    pageResult = obj; 
-                }
-              }
+        if(pageData && pageData[0].href){                 
+          const pageIdData = pageData[0].href.split("#");                  
+          let filterResult = playlistData.content.filter(result => result.href.split("#")[0] === pageIdData[0])
+          if(filterResult && filterResult.length > 0){                    
+            const obj = {
+              content: 'Page'+ " " + searchcontent.value+": "+filterResult[0].title,
+              id: pageData[0].href 
+            };
+              pageResult = obj; 
+          }
+        }
     }        
 } 
 
