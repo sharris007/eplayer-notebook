@@ -111,10 +111,10 @@ function  getPageNumberSearchResult(searchcontent){
     let content = '';let id='';
     if(pageContent){
       let pageData = pageContent.tocNode.pages.filter(result => result.title === searchcontent.value);
-              if(pageData.length >0){                 
+              if(pageData.length === 1){                 
                 const pageIdData = pageData[0].href.split("#");                  
                 let filterResult = playlistData.content.filter(result => result.href.split("#")[0] === pageIdData[0])
-                if(filterResult){                    
+                if(filterResult.length === 1){                    
                   const obj = {
                     content: 'Page'+ " " + searchcontent.value+": "+filterResult[0].title,
                     id: pageData[0].href 
