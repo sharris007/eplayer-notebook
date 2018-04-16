@@ -680,10 +680,7 @@ class PdfPlayer extends Component {
     this.resetCurrentZoomLevel(level);
     this.currZoomLevel = currZoomLevel;
     this.displayHighlights();
-    if(this.state.currPageObj.isCover !== true)
-    {
-      this.displayHotspots();
-    }
+    this.displayHotspots();
     if($('.fwr-search-result-highlight').length){
       WebPDF.ViewerInstance.highlightSearchResult();
     }
