@@ -41,6 +41,8 @@ export default class DeepLink extends React.Component {
     if(resources.constants.authorizationCheck) {
       if(props.deeplinkProps.launcheplayer.idpName === "SMS") {
         piSession.getToken((result, userToken)=> {
+          deepLinkService.setCurrentUser(props.deeplinkProps.launcheplayer);
+          deepLinkService.setLoginCookie(props.deeplinkProps.launcheplayer.token, )
           browserHistory.push(this.redirectURL);
         });
       }
@@ -66,8 +68,8 @@ export default class DeepLink extends React.Component {
 
   render() {
     return (
-      <div id="bookshelf-page">
-        {this.props.deeplinkProps.launcheplayer.data ? this.props.deeplinkProps.launcheplayer.data.json: 'KVYDSGHSDFKJKLJVLKFVBJKLDFJKVYDSGHSDFKJKLJVLKFVBJKLDFJ' }
+      <div id="deeplink">
+
       </div>
     );
   }
