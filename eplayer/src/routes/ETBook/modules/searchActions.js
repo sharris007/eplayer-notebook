@@ -110,10 +110,19 @@ function pushSearchInfoToDataLayer(queryString,searchResultslength) {
 function  getPageNumberSearchResult(searchcontent){   
     let content = '';let id='';
     if(pageContent){
-      let pageData = pageContent.tocNode.pages.filter(result => result.title === searchcontent.value);
-        if(pageData && pageData[0].href){                 
+      let pageData = pageContent.tocNode.pages.filter(result => result.title.toUpperCase() === searchcontent.value.toUpperCase());
+        if(pageData && pageData[0]){                 
           const pageIdData = pageData[0].href.split("#");                  
-          let filterResult = playlistData.content.filter(result => result.href.split("#")[0] === pageIdData[0])
+          let filterResult=
+            //playlistData.content.filter(result =>            
+          // result.href.split("#")[0] === pageIdData[0]
+            //)
+          playlistData.content.filter((result) => {
+            let findKey = result.href ? result.href.search("#") : '-1'; 
+            if((findKey != -1 && result.href.split("#")[0] === pageIdData[0]) || (result.href && result.href === pageIdData[0])){              
+              return result;
+            }          
+          })
           if(filterResult && filterResult.length > 0){                    
             const obj = {
               content: 'Page'+ " " + searchcontent.value+": "+filterResult[0].title,
