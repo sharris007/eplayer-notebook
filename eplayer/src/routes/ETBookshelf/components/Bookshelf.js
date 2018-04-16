@@ -29,7 +29,7 @@ export default class BookshelfPage extends React.Component {
 
   handleBookClick = (bookId) => {
     // browserHistory.push(`/eplayer/ETbook/${bookId}`);
-    browserHistory.push(`/eplayer/ISEdashboard/${bookId}`);
+    browserHistory.push(`/eplayer/view/${bookId}`);
   }
 
   render() {

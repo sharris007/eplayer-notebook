@@ -14,7 +14,7 @@
 // import { injectReducer } from '../../store/reducers';
 
 export default () => ({
-   path: '/eplayer/ISEdashboard/:bookId(/page/:pageId)',
+   path: '/eplayer/view/:bookId(/page/:pageId)',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
@@ -22,11 +22,11 @@ export default () => ({
     require.ensure([], (require) => {
       /*  Webpack - use require callback to define
           dependencies for bundling   */
-      const Print = require('./components/ISEdashboard').default;
+      const Print = require('./components/Dashboard').default;
       /*  Return getComponent   */
       cb(null, Print);
 
     /* Webpack named bundle   */
-    }, 'isedashboard');
+    }, 'dashboard');
   }
 });

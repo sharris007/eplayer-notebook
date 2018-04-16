@@ -41,20 +41,43 @@ if (n > 0) {
 }
 const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
-
-export class ISEdashboard extends Component {
+let bookId =null;
+export class Dashboard extends Component {
   constructor(props) {
     super(props);
+     piSession.getToken(function (result, userToken) {
+      if (!userToken) {
+        if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
+          browserHistory.push('/eplayer/pilogin');
+        }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
+          browserHistory.push('/eplayer/pilogin');
+        }else if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+          piSession.login(redirectCourseUrl, 10);
+        }
+      }
+    });
+    if(piSession){
+        if(piSession.currentToken() !== undefined && piSession.currentToken() !== null)
+        {
+            localStorage.setItem('secureToken',  piSession.currentToken());
+        }
+    }
     this.state = {
       urlParams: {
         context: this.props.params.bookId,
         user: ''
-      },
+      },      
       piToken: localStorage.getItem('secureToken')
     }
   }
  
   componentWillMount = () => {
+    if(piSession){
+        if(piSession.currentToken() !== undefined && piSession.currentToken() !== null)
+        {
+            localStorage.setItem('secureToken',  piSession.currentToken());
+        }
+    }
     const getSecureToken = localStorage.getItem('secureToken');
     this.bookDetailsData = {
       context: this.state.urlParams.context,
@@ -106,12 +129,14 @@ export class ISEdashboard extends Component {
       this.props.dispatch({ type: "CLEAR_SEARCH" });
   }
   componentWillReceiveProps = (nextProps) => {
+    
   }
   OnChange = () => {
     console.log('OnChange called');
   }
   viewTitle = () => {
     console.log('viewTitle called');
+    browserHistory.push(`/eplayer/ETbook/${bookId}`);
   }
   goToPageCallback = () => {
     console.log('goToPageCallback called');
@@ -119,51 +144,53 @@ export class ISEdashboard extends Component {
   handleTocExpand = () => {
     console.log('handleTocExpand called');
   }
+  getCourseData = (courseData) => {
+    let courseDetail = null;
+    if(courseData)
+    {
+      bookId = courseData.publicBookId;
+        courseDetail = {
+          id: courseData.indexId,
+          title: courseData.title,
+          code: courseData.code,
+          bookTitle: courseData.title ,
+          startDate: courseData.date,
+          endDate: courseData.expirationDate,
+          schedule: '',
+          source: null,
+          avatar: courseData.coverImageUrl,
+          prefix: '',
+          tocProvider: courseData.toc,
+          institutionId: courseData.indexId,
+          launchUrl: null,
+          authorName: courseData.creator,
+          isStudent: true,
+          passportDetails: {},
+          isLoaded: true,
+          indexId: courseData.indexId,
+          isError: false,
+          contentType: 'ETEXT',
+          productId: courseData.productId
+        };
+    }
+    return courseDetail;
+  }
   render() {
-     const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props;
+     const { tocData, tocReceived } = this.props;
     // eslint-disable-line react/prop-types
     let title = '';
     let tocContent = {};
-    let courseData = {
-    "id": "5a8ecc4be4b093a7a8ec7fe8",
-    "title": "CITE - Financial Management",
-    "code": "",
-    "bookTitle": "CITE - Financial Management",
-    "startDate": 1519295400000,
-    "endDate": 1525084200000,
-    "schedule": "",
-    "source": null,
-    "avatar": "https://www.pearsonhighered.com/assets/bigcovers/0/1/3/4/0134640845.jpg",
-    "prefix": "https://epspqa.stg-openclass.com/eps/sanvan/api/item/aecd13f0-1fbd-466d-bcda-9574cceaed32/1/file",
-    "tocProvider": [
-      "https://content.stg-openclass.com/eps/pearson-reader/api/item/a2055aee-a3db-42d8-8183-0c18884ac229/1/file/titman-fmpaa-13e_etext_v6/OPS/toc.ncx",
-      "https://content.stg-openclass.com/eps/pearson-reader/api/item/a2055aee-a3db-42d8-8183-0c18884ac229/1/file/titman-fmpaa-13e_etext_v6/OPS/package.opf",
-      "https://content.stg-openclass.com/eps/pearson-reader/api/item/a2055aee-a3db-42d8-8183-0c18884ac229/1/file/titman-fmpaa-13e_etext_v6/OPS/xhtml/toc.xhtml"
-    ],
-    "institutionId": "54dbc7b53004d01c8d3b74c7",
-    "launchUrl": "https://etext-stg.pearson.com/eplayer/Course/5a8ecc4be4b093a7a8ec7fe8",
-    "authorName": "Sheridan Titman",
-    "isStudent": true,
-    "passportDetails": {
-      "access": true,
-      "productId": "x-urn:etext2_pxe:a2055aee-a3db-42d8-8183-0c18884ac229",
-      "userId": "x-urn:pi:ffffffff5a34cf7ee4b0c0a61adb00bf"
-    },
-    "isLoaded": true,
-    "indexId": "9cf85af597186c765a0648af50cd44d2",
-    "isError": false,
-    "contentType": "CITE",
-    "productId": "urn:pearson:isbn:9780205956579"
-  };
+    let courseData = {};
+ 
     if(tocReceived){
       title = tocData.bookDetails.title;
       tocContent = tocData.content;
+      courseData = this.getCourseData(tocData.bookDetails);
     }
   
-    const headerTabs = ['scheduled', 'materials', 'notes', 'tools'];
+    const headerTabs = ['materials', 'notes'];
     const pageSelected = 'materials';
     const inkBarColor = 'teal';
-    // courseData = { 'title': 'test', 'courseId': '12345' };
 
     this.tocCompData = {
       separateToggleIcon: true,
@@ -202,7 +229,7 @@ export class ISEdashboard extends Component {
     )
   }
 }
-ISEdashboard.propTypes = {
+Dashboard.propTypes = {
    fetchTocAndViewer: React.PropTypes.func,
   fetchAnnotations: React.PropTypes.func,
   removeAnnotation: React.PropTypes.func,
@@ -214,7 +241,7 @@ ISEdashboard.propTypes = {
   params: React.PropTypes.object,
   dispatch: React.PropTypes.func
 };
-  ISEdashboard.contextTypes = {
+  Dashboard.contextTypes = {
   store: React.PropTypes.object.isRequired,
   muiTheme: React.PropTypes.object.isRequired
 };
@@ -232,5 +259,5 @@ ISEdashboard.propTypes = {
     playListWithOutDuplicates:state.playlistReducer.playListWithOutDuplicates
   }
 }; // eslint-disable-line max-len
-ISEdashboard = connect(mapStateToProps)(ISEdashboard); // eslint-disable-line no-class-assign
-export default ISEdashboard;
+Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
+export default Dashboard;

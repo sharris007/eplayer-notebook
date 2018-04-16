@@ -52,7 +52,7 @@ export class Book extends Component {
       if (!userToken) {
         if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
           browserHistory.push('/eplayer/pilogin');
-        }else if (window.location.pathname.indexOf('/eplayer/ISEdashboard/') > -1) {
+        }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
           piSession.login(redirectCourseUrl, 10);
@@ -687,7 +687,7 @@ export class Book extends Component {
           browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
         } else {
           // browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
-           browserHistory.replace(`/eplayer/ISEdashboard/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
+           browserHistory.replace(`/eplayer/view/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
         }
         let bookmarksParams = this.state.urlParams;
         bookmarksParams.xAuth = localStorage.getItem('secureToken');

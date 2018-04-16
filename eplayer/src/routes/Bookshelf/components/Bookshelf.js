@@ -222,7 +222,7 @@ export default class BookshelfPage extends React.Component {
 
     }  else if( type === 'et2'){
       // browserHistory.push(`/eplayer/ETbook/${bookId}`);
-      browserHistory.push(`/eplayer/ISEdashboard/${bookId}`);
+      browserHistory.push(`/eplayer/view/${bookId}`);
     }
     else if( type === 'course') {
       localStorage.setItem('sourceUrl', 'bookshelf');
