@@ -118,9 +118,9 @@ function  getPageNumberSearchResult(searchcontent){
           // result.href.split("#")[0] === pageIdData[0]
             //)
           playlistData.content.filter((result) => {
-            let findKey = result.href ? result.href.search("#") : '-1'; 
+            let findKey = result.href ? result.href.search("#") : '-1';
             if((findKey != -1 && result.href.split("#")[0] === pageIdData[0]) || (result.href && result.href === pageIdData[0])){              
-              return result;
+               return result;
             }          
           })
           if(filterResult && filterResult.length > 0){                    
