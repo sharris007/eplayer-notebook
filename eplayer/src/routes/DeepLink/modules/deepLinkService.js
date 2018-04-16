@@ -69,7 +69,7 @@ export default class DeepLinkService {
     localStorage.setItem(localStorageKey, JSON.stringify(userInfo));
   }
 
-  static setLoginCookie(authToken, sessionLength) {
+  static setLoginCookie(authToken) {
     document.cookie = 'authToken=' + authToken + '; max-age=' + this.getSessionLength();
   }
 
