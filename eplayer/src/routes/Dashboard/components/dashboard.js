@@ -27,8 +27,8 @@ import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallServi
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
-
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
+import './dashboard.scss';
 
 let languageid;
 const url = window.location.href;
@@ -42,12 +42,14 @@ if (n > 0) {
 const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
 let bookId =null;
+
 export class Dashboard extends Component {
   constructor(props) {
     super(props);
      piSession.getToken(function (result, userToken) {
       if (!userToken) {
-        if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
+        // if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/book/') > -1) {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
@@ -136,7 +138,8 @@ export class Dashboard extends Component {
   }
   viewTitle = () => {
     console.log('viewTitle called');
-    browserHistory.push(`/eplayer/ETbook/${bookId}`);
+    // browserHistory.push(`/eplayer/ETbook/${bookId}`);
+    browserHistory.push(`/eplayer/book/${bookId}`);
   }
   goToPageCallback = () => {
     console.log('goToPageCallback called');
@@ -147,8 +150,7 @@ export class Dashboard extends Component {
   getCourseData = (courseData) => {
     let courseDetail = null;
     if(courseData)
-    {
-      bookId = courseData.publicBookId;
+    {      
         courseDetail = {
           id: courseData.indexId,
           title: courseData.title,
@@ -176,7 +178,7 @@ export class Dashboard extends Component {
     return courseDetail;
   }
   render() {
-     const { tocData, tocReceived } = this.props;
+     const { bookdetailsdata, tocData, tocReceived } = this.props;
     // eslint-disable-line react/prop-types
     let title = '';
     let tocContent = {};
@@ -187,7 +189,11 @@ export class Dashboard extends Component {
       tocContent = tocData.content;
       courseData = this.getCourseData(tocData.bookDetails);
     }
-  
+    if(bookdetailsdata) {
+      if(bookdetailsdata.bookDetail){
+        bookId = bookdetailsdata.bookDetail.bookId;
+      }
+    }
     const headerTabs = ['materials', 'notes'];
     const pageSelected = 'materials';
     const inkBarColor = 'teal';
@@ -230,7 +236,7 @@ export class Dashboard extends Component {
   }
 }
 Dashboard.propTypes = {
-   fetchTocAndViewer: React.PropTypes.func,
+  fetchTocAndViewer: React.PropTypes.func,
   fetchAnnotations: React.PropTypes.func,
   removeAnnotation: React.PropTypes.func,
   fetchBookmarks: React.PropTypes.func,

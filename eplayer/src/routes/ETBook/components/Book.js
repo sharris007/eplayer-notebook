@@ -50,7 +50,8 @@ export class Book extends Component {
     redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
     piSession.getToken(function (result, userToken) {
       if (!userToken) {
-        if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
+        // if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/book/') > -1) {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
@@ -296,7 +297,8 @@ export class Book extends Component {
           url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+'launchLocale=' + window.annotationLocale);
         } else {
-          browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
+          // browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
+           browserHistory.replace('/eplayer/book/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
         }
         this.props.dispatch({
           type: "GOT_GOTOPAGE",
@@ -449,7 +451,8 @@ export class Book extends Component {
         url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
         browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
       } else {
-        browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
+        // browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
+        browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
       }
       let bookmarksParams = this.state.urlParams;
       bookmarksParams.xAuth = localStorage.getItem('secureToken');
