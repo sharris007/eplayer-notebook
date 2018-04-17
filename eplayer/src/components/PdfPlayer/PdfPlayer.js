@@ -633,6 +633,9 @@ class PdfPlayer extends Component {
     this.setState({ searchOpen: false });
     try {
       Popup.close();
+      if($('.title')){
+        $('.title').css({'width' : '84%'});
+      }
     } catch (e) {
       // error
     }
@@ -1268,30 +1271,24 @@ class PdfPlayer extends Component {
   this.props.logoutUserSession(this.props.metaData, this.props.auth); // eslint-disable-line
   }
 
-  handleBasketGlossaryClick = (glossaryEntryIDsToFetch) => {
-    this.setState({drawerOpen : false});
-    this.props.glossary.load.get(this.props.metaData, glossaryEntryIDsToFetch).then(() => {
-      });
-  }
-
-    handleDrawerEntryClick = (requestedEntry) => {
-    if(_.isObject(requestedEntry)){
-        if(requestedEntry.linkTypeID == pdfConstants.LinkType.PAGE_NUMBER){
-          if(requestedEntry.pageorder){
-            this.goToPage(requestedEntry.pageorder);
-          }else{
-            const requestedPage = _.find(this.props.pagePlayList, page => page.pagenumber == requestedEntry.linkValue);
-            this.goToPage(requestedPage.id);
+  handleDrawerEntryClick = (requestedEntry) => {
+      if(requestedEntry){
+        if(_.isObject(requestedEntry)){
+          if(requestedEntry.linkTypeID == pdfConstants.LinkType.PAGE_NUMBER){
+            if(requestedEntry.pageorder){
+              this.goToPage(requestedEntry.pageorder);
+            }else{
+              const requestedPage = _.find(this.props.pagePlayList, page => page.pagenumber == requestedEntry.linkValue);
+              this.goToPage(requestedPage.id);
+            }
+          }else {
+            this.setState({drawerOpen : false});
+            this.fetchClickedRegionData(requestedEntry);
           }
-        }else if(requestedEntry.linkTypeID == pdfConstants.LinkType.GLOSSARY_TERM){
-          this.handleBasketGlossaryClick(requestedEntry.linkValue);
-        }else {
-          this.setState({drawerOpen : false});
-          this.fetchClickedRegionData(requestedEntry);
         }
-    }
-    else{
-      this.goToPage(requestedEntry);
+        else{
+          this.goToPage(requestedEntry);
+        }
     }
   }
 

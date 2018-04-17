@@ -14,11 +14,13 @@ function flatten3(input, finalChildlist) {
   let childlist = [];
   let finalChildList = finalChildlist;
   if (input.children !== undefined && input.children.length !== 0) {
-    const firstNode = new Node();
-    firstNode.id = input.id;
-    firstNode.title = input.title;
-    firstNode.urn = input.urn;
-    childlist.push(firstNode);
+    if(input.urn){
+      const firstNode = new Node();
+      firstNode.id = input.id;
+      firstNode.title = input.title;
+      firstNode.urn = input.urn;
+      childlist.push(firstNode);
+    }
     finalChildList = finalChildList.concat(input);
     input.children.forEach((node) => {
       const templist = flatten3(node, finalChildList);
@@ -61,11 +63,13 @@ function flatten1(input) {
   input.forEach((node) => {
     if (node.children.length !== 0) {
       const child1 = [];
-      const firstNode = new Node();
-      firstNode.id = node.id;
-      firstNode.title = node.title;
-      firstNode.urn = node.urn;
-      child1.push(firstNode);
+      if(node.urn){
+        const firstNode = new Node();
+        firstNode.id = node.id;
+        firstNode.title = node.title;
+        firstNode.urn = node.urn;
+        child1.push(firstNode);
+      }
       finalChildList = finalChildList.concat(node);
       node.children.forEach((kids) => {
         const child = flatten2(kids, finalChildList);
@@ -88,6 +92,7 @@ function flatten1(input) {
       finalChildList.push(node);
     }
   });
+
   return finalChildList;
 }
 
@@ -98,6 +103,9 @@ function constructTree(input) {
       return undefined;
     }else{
         const output = new Node();
+        if(input.basketTypeID){
+          output.basketTypeID = input.basketTypeID;
+        }
         output.id = input.i;
         output.title = input.n;
         if (input.lv) {
@@ -171,10 +179,11 @@ export function fetchToc(inputParams) {
             const tocLevel1ChildData = tocLevel1.document;
             tocLevel1ChildData.forEach((tocLevel2) => {
               let tocLevel2ChildData = {};
-              if(tocLevel1.basketTypeID == '1'){
+              if(tocLevel1.basketTypeID == eT1Contants.basketType.TOC){
                  tocLevel2ChildData = tocLevel2.bc.b.be;
               }else{
-                 tocLevel2ChildData = tocLevel2.bc.b;
+                    tocLevel2ChildData = tocLevel2.bc.b;
+                    tocLevel2ChildData.basketTypeID = tocLevel1.basketTypeID;
               }
               if (tocLevel2ChildData !== undefined) {
                 if (tocLevel2ChildData.length === undefined) {
@@ -188,10 +197,15 @@ export function fetchToc(inputParams) {
                 }
               }
             });
-              if(tocLevel1.basketTypeID == '1' && hastocflatten === 'Y' && tocLevel1ChildList.length !== 0){
-                    tocLevel1ChildList = flatten1(tocLevel1ChildList);
-              }
           });
+              if(hastocflatten === 'Y' && tocLevel1ChildList.length !== 0){
+                    tocLevel1ChildList = flatten1(tocLevel1ChildList);
+                  for(let i=0 ; i<tocLevel1ChildList.length ; i++){
+                       if(!tocLevel1ChildList[i].basketTypeID && !tocLevel1ChildList[i].urn){
+                          tocLevel1ChildList[i].urn = {};
+                       }
+                    }
+              }
               bookState.tocData.content.list = tocLevel1ChildList;
         });
         bookState.tocData.fetching = false;
