@@ -103,7 +103,9 @@ class PopUpInfo extends Component {
   closeGlossaryOnClick = (e) => {
     // console.log(e);
     // alert('clicked');
-    if (e.target.tagName === 'A') {
+    if (e.target.tagName === 'A' ||
+     (e.target.tagName === 'SPAN' && e.target.className === 'number') ||
+     e.target.tagName === 'I') {
       return false;
     }
     this.closePopUp();
