@@ -1,7 +1,10 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
-export default class DeepLinkService {
 
+const localStorageKey = 'currentUser';
+
+export default class DeepLinkService {
+  
   static getParams() {
     let params = new URL(window.location.href).searchParams;
     return {
@@ -17,6 +20,10 @@ export default class DeepLinkService {
             courseName:   params.get("courseName"),
             role:         params.get("role")
 	  };	
+  }
+
+  static getSessionLength(){
+    return 1*60*60; // 1 hour
   }
 
   static checkErrorNavigation(qparams) {
@@ -56,6 +63,14 @@ export default class DeepLinkService {
     } 
     console.log("redirectUrl >>>>>>>>>>", redirectUrl);
     return redirectUrl;
+  }
+
+  static setCurrentUser(userInfo) {
+    localStorage.setItem(localStorageKey, JSON.stringify(userInfo));
+  }
+
+  static setLoginCookie(authToken) {
+    document.cookie = 'authToken=' + authToken + '; max-age=' + this.getSessionLength();
   }
 
 }
