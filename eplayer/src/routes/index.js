@@ -26,7 +26,7 @@ import pdfbookErrorRoute from './PdfBookError';
 import notebookRoute from './NoteBook';
 import pdfbookRoute from './PdfBookRoute';
 import deepLink from './DeepLink';
-import iseRoute from './ISEdashboard';
+import dashboardRoute from './Dashboard';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -48,8 +48,8 @@ export const createRoutes = store => ({
     pdfbookErrorRoute(store),
     notebookRoute(store),
     pdfbookRoute(store),
-    iseRoute(store),
-	deepLink(store)
+    dashboardRoute(store),
+	  deepLink(store)
   ]
 });
 
