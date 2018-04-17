@@ -985,14 +985,24 @@ class PdfPlayer extends Component {
   }
 
   searchCallback = (searchTerm, handleResults) => {
+    const that = this;
     this.props.search.load.get(this.props.metaData, searchTerm, handleResults).then((searchResult) => {
-      if(searchResult[0].results.length){
-         this.searchTextFunc(searchTerm);
+      if (searchResult[0].results.length){
+        if (searchTerm.value !== undefined){
+          this.searchTextFunc(searchTerm.value);
+        } else {
+          this.searchTextFunc(searchTerm);
+        }
       }else{
         $('.fwr-search-result-highlight').remove();
       }
     });
-    this.searchTerm = searchTerm;
+    if (searchTerm.value !== undefined) {
+      that.searchTerm = searchTerm.value;
+    } else {
+      that.searchTerm = searchTerm;
+    }
+    
   }
 
   searchTextFunc = (searchTerm) => {

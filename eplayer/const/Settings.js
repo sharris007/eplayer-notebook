@@ -21,7 +21,8 @@ export const resources = {
     idcDashboardEnabled: true,
     iseEnabled: true,
     zeppelinEnabled: true,
-    isDisableAnnotation: false
+    isDisableAnnotation: false,
+    authorizationCheck:true
   },
   links: {
     legalNotice: 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
@@ -147,6 +148,13 @@ export const resources = {
       stage: 'https://etext-ise-stg.pearson.com',
       prod: 'https://etext-ise.pearson.com'
     },
+     pageNumberSearchService : {
+      local        :"https://pxe-services-dev.pearson.com",
+      dev          :"https://pxe-services-dev.pearson.com",
+      qa           :"https://pxe-services-qa-stg.pearson.com",
+      stage        :"https://pxe-services-stg.pearson.com",
+      prod         :"https://pxe-sdk.openclass.com"
+    },
     xCaller: {
       local: {
         ETEXT2_WEB: {
@@ -220,7 +228,8 @@ export const typeConstants = {
   GET_PREFERENCE: 'GET_PREFERENCE',
   POST_PREFERENCE: 'POST_PREFERENCE',
   GET_TOC_RESPONSE: 'GET_TOC_RESPONSE',
-  GETTING_TOC_RESPONSE: 'GETTING_TOC_RESPONSE'
+  GETTING_TOC_RESPONSE: 'GETTING_TOC_RESPONSE',
+  DEEPLINK_TOKEN_LOGIN: 'DEEPLINK_TOKEN_LOGIN'
 };
 
 export const domain = {

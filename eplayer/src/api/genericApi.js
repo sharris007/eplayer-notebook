@@ -83,16 +83,18 @@ export const getBookDetails = bookDetails =>
      headers: {
        Accept: 'application/json',
        'Content-Type': 'application/json',
-       'X-Authorization': bookDetails.piToken
+       'X-Authorization': bookDetails.piToken,
+       isDeeplink: bookDetails.isDeeplink
      }
    });
 
-export const getTocDetails = (bookId, tocurl, piToken) => fetch(`${etextService[envType]}/nextext/custom/toc/contextId/${bookId}?provider=${tocurl}`, {  // eslint-disable-line max-len
+export const getTocDetails = (bookId, tocurl, piToken, data) => fetch(`${etextService[envType]}/nextext/custom/toc/contextId/${bookId}?provider=${tocurl}`, {  // eslint-disable-line max-len
   method: 'GET',
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    'X-Authorization': piToken
+    'X-Authorization': piToken,
+    isDeeplink: data.isDeeplink
   }
 });
 
@@ -191,7 +193,8 @@ export const getPiUserProfile = data => fetch(`${etextService[envType]}/nextext/
   method: 'GET',
   headers: {
     Accept: 'application/json',
-    'X-Authorization': data.piToken
+    'X-Authorization': data.piToken,
+    isDeeplink: data.isDeeplink
   }
 });
 

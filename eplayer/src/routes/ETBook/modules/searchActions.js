@@ -1,5 +1,7 @@
 import { resources, domain, typeConstants } from '../../../../const/Settings';
 import message from '../../../defaultMessages';
+import { connect } from 'react-redux';
+import Utilities from '../../../components/utils';
 
 const searchFilters = {
   indexType: 'nextcontent',
@@ -21,6 +23,8 @@ const payLoad = {
 let searchResults = [];
 let searchResultLength = 0;
 let requestId = '';
+let pageResult = '';
+let pageContent = '';
 
 function keyIndex(arr, key) {
   return arr.findIndex(item => (key === item.category));
@@ -68,11 +72,27 @@ function getSearchFormat(response) {
         results
       }
       searchResults.push(searchObj);
+      if(pageResult){
+        searchResults[0].results.unshift(pageResult);
+       }
+
     });
     pushSearchInfoToDataLayer(payLoad.queryString,searchResultLength);
+   
     console.log(searchResults);
     return searchResults;
   }
+   if(pageResult && (response.length == 0 || response.searchResults.length == 0)) {
+      let pageObj = {  
+        "category":"", 
+        "results":[],           
+      };     
+      searchResults.push(pageObj);      
+      searchResults[0].results.unshift(pageResult);
+     
+      return searchResults;
+    }
+  
   pushSearchInfoToDataLayer(payLoad.queryString,0);
   return searchResults;
 }
@@ -87,8 +107,58 @@ function pushSearchInfoToDataLayer(queryString,searchResultslength) {
   console.log(obj);
 }
 
+function  getPageNumberSearchResult(searchcontent){   
+    let content = '';let id='';
+    if(pageContent){
+      let pageData = pageContent.tocNode.pages.filter(result => result.title.toUpperCase() === searchcontent.value.toUpperCase());
+        if(pageData && pageData[0]){                 
+          const pageIdData = pageData[0].href.split("#");                  
+          let filterResult=
+            //playlistData.content.filter(result =>            
+          // result.href.split("#")[0] === pageIdData[0]
+            //)
+          playlistData.content.filter((result) => {
+            let findKey = result.href ? result.href.search("#") : '-1';
+            if((findKey != -1 && result.href.split("#")[0] === pageIdData[0]) || (result.href && result.href === pageIdData[0])){              
+               return result;
+            }          
+          })
+          if(filterResult && filterResult.length > 0){                    
+            const obj = {
+              content: 'Page'+ " " + searchcontent.value+": "+filterResult[0].title,
+              id: pageData[0].href 
+            };
+              pageResult = obj; 
+          }
+        }
+    }        
+} 
+
 function fetchSearchInfo(searchcontent, handleResults, payLoad) {
-  payLoad.queryString = searchcontent;
+  pageResult =''
+  let getbaseUrl = Utilities.secureTochangeContentUrl(playlistData.baseUrl);
+  if(pageContent.baseUrl != getbaseUrl){
+    pageContent = "";
+  }
+  if(!pageContent){
+    let UrlString = window.location.href.split('/page')[0];
+    //splitString
+    let contextId = UrlString.substr(UrlString.lastIndexOf('/')+1);
+     contextId ? contextId : 'contextid_2';
+    let searchUrl = resources.links.pageNumberSearchService[domain.getEnvType()];
+    let getContentUrl = Utilities.secureTochangeContentUrl(playlistData.provider);
+    fetch(searchUrl+"/services-api/api/context/"+contextId+"/toc/items/root?itemContext=false&metadata=true&provider="+getContentUrl+"&providerType=epub&pageContext=true")     
+        .then(response => response.json())
+              .then((response) => { 
+              pageContent =  response;         
+              getPageNumberSearchResult(searchcontent);    
+        });  
+  } 
+  else if(pageContent){
+    getPageNumberSearchResult(searchcontent);   
+  }
+
+  payLoad.queryString = searchcontent.value;
   payLoad.filter=[];
   payLoad.filter.push("indexid:"+window.localStorage.getItem('searchIndexId'));
   requestId = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -110,7 +180,9 @@ function fetchSearchInfo(searchcontent, handleResults, payLoad) {
    .then((response) => {
      if(response && response.requestId && requestId === response.requestId) {
       handleResults((getSearchFormat(response)));
-     }   
+     } else {
+       handleResults((getSearchFormat([])))
+     }
    });
 }
 
@@ -141,7 +213,7 @@ function fetchMoreResults(searchcontent,handleResults) {
             searchObj.results = searchMoreResults;
             searchResults.push(searchObj);
             handleResults(searchResults);
-            pushSearchInfoToDataLayer(searchcontent,searchResultLength);
+            pushSearchInfoToDataLayer(searchcontent.value,searchResultLength);
           }
         }   
       });
@@ -158,4 +230,17 @@ const searchActions = {
   }
 };
 
-export default searchActions;
+const mapStateToProps = state => {
+  return {   
+    playlistData: state.playlistReducer.data,
+    playlistReceived: state.playlistReducer.playlistReceived,
+    tocData: state.playlistReducer.tocdata,
+    tocResponse: state.playlistReducer.tocresponse
+     
+  }
+};
+
+export default connect(
+  mapStateToProps,
+  
+)(searchActions)

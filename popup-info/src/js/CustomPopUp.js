@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import renderHTML from 'react-render-html';
+import { MathUtil } from '@pearson-incubator/aquila-js-core';
 
 export default class CustomPopUp extends Component {
     constructor(props) {
@@ -93,7 +94,7 @@ export default class CustomPopUp extends Component {
         zIndex: '10',
         opacity: 0
       }
-      return (<div> <div> <p className="paragraphNumeroUno" style={this.modalStyle} resource=""><strong>{this.title}</strong><br/>{this.description}</p> </div> <div style={backdropStyle} onClick={e => this.close(e)} /> </div>)
+      return (<div> <div> <p className="paragraphNumeroUno" style={this.modalStyle} resource="" ref={(c) => { MathUtil.renderMath(c); }}><strong>{this.title}</strong><br/>{this.description}</p> </div> <div style={backdropStyle} onClick={e => this.close(e)} /> </div>)
     }
 
     render() {

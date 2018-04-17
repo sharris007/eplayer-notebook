@@ -111,7 +111,7 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
           bookDetails = response.bookDetail.metadata;
           piToken = data.piToken;
 
-          PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken).then(response => response.json())
+          PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken, data).then(response => response.json())
           .then((response) => {
             // Changing content urls to secured url
             response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);

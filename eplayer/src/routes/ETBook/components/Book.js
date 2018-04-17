@@ -49,6 +49,7 @@ export class Book extends Component {
     let redirectCourseUrl = window.location.href;
     redirectCourseUrl = decodeURIComponent(redirectCourseUrl).replace(/\s/g, "+").replace(/%20/g, "+");
     piSession.getToken(function (result, userToken) {
+      console.log(">> piSession.getToken : ", result, userToken);
       if (!userToken) {
         // if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
         if (window.location.pathname.indexOf('/eplayer/book/') > -1) {
@@ -114,6 +115,7 @@ export class Book extends Component {
     this.userType = '';
     this.productModel= '';
     this.gtmPath = '';
+    this.pageTitleId = '';
     document.body.addEventListener('contentLoaded', this.parseDom);
     document.body.addEventListener('navChanged', this.navChanged);
     this.state.pageDetails.currentPageURL = '';
@@ -130,6 +132,7 @@ export class Book extends Component {
     this.closeHeaderPopups = this.closeHeaderPopups.bind(this);
     window.isDisableAnnotation = resources.constants.isDisableAnnotation;
     window.iseUrl = resources.links.iseUrl[domain.getEnvType()]+'/courses/'+ this.props.params.bookId +'/notes';
+    this.isDeeplinkBook = window.location.search.match('deeplink');
     this.getGTMPath();
   }
   componentWillMount = () => {
@@ -176,7 +179,8 @@ export class Book extends Component {
           context: this.state.urlParams.context,
           piToken: getSecureToken,
           bookId: this.props.params.bookId,
-          pageId: this.props.params.pageId ? this.props.params.pageId :''
+          pageId: this.props.params.pageId ? this.props.params.pageId :'',
+          isDeeplink: false
         }
         if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
@@ -212,6 +216,11 @@ export class Book extends Component {
             else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
 
           } else {
+          console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", this.props);
+
+          if(this.isDeeplinkBook) {
+            this.bookDetailsData.isDeeplink = true;;
+          }
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
       }
@@ -798,6 +807,7 @@ export class Book extends Component {
   }
 
   onPageRequest = (page) => {
+    this.pageTitleId = '';
     const pageDetails = { ...this.state.pageDetails };
     pageDetails.annId = null;
     this.setState({
@@ -848,6 +858,7 @@ export class Book extends Component {
   };
 
   handleDrawerkeyselect = (event) => {
+    this.pageTitleId = ''
     if ((event.which || event.keyCode) === 13) {
       this.setState({ drawerOpen: true });
     }
@@ -855,6 +866,7 @@ export class Book extends Component {
   }
 
   handleDrawer = () => {
+    this.pageTitleId = ''
     this.setState({ drawerOpen: true,idc: false,publishedToc:false});
     this.viewerContentCallBack(false);
   }
@@ -1057,7 +1069,10 @@ export class Book extends Component {
     if(searchInfo.split('##')[1]) {
       searchHref = searchInfo.split('##')[0]; // For search SVC
       searchCombination=searchInfo.split('##')[1].split(',')
-    } else {
+    }else if(searchInfo.split('#')[1]){
+        searchHref = searchInfo.split('#')[0];
+        this.pageTitleId=searchInfo.split('#')[1];
+      } else {
       searchHref = searchInfo.split('*')[0];// For Auto complete search SVC
       if(searchInfo.split('*')[2] && searchInfo.split('*')[2].match('key')) {
         searchCombination = [`${searchInfo.split('*')[1]}*${searchInfo.split('*')[2]}`];
@@ -1072,7 +1087,7 @@ export class Book extends Component {
       }
     });
     //bookObj = this.state.pageDetails.playListURL[306];
-    this.goToPageCallback(bookObj.id, '', searchCombination);
+    this.goToPageCallback(bookObj.id, '', searchCombination, this.pageTitleId);
     let obj = {};
     obj.event = "searchResultClicked";
     obj.term = searchCombination.toString();
@@ -1340,7 +1355,8 @@ export class Book extends Component {
             fontSize: bootstrapParams.pageDetails.pageFontSize,
             isAnnotationHide: bootstrapParams.pageDetails.isAnnotationHide
           },
-          searchText: bootstrapParams.pageDetails.searchText
+          searchText: bootstrapParams.pageDetails.searchText,
+          searchByPageId: this.pageTitleId
         }
       };
     }
