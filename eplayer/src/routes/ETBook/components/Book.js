@@ -1290,12 +1290,12 @@ export class Book extends Component {
         }
       });
       if (this.userType === 'instructor') {
-        annJsPath = 'annotation-lib/instructor-annotator/instructor-annotator.js';
-        annCssPath = 'annotation-lib/instructor-annotator/instructor-annotator.css';
+        annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
+        annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
       }
       else {
-        annJsPath = 'annotation-lib/annotator.js';
-        annCssPath = 'annotation-lib/annotator.css';
+        annJsPath = 'eplayer/annotation-lib/annotator.js';
+        annCssPath = 'eplayer/annotation-lib/annotator.css';
       }
       productData = {
         product: 'PXE',
@@ -1318,22 +1318,22 @@ export class Book extends Component {
           }
         },
         pxeOptions: {
-          script: `${window.location.origin}/pxe_scripts/bundle.js`,
-          style: `${window.location.origin}/pxe_scripts/style.css`,
+          script: `${window.location.origin}/eplayer/pxe_scripts/bundle.js`,
+          style: `${window.location.origin}/eplayer/pxe_scripts/style.css`,
           scriptsToReplace: [
             {
               old: 'https://revel-content.openclass.com/content/amc/amc-bootstrap.js',
-              new: `${window.location.origin}/bxix_scripts/brix.js`
+              new: `${window.location.origin}/eplayer/bxix_scripts/brix.js`
             }
           ],
-          scriptsToAdd: [`${window.location.origin}/annotation-lib/jquery.min.js`,
+          scriptsToAdd: [`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
           `${window.location.origin}/${annJsPath}`,
             getMathjaxJs,this.gtmPath],
           stylesToAdd: [`${window.location.origin}/${annCssPath}`]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
-          brixCss: `${window.location.origin}/bxix_scripts/brix.css`,
+          brixCss: `${window.location.origin}/eplayer/bxix_scripts/brix.css`,
           environment: 'LOCAL',
           pxeUserPreference: {
             theme: bootstrapParams.pageDetails.bgColor,
