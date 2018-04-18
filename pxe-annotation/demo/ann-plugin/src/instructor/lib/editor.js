@@ -107,7 +107,7 @@ Annotator.Editor = (function(_super) {
   }
   
   Editor.prototype.unShareAnnotation=function() {
-     this.annotation.colorCode=this.annotation.lastColor;
+     this.annotation.colorCode='#FFD232';
      var i=1;
      if(this.annotation.colorCode == '#FFD232') { //Yellow
          annBgColor = 'rgba(248, 230, 0, 0.5)';
