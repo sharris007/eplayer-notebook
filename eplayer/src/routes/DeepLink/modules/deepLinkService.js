@@ -42,7 +42,7 @@ export default class DeepLinkService {
 
   static getUrlString(qparams) { 
     const deleteParams = ['b','p','key','ticket', 'isPrintPage'];
-    let redirectUrl = `/eplayer/ETbook/${qparams.bookId}?deeplink=true`;
+    let redirectUrl = `/eplayer/book/${qparams.bookId}?deeplink=true`;
 
     const urlQueryParams = _.chain(location.search)
     .replace('?', '') 
