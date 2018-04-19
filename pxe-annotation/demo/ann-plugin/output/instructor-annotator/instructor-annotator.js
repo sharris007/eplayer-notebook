@@ -3821,7 +3821,8 @@ Annotator.Editor = (function(_super) {
     }
     if (this.annotation.shareable) {
       $('.annotator-share').removeClass('on');
-      this.unShareAnnotation();
+      this.annotation.shareable = false;
+      $(this.annotation.highlights).removeClass('sharedNote');
     }
     if(checkoverlap) {
       $('#noteContainer').css('display', 'none');
