@@ -29,6 +29,7 @@ import { getPreferenceCallService, postPreferenceCallService } from '../../../ac
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
 import './dashboard.scss';
+import ComponentOwner from './js/component-owner';
 
 let languageid;
 const url = window.location.href;
@@ -42,6 +43,22 @@ if (n > 0) {
 const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
 let bookId =null;
+
+let notesList = [];
+let originalNotesList = [];
+
+let callback = null;
+
+
+const NoteBookComponent = function NoteBookComponent(paramsObj) { // eslint-disable-line import/prefer-default-export
+  return (
+      <div>
+      <ComponentOwner {...paramsObj} />
+      </div>
+  );
+};  
+
+
 
 export class Dashboard extends Component {
   constructor(props) {
@@ -69,7 +86,8 @@ export class Dashboard extends Component {
         context: this.props.params.bookId,
         user: ''
       },      
-      piToken: localStorage.getItem('secureToken')
+      piToken: localStorage.getItem('secureToken'),
+      tab: 'materials'
     }
   }
  
@@ -133,7 +151,9 @@ export class Dashboard extends Component {
   componentWillReceiveProps = (nextProps) => {
     
   }
-  OnChange = () => {
+  onChange = (tab) => {
+    this.setState({ tab: tab });
+    alert('on change');
     console.log('OnChange called');
   }
   viewTitle = () => {
@@ -195,7 +215,8 @@ export class Dashboard extends Component {
       }
     }
     const headerTabs = ['materials', 'notes'];
-    const pageSelected = 'materials';
+ //   const pageSelected = 'materials';
+    const pageSelected = this.state.tab;
     const inkBarColor = 'teal';
 
     this.tocCompData = {
@@ -209,6 +230,9 @@ export class Dashboard extends Component {
       clickTocHandler: this.goToPageCallback,
       handleTocExpand: this.handleTocExpand
     };
+
+    const notesList = [];
+
     return (
       <div>
         <DashboardHeader/>
@@ -220,6 +244,7 @@ export class Dashboard extends Component {
           headerTabs={headerTabs}
           inkBarColor={inkBarColor}
         />
+        {this.state.tab == 'materials' ? <div>
           <MaterialsComponent
           viewTitle={this.viewTitle}
           courseData={courseData}
@@ -228,7 +253,9 @@ export class Dashboard extends Component {
           cardFooter={true}
           tocData={this.tocCompData}
           showCourse={false}
-        />  
+        /> 
+      
+      </div> : <div><NoteBookComponent notesList={notesList} originalNotesList={originalNotesList} tocData={this.tocCompData}  callback={this.callback} /></div>}
         </div> : null
         }
       </div>

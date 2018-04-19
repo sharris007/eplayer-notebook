@@ -87,6 +87,7 @@ function getTocUrlOnResp(resp) {
 export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
   PlaylistApi.doGetPiUserDetails(data).then(response => response.json())
     .then((response) => {
+      debugger;
       data.userName = response.UserName;
       if (!isFromCustomToc) {
         const bookshelfUrl = `${resources.links.authDomainUrl[domain.getEnvType()]}/eplayer`;
