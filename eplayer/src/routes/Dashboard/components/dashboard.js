@@ -53,7 +53,7 @@ export class Dashboard extends Component {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
-        }else if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        }else if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           piSession.login(redirectCourseUrl, 10);
         }
       }
@@ -87,7 +87,7 @@ export class Dashboard extends Component {
       bookId: this.props.params.bookId,
       pageId: this.props.params.pageId ? this.props.params.pageId :''
     }
-    if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+    if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
             this.courseBook = true;
             const url = window.location.href;

@@ -56,7 +56,7 @@ export class Book extends Component {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
-        }else if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        }else if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           piSession.login(redirectCourseUrl, 10);
         }
       }
@@ -182,7 +182,7 @@ export class Book extends Component {
           pageId: this.props.params.pageId ? this.props.params.pageId :'',
           isDeeplink: false
         }
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
             this.courseBook = true;
             const url = window.location.href;
@@ -295,14 +295,14 @@ export class Book extends Component {
         playpageDetails1.currentPageURL = gotoPageData;
         playpageDetails1.tocUpdated = true;
         this.onPageChange("pagescroll", nextProps.gotoPageObj.page.title);
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           if(this.props.prodType === 'idc'){
             this.productType = 'prdType';
           }
           else{
             this.productType = 'Source';
           }
-          let url = `/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`;
+          let url = `/eplayer/course/${this.props.params.bookId}/page/${gotoPageData.id}`;
           url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+'launchLocale=' + window.annotationLocale);
         } else {
@@ -449,14 +449,14 @@ export class Book extends Component {
       pageDetails: pageDetails
     }, function () {
       // eslint-disable-next-line
-      if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+      if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
         if(this.props.prodType === 'idc'){
           this.productType = 'prdType';
         }
         else{
           this.productType = 'Source';
         }
-        let url = `/eplayer/Course/${this.props.params.bookId}/page/${data.id}`;
+        let url = `/eplayer/course/${this.props.params.bookId}/page/${data.id}`;
         url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
         browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
       } else {
@@ -687,14 +687,14 @@ export class Book extends Component {
         pageDetails: playpageDetails,
         drawerOpen: false
       }, () => {
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           if(this.props.prodType === 'idc'){
             this.productType = 'prdType';
           }
           else{
             this.productType = 'Source';
           }
-          let url = `/eplayer/Course/${this.props.params.bookId}/page/${id}`;
+          let url = `/eplayer/course/${this.props.params.bookId}/page/${id}`;
           url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
         } else {
@@ -902,30 +902,7 @@ export class Book extends Component {
     if (getOriginurl) {
       window.location.href = getOriginurl;
     }
-    // if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-    //    let originurl = localStorage.getItem('sourceUrl');       
-    //   if(originurl != null)
-    //     {
-    //       const langQuery = localStorage.getItem('bookshelfLang');
-    //       if (langQuery && langQuery !== '?languageid=1') {
-    //         browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-    //       } else {
-    //         browserHistory.push('/eplayer/bookshelf');
-    //       }
-    //     }
-    //     else
-    //       {
-    //           let redirectConsoleUrl   = resources.links.consoleUrl[domain.getEnvType()];
-    //   window.location.href = redirectConsoleUrl;
-    //       }  
-    // }else {
-    //   const langQuery = localStorage.getItem('bookshelfLang');
-    //   if (langQuery && langQuery !== '?languageid=1') {
-    //     browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-    //   } else {
-    //     browserHistory.push('/eplayer/bookshelf');
-    //   }
-    // }
+   
     this.setState({ open: false });
   }
 
@@ -1305,12 +1282,12 @@ export class Book extends Component {
         }
       });
       if (this.userType === 'instructor') {
-        annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
-        annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
+        annJsPath = 'annotation-lib/instructor-annotator/instructor-annotator.js';
+        annCssPath = 'annotation-lib/instructor-annotator/instructor-annotator.css';
       }
       else {
-        annJsPath = 'eplayer/annotation-lib/annotator.js';
-        annCssPath = 'eplayer/annotation-lib/annotator.css';
+        annJsPath = 'annotation-lib/annotator.js';
+        annCssPath = 'annotation-lib/annotator.css';
       }
       productData = {
         product: 'PXE',
@@ -1333,22 +1310,22 @@ export class Book extends Component {
           }
         },
         pxeOptions: {
-          script: `${window.location.origin}/eplayer/pxe_scripts/bundle.js`,
-          style: `${window.location.origin}/eplayer/pxe_scripts/style.css`,
+          script: `${window.location.origin}/pxe_scripts/bundle.js`,
+          style: `${window.location.origin}/pxe_scripts/style.css`,
           scriptsToReplace: [
             {
               old: 'https://revel-content.openclass.com/content/amc/amc-bootstrap.js',
-              new: `${window.location.origin}/eplayer/bxix_scripts/brix.js`
+              new: `${window.location.origin}/bxix_scripts/brix.js`
             }
           ],
-          scriptsToAdd: [`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
+          scriptsToAdd: [`${window.location.origin}/annotation-lib/jquery.min.js`,
           `${window.location.origin}/${annJsPath}`,
             getMathjaxJs,this.gtmPath],
           stylesToAdd: [`${window.location.origin}/${annCssPath}`]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
-          brixCss: `${window.location.origin}/eplayer/bxix_scripts/brix.css`,
+          brixCss: `${window.location.origin}/bxix_scripts/brix.css`,
           environment: 'LOCAL',
           pxeUserPreference: {
             theme: bootstrapParams.pageDetails.bgColor,

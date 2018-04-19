@@ -226,7 +226,7 @@ export default class BookshelfPage extends React.Component {
     }
     else if( type === 'course') {
       localStorage.setItem('sourceUrl', 'bookshelf');
-      browserHistory.push(`/eplayer/Course/${bookId}`);
+      browserHistory.push(`/eplayer/course/${bookId}`);
     }
   }
   /* Method used for loading the data. Any change in store data it will reload the view. */
