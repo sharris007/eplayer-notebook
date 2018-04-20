@@ -182,8 +182,10 @@ export function fetchToc(inputParams) {
               if(tocLevel1.basketTypeID == eT1Contants.basketType.TOC){
                  tocLevel2ChildData = tocLevel2.bc.b.be;
               }else{
+                if(tocLevel1.basketTypeID != eT1Contants.basketType.GLOSSARY){
                     tocLevel2ChildData = tocLevel2.bc.b;
                     tocLevel2ChildData.basketTypeID = tocLevel1.basketTypeID;
+                }
               }
               if (tocLevel2ChildData !== undefined) {
                 if (tocLevel2ChildData.length === undefined) {
