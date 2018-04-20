@@ -235,7 +235,7 @@ export class Dashboard extends Component {
           cardFooter={true}
           tocData={this.tocCompData}
           showCourse={false}
-        />  : <div>Notebook</div>
+        />  : <NoteBookComponenent/>
         }
           
         </div> : null
