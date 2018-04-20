@@ -54,6 +54,7 @@ export const annStructureChange = (annTotalList) => {
 export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.dogetTotalAnnotation(filterData)
     .then(response => response.json())
     .then((json) => {
+      debugger;
       if (json.response && json.response.length > 0) {
         const annTotalList = json.response;
         //

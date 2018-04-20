@@ -139,7 +139,13 @@ export class Dashboard extends Component {
             else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
 
           } else {
+            debugger;
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
+          debugger;
+          let identityId = localStorage.getItem('identityId');
+
+          alert(this.props.location.query.globaluserid);
+          this.props.dispatch(getTotalAnnCallService(this.bookDetailsData));
         }
   }
   componentWillUnmount = () => {

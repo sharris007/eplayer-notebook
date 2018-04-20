@@ -25,9 +25,16 @@ const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
 const xCaller = resources.links.xCaller;
 
-export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
+let annHeaders = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+  'X-Authorization': localStorage.getItem('secureToken'),
+  'X-Caller': resources.links.xCaller[domain.getEnvType()].ETEXT2_WEB['ETEXT1_PDF']
+};
+//export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
+  export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/ffffffff56b90bd7e4b0f8eeaa4655d4/notesX`, {
   method: 'GET',
-  headers: data.annHeaders
+  headers: annHeaders
 });
 
 export const getAnndata = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations?uri=${data.uri}`, {
