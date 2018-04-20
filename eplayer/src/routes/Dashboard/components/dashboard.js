@@ -28,6 +28,7 @@ import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
+import { NoteBookComponenent } from '@pearson-incubator/notebook';
 import './dashboard.scss';
 
 let languageid;
@@ -42,6 +43,9 @@ if (n > 0) {
 const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
 let bookId =null;
+ const headerTabs = ['materials', 'notes'];
+  const inkBarColor = 'teal';
+    // let pageSelected = 'materials';
 
 export class Dashboard extends Component {
   constructor(props) {
@@ -69,7 +73,8 @@ export class Dashboard extends Component {
         context: this.props.params.bookId,
         user: ''
       },      
-      piToken: localStorage.getItem('secureToken')
+      piToken: localStorage.getItem('secureToken'),
+      pageSelected : 'materials'
     }
   }
  
@@ -133,8 +138,9 @@ export class Dashboard extends Component {
   componentWillReceiveProps = (nextProps) => {
     
   }
-  OnChange = () => {
-    console.log('OnChange called');
+  onChange = (currentTab) => {
+    this.setState({pageSelected: currentTab});
+    console.log('OnChange called', currentTab);
   }
   viewTitle = () => {
     console.log('viewTitle called');
@@ -179,6 +185,8 @@ export class Dashboard extends Component {
   }
   render() {
      const { bookdetailsdata, tocData, tocReceived } = this.props;
+     const {pageSelected} = this.state;
+
     // eslint-disable-line react/prop-types
     let title = '';
     let tocContent = {};
@@ -194,9 +202,7 @@ export class Dashboard extends Component {
         bookId = bookdetailsdata.bookDetail.bookId;
       }
     }
-    const headerTabs = ['materials', 'notes'];
-    const pageSelected = 'materials';
-    const inkBarColor = 'teal';
+   
 
     this.tocCompData = {
       separateToggleIcon: true,
@@ -220,7 +226,8 @@ export class Dashboard extends Component {
           headerTabs={headerTabs}
           inkBarColor={inkBarColor}
         />
-          <MaterialsComponent
+        {pageSelected === 'materials' ? 
+        <MaterialsComponent
           viewTitle={this.viewTitle}
           courseData={courseData}
           showTitle={true}
@@ -228,7 +235,9 @@ export class Dashboard extends Component {
           cardFooter={true}
           tocData={this.tocCompData}
           showCourse={false}
-        />  
+        />  : <div>Notebook</div>
+        }
+          
         </div> : null
         }
       </div>
