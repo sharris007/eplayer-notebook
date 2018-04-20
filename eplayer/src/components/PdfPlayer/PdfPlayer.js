@@ -1273,7 +1273,7 @@ class PdfPlayer extends Component {
 
   handleDrawerEntryClick = (requestedEntry) => {
       if(requestedEntry){
-        if(_.isObject(requestedEntry)){
+        if(_.isObject(requestedEntry) && requestedEntry.linkTypeID){
           if(requestedEntry.linkTypeID == pdfConstants.LinkType.PAGE_NUMBER){
             if(requestedEntry.pageorder){
               this.goToPage(requestedEntry.pageorder);
@@ -1286,7 +1286,7 @@ class PdfPlayer extends Component {
             this.fetchClickedRegionData(requestedEntry);
           }
         }
-        else{
+        else if(_.isNumber(requestedEntry)){
           this.goToPage(requestedEntry);
         }
     }
