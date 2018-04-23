@@ -53,11 +53,11 @@ export class Dashboard extends Component {
      piSession.getToken(function (result, userToken) {
       if (!userToken) {
         // if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
-        if (window.location.pathname.indexOf('/eplayer/book/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/view/book/') > -1) {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
-        }else if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
+        }else if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
           piSession.login(redirectCourseUrl, 10);
         }
       }
@@ -145,7 +145,11 @@ export class Dashboard extends Component {
   viewTitle = () => {
     console.log('viewTitle called');
     // browserHistory.push(`/eplayer/ETbook/${bookId}`);
-    browserHistory.push(`/eplayer/book/${bookId}`);
+    if (window.location.pathname.indexOf('/eplayer/view/book/') > -1) {
+      browserHistory.push(`/eplayer/book/${bookId}`);
+    }else if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
+      browserHistory.push(`/eplayer/course/${bookId}`);
+    }
   }
   goToPageCallback = () => {
     console.log('goToPageCallback called');

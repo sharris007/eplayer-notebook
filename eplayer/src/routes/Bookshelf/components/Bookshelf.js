@@ -222,11 +222,12 @@ export default class BookshelfPage extends React.Component {
 
     }  else if( type === 'et2'){
       // browserHistory.push(`/eplayer/ETbook/${bookId}`);
-      browserHistory.push(`/eplayer/view/${bookId}`);
+      type = (type === 'et2') ? 'book' : type;
+      browserHistory.push(`/eplayer/view/${type}/${bookId}`);
     }
     else if( type === 'course') {
       localStorage.setItem('sourceUrl', 'bookshelf');
-      browserHistory.push(`/eplayer/course/${bookId}`);
+      browserHistory.push(`/eplayer/view/${type}/${bookId}`);
     }
   }
   /* Method used for loading the data. Any change in store data it will reload the view. */

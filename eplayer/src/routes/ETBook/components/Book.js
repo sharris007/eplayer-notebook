@@ -699,7 +699,7 @@ export class Book extends Component {
           browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
         } else {
           // browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
-           browserHistory.replace(`/eplayer/view/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
+           browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
         }
         let bookmarksParams = this.state.urlParams;
         bookmarksParams.xAuth = localStorage.getItem('secureToken');
