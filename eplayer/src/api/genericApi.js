@@ -94,7 +94,7 @@ export const getTocDetails = (bookId, tocurl, piToken, data) => fetch(`${etextSe
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-Authorization': piToken,
-    isDeeplink: data.isDeeplink
+    isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
   }
 });
 

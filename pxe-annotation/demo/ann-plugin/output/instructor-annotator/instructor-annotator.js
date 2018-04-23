@@ -3668,7 +3668,7 @@ Annotator.Editor = (function(_super) {
   }
   
   Editor.prototype.unShareAnnotation=function() {
-     this.annotation.colorCode=this.annotation.lastColor;
+     this.annotation.colorCode='#FFD232';
      var i=1;
      if(this.annotation.colorCode == '#FFD232') { //Yellow
          annBgColor = 'rgba(248, 230, 0, 0.5)';
@@ -3821,7 +3821,8 @@ Annotator.Editor = (function(_super) {
     }
     if (this.annotation.shareable) {
       $('.annotator-share').removeClass('on');
-      this.unShareAnnotation();
+      this.annotation.shareable = false;
+      $(this.annotation.highlights).removeClass('sharedNote');
     }
     if(checkoverlap) {
       $('#noteContainer').css('display', 'none');
