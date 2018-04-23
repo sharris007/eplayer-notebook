@@ -43,8 +43,9 @@ if (n > 0) {
 const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
 let bookId =null;
- const headerTabs = ['materials', 'notes'];
-  const inkBarColor = 'teal';
+let getSecureToken = null;
+const headerTabs = ['materials', 'notes'];
+const inkBarColor = 'teal';
     // let pageSelected = 'materials';
 
 export class Dashboard extends Component {
@@ -67,13 +68,13 @@ export class Dashboard extends Component {
         {
             localStorage.setItem('secureToken',  piSession.currentToken());
         }
+        getSecureToken = localStorage.getItem('secureToken');
     }
     this.state = {
       urlParams: {
         context: this.props.params.bookId,
         user: ''
       },      
-      piToken: localStorage.getItem('secureToken'),
       pageSelected : 'materials'
     }
   }
@@ -85,7 +86,7 @@ export class Dashboard extends Component {
             localStorage.setItem('secureToken',  piSession.currentToken());
         }
     }
-    const getSecureToken = localStorage.getItem('secureToken');
+    getSecureToken = localStorage.getItem('secureToken');
     this.bookDetailsData = {
       context: this.state.urlParams.context,
       piToken: getSecureToken,
