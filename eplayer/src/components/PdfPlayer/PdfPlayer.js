@@ -354,6 +354,8 @@ class PdfPlayer extends Component {
     }
     if(this.searchTerm){
       this.searchTextFunc(this.searchTerm);
+    }else{
+      $('.fwr-search-result-highlight').remove();
     }
     this.searchTerm = null;
   }
@@ -366,13 +368,13 @@ class PdfPlayer extends Component {
     try {
       this.onHotspotCloseButton();
       this.setState({ popUpCollection: [] });
+      this.searchTerm = null;
     } catch (e) {
       // error
     }
     if (_.isObject(requestedPageObj)) {
       this.renderPdf(requestedPageObj.id);
     }
-    this.searchTerm = null;
   }
 
   goToPage = (pageNo) => {
@@ -1290,6 +1292,7 @@ class PdfPlayer extends Component {
           this.goToPage(requestedEntry);
         }
     }
+    this.searchTerm = null;
   }
 
   render() {
