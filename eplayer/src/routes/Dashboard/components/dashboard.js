@@ -30,6 +30,7 @@ import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
 import './dashboard.scss';
 import ComponentOwner from './js/component-owner';
+import { NoteBook } from '@pearson-incubator/notebook';
 
 let languageid;
 const url = window.location.href;
@@ -44,25 +45,10 @@ const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
 let bookId =null;
 
-let notesList = [];
-let originalNotesList = [];
-
-let callback = null;
-
-
-const NoteBookComponent = function NoteBookComponent(paramsObj) { // eslint-disable-line import/prefer-default-export
-  return (
-      <div>
-      <ComponentOwner {...paramsObj} />
-      </div>
-  );
-};  
-
-
-
 export class Dashboard extends Component {
   constructor(props) {
     super(props);
+    console.log("props", props);
      piSession.getToken(function (result, userToken) {
       if (!userToken) {
         // if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
@@ -87,8 +73,18 @@ export class Dashboard extends Component {
         user: ''
       },      
       piToken: localStorage.getItem('secureToken'),
-      tab: 'materials'
+      pageSelected: 'materials',
+      groupExpanded : false,
+      expandedTagName : null,
+      tagAttributes : [],
+      lastUsedFilters : {},
+      expandedTagId: null,
+      groupModeFlag : false,
+      toolbarMode : {},
+      coloums : 4,
+      notes : []
     }
+    // this.onChange=this.onChange.bind(this);
   }
  
   componentWillMount = () => {
@@ -139,12 +135,10 @@ export class Dashboard extends Component {
             else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
 
           } else {
-            debugger;
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
-          debugger;
           let identityId = localStorage.getItem('identityId');
 
-          alert(this.props.location.query.globaluserid);
+          // alert(this.props.location.query.globaluserid);
           this.props.dispatch(getTotalAnnCallService(this.bookDetailsData));
         }
   }
@@ -155,12 +149,70 @@ export class Dashboard extends Component {
       this.props.dispatch({ type: "CLEAR_SEARCH" });
   }
   componentWillReceiveProps = (nextProps) => {
-    
+    console.log("nextProps", nextProps);
+    if(nextProps.notesList && nextProps.notesList.length > 0){
+      this.prepareNotes(nextProps.notesList);
+     }
+    // this.setState({ notes: nextProps.notesList }, () => { console.log("******", this.state.notes); });
   }
-  onChange = (tab) => {
-    this.setState({ tab: tab });
-    alert('on change');
-    console.log('OnChange called');
+  
+  prepareNotes = (notes) => {
+    const notesList = [];
+    const originalNotesList = [];
+    for (let ic = 0; ic < notes.length; ic++) {
+      const noteObj = notes[ic];
+      let note = noteObj.data;
+      // const groupNote = noteObj.data;
+      note.cardFormat = 'note';
+      const contextualInfo = noteObj.contextualInfo;
+      if (noteObj.pageId) {
+        const titleIndex = _.findIndex(contextualInfo, function (obj) { return obj.key === 'title'; });
+        note.title = contextualInfo && titleIndex !== -1 ? contextualInfo[titleIndex].value : null;
+        note.highLightText = note.quote;
+        note.pageId = noteObj.pageId;
+      }
+      else {
+        note.title = note.quote;
+      }
+      note.content = note.text;
+      note.tags = noteObj.tags;
+      note.notes = noteObj.notes;
+      note.timeStamp = noteObj.updatedTime ? noteObj.updatedTime : noteObj.createdTime;
+      note.noteType = noteObj.noteType;
+      
+      note.id = noteObj.id;
+      note.outsetSeq = noteObj.outsetSeq;
+
+      const dupNote = _.cloneDeep(note);
+
+      originalNotesList.push(dupNote);
+      notesList.push(note);
+    }
+    const mapGroupEle = _.groupBy(notesList, function(i) {
+      if (i.tags) { 
+        return i.tags[0].tagId; 
+      }
+      else  {  return i.id;}});
+    const getOrderedArr = _.sortBy(mapGroupEle, function(i) {return i[0].outsetSeq * -1;});
+    const mapNotesObj = [];
+    let groupFlag;
+    _.forEach(getOrderedArr, function(value) { 
+    if(value[0].tags){
+       value[0].notes=[...value];
+       mapNotesObj.push(value[0]);
+       groupFlag = true;
+      }else{
+       _.forEach(value,(item)=>{mapNotesObj.push(item)})
+      }
+    });
+    this.setState({
+      notes : mapNotesObj
+    });
+  }
+  onChange = (pageSelected) => {
+    this.setState({ pageSelected: pageSelected });
+    // alert('on change');
+    console.log('OnChnotesX/contextLogange called');
   }
   viewTitle = () => {
     console.log('viewTitle called');
@@ -203,13 +255,25 @@ export class Dashboard extends Component {
     }
     return courseDetail;
   }
+  handleBack = () => {
+
+  }
+  callback  = () => {
+
+  }
+  handleGroupClick = () => {
+
+  }
   render() {
-     const { bookdetailsdata, tocData, tocReceived } = this.props;
+     const { bookdetailsdata, tocData, tocReceived, notesList } = this.props;
+     const { groupExpanded, expandedTagName, tagAttributes, lastUsedFilters, expandedTagId, toolbarMode, groupModeFlag, pageSelected, notes} = this.state;
+     console.log("notesList", notesList);
+     console.log("notes", notes);
+     
     // eslint-disable-line react/prop-types
     let title = '';
     let tocContent = {};
     let courseData = {};
- 
     if(tocReceived){
       title = tocData.bookDetails.title;
       tocContent = tocData.content;
@@ -222,7 +286,6 @@ export class Dashboard extends Component {
     }
     const headerTabs = ['materials', 'notes'];
  //   const pageSelected = 'materials';
-    const pageSelected = this.state.tab;
     const inkBarColor = 'teal';
 
     this.tocCompData = {
@@ -237,8 +300,6 @@ export class Dashboard extends Component {
       handleTocExpand: this.handleTocExpand
     };
 
-    const notesList = [];
-
     return (
       <div>
         <DashboardHeader/>
@@ -250,7 +311,7 @@ export class Dashboard extends Component {
           headerTabs={headerTabs}
           inkBarColor={inkBarColor}
         />
-        {this.state.tab == 'materials' ? <div>
+        {pageSelected === 'materials' ? (<div>
           <MaterialsComponent
           viewTitle={this.viewTitle}
           courseData={courseData}
@@ -261,7 +322,7 @@ export class Dashboard extends Component {
           showCourse={false}
         /> 
       
-      </div> : <div><NoteBookComponent notesList={notesList} originalNotesList={originalNotesList} tocData={this.tocCompData}  callback={this.callback} /></div>}
+      </div>) : (<div><NoteBook notesList={notes} groupExpanded={groupExpanded} expandedTagName={expandedTagName} tagAttributes={tagAttributes} lastUsedFilters={lastUsedFilters} expandedTagId={expandedTagId} handleBack={this.handleBack} toolbarMode={toolbarMode} tocData={tocContent} groupModeFlag={groupModeFlag} callback={this.callback} handleGroupClick={this.handleGroupClick} coloums={3} /></div>)}
         </div> : null
         }
       </div>
@@ -269,7 +330,7 @@ export class Dashboard extends Component {
   }
 }
 Dashboard.propTypes = {
-  fetchTocAndViewer: React.PropTypes.func,
+  fetchTocAndViewer: React.PropTypes.func, 
   fetchAnnotations: React.PropTypes.func,
   removeAnnotation: React.PropTypes.func,
   fetchBookmarks: React.PropTypes.func,
@@ -294,8 +355,9 @@ Dashboard.propTypes = {
     tocReceived: state.playlistReducer.tocReceived,
     bookdetailsdata: state.playlistReducer.bookdetailsdata,
     customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived,
-    prodType:state.playlistReducer.prodType  ,
-    playListWithOutDuplicates:state.playlistReducer.playListWithOutDuplicates
+    prodType:state.playlistReducer.prodType,
+    playListWithOutDuplicates:state.playlistReducer.playListWithOutDuplicates,
+    notesList: state.annotationReducer.notesList
   }
 }; // eslint-disable-line max-len
 Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign

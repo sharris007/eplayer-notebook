@@ -29,7 +29,7 @@ let annHeaders = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'X-Authorization': localStorage.getItem('secureToken'),
-  'X-Caller': resources.links.xCaller[domain.getEnvType()].ETEXT2_WEB['ETEXT1_PDF']
+  'X-Caller': resources.links.xCaller[envType].ETEXT2_WEB['ETEXT2_PXE']
 };
 //export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
   export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/ffffffff56b90bd7e4b0f8eeaa4655d4/notesX`, {
@@ -91,7 +91,7 @@ export const getBookDetails = bookDetails =>
        Accept: 'application/json',
        'Content-Type': 'application/json',
        'X-Authorization': bookDetails.piToken,
-       isDeeplink: bookDetails.isDeeplink
+       // isDeeplink: bookDetails.isDeeplink
      }
    });
 
@@ -101,7 +101,7 @@ export const getTocDetails = (bookId, tocurl, piToken, data) => fetch(`${etextSe
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-Authorization': piToken,
-    isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
+    // isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
   }
 });
 
@@ -201,7 +201,7 @@ export const getPiUserProfile = data => fetch(`${etextService[envType]}/nextext/
   headers: {
     Accept: 'application/json',
     'X-Authorization': data.piToken,
-    isDeeplink: data.isDeeplink
+    // isDeeplink: data.isDeeplink
   }
 });
 
