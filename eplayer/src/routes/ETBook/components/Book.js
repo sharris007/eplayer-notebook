@@ -220,6 +220,8 @@ export class Book extends Component {
 
           if(this.isDeeplinkBook) {
             this.bookDetailsData.isDeeplink = true;;
+          }else {
+            this.bookDetailsData.isDeeplink = false;
           }
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }

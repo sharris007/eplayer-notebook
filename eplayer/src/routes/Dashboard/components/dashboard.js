@@ -24,6 +24,7 @@ import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVer
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
 import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken, getParameterByName, getCourseCallServiceForRedirect, updateProdType } from '../../../actions/playlist';
+import { resources, domain, typeConstants } from '../../../../const/Settings';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
@@ -59,7 +60,7 @@ export class Dashboard extends Component {
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
-          piSession.login(redirectCourseUrl, 10);
+           browserHistory.push('/eplayer/pilogin');
         }
       }
     });
@@ -77,6 +78,7 @@ export class Dashboard extends Component {
       },      
       pageSelected : 'materials'
     }
+    this.isDeeplinkBook = window.location.search.match('deeplink');
   }
  
   componentWillMount = () => {
@@ -93,7 +95,7 @@ export class Dashboard extends Component {
       bookId: this.props.params.bookId,
       pageId: this.props.params.pageId ? this.props.params.pageId :''
     }
-    if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
+    if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
             this.courseBook = true;
             const url = window.location.href;
@@ -127,6 +129,11 @@ export class Dashboard extends Component {
             else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
 
           } else {
+            if(this.isDeeplinkBook) {
+              this.bookDetailsData.isDeeplink = true;
+            }else {
+               this.bookDetailsData.isDeeplink = false;
+            }
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
   }
@@ -163,27 +170,27 @@ export class Dashboard extends Component {
     if(courseData)
     {      
         courseDetail = {
-          id: courseData.indexId,
-          title: courseData.title,
+          id: courseData.indexId ? courseData.indexId : courseData.indexId,
+          title: courseData.title ? courseData.title : courseData.section.sectionTitle,
           code: courseData.code,
-          bookTitle: courseData.title ,
-          startDate: courseData.date,
-          endDate: courseData.expirationDate,
+          bookTitle: courseData.title ? courseData.title : courseData.section.sectionTitle,
+          startDate: courseData.date ? courseData.date : courseData.section.startDate,
+          endDate: courseData.expirationDate ? courseData.expirationDate : courseData.section.endDate,
           schedule: '',
           source: null,
-          avatar: courseData.coverImageUrl,
+          avatar: courseData.coverImageUrl ? courseData.coverImageUrl : courseData.section.avatarUrl,
           prefix: '',
           tocProvider: courseData.toc,
-          institutionId: courseData.indexId,
+          institutionId: courseData.indexId ? courseData.indexId : courseData.indexId,
           launchUrl: null,
           authorName: courseData.creator,
           isStudent: true,
           passportDetails: {},
           isLoaded: true,
-          indexId: courseData.indexId,
+          indexId: courseData.indexId ? courseData.indexId : courseData.indexId,
           isError: false,
           contentType: 'ETEXT',
-          productId: courseData.productId
+          productId: courseData.productId ? courseData.productId : courseData.section.productCodes[0]
         };
     }
     return courseDetail;
@@ -198,13 +205,17 @@ export class Dashboard extends Component {
     let courseData = {};
  
     if(tocReceived){
-      title = tocData.bookDetails.title;
       tocContent = tocData.content;
-      courseData = this.getCourseData(tocData.bookDetails);
     }
     if(bookdetailsdata) {
       if(bookdetailsdata.bookDetail){
+        title = bookdetailsdata.bookDetail.metadata.title;
         bookId = bookdetailsdata.bookDetail.bookId;
+        courseData = this.getCourseData(bookdetailsdata.bookDetail.metadata);
+      }else if(bookdetailsdata.userCourseSectionDetail){
+         title = bookdetailsdata.userCourseSectionDetail.section.sectionTitle;
+         bookId = bookdetailsdata.userCourseSectionDetail.section.sectionId;
+         courseData = this.getCourseData(bookdetailsdata.userCourseSectionDetail);
       }
     }
    
@@ -240,7 +251,7 @@ export class Dashboard extends Component {
           cardFooter={true}
           tocData={this.tocCompData}
           showCourse={false}
-        />  : <NoteBookComponenent/>
+        />  : <div>test</div>
         }
           
         </div> : null

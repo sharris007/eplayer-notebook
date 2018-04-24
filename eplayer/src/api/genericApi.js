@@ -194,7 +194,7 @@ export const getPiUserProfile = data => fetch(`${etextService[envType]}/nextext/
   headers: {
     Accept: 'application/json',
     'X-Authorization': data.piToken,
-    isDeeplink: data.isDeeplink
+    isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
   }
 });
 
