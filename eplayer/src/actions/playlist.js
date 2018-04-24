@@ -284,7 +284,7 @@ export const putCustomTocCallService = (data, bookDetailsData) => dispatch =>
       }
       dispatch(gettingTocResponse());
       dispatch(updateTocResponse(response));
-      if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+      if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
         dispatch(getCourseCallService(bookDetailsData, true));
       } else {
         dispatch(getBookPlayListCallService(bookDetailsData, true));
@@ -542,7 +542,7 @@ function redirectToZeppelin(bookDetails, passportDetails, url) {
     appAccess: passportDetails.access,
     launchUrl: bookDetails.section.extras.metadata.launchUrl
   };
-  if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+  if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
     // successOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
     successOriginUrl = url;
     errOriginUrl = resources.links.consoleUrl[domain.getEnvType()];

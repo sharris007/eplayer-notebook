@@ -56,7 +56,7 @@ export class Book extends Component {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
-        }else if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        }else if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           piSession.login(redirectCourseUrl, 10);
         }
       }
@@ -182,7 +182,7 @@ export class Book extends Component {
           pageId: this.props.params.pageId ? this.props.params.pageId :'',
           isDeeplink: false
         }
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
             this.courseBook = true;
             const url = window.location.href;
@@ -220,6 +220,8 @@ export class Book extends Component {
 
           if(this.isDeeplinkBook) {
             this.bookDetailsData.isDeeplink = true;;
+          }else {
+            this.bookDetailsData.isDeeplink = false;
           }
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
@@ -295,14 +297,14 @@ export class Book extends Component {
         playpageDetails1.currentPageURL = gotoPageData;
         playpageDetails1.tocUpdated = true;
         this.onPageChange("pagescroll", nextProps.gotoPageObj.page.title);
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           if(this.props.prodType === 'idc'){
             this.productType = 'prdType';
           }
           else{
             this.productType = 'Source';
           }
-          let url = `/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`;
+          let url = `/eplayer/course/${this.props.params.bookId}/page/${gotoPageData.id}`;
           url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+'launchLocale=' + window.annotationLocale);
         } else {
@@ -449,14 +451,14 @@ export class Book extends Component {
       pageDetails: pageDetails
     }, function () {
       // eslint-disable-next-line
-      if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+      if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
         if(this.props.prodType === 'idc'){
           this.productType = 'prdType';
         }
         else{
           this.productType = 'Source';
         }
-        let url = `/eplayer/Course/${this.props.params.bookId}/page/${data.id}`;
+        let url = `/eplayer/course/${this.props.params.bookId}/page/${data.id}`;
         url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
         browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
       } else {
@@ -687,19 +689,19 @@ export class Book extends Component {
         pageDetails: playpageDetails,
         drawerOpen: false
       }, () => {
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           if(this.props.prodType === 'idc'){
             this.productType = 'prdType';
           }
           else{
             this.productType = 'Source';
           }
-          let url = `/eplayer/Course/${this.props.params.bookId}/page/${id}`;
+          let url = `/eplayer/course/${this.props.params.bookId}/page/${id}`;
           url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
         } else {
           // browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
-           browserHistory.replace(`/eplayer/view/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
+           browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
         }
         let bookmarksParams = this.state.urlParams;
         bookmarksParams.xAuth = localStorage.getItem('secureToken');
@@ -902,30 +904,7 @@ export class Book extends Component {
     if (getOriginurl) {
       window.location.href = getOriginurl;
     }
-    // if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-    //    let originurl = localStorage.getItem('sourceUrl');       
-    //   if(originurl != null)
-    //     {
-    //       const langQuery = localStorage.getItem('bookshelfLang');
-    //       if (langQuery && langQuery !== '?languageid=1') {
-    //         browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-    //       } else {
-    //         browserHistory.push('/eplayer/bookshelf');
-    //       }
-    //     }
-    //     else
-    //       {
-    //           let redirectConsoleUrl   = resources.links.consoleUrl[domain.getEnvType()];
-    //   window.location.href = redirectConsoleUrl;
-    //       }  
-    // }else {
-    //   const langQuery = localStorage.getItem('bookshelfLang');
-    //   if (langQuery && langQuery !== '?languageid=1') {
-    //     browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-    //   } else {
-    //     browserHistory.push('/eplayer/bookshelf');
-    //   }
-    // }
+   
     this.setState({ open: false });
   }
 

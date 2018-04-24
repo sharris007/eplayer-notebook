@@ -24,10 +24,12 @@ import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVer
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
 import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken, getParameterByName, getCourseCallServiceForRedirect, updateProdType } from '../../../actions/playlist';
+import { resources, domain, typeConstants } from '../../../../const/Settings';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
+import { NoteBookComponenent } from '@pearson-incubator/notebook';
 import './dashboard.scss';
 import ComponentOwner from './js/component-owner';
 import { NoteBook } from '@pearson-incubator/notebook';
@@ -44,6 +46,10 @@ if (n > 0) {
 const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
 let bookId =null;
+let getSecureToken = null;
+const headerTabs = ['materials', 'notes'];
+const inkBarColor = 'teal';
+    // let pageSelected = 'materials';
 
 export class Dashboard extends Component {
   constructor(props) {
@@ -52,12 +58,12 @@ export class Dashboard extends Component {
      piSession.getToken(function (result, userToken) {
       if (!userToken) {
         // if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
-        if (window.location.pathname.indexOf('/eplayer/book/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/view/book/') > -1) {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
-        }else if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          piSession.login(redirectCourseUrl, 10);
+        }else if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
+           browserHistory.push('/eplayer/pilogin');
         }
       }
     });
@@ -66,6 +72,7 @@ export class Dashboard extends Component {
         {
             localStorage.setItem('secureToken',  piSession.currentToken());
         }
+        getSecureToken = localStorage.getItem('secureToken');
     }
     this.state = {
       urlParams: {
@@ -84,7 +91,7 @@ export class Dashboard extends Component {
       coloums : 4,
       notes : []
     }
-    // this.onChange=this.onChange.bind(this);
+    this.isDeeplinkBook = window.location.search.match('deeplink');
   }
  
   componentWillMount = () => {
@@ -94,14 +101,14 @@ export class Dashboard extends Component {
             localStorage.setItem('secureToken',  piSession.currentToken());
         }
     }
-    const getSecureToken = localStorage.getItem('secureToken');
+    getSecureToken = localStorage.getItem('secureToken');
     this.bookDetailsData = {
       context: this.state.urlParams.context,
       piToken: getSecureToken,
       bookId: this.props.params.bookId,
       pageId: this.props.params.pageId ? this.props.params.pageId :''
     }
-    if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+    if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
             this.courseBook = true;
             const url = window.location.href;
@@ -135,6 +142,11 @@ export class Dashboard extends Component {
             else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
 
           } else {
+            if(this.isDeeplinkBook) {
+              this.bookDetailsData.isDeeplink = true;
+            }else {
+               this.bookDetailsData.isDeeplink = false;
+            }
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
           let identityId = localStorage.getItem('identityId');
 
@@ -217,7 +229,11 @@ export class Dashboard extends Component {
   viewTitle = () => {
     console.log('viewTitle called');
     // browserHistory.push(`/eplayer/ETbook/${bookId}`);
-    browserHistory.push(`/eplayer/book/${bookId}`);
+    if (window.location.pathname.indexOf('/eplayer/view/book/') > -1) {
+      browserHistory.push(`/eplayer/book/${bookId}`);
+    }else if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
+      browserHistory.push(`/eplayer/course/${bookId}`);
+    }
   }
   goToPageCallback = () => {
     console.log('goToPageCallback called');
@@ -230,27 +246,27 @@ export class Dashboard extends Component {
     if(courseData)
     {      
         courseDetail = {
-          id: courseData.indexId,
-          title: courseData.title,
+          id: courseData.indexId ? courseData.indexId : courseData.indexId,
+          title: courseData.title ? courseData.title : courseData.section.sectionTitle,
           code: courseData.code,
-          bookTitle: courseData.title ,
-          startDate: courseData.date,
-          endDate: courseData.expirationDate,
+          bookTitle: courseData.title ? courseData.title : courseData.section.sectionTitle,
+          startDate: courseData.date ? courseData.date : courseData.section.startDate,
+          endDate: courseData.expirationDate ? courseData.expirationDate : courseData.section.endDate,
           schedule: '',
           source: null,
-          avatar: courseData.coverImageUrl,
+          avatar: courseData.coverImageUrl ? courseData.coverImageUrl : courseData.section.avatarUrl,
           prefix: '',
           tocProvider: courseData.toc,
-          institutionId: courseData.indexId,
+          institutionId: courseData.indexId ? courseData.indexId : courseData.indexId,
           launchUrl: null,
           authorName: courseData.creator,
           isStudent: true,
           passportDetails: {},
           isLoaded: true,
-          indexId: courseData.indexId,
+          indexId: courseData.indexId ? courseData.indexId : courseData.indexId,
           isError: false,
           contentType: 'ETEXT',
-          productId: courseData.productId
+          productId: courseData.productId ? courseData.productId : courseData.section.productCodes[0]
         };
     }
     return courseDetail;
@@ -270,18 +286,24 @@ export class Dashboard extends Component {
      console.log("notesList", notesList);
      console.log("notes", notes);
      
+     const {pageSelected} = this.state;
+
     // eslint-disable-line react/prop-types
     let title = '';
     let tocContent = {};
     let courseData = {};
     if(tocReceived){
-      title = tocData.bookDetails.title;
       tocContent = tocData.content;
-      courseData = this.getCourseData(tocData.bookDetails);
     }
     if(bookdetailsdata) {
       if(bookdetailsdata.bookDetail){
+        title = bookdetailsdata.bookDetail.metadata.title;
         bookId = bookdetailsdata.bookDetail.bookId;
+        courseData = this.getCourseData(bookdetailsdata.bookDetail.metadata);
+      }else if(bookdetailsdata.userCourseSectionDetail){
+         title = bookdetailsdata.userCourseSectionDetail.section.sectionTitle;
+         bookId = bookdetailsdata.userCourseSectionDetail.section.sectionId;
+         courseData = this.getCourseData(bookdetailsdata.userCourseSectionDetail);
       }
     }
     const headerTabs = ['materials', 'notes'];

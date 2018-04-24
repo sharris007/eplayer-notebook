@@ -57,6 +57,13 @@
         "DEBUG": "app:*"
       }
     },
+    "deploy:stage": {
+      "command": "npm run deploy",
+      "env": {
+        "NODE_ENV": "stage",
+        "DEBUG": "app:*"
+      }
+    },
     "deploy:prod": {
       "command": "npm run deploy",
       "env": {
@@ -67,6 +74,7 @@
     "start": {
       "command": "node --max-old-space-size=4096 bin/server",
       "env": {
+        "NODE_ENV": "development",
         "DEBUG": "app:*"
       }
     },

@@ -22,6 +22,7 @@ const path = require('path');
 // const Promise = require('es6-promise').Promise;
 // const jquery = require('jquery');
 const locatePath = require('locate-path');
+const fs = require('fs');
 
 const annotationLibPath = path.join(__dirname, '../node_modules/@pearson-incubator/pxe-annotation/demo/ann-plugin/output');
 const gtmPath = path.join(__dirname, '../gtmSnippet');
@@ -82,11 +83,14 @@ webpackConfig.output = {
 webpackConfig.plugins = [
   new webpack.DefinePlugin(config.globals),
   new HtmlWebpackPlugin({
+    title: 'test app',
+    environment: process.env.NODE_ENV,
     template: paths.client('index.html'),
     hash: false,
     favicon: paths.client('static/favicon.ico'),
     filename: 'index.html',
     inject: 'body',
+    inline: fs.readFileSync('./build/pi-'+process.env.NODE_ENV+'.js', 'utf8'),
     minify: {
       collapseWhitespace: true
     }
