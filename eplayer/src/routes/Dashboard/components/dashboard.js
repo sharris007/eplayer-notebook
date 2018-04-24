@@ -31,7 +31,6 @@ import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
 import { NoteBookComponenent } from '@pearson-incubator/notebook';
 import './dashboard.scss';
-import ComponentOwner from './js/component-owner';
 
 let languageid;
 const url = window.location.href;
