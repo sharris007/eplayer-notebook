@@ -20,6 +20,7 @@ import { MaterialsComponent } from '@pearson-incubator/vega-drawer';
 import languageName from '../../../../locale_config/configureLanguage';
 import { languages } from '../../../../locale_config/translations/index';
 import DashboardHeader from '../../../components/DashboardHeader';
+import { Progress } from '@pearson-incubator/aquila-js-core';
 import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
@@ -29,7 +30,7 @@ import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
-import { NoteBookComponenent } from '@pearson-incubator/notebook';
+import { NoteBook } from '@pearson-incubator/notebook';
 import './dashboard.scss';
 
 let languageid;
@@ -86,6 +87,7 @@ export class Dashboard extends Component {
       notes : []
     }
     this.isDeeplinkBook = window.location.search.match('deeplink');
+    this.onChange = this.onChange.bind(this);
   }
  
   componentWillMount = () => {
@@ -223,8 +225,23 @@ export class Dashboard extends Component {
       browserHistory.push(`/eplayer/course/${bookId}`);
     }
   }
-  goToPageCallback = () => {
+  goToPageCallback = (pageId) => {
     console.log('goToPageCallback called');
+    let id = pageId;
+     
+    if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
+      if(this.props.prodType === 'idc'){
+        this.productType = 'prdType';
+      }
+      else{
+        this.productType = 'Source';
+      }
+      let url = `/eplayer/course/${bookId}/page/${id}`;
+      url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
+      browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
+    } else {
+        browserHistory.replace(`/eplayer/book/${bookId}/page/${id}?launchLocale=` + window.annotationLocale);
+    }
   }
   handleTocExpand = () => {
     console.log('handleTocExpand called');
@@ -254,7 +271,7 @@ export class Dashboard extends Component {
           indexId: courseData.indexId ? courseData.indexId : courseData.indexId,
           isError: false,
           contentType: 'ETEXT',
-          productId: courseData.productId ? courseData.productId : courseData.section.productCodes[0]
+          productId: courseData.productId ? courseData.productId : (courseData.section ? courseData.section.productCodes[0] : null)
         };
     }
     return courseDetail;
@@ -278,6 +295,11 @@ export class Dashboard extends Component {
     let courseData = {};
     if(tocReceived){
       tocContent = tocData.content;
+    }else {
+      // return (<Progress
+      //   color={pearsonLightTheme.progress.material.color}
+      //   style={pearsonLightTheme.progress.material.style}
+      // />);
     }
     if(bookdetailsdata) {
       if(bookdetailsdata.bookDetail){
@@ -298,8 +320,8 @@ export class Dashboard extends Component {
       data: {
         content: tocData.content
       },
-      depth: 2,
-      childField: 'content',
+      depth: 3,
+      childField: 'children',
       isTocWrapperRequired: false,
       clickTocHandler: this.goToPageCallback,
       handleTocExpand: this.handleTocExpand
@@ -320,15 +342,15 @@ export class Dashboard extends Component {
           <MaterialsComponent
           viewTitle={this.viewTitle}
           courseData={courseData}
-          showTitle={true}
-          cardHeader={true}
+          showTitle={false}
+          cardHeader={false}
           cardFooter={true}
           tocData={this.tocCompData}
           showCourse={false}
         /> 
       
       </div>) : (<div>
-        <NoteBookComponenent 
+        <NoteBook
         notesList={notes} 
         groupExpanded={groupExpanded} 
         expandedTagName={expandedTagName} 
