@@ -32,7 +32,6 @@ import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallServ
 import { NoteBookComponenent } from '@pearson-incubator/notebook';
 import './dashboard.scss';
 import ComponentOwner from './js/component-owner';
-import { NoteBook } from '@pearson-incubator/notebook';
 
 let languageid;
 const url = window.location.href;
@@ -330,7 +329,7 @@ export class Dashboard extends Component {
         /> 
       
       </div>) : (<div>
-        <NoteBook 
+        <NoteBookComponenent 
         notesList={notes} 
         groupExpanded={groupExpanded} 
         expandedTagName={expandedTagName} 
