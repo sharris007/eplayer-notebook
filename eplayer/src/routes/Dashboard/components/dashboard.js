@@ -47,9 +47,6 @@ const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
 let bookId =null;
 let getSecureToken = null;
-const headerTabs = ['materials', 'notes'];
-const inkBarColor = 'teal';
-    // let pageSelected = 'materials';
 
 export class Dashboard extends Component {
   constructor(props) {
@@ -57,7 +54,6 @@ export class Dashboard extends Component {
     console.log("props", props);
      piSession.getToken(function (result, userToken) {
       if (!userToken) {
-        // if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
         if (window.location.pathname.indexOf('/eplayer/view/book/') > -1) {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
@@ -150,7 +146,6 @@ export class Dashboard extends Component {
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
           let identityId = localStorage.getItem('identityId');
 
-          // alert(this.props.location.query.globaluserid);
           this.props.dispatch(getTotalAnnCallService(this.bookDetailsData));
         }
   }
@@ -165,7 +160,6 @@ export class Dashboard extends Component {
     if(nextProps.notesList && nextProps.notesList.length > 0){
       this.prepareNotes(nextProps.notesList);
      }
-    // this.setState({ notes: nextProps.notesList }, () => { console.log("******", this.state.notes); });
   }
   
   prepareNotes = (notes) => {
@@ -223,12 +217,8 @@ export class Dashboard extends Component {
   }
   onChange = (pageSelected) => {
     this.setState({ pageSelected: pageSelected });
-    // alert('on change');
-    console.log('OnChnotesX/contextLogange called');
   }
   viewTitle = () => {
-    console.log('viewTitle called');
-    // browserHistory.push(`/eplayer/ETbook/${bookId}`);
     if (window.location.pathname.indexOf('/eplayer/view/book/') > -1) {
       browserHistory.push(`/eplayer/book/${bookId}`);
     }else if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
@@ -283,11 +273,7 @@ export class Dashboard extends Component {
   render() {
      const { bookdetailsdata, tocData, tocReceived, notesList } = this.props;
      const { groupExpanded, expandedTagName, tagAttributes, lastUsedFilters, expandedTagId, toolbarMode, groupModeFlag, pageSelected, notes} = this.state;
-     console.log("notesList", notesList);
-     console.log("notes", notes);
      
-     const {pageSelected} = this.state;
-
     // eslint-disable-line react/prop-types
     let title = '';
     let tocContent = {};
@@ -307,7 +293,6 @@ export class Dashboard extends Component {
       }
     }
     const headerTabs = ['materials', 'notes'];
- //   const pageSelected = 'materials';
     const inkBarColor = 'teal';
 
     this.tocCompData = {
@@ -344,7 +329,20 @@ export class Dashboard extends Component {
           showCourse={false}
         /> 
       
-      </div>) : (<div><NoteBook notesList={notes} groupExpanded={groupExpanded} expandedTagName={expandedTagName} tagAttributes={tagAttributes} lastUsedFilters={lastUsedFilters} expandedTagId={expandedTagId} handleBack={this.handleBack} toolbarMode={toolbarMode} tocData={tocContent} groupModeFlag={groupModeFlag} callback={this.callback} handleGroupClick={this.handleGroupClick} coloums={3} /></div>)}
+      </div>) : (<div>
+        <NoteBook 
+        notesList={notes} 
+        groupExpanded={groupExpanded} 
+        expandedTagName={expandedTagName} 
+        tagAttributes={tagAttributes} 
+        lastUsedFilters={lastUsedFilters} 
+        expandedTagId={expandedTagId} 
+        handleBack={this.handleBack} 
+        toolbarMode={toolbarMode} 
+        tocData={tocContent} 
+        groupModeFlag={groupModeFlag} 
+        callback={this.callback} 
+        handleGroupClick={this.handleGroupClick} coloums={3} /></div>)}
         </div> : null
         }
       </div>

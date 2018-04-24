@@ -91,7 +91,7 @@ export const getBookDetails = bookDetails =>
        Accept: 'application/json',
        'Content-Type': 'application/json',
        'X-Authorization': bookDetails.piToken,
-       // isDeeplink: bookDetails.isDeeplink
+       isDeeplink: bookDetails.isDeeplink
      }
    });
 
@@ -101,7 +101,7 @@ export const getTocDetails = (bookId, tocurl, piToken, data) => fetch(`${etextSe
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-Authorization': piToken,
-    // isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
+     isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
   }
 });
 
