@@ -24,7 +24,8 @@ const initalData = {
   updatedToc: false,
   customTocPlaylistReceived: false,
   prodType: '',
-  playListWithOutDuplicates:[]
+  playListWithOutDuplicates: [],
+  backLinkLaunchParams: {}
 };
 export default (state = initalData, action) => {
   switch (action.type) {
@@ -43,7 +44,7 @@ export default (state = initalData, action) => {
       return {
         ...state,
         data: action.data,
-        playListWithOutDuplicates:_.remove([...action.data.content], item => !item.chapterHeading),
+        playListWithOutDuplicates: _.remove([...action.data.content], item => !item.chapterHeading),
         playlistReceived: action.playlistReceived
       };
     }
@@ -99,6 +100,12 @@ export default (state = initalData, action) => {
       return {
         ...state,
         prodType: action.prodType
+      };
+    }
+    case 'GENERATE_LAUNCH_PARAMS': {
+      return {
+        ...state,
+        backLinkLaunchParams: action.data
       };
     }
     default:

@@ -24,6 +24,7 @@ const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
 const xCaller = resources.links.xCaller;
+const platformIdBackLink = Utilities.getParameterByName('platforms_id');
 
 let annHeaders = {
   Accept: 'application/json',
@@ -84,7 +85,7 @@ export const deleteAnnData = data =>
 // ----Play list toc----------------------------------
 
 export const getBookDetails = bookDetails =>
- fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=${bookDetails.userName}&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
+ fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=${platformIdBackLink || ''}&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=${bookDetails.userName}&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
    {
      method: 'GET',
      headers: {

@@ -15,12 +15,15 @@
 import PlaylistApi from '../api/playlistApi';
 import { resources, domain, typeConstants, contentUrl } from '../../const/Settings';
 import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
 import find from 'lodash/find';
 import Utilities from '../components/utils';
 import { getPreferenceCallService } from './preference';
+// Generate launch params
+const prepareLaunchParams = json => ({
+  type: typeConstants.GENERATE_LAUNCH_PARAMS,
+  data: json
+});
 // GET Book Details
 export const getPlaylistCompleteDetails = json => ({
   type: typeConstants.GET_PLAYLIST,
@@ -563,3 +566,14 @@ function redirectToZeppelin(bookDetails, passportDetails, url) {
   window.location = zeppelinRedirect;
 
 }
+
+// Generate Launch Params
+export const generateLaunchParams = () => (dispatch) => {
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const paramObj = {};
+  for (const value of params.keys()) {
+    paramObj[value] = params.get(value);
+  }
+  dispatch(prepareLaunchParams(paramObj));
+};

@@ -22,7 +22,7 @@ export const resources = {
     iseEnabled: true,
     zeppelinEnabled: true,
     isDisableAnnotation: false,
-    authorizationCheck:true
+    authorizationCheck: true
   },
   links: {
     legalNotice: 'https://media.pearsoncmg.com/cmg/NexText/about/legalnotice/index.html',
@@ -148,12 +148,12 @@ export const resources = {
       stage: 'https://etext-ise-stg.pearson.com',
       prod: 'https://etext-ise.pearson.com'
     },
-     pageNumberSearchService : {
-      local        :"https://pxe-services-dev.pearson.com",
-      dev          :"https://pxe-services-dev.pearson.com",
-      qa           :"https://pxe-services-qa-stg.pearson.com",
-      stage        :"https://pxe-services-stg.pearson.com",
-      prod         :"https://pxe-sdk.openclass.com"
+    pageNumberSearchService: {
+      local: 'https://pxe-services-dev.pearson.com',
+      dev: 'https://pxe-services-dev.pearson.com',
+      qa: 'https://pxe-services-qa-stg.pearson.com',
+      stage: 'https://pxe-services-stg.pearson.com',
+      prod: 'https://pxe-sdk.openclass.com'
     },
     xCaller: {
       local: {
@@ -229,7 +229,8 @@ export const typeConstants = {
   POST_PREFERENCE: 'POST_PREFERENCE',
   GET_TOC_RESPONSE: 'GET_TOC_RESPONSE',
   GETTING_TOC_RESPONSE: 'GETTING_TOC_RESPONSE',
-  DEEPLINK_TOKEN_LOGIN: 'DEEPLINK_TOKEN_LOGIN'
+  DEEPLINK_TOKEN_LOGIN: 'DEEPLINK_TOKEN_LOGIN',
+  GENERATE_LAUNCH_PARAMS: 'GENERATE_LAUNCH_PARAMS'
 };
 
 export const domain = {
