@@ -401,4 +401,3 @@ Dashboard.propTypes = {
   }
 }; // eslint-disable-line max-len
 Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
-export default Dashboard;
