@@ -47,7 +47,7 @@ const { messages } = languages.translations[locale];
 let bookId =null;
 let getSecureToken = null;
 
-class Dashboard extends Component {
+export class Dashboard extends Component {
   constructor(props) {
     super(props);
     console.log("props", props);
@@ -381,11 +381,12 @@ Dashboard.propTypes = {
   params: React.PropTypes.object,
   dispatch: React.PropTypes.func
 };
-  Dashboard.contextTypes = {
+
+Dashboard.contextTypes = {
   store: React.PropTypes.object.isRequired,
   muiTheme: React.PropTypes.object.isRequired
 };
-  const mapStateToProps = state => {
+const mapStateToProps = state => {
   return {
     playlistData: state.playlistReducer.data,
     playlistReceived: state.playlistReducer.playlistReceived,
@@ -400,4 +401,5 @@ Dashboard.propTypes = {
     notesList: state.annotationReducer.notesList
   }
 }; // eslint-disable-line max-len
-export default connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
+Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
+export default Book;
