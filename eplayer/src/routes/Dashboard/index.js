@@ -22,11 +22,11 @@ export default () => ({
     require.ensure([], (require) => {
       /*  Webpack - use require callback to define
           dependencies for bundling   */
-      const Print = require('./components/Dashboard').default;
+      const Dashboard = require('./components/Dashboard').default;
       /*  Return getComponent   */
-      cb(null, Print);
+      cb(null, Dashboard);
 
     /* Webpack named bundle   */
-    }, 'Dashboard');
+    }, 'dashboard');
   }
 });
