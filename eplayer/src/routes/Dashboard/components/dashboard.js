@@ -31,7 +31,7 @@ import { getPreferenceCallService, postPreferenceCallService } from '../../../ac
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
 import { NoteBook } from '@pearson-incubator/notebook';
-import './dashboard.scss';
+import './Dashboard.scss';
 
 let languageid;
 const url = window.location.href;
