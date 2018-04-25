@@ -402,4 +402,4 @@ const mapStateToProps = state => {
   }
 }; // eslint-disable-line max-len
 Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
-export default Book;
+export default Dashboard;
