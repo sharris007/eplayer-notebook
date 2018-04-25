@@ -14,11 +14,13 @@ function flatten3(input, finalChildlist) {
   let childlist = [];
   let finalChildList = finalChildlist;
   if (input.children !== undefined && input.children.length !== 0) {
-    const firstNode = new Node();
-    firstNode.id = input.id;
-    firstNode.title = input.title;
-    firstNode.urn = input.urn;
-    childlist.push(firstNode);
+    if(input.urn){
+      const firstNode = new Node();
+      firstNode.id = input.id;
+      firstNode.title = input.title;
+      firstNode.urn = input.urn;
+      childlist.push(firstNode);
+    }
     finalChildList = finalChildList.concat(input);
     input.children.forEach((node) => {
       const templist = flatten3(node, finalChildList);
@@ -61,11 +63,13 @@ function flatten1(input) {
   input.forEach((node) => {
     if (node.children.length !== 0) {
       const child1 = [];
-      const firstNode = new Node();
-      firstNode.id = node.id;
-      firstNode.title = node.title;
-      firstNode.urn = node.urn;
-      child1.push(firstNode);
+      if(node.urn){
+        const firstNode = new Node();
+        firstNode.id = node.id;
+        firstNode.title = node.title;
+        firstNode.urn = node.urn;
+        child1.push(firstNode);
+      }
       finalChildList = finalChildList.concat(node);
       node.children.forEach((kids) => {
         const child = flatten2(kids, finalChildList);
@@ -88,29 +92,46 @@ function flatten1(input) {
       finalChildList.push(node);
     }
   });
+
   return finalChildList;
 }
 
 /* Method for constructing tree for Toc. */
 function constructTree(input) {
-  const output = new Node();
-  output.id = input.i;
-  output.title = input.n;
-  if (input.lv !== undefined) {
-    output.urn = input.lv.pageorder;
-  }
-  if (input.be !== undefined) {
-    if (input.be.length === undefined) {
-      output.children.push(
-            constructTree(input.be));
-    } else {
-      input.be.forEach((node) => {
-        output.children.push(
-               constructTree(node));
-      });
+  if(input.lv && (input.lv.t === eT1Contants.LinkType.FLV || input.lv.t === eT1Contants.LinkType.SWF 
+        || input.lv.t === eT1Contants.LinkType.JAZZASSET || input.lv.t === eT1Contants.LinkType.IPADAPP)){
+      return undefined;
+    }else{
+        const output = new Node();
+        if(input.basketTypeID){
+          output.basketTypeID = input.basketTypeID;
+        }
+        output.id = input.i;
+        output.title = input.n;
+        if (input.lv) {
+          if(input.lv.pageorder){
+            output.urn = {pageorder : input.lv.pageorder, linkTypeID : input.lv.t};
+          }else{
+            output.urn = {linkValue : input.lv.content, linkTypeID : input.lv.t, regionTypeID : input.t, name : input.n}
+          }
+        }
+        if (input.be) {
+          if (input.be.length === undefined) {
+            let childNode = constructTree(input.be);
+            childNode && output.children.push(childNode);
+          } else {
+            input.be.forEach((node) => {
+            let childNode = constructTree(node);
+            childNode && output.children.push(childNode);
+            });
+          }
+        }
+        if(!output.urn.linkTypeID && !output.children.length){
+          return undefined;
+        }else{
+          return output;
+        }
     }
-  }
-  return output;
 }
 
 export function fetchToc(inputParams) {
@@ -133,7 +154,7 @@ export function fetchToc(inputParams) {
     // dispatch(request('toc'));
     // Here axios is getting base url from client.js file and append with rest url and frame. This is similar for all the action creators in this file.
     const serviceurl = `${bookServerURL}/ebook/pdfplayer/getbaskettocinfo?userroleid=${roleTypeID}&bookid=${bookId}` +
-    `&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=toc`;
+    `&language=en_US&authkey=${sessionKey}&bookeditionid=${bookeditionid}&basket=all`;
     // tempurl is starts with http to create hash key for matching with server
     const tempurl = serviceurl.replace('https', 'http');
     const hsid = getmd5(eT1Contants.MD5_SECRET_KEY + tempurl);
@@ -153,29 +174,41 @@ export function fetchToc(inputParams) {
         'http://view.cert1.ebookplus.pearsoncmg.com/ebookassets/'
         + 'ebookCM21254346/assets/1256799653_Iannone_thumbnail.png';
           bookState.tocData.content.list = [];
+          let tocLevel1ChildList = [];
           basketData.forEach((tocLevel1) => {
             const tocLevel1ChildData = tocLevel1.document;
-            const tocLevel1ChildList = [];
             tocLevel1ChildData.forEach((tocLevel2) => {
-              const tocLevel2ChildData = tocLevel2.bc.b.be;
+              let tocLevel2ChildData = {};
+              if(tocLevel1.basketTypeID == eT1Contants.basketType.TOC){
+                 tocLevel2ChildData = tocLevel2.bc.b.be;
+              }else{
+                if(tocLevel1.basketTypeID != eT1Contants.basketType.GLOSSARY){
+                    tocLevel2ChildData = tocLevel2.bc.b;
+                    tocLevel2ChildData.basketTypeID = tocLevel1.basketTypeID;
+                }
+              }
               if (tocLevel2ChildData !== undefined) {
                 if (tocLevel2ChildData.length === undefined) {
                   const childList = constructTree(tocLevel2ChildData);
-                  tocLevel1ChildList.push(childList);
+                  childList && tocLevel1ChildList.push(childList);
                 } else {
                   tocLevel2ChildData.forEach((tocLevel3) => {
                     const childList = constructTree(tocLevel3);
-                    tocLevel1ChildList.push(childList);
+                    childList && tocLevel1ChildList.push(childList);
                   });
                 }
               }
             });
-            if (hastocflatten === 'Y' && tocLevel1ChildList.length !== 0) {
-              bookState.tocData.content.list = flatten1(tocLevel1ChildList);
-            } else {
-              bookState.tocData.content.list = tocLevel1ChildList;
-            }
           });
+              if(hastocflatten === 'Y' && tocLevel1ChildList.length !== 0){
+                    tocLevel1ChildList = flatten1(tocLevel1ChildList);
+                  for(let i=0 ; i<tocLevel1ChildList.length ; i++){
+                       if(!tocLevel1ChildList[i].basketTypeID && !tocLevel1ChildList[i].urn){
+                          tocLevel1ChildList[i].urn = {};
+                       }
+                    }
+              }
+              bookState.tocData.content.list = tocLevel1ChildList;
         });
         bookState.tocData.fetching = false;
         bookState.tocData.fetched = true;

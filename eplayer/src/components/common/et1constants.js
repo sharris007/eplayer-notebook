@@ -163,6 +163,10 @@ export const eT1Contants = {
     isMultiPageSupported : false,
     pagesToDownload : 20,
     pagesToNavigate : 20
-  } 
+  },
+  basketType : {
+    TOC : 1,
+    GLOSSARY : 2
+  }
 };
 export default eT1Contants;

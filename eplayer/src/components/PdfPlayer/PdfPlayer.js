@@ -6,6 +6,8 @@ import Cookies from 'universal-cookie';
 import { browserHistory } from 'react-router';
 import Popup from 'react-popup'; // eslint-disable-line import/no-extraneous-dependencies
 import RefreshIndicator from 'material-ui/RefreshIndicator';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import { HeaderComponent } from '@pearson-incubator/vega-core';
 import { Navigation } from '@pearson-incubator/aquila-js-core';
 import { DrawerComponent } from '@pearson-incubator/vega-drawer';
@@ -17,7 +19,7 @@ import './PdfPlayer.scss';
 import { initializeWebPDF, registerEvent, resize, removeEventListenersForWebPDF } from './webPDFUtil';
 import { getSelectionInfo, restoreHighlights, reRenderHighlightCornerImages, resetHighlightedText }
   from './pdfUtility/annotaionsUtil';
-import { displayRegions, handleRegionClick, handleTransparentRegionHover, handleTransparentRegionUnhover }
+import { displayRegions, handleRegionClick, handleTransparentRegionHover, handleTransparentRegionUnhover, getRegionDetails }
   from './pdfUtility/regionsUtil';
 import { languages } from '../../../locale_config/translations/index';
 import { createHttps } from '../Utility/Util';
@@ -48,10 +50,12 @@ class PdfPlayer extends Component {
       chapterPdfFected: false,
       chapterList: [],
       currentChapter: {},
-      currPageObj: {}
+      currPageObj: {},
+      isDialogOpen: false
     };
     this.currPageIndex = 0;
     this.showHighlight = true;
+    this.showHotspot = this.props.preferences.showHostpot;
     this.highlightList = [];
     this.currZoomLevel = 1;
     this.envType = this.props.envType ? this.props.envType : 'nonprod';
@@ -327,6 +331,8 @@ class PdfPlayer extends Component {
     }
     if(this.searchTerm){
       this.searchTextFunc(this.searchTerm);
+    }else{
+      $('.fwr-search-result-highlight').remove();
     }
     this.searchTerm = null;
   }
@@ -339,13 +345,13 @@ class PdfPlayer extends Component {
     try {
       this.onHotspotCloseButton();
       this.setState({ popUpCollection: [] });
+      this.searchTerm = null;
     } catch (e) {
       // error
     }
     if (_.isObject(requestedPageObj)) {
       this.renderPdf(requestedPageObj.id);
     }
-    this.searchTerm = null;
   }
 
   goToPage = (pageNo) => {
@@ -596,12 +602,12 @@ class PdfPlayer extends Component {
 
   handleDrawerkeyselect = (event) => {
     if ((event.which || event.keyCode) === 13) {
-      this.setState({ drawerOpen: true });
+      this.setState({ drawerOpen: true, regionData : null });
     }
   }
 
   handleDrawer = () => {
-    this.setState({ drawerOpen: true });
+    this.setState({ drawerOpen: true, regionData : null });
     this.setState({ prefOpen: false });
     this.setState({ searchOpen: false });
     try {
@@ -653,10 +659,7 @@ class PdfPlayer extends Component {
     this.resetCurrentZoomLevel(level);
     this.currZoomLevel = currZoomLevel;
     this.displayHighlights();
-    if(this.state.currPageObj.isCover !== true)
-    {
-      this.displayHotspots();
-    }
+    this.displayHotspots();
     if($('.fwr-search-result-highlight').length){
       WebPDF.ViewerInstance.highlightSearchResult();
     }
@@ -666,78 +669,84 @@ class PdfPlayer extends Component {
     WebPDF.ViewerInstance.zoomTo(level);
   }
 
-  fetchClickedRegionData(id) {
+  fetchClickedRegionData(clickedRegion) {
     try {
       Popup.close();
       this.onHotspotCloseButton();
     } catch (e) {
       // error
     }
+    let regionhot;
     const that = this;
-    const regionhot = handleRegionClick(id, that.props.basepaths.data);
+    if(_.isObject(clickedRegion)){
+      regionhot = getRegionDetails(clickedRegion, that.props.basepaths.data);
+    }else{
+      regionhot = handleRegionClick(clickedRegion, that.props.basepaths.data);
+    }
             /* Checking if the clicked hotspot is Image/Video/Audio/URL and open it in MMI Component */
     if (regionhot.hotspotType === 'IMAGE' || regionhot.hotspotType === 'VIDEO' ||
         regionhot.hotspotType === 'AUDIO' || regionhot.hotspotType === 'URL') {
               /* Updating the state to rerender the page with Aquila JS Component*/
-      that.setState({ regionData: regionhot });
-      if (that.state.regionData.hotspotType === 'IMAGE') {
-        try {
-          $('.preview-image').hide();
-          jQuery(() => {
-            jQuery('.preview-image').click();
-          });
-        } catch (e) {
-          // error
-        }
-        document.getElementById('hotspot').className = 'hotspotContent';
-      } else if (that.state.regionData.hotspotType === 'VIDEO') {
-        try {
-          $('.poster-play-icon').hide();
-          $('.thumb-nail').hide();
-          jQuery(() => {
-            jQuery('.poster-play-icon').click();
-          });
-        } catch (e) {
-          // error
-        }
-        document.getElementById('hotspot').className = 'videoContent';
-      } else if (that.state.regionData.hotspotType === 'URL') {
-        try {
+      that.setState({ regionData: regionhot } , () => {
+          if (that.state.regionData.hotspotType === 'IMAGE') {
+          try {
+            $('.preview-image').hide();
+            jQuery(() => {
+              jQuery('.preview-image').click();
+            });
+          } catch (e) {
+            // error
+          }
+          document.getElementById('hotspot').className = 'hotspotContent';
+        } else if (that.state.regionData.hotspotType === 'VIDEO') {
+          try {
+            $('.poster-play-icon').hide();
+            $('.thumb-nail').hide();
+            jQuery(() => {
+              jQuery('.poster-play-icon').click();
+            });
+          } catch (e) {
+            // error
+          }
+          document.getElementById('hotspot').className = 'videoContent';
+        } else if (that.state.regionData.hotspotType === 'URL') {
+          try {
 
-          const ExternalLinkComponent = document.getElementsByClassName('link-model')[0];
-          document.getElementById('root').appendChild(ExternalLinkComponent);
-          ExternalLinkComponent.style.backgroundColor = '#ffffff';
-        } catch (e) {
-          // error
+            const ExternalLinkComponent = document.getElementsByClassName('link-model')[0];
+            document.getElementById('root').appendChild(ExternalLinkComponent);
+            ExternalLinkComponent.style.backgroundColor = '#ffffff';
+          } catch (e) {
+            // error
+          }
+        } else if (that.state.regionData.hotspotType === 'AUDIO' &&
+          that.state.regionData.linkTypeID === pdfConstants.LinkType.FACELESSAUDIO) {
+          try {
+            $('.aquila-audio-player').hide();
+            jQuery(() => {
+              jQuery('.play-pause').click();
+            });
+          } catch (e) {
+            // error
+          }
+          document.getElementById('hotspot').className = 'hotspotContent';
         }
-      } else if (that.state.regionData.hotspotType === 'AUDIO' &&
-        that.state.regionData.linkTypeID === pdfConstants.LinkType.FACELESSAUDIO) {
-        try {
-          $('.aquila-audio-player').hide();
-          jQuery(() => {
-            jQuery('.play-pause').click();
-          });
-        } catch (e) {
-          // error
+        if (that.state.regionData.hotspotType === 'AUDIO' &&
+          that.state.regionData.linkTypeID !== pdfConstants.LinkType.FACELESSAUDIO) {
+          try {
+            jQuery(() => {
+              jQuery('.play-pause').click();
+            });
+            $.getScript('https://code.jquery.com/ui/1.12.1/jquery-ui.js', () => {
+              $('.regionContainer').draggable();
+            });
+            $('.regionContainer').css('display','block');
+            $('#regionCloseBtn').css('display','block');
+          } catch (e) {
+            // error
+          }
+          document.getElementById('hotspot').className = 'hotspotContent';
         }
-        document.getElementById('hotspot').className = 'hotspotContent';
-      }
-      if (that.state.regionData.hotspotType === 'AUDIO' &&
-        that.state.regionData.linkTypeID !== pdfConstants.LinkType.FACELESSAUDIO) {
-        try {
-          jQuery(() => {
-            jQuery('.play-pause').click();
-          });
-          $.getScript('https://code.jquery.com/ui/1.12.1/jquery-ui.js', () => {
-            $('.regionContainer').draggable();
-          });
-          $('.regionContainer').css('display','block');
-          $('#regionCloseBtn').css('display','block');
-        } catch (e) {
-          // error
-        }
-        document.getElementById('hotspot').className = 'hotspotContent';
-      }
+      });
     } else {
       that.renderHotspot(regionhot);
     }
@@ -926,6 +935,16 @@ class PdfPlayer extends Component {
       // error
     }
     }
+    if(this.showHotspot !== true) {
+      try {
+        $(".hotspot").hide();
+        $(".hotspotIcon").hide();
+        this.showHotspot = false;
+      }
+      catch (e) {
+        // error
+      }
+    }
   }
 
   renderGlossary = (currentPageRegions) => {
@@ -978,10 +997,16 @@ class PdfPlayer extends Component {
       if (pageOrder >= this.props.metaData.startPageNo
           && pageOrder <= this.props.metaData.lastPage) {
         this.goToPage(pageOrder);
+      }else{
+        this.setState({isDialogOpen : true})
       }
     } else {
       this.goToPage(pageOrder);
     }
+  }
+
+  handleDialogClose = () => {
+    this.setState({isDialogOpen : false})
   }
 
   searchCallback = (searchTerm, handleResults) => {
@@ -1042,13 +1067,13 @@ class PdfPlayer extends Component {
         orientation: 'horizontal',
         zoom: this.currZoomLevel,
         isAnnotationHide: isAnnHide,
-        enableShowHide: this.props.preferences.showAnnotation
+        enableShowHide: this.state.currPageObj.isCover ? false : this.props.preferences.showAnnotation
       }
     };
     const promiseVal = Promise.resolve(prefData);
     return promiseVal;
   }
-  /* Method show or hide highlights/notes. */
+/* Method show or hide highlights/notes. */
   showHideHighlights = (prefObject) => {
     if (prefObject.isAnnotationHide === false) {
       try {
@@ -1067,6 +1092,31 @@ class PdfPlayer extends Component {
     }
   }
 
+/* Method to show or hide hotspots. */
+  showHideRegions = () => {
+    if(this.showHotspot === true)
+    {
+      try{
+        $(".hotspot").hide();
+        $(".hotspotIcon").hide();
+        this.showHotspot = false;
+      }
+      catch(e){}
+    }
+    else
+    {
+      try{
+        $(".hotspot").show();
+        $(".hotspotIcon").show();
+        this.showHotspot = true;        
+      }
+      catch(e) {
+        // error
+      }
+    }
+  }
+
+
   handleHeaderClick = () => {
     try {
       this.setState({ prefOpen: false });
@@ -1081,6 +1131,8 @@ class PdfPlayer extends Component {
       this.printPage();
     } else if (e.target.textContent === 'Sign Out') {
       this.onSignOutClick();
+    } else if (e.target.textContent === 'Hide Links' || e.target.textContent === 'Show Links') {
+      this.showHideRegions();
     }
   }
   printPage = () => {
@@ -1195,6 +1247,28 @@ class PdfPlayer extends Component {
   this.props.logoutUserSession(this.props.metaData, this.props.auth); // eslint-disable-line
   }
 
+  handleDrawerEntryClick = (requestedEntry) => {
+      if(requestedEntry){
+        if(_.isObject(requestedEntry) && requestedEntry.linkTypeID){
+          if(requestedEntry.linkTypeID == pdfConstants.LinkType.PAGE_NUMBER){
+            if(requestedEntry.pageorder){
+              this.goToPage(requestedEntry.pageorder);
+            }else{
+              const requestedPage = _.find(this.props.pagePlayList, page => page.pagenumber == requestedEntry.linkValue);
+              this.goToPage(requestedPage.id);
+            }
+          }else {
+            this.setState({drawerOpen : false});
+            this.fetchClickedRegionData(requestedEntry);
+          }
+        }
+        else if(_.isNumber(requestedEntry)){
+          this.goToPage(requestedEntry);
+        }
+    }
+    this.searchTerm = null;
+  }
+
   render() {
     if ($('.backIconBtn') && (this.props.metaData.startPageNo || this.props.metaData.pageIndexTolaunch)) {
       $('.backIconBtn').hide();
@@ -1229,6 +1303,16 @@ class PdfPlayer extends Component {
       value: 'Print',
       text: 'Print'
     };
+    let showHideLinksOption = {
+      type : 'menuItem',
+      value : 'showHideHotspots',
+      text : this.showHotspot ? 'Hide Links' : 'Show Links'
+    };
+    if (this.props.metaData.bookFeatures.hasShowLinksButton)
+    {
+      moreMenuData.menuItem.push(showHideLinksOption);
+      moreMenuData.menuItem.push({ type: 'divider' });     
+    }
     if (this.props.metaData.bookFeatures.hasPrintLink && !this.state.currPageObj.printDisabled) {
       moreMenuData.menuItem.push(printOption);
       moreMenuData.menuItem.push({ type: 'divider' });
@@ -1271,7 +1355,16 @@ class PdfPlayer extends Component {
     callbacks.removeBookmarkHandler = this.removeBookmarkHandler;
     callbacks.isCurrentPageBookmarked = this.isCurrentPageBookmarked;
     callbacks.removeAnnotationHandler = this.deleteHighlight;
-    callbacks.goToPageCallback = this.goToPage;
+    callbacks.goToPageCallback = this.handleDrawerEntryClick;
+
+    const dialogActions = [
+      <FlatButton
+        label="Close"
+        primary={true}
+        onClick={this.handleDialogClose}
+      />
+    ];
+    const noAccessDialogText = "This page you have attempted to navigate to is outside of the page range of this eText.";
     return (
       <div>
         { this.props.preferences.showHeader ?
@@ -1355,7 +1448,15 @@ class PdfPlayer extends Component {
           </div>
           <div id="sppModalBody" className="sppModalBody" />
         </div>
-
+        <Dialog
+          actions={dialogActions}
+          modal={false}
+          open={this.state.isDialogOpen}
+          onRequestClose={this.handleDialogClose}
+          contentStyle={{width : '50%'}}
+        >
+          {noAccessDialogText}
+        </Dialog>
         {this.state.pageLoaded !== true ?
           <div className="centerCircularBar">
             <RefreshIndicator size={50} left={0.48 * $(window).width()} top={200} status="loading" />
