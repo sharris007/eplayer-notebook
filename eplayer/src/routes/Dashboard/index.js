@@ -27,6 +27,6 @@ export default () => ({
       cb(null, Print);
 
     /* Webpack named bundle   */
-    }, 'dashboard');
+    }, 'Dashboard');
   }
 });
