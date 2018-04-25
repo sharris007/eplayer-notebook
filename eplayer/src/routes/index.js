@@ -26,7 +26,7 @@ import pdfbookErrorRoute from './PdfBookError';
 import notebookRoute from './NoteBook';
 import pdfbookRoute from './PdfBookRoute';
 import deepLink from './DeepLink';
-import dashboardRoute from './Dashboard';
+import dashboard from './Dashboard';
 
 /*  Note: Instead of using JSX, we recommend using react-router
     PlainRoute objects to build route definitions.   */
@@ -39,8 +39,8 @@ export const createRoutes = store => ({
     loginRoute(store),
     bookshelfRoute(store),
     eTbookshelfRoute(store),
-    dashboardRoute(store),
-   
+    dashboard(store),
+    eTbookRoute(store),
     print(store),
     course(store),
     piLoginRoute(store),
