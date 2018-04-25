@@ -47,7 +47,7 @@ const { messages } = languages.translations[locale];
 let bookId =null;
 let getSecureToken = null;
 
-export class Dashboard extends Component {
+class Dashboard extends Component {
   constructor(props) {
     super(props);
     console.log("props", props);
@@ -400,4 +400,4 @@ Dashboard.propTypes = {
     notesList: state.annotationReducer.notesList
   }
 }; // eslint-disable-line max-len
-Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
+export default connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
