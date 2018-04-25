@@ -8956,10 +8956,10 @@ define("core/include", ["./Account", "./WebPDF", "./UserConfig", "./Viewer", "./
                     },
                     error: function(a, b, c) {}
                     })
-                }else{
+                 }else{
                     i(fileID);
-                }
-                */
+                }*/
+                
             },
             openFileUrlByJR: function(a, b) {
                 function c() {

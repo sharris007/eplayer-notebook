@@ -79,9 +79,7 @@ export function search(inputParams, searchText, handleResults) {
       }
       resultData.category = 'Search Results';
       resultData.results = resultsList;
-      if (resultsList.length > 0) {
-        searchData.push(resultData);
-      }
+      searchData.push(resultData);
       if (searchText.requestID !== undefined) {
         handleResults(searchData,searchText.requestID);
       } else {
