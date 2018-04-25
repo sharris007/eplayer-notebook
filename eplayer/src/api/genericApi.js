@@ -84,7 +84,8 @@ export const getBookDetails = bookDetails =>
      headers: {
        Accept: 'application/json',
        'Content-Type': 'application/json',
-       'X-Authorization': bookDetails.piToken
+       'X-Authorization': bookDetails.piToken,
+       isDeeplink: bookDetails.isDeeplink
      }
    });
 
