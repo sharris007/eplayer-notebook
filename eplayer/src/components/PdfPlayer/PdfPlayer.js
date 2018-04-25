@@ -635,9 +635,6 @@ class PdfPlayer extends Component {
     this.setState({ searchOpen: false });
     try {
       Popup.close();
-      if($('.title')){
-        $('.title').css({'width' : '84%'});
-      }
     } catch (e) {
       // error
     }
