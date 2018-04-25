@@ -39,7 +39,8 @@ export const createRoutes = store => ({
     loginRoute(store),
     bookshelfRoute(store),
     eTbookshelfRoute(store),
-    eTbookRoute(store),
+    dashboardRoute(store),
+   
     print(store),
     course(store),
     piLoginRoute(store),
@@ -47,8 +48,7 @@ export const createRoutes = store => ({
     validateUserRoute(store),
     pdfbookErrorRoute(store),
     notebookRoute(store),
-    pdfbookRoute(store),
-    dashboardRoute(store),
+    pdfbookRoute(store),    
 	  deepLink(store)
   ]
 });
