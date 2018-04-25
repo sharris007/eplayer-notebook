@@ -20,17 +20,18 @@ import { MaterialsComponent } from '@pearson-incubator/vega-drawer';
 import languageName from '../../../../locale_config/configureLanguage';
 import { languages } from '../../../../locale_config/translations/index';
 import DashboardHeader from '../../../components/DashboardHeader';
+import { Progress } from '@pearson-incubator/aquila-js-core';
 import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange, tagObjCallService } from '../../../actions/annotation';
 import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken, getParameterByName, getCourseCallServiceForRedirect, updateProdType } from '../../../actions/playlist';
+import { resources, domain, typeConstants } from '../../../../const/Settings';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
 import { getBookmarkCallService, postBookmarkCallService, deleteBookmarkCallService, getTotalBookmarkCallService } from '../../../actions/bookmark';
-import './dashboard.scss';
-import ComponentOwner from './js/component-owner';
 import { NoteBook } from '@pearson-incubator/notebook';
+import './Dashboard.scss';
 
 let languageid;
 const url = window.location.href;
@@ -44,20 +45,20 @@ if (n > 0) {
 const locale = languageName(languageid);
 const { messages } = languages.translations[locale];
 let bookId =null;
+let getSecureToken = null;
 
-export class Dashboard extends Component {
+class Dashboard extends Component {
   constructor(props) {
     super(props);
     console.log("props", props);
      piSession.getToken(function (result, userToken) {
       if (!userToken) {
-        // if (window.location.pathname.indexOf('/eplayer/ETbook/') > -1) {
-        if (window.location.pathname.indexOf('/eplayer/book/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/view/book/') > -1) {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
-        }else if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
-          piSession.login(redirectCourseUrl, 10);
+        }else if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
+           browserHistory.push('/eplayer/pilogin');
         }
       }
     });
@@ -66,6 +67,7 @@ export class Dashboard extends Component {
         {
             localStorage.setItem('secureToken',  piSession.currentToken());
         }
+        getSecureToken = localStorage.getItem('secureToken');
     }
     this.state = {
       urlParams: {
@@ -92,6 +94,8 @@ export class Dashboard extends Component {
     this.saveNote=this.saveNote.bind(this);
     this.addNote=this.addNote.bind(this);
     this.deleteNote=this.deleteNote.bind(this);
+    this.isDeeplinkBook = window.location.search.match('deeplink');
+    this.onChange = this.onChange.bind(this);
   }
  
   componentWillMount = () => {
@@ -101,7 +105,7 @@ export class Dashboard extends Component {
             localStorage.setItem('secureToken',  piSession.currentToken());
         }
     }
-    const getSecureToken = localStorage.getItem('secureToken');
+    getSecureToken = localStorage.getItem('secureToken');
     this.bookDetailsData = {
       context: this.state.urlParams.context,
       piToken: getSecureToken,
@@ -109,7 +113,7 @@ export class Dashboard extends Component {
       pageId: this.props.params.pageId ? this.props.params.pageId :'',
       user: this.state.urlParams.user
     }
-    if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+    if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
             this.courseBook = true;
             const url = window.location.href;
@@ -143,10 +147,14 @@ export class Dashboard extends Component {
             else{ this.props.dispatch(getCourseCallService(this.bookDetailsData)); }
 
           } else {
+            if(this.isDeeplinkBook) {
+              this.bookDetailsData.isDeeplink = true;
+            }else {
+               this.bookDetailsData.isDeeplink = false;
+            }
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
           // let identityId = localStorage.getItem('identityId');
 
-          // alert(this.props.location.query.globaluserid);
           this.props.dispatch(getTotalAnnCallService(this.bookDetailsData));
           this.props.dispatch(tagObjCallService(this.bookDetailsData));
         }
@@ -162,7 +170,6 @@ export class Dashboard extends Component {
     if(nextProps.notesList && nextProps.notesList.length > 0 && nextProps.tagAttrFlag){
       this.prepareNotes(nextProps.notesList, nextProps.tagObject);
      }
-    // this.setState({ notes: nextProps.notesList }, () => { console.log("******", this.state.notes); });
   }
   
   prepareNotes = (notes, tagAttributes) => {
@@ -221,16 +228,31 @@ export class Dashboard extends Component {
   }
   onChange = (pageSelected) => {
     this.setState({ pageSelected: pageSelected });
-    // alert('on change');
-    console.log('OnChnotesX/contextLogange called');
   }
   viewTitle = () => {
-    console.log('viewTitle called');
-    // browserHistory.push(`/eplayer/ETbook/${bookId}`);
-    browserHistory.push(`/eplayer/book/${bookId}`);
+    if (window.location.pathname.indexOf('/eplayer/view/book/') > -1) {
+      browserHistory.push(`/eplayer/book/${bookId}`);
+    }else if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
+      browserHistory.push(`/eplayer/course/${bookId}`);
+    }
   }
-  goToPageCallback = () => {
+  goToPageCallback = (pageId) => {
     console.log('goToPageCallback called');
+    let id = pageId;
+     
+    if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
+      if(this.props.prodType === 'idc'){
+        this.productType = 'prdType';
+      }
+      else{
+        this.productType = 'Source';
+      }
+      let url = `/eplayer/course/${bookId}/page/${id}`;
+      url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
+      browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
+    } else {
+        browserHistory.replace(`/eplayer/book/${bookId}/page/${id}?launchLocale=` + window.annotationLocale);
+    }
   }
   handleTocExpand = () => {
     console.log('handleTocExpand called');
@@ -240,27 +262,27 @@ export class Dashboard extends Component {
     if(courseData)
     {      
         courseDetail = {
-          id: courseData.indexId,
-          title: courseData.title,
+          id: courseData.indexId ? courseData.indexId : courseData.indexId,
+          title: courseData.title ? courseData.title : courseData.section.sectionTitle,
           code: courseData.code,
-          bookTitle: courseData.title ,
-          startDate: courseData.date,
-          endDate: courseData.expirationDate,
+          bookTitle: courseData.title ? courseData.title : courseData.section.sectionTitle,
+          startDate: courseData.date ? courseData.date : courseData.section.startDate,
+          endDate: courseData.expirationDate ? courseData.expirationDate : courseData.section.endDate,
           schedule: '',
           source: null,
-          avatar: courseData.coverImageUrl,
+          avatar: courseData.coverImageUrl ? courseData.coverImageUrl : courseData.section.avatarUrl,
           prefix: '',
           tocProvider: courseData.toc,
-          institutionId: courseData.indexId,
+          institutionId: courseData.indexId ? courseData.indexId : courseData.indexId,
           launchUrl: null,
           authorName: courseData.creator,
           isStudent: true,
           passportDetails: {},
           isLoaded: true,
-          indexId: courseData.indexId,
+          indexId: courseData.indexId ? courseData.indexId : courseData.indexId,
           isError: false,
           contentType: 'ETEXT',
-          productId: courseData.productId
+          productId: courseData.productId ? courseData.productId : (courseData.section ? courseData.section.productCodes[0] : null)
         };
     }
     return courseDetail;
@@ -394,24 +416,31 @@ export class Dashboard extends Component {
   render() {
      const { bookdetailsdata, tocData, tocReceived, notesList } = this.props;
      const { groupExpanded, expandedTagName, tagAttributes, lastUsedFilters, expandedTagId, toolbarMode, groupModeFlag, pageSelected, notes, tagObject, tagAttrFlag} = this.state;
-     console.log("notes", notes);
      
     // eslint-disable-line react/prop-types
     let title = '';
     let tocContent = {};
     let courseData = {};
     if(tocReceived){
-      title = tocData.bookDetails.title;
       tocContent = tocData.content;
-      courseData = this.getCourseData(tocData.bookDetails);
+    }else {
+      // return (<Progress
+      //   color={pearsonLightTheme.progress.material.color}
+      //   style={pearsonLightTheme.progress.material.style}
+      // />);
     }
     if(bookdetailsdata) {
       if(bookdetailsdata.bookDetail){
+        title = bookdetailsdata.bookDetail.metadata.title;
         bookId = bookdetailsdata.bookDetail.bookId;
+        courseData = this.getCourseData(bookdetailsdata.bookDetail.metadata);
+      }else if(bookdetailsdata.userCourseSectionDetail){
+         title = bookdetailsdata.userCourseSectionDetail.section.sectionTitle;
+         bookId = bookdetailsdata.userCourseSectionDetail.section.sectionId;
+         courseData = this.getCourseData(bookdetailsdata.userCourseSectionDetail);
       }
     }
     const headerTabs = ['materials', 'notes'];
- //   const pageSelected = 'materials';
     const inkBarColor = 'teal';
 
     this.tocCompData = {
@@ -419,8 +448,8 @@ export class Dashboard extends Component {
       data: {
         content: tocData.content
       },
-      depth: 2,
-      childField: 'content',
+      depth: 3,
+      childField: 'children',
       isTocWrapperRequired: false,
       clickTocHandler: this.goToPageCallback,
       handleTocExpand: this.handleTocExpand
@@ -489,5 +518,4 @@ Dashboard.propTypes = {
     tagAttrFlag: state.annotationReducer.tagAttrFlag
   }
 }; // eslint-disable-line max-len
-Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
-export default Dashboard;
+export default connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign

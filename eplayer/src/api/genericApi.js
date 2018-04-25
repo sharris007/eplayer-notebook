@@ -24,6 +24,7 @@ const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
 const xCaller = resources.links.xCaller;
+const platformIdBackLink = Utilities.getParameterByName('platforms_id');
 let annHeaders = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
@@ -80,14 +81,14 @@ export const tagObjCall = data =>
 // ----Play list toc----------------------------------
 
 export const getBookDetails = bookDetails =>
- fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=${bookDetails.userName}&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
+ fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=${platformIdBackLink || ''}&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=${bookDetails.userName}&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
    {
      method: 'GET',
      headers: {
        Accept: 'application/json',
        'Content-Type': 'application/json',
        'X-Authorization': bookDetails.piToken,
-       // isDeeplink: bookDetails.isDeeplink
+       isDeeplink: bookDetails.isDeeplink
      }
    });
 
@@ -97,7 +98,7 @@ export const getTocDetails = (bookId, tocurl, piToken, data) => fetch(`${etextSe
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-Authorization': piToken,
-    // isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
+     isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
   }
 });
 
@@ -197,7 +198,7 @@ export const getPiUserProfile = data => fetch(`${etextService[envType]}/nextext/
   headers: {
     Accept: 'application/json',
     'X-Authorization': data.piToken,
-    // isDeeplink: data.isDeeplink
+    isDeeplink: data && data.isDeeplink ? data.isDeeplink : false
   }
 });
 

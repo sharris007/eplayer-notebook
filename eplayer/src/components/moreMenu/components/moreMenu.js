@@ -56,7 +56,7 @@ class MoreMenuComponent extends React.Component {
     for (let i = 0; i < storagAarr.length; i++) {
       localStorage.removeItem(storagAarr[i]);
     }
-     if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
+     if(window.location.pathname.indexOf('/eplayer/course/')>-1){
         piSession.logout();
         localStorage.removeItem('secureToken');
         let redirectCourseUrl   = consoleUrl[envType];

@@ -15,12 +15,15 @@
 import PlaylistApi from '../api/playlistApi';
 import { resources, domain, typeConstants, contentUrl } from '../../const/Settings';
 import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 import { browserHistory } from 'react-router';
 import find from 'lodash/find';
 import Utilities from '../components/utils';
 import { getPreferenceCallService } from './preference';
+// Generate launch params
+const prepareLaunchParams = json => ({
+  type: typeConstants.GENERATE_LAUNCH_PARAMS,
+  data: json
+});
 // GET Book Details
 export const getPlaylistCompleteDetails = json => ({
   type: typeConstants.GET_PLAYLIST,
@@ -283,7 +286,7 @@ export const putCustomTocCallService = (data, bookDetailsData) => dispatch =>
       }
       dispatch(gettingTocResponse());
       dispatch(updateTocResponse(response));
-      if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+      if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
         dispatch(getCourseCallService(bookDetailsData, true));
       } else {
         dispatch(getBookPlayListCallService(bookDetailsData, true));
@@ -541,7 +544,7 @@ function redirectToZeppelin(bookDetails, passportDetails, url) {
     appAccess: passportDetails.access,
     launchUrl: bookDetails.section.extras.metadata.launchUrl
   };
-  if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+  if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
     // successOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
     successOriginUrl = url;
     errOriginUrl = resources.links.consoleUrl[domain.getEnvType()];
@@ -563,3 +566,14 @@ function redirectToZeppelin(bookDetails, passportDetails, url) {
   window.location = zeppelinRedirect;
 
 }
+
+// Generate Launch Params
+export const generateLaunchParams = () => (dispatch) => {
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const paramObj = {};
+  for (const value of params.keys()) {
+    paramObj[value] = params.get(value);
+  }
+  dispatch(prepareLaunchParams(paramObj));
+};

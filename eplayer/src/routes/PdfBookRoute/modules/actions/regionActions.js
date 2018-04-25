@@ -1,4 +1,5 @@
 import axios from 'axios'; /* axios is third party library, used to make ajax request. */
+import _ from 'lodash';
 import { getmd5, extractTextContent } from '../../../../components/Utility/Util';
 import { eT1Contants } from '../../../../components/common/et1constants';
 import { request } from '../pdfbook';
@@ -57,7 +58,9 @@ export function fetchRegionsInfo(inputParams, pageorder) {
           for (arrIndex = 0; arrIndex < response.data[0].regionsList.length; arrIndex++) {
             response.data.forEach((region) => { // eslint-disable-line no-loop-func
               const regionObj = {};
-              if (region.regionsList[arrIndex].linkTypeID !== 16) {
+              if (region.regionsList[arrIndex].linkTypeID !== 2 && region.regionsList[arrIndex].linkTypeID !== 6
+                && region.regionsList[arrIndex].linkTypeID !== 14 && region.regionsList[arrIndex].linkTypeID !== 16
+                && !(_.endsWith(region.regionsList[arrIndex].linkValue, '.flv'))) {
                 regionObj.regionID = region.regionsList[arrIndex].regionID;
                 regionObj.regionTypeID = region.regionsList[arrIndex].regionTypeID;
                 regionObj.roleTypeID = region.regionsList[arrIndex].roleTypeID;

@@ -104,7 +104,7 @@ class NoteBookContainer extends React.Component {
       // console.log('Navigation', data);
       const index = _.findIndex(this.state.notes, note => note.id === data.id);
       const note = this.state.notes[index];
-      browserHistory.push(`/eplayer/Course/${this.props.params.bookId}/page/${note.pageId}?annotationId=${data.annotationId}`);
+      browserHistory.push(`/eplayer/course/${this.props.params.bookId}/page/${note.pageId}?annotationId=${data.annotationId}`);
     }
   }
   render() {

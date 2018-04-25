@@ -37,48 +37,48 @@ export default class Utilities {
   }
 
   static formBookmarkPayload = (reqData) => {
-    let data = {...reqData};
+    const data = { ...reqData };
     delete data.userType;
     delete data.productModel;
     delete data.user;
     const bookmarkData = {
-      clientApp: "ETEXT2_WEB",
-      color: "",
+      clientApp: 'ETEXT2_WEB',
+      color: '',
       contextId: reqData.context,
       productModel: reqData.productModel,
-      data: {source: data},
+      data: { source: data },
       isBookMark: true,
       pageId: reqData.id,
-      pageNo: "",
-      selectedText: "",
-      sharable: "",
-      status: "",
-      subContextId: "",
+      pageNo: '',
+      selectedText: '',
+      sharable: '',
+      status: '',
+      subContextId: '',
       role: reqData.userType,
       userId: reqData.user
-    }
+    };
     const reqPayload = {
-      payload : [bookmarkData]
-    }
+      payload: [bookmarkData]
+    };
     return JSON.stringify(reqPayload);
   }
 
   /**
    * Checks the cookie with the name exists
    * @param cookie name
-   * @returns { true/false }  
+   * @returns { true/false }
   */
 
   static checkCookie = (cookieName) => {
-    let name = cookieName + "=";
-    let ca = document.cookie.split(';');
+    const name = `${cookieName  }=`;
+    const ca = document.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+          c = c.substring(1);
         }
-        if (c.indexOf(name) == 0) {
-            return true;
+      if (c.indexOf(name) == 0) {
+          return true;
         }
     }
     return false;
@@ -86,11 +86,11 @@ export default class Utilities {
 
   static changeContentUrlToSecured = (urlList) => {
     const updUrlList = [];
-    if (typeof(urlList) === "string") {
-      return urlList.replace(contentUrl.openClass[domain.getEnvType()],contentUrl.SecuredUrl[domain.getEnvType()]);
+    if (typeof (urlList) === 'string') {
+      return urlList.replace(contentUrl.openClass[domain.getEnvType()], contentUrl.SecuredUrl[domain.getEnvType()]);
     } else if (urlList && urlList.length > 0) {
       urlList.forEach((url) => {
-        updUrlList.push(url.replace(contentUrl.openClass[domain.getEnvType()],contentUrl.SecuredUrl[domain.getEnvType()]));
+        updUrlList.push(url.replace(contentUrl.openClass[domain.getEnvType()], contentUrl.SecuredUrl[domain.getEnvType()]));
       });
       return updUrlList;
     }
@@ -98,13 +98,23 @@ export default class Utilities {
 
   static secureTochangeContentUrl = (urlList) => {
     const updUrlList = [];
-    if (typeof(urlList) === "string") {     
-      return urlList.replace(contentUrl.SecuredUrl[domain.getEnvType()],contentUrl.openClass[domain.getEnvType()]);
+    if (typeof (urlList) === 'string') {
+      return urlList.replace(contentUrl.SecuredUrl[domain.getEnvType()], contentUrl.openClass[domain.getEnvType()]);
     } else if (urlList && urlList.length > 0) {
       urlList.forEach((url) => {
-        updUrlList.push(contentUrl.SecuredUrl[domain.getEnvType()],url.replace(contentUrl.openClass[domain.getEnvType()]));
+        updUrlList.push(contentUrl.SecuredUrl[domain.getEnvType()], url.replace(contentUrl.openClass[domain.getEnvType()]));
       });
       return updUrlList;
     }
   }
+
+  static getParameterByName = (name, url) => {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+    const results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  };
 }

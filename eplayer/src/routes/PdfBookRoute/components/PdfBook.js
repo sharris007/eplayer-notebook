@@ -260,6 +260,11 @@ export class PdfBook extends Component {
   }
 
   handleBookshelfClick = () => {
+    try {
+      $('#sppModal').remove();
+    } catch (e) {
+      //error
+    }
     this.props.actions.restoreBookState();
     browserHistory.push('/eplayer/bookshelf');
   }
@@ -300,7 +305,7 @@ export class PdfBook extends Component {
             // Locale of text used in pdfplayer decided by locale value passed here.
         locale: 'en-US',
             // if showBookshelfBack is true then backtobookshelf button will be visible in header component and vice versa.
-        showBookshelfBack: true
+        showBookshelfBack: (this.props.location.query.scenario === _.toString(eT1Contants.SCENARIOS.S3)) ? false : true
       };
       // For preference setting for testing
       /* let preferences = {

@@ -23,7 +23,7 @@ import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVer
 import './Book.scss';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
-import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken, getParameterByName, getCourseCallServiceForRedirect, updateProdType } from '../../../actions/playlist';
+import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken, getParameterByName, getCourseCallServiceForRedirect, updateProdType, generateLaunchParams } from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
 import { loadPageEvent, unLoadPageEvent } from '../../../api/loadunloadApi';
@@ -42,6 +42,8 @@ import { StaticAlert } from 'pearson-compounds';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 const queryString = require('query-string');
+const security = (resources.constants.secureApi === true ? 'eTSecureServiceUrl' : 'etextServiceUrl');
+const etextService = resources.links[security];
 
 export class Book extends Component {
   constructor(props) {
@@ -56,7 +58,7 @@ export class Book extends Component {
           browserHistory.push('/eplayer/pilogin');
         }else if (window.location.pathname.indexOf('/eplayer/view/') > -1) {
           browserHistory.push('/eplayer/pilogin');
-        }else if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        }else if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           piSession.login(redirectCourseUrl, 10);
         }
       }
@@ -182,7 +184,7 @@ export class Book extends Component {
           pageId: this.props.params.pageId ? this.props.params.pageId :'',
           isDeeplink: false
         }
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
             this.courseBook = true;
             const url = window.location.href;
@@ -220,9 +222,12 @@ export class Book extends Component {
 
           if(this.isDeeplinkBook) {
             this.bookDetailsData.isDeeplink = true;;
+          }else {
+            this.bookDetailsData.isDeeplink = false;
           }
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
         }
+        this.props.dispatch(generateLaunchParams());
       }
       
     }, 200)
@@ -295,14 +300,14 @@ export class Book extends Component {
         playpageDetails1.currentPageURL = gotoPageData;
         playpageDetails1.tocUpdated = true;
         this.onPageChange("pagescroll", nextProps.gotoPageObj.page.title);
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           if(this.props.prodType === 'idc'){
             this.productType = 'prdType';
           }
           else{
             this.productType = 'Source';
           }
-          let url = `/eplayer/Course/${this.props.params.bookId}/page/${gotoPageData.id}`;
+          let url = `/eplayer/course/${this.props.params.bookId}/page/${gotoPageData.id}`;
           url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+'launchLocale=' + window.annotationLocale);
         } else {
@@ -449,14 +454,14 @@ export class Book extends Component {
       pageDetails: pageDetails
     }, function () {
       // eslint-disable-next-line
-      if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+      if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
         if(this.props.prodType === 'idc'){
           this.productType = 'prdType';
         }
         else{
           this.productType = 'Source';
         }
-        let url = `/eplayer/Course/${this.props.params.bookId}/page/${data.id}`;
+        let url = `/eplayer/course/${this.props.params.bookId}/page/${data.id}`;
         url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
         browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
       } else {
@@ -687,19 +692,19 @@ export class Book extends Component {
         pageDetails: playpageDetails,
         drawerOpen: false
       }, () => {
-        if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
+        if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
           if(this.props.prodType === 'idc'){
             this.productType = 'prdType';
           }
           else{
             this.productType = 'Source';
           }
-          let url = `/eplayer/Course/${this.props.params.bookId}/page/${id}`;
+          let url = `/eplayer/course/${this.props.params.bookId}/page/${id}`;
           url+=this.props.prodType?'?'+this.productType+'='+this.props.prodType+'&':'?';
           browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
         } else {
           // browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
-           browserHistory.replace(`/eplayer/view/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
+           browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
         }
         let bookmarksParams = this.state.urlParams;
         bookmarksParams.xAuth = localStorage.getItem('secureToken');
@@ -902,30 +907,7 @@ export class Book extends Component {
     if (getOriginurl) {
       window.location.href = getOriginurl;
     }
-    // if(window.location.pathname.indexOf('/eplayer/Course/')>-1){
-    //    let originurl = localStorage.getItem('sourceUrl');       
-    //   if(originurl != null)
-    //     {
-    //       const langQuery = localStorage.getItem('bookshelfLang');
-    //       if (langQuery && langQuery !== '?languageid=1') {
-    //         browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-    //       } else {
-    //         browserHistory.push('/eplayer/bookshelf');
-    //       }
-    //     }
-    //     else
-    //       {
-    //           let redirectConsoleUrl   = resources.links.consoleUrl[domain.getEnvType()];
-    //   window.location.href = redirectConsoleUrl;
-    //       }  
-    // }else {
-    //   const langQuery = localStorage.getItem('bookshelfLang');
-    //   if (langQuery && langQuery !== '?languageid=1') {
-    //     browserHistory.push(`/eplayer/bookshelf${langQuery}`);
-    //   } else {
-    //     browserHistory.push('/eplayer/bookshelf');
-    //   }
-    // }
+   
     this.setState({ open: false });
   }
 
@@ -1098,7 +1080,7 @@ export class Book extends Component {
   render() {
     const callbacks = {};
     let annJsPath, annCssPath, productData;
-    const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc } = this.props;
+    const { annotationData, annDataloaded, annotationTotalData, playlistData, playlistReceived, bookMarkData, tocData, tocReceived, bookdetailsdata, tocResponse, updatedToc, backLinkLaunchParams } = this.props;
     // eslint-disable-line react/prop-types
     this.props.book.annTotalData = annotationTotalData;
     this.props.book.toc = tocData;
@@ -1305,12 +1287,12 @@ export class Book extends Component {
         }
       });
       if (this.userType === 'instructor') {
-        annJsPath = 'annotation-lib/instructor-annotator/instructor-annotator.js';
-        annCssPath = 'annotation-lib/instructor-annotator/instructor-annotator.css';
+        annJsPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.js';
+        annCssPath = 'eplayer/annotation-lib/instructor-annotator/instructor-annotator.css';
       }
       else {
-        annJsPath = 'annotation-lib/annotator.js';
-        annCssPath = 'annotation-lib/annotator.css';
+        annJsPath = 'eplayer/annotation-lib/annotator.js';
+        annCssPath = 'eplayer/annotation-lib/annotator.css';
       }
       productData = {
         product: 'PXE',
@@ -1333,22 +1315,22 @@ export class Book extends Component {
           }
         },
         pxeOptions: {
-          script: `${window.location.origin}/pxe_scripts/bundle.js`,
-          style: `${window.location.origin}/pxe_scripts/style.css`,
+          script: `${window.location.origin}/eplayer/pxe_scripts/bundle.js`,
+          style: `${window.location.origin}/eplayer/pxe_scripts/style.css`,
           scriptsToReplace: [
             {
               old: 'https://revel-content.openclass.com/content/amc/amc-bootstrap.js',
-              new: `${window.location.origin}/bxix_scripts/brix.js`
+              new: `${window.location.origin}/eplayer/bxix_scripts/brix.js`
             }
           ],
-          scriptsToAdd: [`${window.location.origin}/annotation-lib/jquery.min.js`,
+          scriptsToAdd: [`${window.location.origin}/eplayer/annotation-lib/jquery.min.js`,
           `${window.location.origin}/${annJsPath}`,
             getMathjaxJs,this.gtmPath],
           stylesToAdd: [`${window.location.origin}/${annCssPath}`]
         },
         metaData: {
           brixClient: 'https://grid-static-dev.pearson.com/11-thinclient/0.0.0/js/brixClient-3.6.1-exp.5129.0.js',
-          brixCss: `${window.location.origin}/bxix_scripts/brix.css`,
+          brixCss: `${window.location.origin}/eplayer/bxix_scripts/brix.css`,
           environment: 'LOCAL',
           pxeUserPreference: {
             theme: bootstrapParams.pageDetails.bgColor,
@@ -1356,7 +1338,9 @@ export class Book extends Component {
             isAnnotationHide: bootstrapParams.pageDetails.isAnnotationHide
           },
           searchText: bootstrapParams.pageDetails.searchText,
-          searchByPageId: this.pageTitleId
+          searchByPageId: this.pageTitleId,
+          backlinkMappings: bookdetailsdata.backlinkMappings,
+          backLinkLaunchParams:backLinkLaunchParams
         }
       };
     }
@@ -1393,6 +1377,14 @@ export class Book extends Component {
       moreIcon: true
     };
     
+    const backlinkLaunchparamsClient = axios.create({
+      baseURL: `${etextService[domain.getEnvType()]}/nextext/backlink/launchparams/book/${this.state.urlParams.context}`,
+      headers: {
+        'X-Authorization': 'eyJraWQiOiJrNzQ5MDY2NDkyIiwiYWxnIjoiUlM1MTIifQ.eyJzdWIiOiJmZmZmZmZmZjU4YTcxYzQ5ZTRiMDdjZjM1N2RlOTBhNSIsImhjYyI6IlVTIiwidHlwZSI6ImF0IiwiZXhwIjoxNTI0NTc5ODQyLCJpYXQiOjE1MjQ1NzgwNDIsImNsaWVudF9pZCI6IkFUOFI0aXJackpSUHN0TU1VZGI4WGFxT3ZiUkpwcXM0Iiwic2Vzc2lkIjoiNjE1ZmNlMTEtYTFjOC00ZjBlLTlkNzQtZGI4NTYyZmYwOTJmIn0.dIuQZSWwZlspAeV4MHooAZHvz1OOgNQVVSMLxHGGRF8eYvg51h1yChzhyIs3UVhPO9lxaPcZUJ6CiuhzcSV6bFx467IMQHiUV_LZ1KZWpFRj8gZjFIKIDBwcuzJy0ez5J1gcWC38s59ByJSdvjObrdHTvAKC4HunUOd2Sotb3pg',//localStorage.getItem('secureToken'),
+        contentType: 'application/json'
+      }
+    });
+
     return (
       <div onClick={this.closeHeaderPopups}>
         {playlistReceived &&
@@ -1402,7 +1394,7 @@ export class Book extends Component {
             contentStatus={productData.contentStatus}
             providers={productData.providers}
             componentFactory={{ getComponent: function getComponent(pageData) { console.log('Unhandled component!', pageData); return null; } }}
-            clients={{ page: pxeClient, annotation: annotationClient }}
+            clients={{ page: pxeClient, annotation: annotationClient, backLinkClient:backlinkLaunchparamsClient }}
             metadata={productData.metaData}
             pxeOptions={productData.pxeOptions}>
             <div>
@@ -1540,7 +1532,8 @@ const mapStateToProps = state => {
     getPreferenceData: state.preferenceReducer.preferenceObj,
     customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived,
     prodType:state.playlistReducer.prodType  ,
-    playListWithOutDuplicates:state.playlistReducer.playListWithOutDuplicates
+    playListWithOutDuplicates:state.playlistReducer.playListWithOutDuplicates,
+    backLinkLaunchParams:state.playlistReducer.backLinkLaunchParams
   }
 }; // eslint-disable-line max-len
 Book = connect(mapStateToProps)(Book); // eslint-disable-line no-class-assign

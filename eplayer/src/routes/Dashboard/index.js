@@ -11,10 +11,10 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-// import { injectReducer } from '../../store/reducers';
+import { injectReducer } from '../../store/reducers';
 
 export default () => ({
-   path: '/eplayer/view/:bookId(/page/:pageId)',
+   path: '/eplayer/view/:type/:bookId(/page/:pageId)',
   /*  Async getComponent is only invoked when route matches   */
   getComponent(nextState, cb) {
     /*  Webpack - use 'require.ensure' to create a split point
@@ -22,9 +22,9 @@ export default () => ({
     require.ensure([], (require) => {
       /*  Webpack - use require callback to define
           dependencies for bundling   */
-      const Print = require('./components/Dashboard').default;
+      const Dashboard = require('./components/Dashboard').default;
       /*  Return getComponent   */
-      cb(null, Print);
+      cb(null, Dashboard);
 
     /* Webpack named bundle   */
     }, 'dashboard');
