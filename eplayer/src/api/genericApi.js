@@ -24,6 +24,7 @@ const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
 const xCaller = resources.links.xCaller;
+const platformIdBackLink = Utilities.getParameterByName('platforms_id');
 
 export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
   method: 'GET',
@@ -77,14 +78,13 @@ export const deleteAnnData = data =>
 // ----Play list toc----------------------------------
 
 export const getBookDetails = bookDetails =>
- fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=${bookDetails.userName}&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
+ fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=${platformIdBackLink || ''}&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=${bookDetails.userName}&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
    {
      method: 'GET',
      headers: {
        Accept: 'application/json',
        'Content-Type': 'application/json',
-       'X-Authorization': bookDetails.piToken,
-       isDeeplink: bookDetails.isDeeplink
+       'X-Authorization': bookDetails.piToken
      }
    });
 
