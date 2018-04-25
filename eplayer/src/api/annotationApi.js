@@ -11,7 +11,7 @@
  *  * Dissemination of this information, reproduction of this material, and copying or distribution of this software 
  *  * is strictly forbidden unless prior written permission is obtained from Pearson Education, Inc.
  *******************************************************************************/
-import { getTotalAnndata, getAnndata, postAnnData, putAnnData, deleteAnnData } from './genericApi';
+import { getTotalAnndata, getAnndata, postAnnData, putAnnData, deleteAnnData, tagObjCall } from './genericApi';
 
 class AnnotationApi {
   static doGetAnnotation = filterData => getAnndata(filterData)
@@ -19,6 +19,7 @@ class AnnotationApi {
   static doPostAnnotation = data => postAnnData(data)
   static doPutAnnotation = data => putAnnData(data)
   static doDeleteAnnotation = data => deleteAnnData(data)// eslint-disable-line no-underscore-dangle
+  static doTagObjCall = data =>  tagObjCall(data)
 }
 
 export default AnnotationApi;

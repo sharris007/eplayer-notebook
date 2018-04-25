@@ -16,7 +16,10 @@ const initialAnnotationData = {
   highlightPageData: [],
   annTotalDataLoaded: false,
   annDataloaded: false,
-  notesList: []
+  notesList: [],
+  tagObject : [],
+  lastUsedFilters : {},
+  tagAttrFlag : false
 };
 
 export default (state = initialAnnotationData, action) => {
@@ -74,6 +77,14 @@ export default (state = initialAnnotationData, action) => {
       return {
         ...state,
         notesList: action.notesList
+      };
+    }
+    case 'GOT_TAGOBJECT': {
+      return {
+        ...state,
+        tagObject: action.tagObject,
+        lastUsedFilters: action.lastUsedFilters,
+        tagAttrFlag: action.tagAttrFlag
       };
     }
     default :

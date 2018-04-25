@@ -24,7 +24,6 @@ const piService = resources.links.piUserProfileApi;
 const envType = domain.getEnvType();
 const courseServiceUrl = resources.links.courseServiceUrl;
 const xCaller = resources.links.xCaller;
-
 let annHeaders = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
@@ -32,7 +31,7 @@ let annHeaders = {
   'X-Caller': resources.links.xCaller[envType].ETEXT2_WEB['ETEXT2_PXE']
 };
 //export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
-  export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/ffffffff56b90bd7e4b0f8eeaa4655d4/notesX`, {
+  export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
   method: 'GET',
   headers: annHeaders
 });
@@ -54,33 +53,30 @@ export const getAuthToken = piToken => fetch(`${etextServiceUrl[envType]}/nextex
   }
 });
 
-export const postAnnData = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations`, { // eslint-disable-line no-undef
+export const postAnnData = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, { // eslint-disable-line no-undef
   method: 'POST',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'Identity-Id': data.user
-  },
-  body: JSON.stringify(data)
+  headers: annHeaders,
+  body: JSON.stringify(data.payLoad)
 });
 
-export const putAnnData = data => fetch(`${pxeService[envType]}/context/${data.context}/annotations/${data.id}`, {// eslint-disable-line no-undef
+export const putAnnData = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX/${data.editId}`, {// eslint-disable-line no-undef
   method: 'PUT',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    'Identity-Id': data.user
-  },
-  body: JSON.stringify(data)
+  headers: annHeaders,
+  body: JSON.stringify(data.payLoad)
 });
 
 export const deleteAnnData = data =>
  fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {// eslint-disable-line no-undef
    method: 'DELETE',
-   headers: data.annHeaders,
-   body: JSON.stringify(data.body)
+   headers: annHeaders,
+   body: JSON.stringify(data.payLoad)
  });
 
+export const tagObjCall = data =>
+ fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX/contextLog`, {// eslint-disable-line no-undef
+   method: 'GET',
+   headers: annHeaders
+ });
 // ----Play list toc----------------------------------
 
 export const getBookDetails = bookDetails =>

@@ -24,6 +24,12 @@ const gotNotes = notes => ({
   type: 'GOT_NOTES',
   notesList: notes
 });
+export const getTagObjData = (json) => ({
+  type: 'GOT_TAGOBJECT',
+  tagObject: json.tagAttributes,
+  lastUsedFilters: json.lastUsedFilters,
+  tagAttrFlag : true
+});
 export const annStructureChange = (annTotalList) => {
   const colorArr = {
     QUESTIONS: 'Yellow',
@@ -54,7 +60,6 @@ export const annStructureChange = (annTotalList) => {
 export const getTotalAnnCallService = filterData => dispatch => AnnotationApi.dogetTotalAnnotation(filterData)
     .then(response => response.json())
     .then((json) => {
-      debugger;
       if (json.response && json.response.length > 0) {
         const annTotalList = json.response;
         //
@@ -86,17 +91,7 @@ export const postAnnotationData = json => ({
 });
 
 export const postAnnCallService = data => dispatch => AnnotationApi.doPostAnnotation(data)
-   .then(response => response.json())
-   .then((json) => {
-     const postData = [];
-     postData.push(json);
-     const postModifiedData = {
-       rows: postData
-     };
-     const annListArray = annStructureChange(postModifiedData.rows);
-     dispatch(getTotalAnnotationData(annListArray));
-     dispatch(postAnnotationData(postModifiedData));
-   });
+   .then(response => response.json());
 
 
 // PUT annotation Call
@@ -113,19 +108,16 @@ export const deleteAnnotationData = json => ({
 });
 
 export const putAnnCallService = data => dispatch => AnnotationApi.doPutAnnotation(data)
-   .then(response => response.json())
-   .then((json) => {
-     const putData = [];
-     putData.push(json);
-     const annListArray = annStructureChange(putData);
-     dispatch(deleteAnnotationData(json));
-     dispatch(getTotalAnnotationData(annListArray));
-     dispatch(putAnnotationData(json));
-   });
+   .then(response => response.json());
 
 
-export const deleteAnnCallService = data => dispatch => AnnotationApi.doDeleteAnnotation(data)
-   .then(response => response.json())
-   .then((json) => {
+  export const deleteAnnCallService = data => dispatch => AnnotationApi.doDeleteAnnotation(data)
+    .then(response => response.json())
+    .then((json) => {
      dispatch(deleteAnnotationData(json));
-   });
+  });
+
+  export const tagObjCallService = data => dispatch => AnnotationApi.doTagObjCall(data).
+  then(response => response.json()).then((json) => {
+     dispatch(getTagObjData(json));
+  });

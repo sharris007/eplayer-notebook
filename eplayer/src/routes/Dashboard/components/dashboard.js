@@ -22,7 +22,7 @@ import { languages } from '../../../../locale_config/translations/index';
 import DashboardHeader from '../../../components/DashboardHeader';
 import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
 import { browserHistory } from 'react-router';
-import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange } from '../../../actions/annotation';
+import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange, tagObjCallService } from '../../../actions/annotation';
 import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken, getParameterByName, getCourseCallServiceForRedirect, updateProdType } from '../../../actions/playlist';
 import { getGotoPageCall } from '../../../actions/gotopage';
 import { getPreferenceCallService, postPreferenceCallService } from '../../../actions/preference';
@@ -76,15 +76,22 @@ export class Dashboard extends Component {
       pageSelected: 'materials',
       groupExpanded : false,
       expandedTagName : null,
-      tagAttributes : [],
-      lastUsedFilters : {},
       expandedTagId: null,
       groupModeFlag : false,
       toolbarMode : {},
       coloums : 4,
-      notes : []
+      notes : [],
+      originalNotesList : [],
+      tagObject : []
     }
-    // this.onChange=this.onChange.bind(this);
+    if (piSession) {
+      const userId = piSession.userId();
+      this.state.urlParams.user = userId;
+    }
+    this.callback=this.callback.bind(this);
+    this.saveNote=this.saveNote.bind(this);
+    this.addNote=this.addNote.bind(this);
+    this.deleteNote=this.deleteNote.bind(this);
   }
  
   componentWillMount = () => {
@@ -99,7 +106,8 @@ export class Dashboard extends Component {
       context: this.state.urlParams.context,
       piToken: getSecureToken,
       bookId: this.props.params.bookId,
-      pageId: this.props.params.pageId ? this.props.params.pageId :''
+      pageId: this.props.params.pageId ? this.props.params.pageId :'',
+      user: this.state.urlParams.user
     }
     if (window.location.pathname.indexOf('/eplayer/Course/') > -1) {
           this.bookDetailsData.courseId = this.props.params.bookId;
@@ -136,10 +144,11 @@ export class Dashboard extends Component {
 
           } else {
           this.props.dispatch(getBookPlayListCallService(this.bookDetailsData));
-          let identityId = localStorage.getItem('identityId');
+          // let identityId = localStorage.getItem('identityId');
 
           // alert(this.props.location.query.globaluserid);
           this.props.dispatch(getTotalAnnCallService(this.bookDetailsData));
+          this.props.dispatch(tagObjCallService(this.bookDetailsData));
         }
   }
   componentWillUnmount = () => {
@@ -150,13 +159,13 @@ export class Dashboard extends Component {
   }
   componentWillReceiveProps = (nextProps) => {
     console.log("nextProps", nextProps);
-    if(nextProps.notesList && nextProps.notesList.length > 0){
-      this.prepareNotes(nextProps.notesList);
+    if(nextProps.notesList && nextProps.notesList.length > 0 && nextProps.tagAttrFlag){
+      this.prepareNotes(nextProps.notesList, nextProps.tagObject);
      }
     // this.setState({ notes: nextProps.notesList }, () => { console.log("******", this.state.notes); });
   }
   
-  prepareNotes = (notes) => {
+  prepareNotes = (notes, tagAttributes) => {
     const notesList = [];
     const originalNotesList = [];
     for (let ic = 0; ic < notes.length; ic++) {
@@ -206,7 +215,8 @@ export class Dashboard extends Component {
       }
     });
     this.setState({
-      notes : mapNotesObj
+      notes : mapNotesObj,
+      originalNotesList: originalNotesList
     });
   }
   onChange = (pageSelected) => {
@@ -258,16 +268,132 @@ export class Dashboard extends Component {
   handleBack = () => {
 
   }
-  callback  = () => {
-
+  callback  = (msg, data) => {
+    console.log("*********", this.bookDetailsData);
+    let notesList = [...this.state.notes];
+    const originalNotesList = [...this.state.originalNotesList];
+    const tagObject = [...this.state.tagObject];
+    if (msg === 'ADD') {
+      this.addNote(msg, data);
+    }
+    else if (msg === 'SAVE') {
+      this.saveNote(msg, data);
+      const noteexist = notesList.find(noteobj => noteobj.id === data.id);
+      const original_noteexist = originalNotesList.find(originalobj => originalobj.id === data.id);
+      if(noteexist) {
+        noteexist.content = data.content;
+        noteexist.cardFormat = data.cardFormat;
+        if (data.noteType === 'CUSTOM_NOTE')
+          noteexist.title = data.title;
+      }
+      if(original_noteexist) {
+        original_noteexist.content = data.content;
+        original_noteexist.cardFormat = data.cardFormat;
+        if (data.noteType === 'CUSTOM_NOTE')
+          original_noteexist.title = data.title;
+      }
+      this.setState({
+          notesList: notesList,
+          originalNotesList: originalNotesList
+      });
+    }
+    else if (msg === 'DELETE') {
+      this.deleteNote(msg, data);
+      _.remove(notesList, {
+          id: data.id
+      });
+      _.remove(originalNotesList, {
+          id: data.id
+      });
+      this.setState({
+          notes: notesList,
+          originalNotesList: originalNotesList
+      });
+    }
   }
+  saveNote = (msg, data) => {
+    let payLoad = {
+    'clientApp': 'ETEXT2_WEB',
+    'productModel': 'ETEXT_SMS',
+    'contextualInfo': [
+      {
+        'key': '',
+        'value': ''
+      }
+    ],
+    'pageId': null,
+    'noteType': 'CUSTOM_NOTE',
+    'shareable': false,
+    'tags': [],
+    'data': {
+      'quote': data.title ? data.title : '',
+      'text': data.content ? data.content : ''
+    }
+    };
+    if (data.noteType && data.noteType !== 'CUSTOM_NOTE') {
+      payLoad = {
+        'clientApp': 'ETEXT2_WEB',
+        'productModel': 'ETEXT_SMS',
+        'contextualInfo': [
+          {
+            'key': 'title',
+            'value': data.title ? data.title : '',
+          }
+        ],
+        'pageId': data.pageId ? data.pageId : '',
+        'noteType': data.noteType ? data.noteType : '',
+        'shareable': false,
+        'tags': data.tags ? data.tags : [],
+        'data': {
+          'quote': data.highLightText ? data.highLightText : '',
+          'text': data.content ? data.content : ''
+        }
+      };
+    }
+
+    this.bookDetailsData.payLoad = payLoad;
+    this.bookDetailsData.editId = data.id;
+    this.props.dispatch(putAnnCallService(this.bookDetailsData));
+  }
+  addNote = (msg, data) => {
+    const payLoad = {
+      'payload': [
+        {
+          'clientApp': 'ETEXT2_WEB',
+          'productModel': 'ETEXT_SMS',
+          'contextualInfo': [
+            {
+              'key': '',
+              'value': ''
+            }
+          ],
+          'pageId': null,
+          'noteType': 'CUSTOM_NOTE',
+          'shareable': false,
+          'tags': [],
+          'data': {
+            'quote': data.title ? data.title : '',
+            'text': data.content ? data.content : ''
+          }
+        }
+      ]
+    };
+    this.bookDetailsData.payLoad = payLoad;
+    this.props.dispatch(postAnnCallService(this.bookDetailsData)).then(res=>{
+      this.props.dispatch(getTotalAnnCallService(this.bookDetailsData));
+    });
+  };
+  deleteNote = (msg, data) => {
+    const payLoad = { ids: [data.id] };
+    this.bookDetailsData.payLoad = payLoad;
+    this.props.dispatch(deleteAnnCallService(this.bookDetailsData));
+  };
   handleGroupClick = () => {
 
   }
   render() {
      const { bookdetailsdata, tocData, tocReceived, notesList } = this.props;
-     const { groupExpanded, expandedTagName, tagAttributes, lastUsedFilters, expandedTagId, toolbarMode, groupModeFlag, pageSelected, notes} = this.state;
-     console.log("notesList", notesList);
+     const { groupExpanded, expandedTagName, tagAttributes, lastUsedFilters, expandedTagId, toolbarMode, groupModeFlag, pageSelected, notes, tagObject, tagAttrFlag} = this.state;
      console.log("notes", notes);
      
     // eslint-disable-line react/prop-types
@@ -322,7 +448,7 @@ export class Dashboard extends Component {
           showCourse={false}
         /> 
       
-      </div>) : (<div><NoteBook notesList={notes} groupExpanded={groupExpanded} expandedTagName={expandedTagName} tagAttributes={tagAttributes} lastUsedFilters={lastUsedFilters} expandedTagId={expandedTagId} handleBack={this.handleBack} toolbarMode={toolbarMode} tocData={tocContent} groupModeFlag={groupModeFlag} callback={this.callback} handleGroupClick={this.handleGroupClick} coloums={3} /></div>)}
+      </div>) : (<div><NoteBook notesList={notes} groupExpanded={groupExpanded} expandedTagName={expandedTagName} tagAttributes={tagObject} lastUsedFilters={lastUsedFilters} expandedTagId={expandedTagId} handleBack={this.handleBack} toolbarMode={toolbarMode} tocData={tocContent} groupModeFlag={groupModeFlag} callback={this.callback} handleGroupClick={this.handleGroupClick} coloums={3} /></div>)}
         </div> : null
         }
       </div>
@@ -357,7 +483,10 @@ Dashboard.propTypes = {
     customTocPlaylistReceived: state.playlistReducer.customTocPlaylistReceived,
     prodType:state.playlistReducer.prodType,
     playListWithOutDuplicates:state.playlistReducer.playListWithOutDuplicates,
-    notesList: state.annotationReducer.notesList
+    notesList: state.annotationReducer.notesList,
+    tagObject: state.annotationReducer.notesList,
+    lastUsedFilters: state.annotationReducer.notesList, 
+    tagAttrFlag: state.annotationReducer.tagAttrFlag
   }
 }; // eslint-disable-line max-len
 Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign
