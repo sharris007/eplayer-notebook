@@ -229,7 +229,7 @@ export class Dashboard extends Component {
     console.log('goToPageCallback called');
     let id = pageId;
      
-    if (window.location.pathname.indexOf('/eplayer/course/') > -1) {
+    if (window.location.pathname.indexOf('/eplayer/view/course/') > -1) {
       if(this.props.prodType === 'idc'){
         this.productType = 'prdType';
       }
