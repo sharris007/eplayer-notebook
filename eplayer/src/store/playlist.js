@@ -25,7 +25,8 @@ const initalData = {
   customTocPlaylistReceived: false,
   prodType: '',
   playListWithOutDuplicates: [],
-  backLinkLaunchParams: {}
+  backLinkLaunchParams: {},
+  originalTocList : []
 };
 export default (state = initalData, action) => {
   switch (action.type) {
@@ -106,6 +107,12 @@ export default (state = initalData, action) => {
       return {
         ...state,
         backLinkLaunchParams: action.data
+      };
+    }
+    case 'ORIGINAL_TOC': {
+      return {
+        ...state,
+        originalTocList: action.data
       };
     }
     default:
