@@ -24,6 +24,7 @@ import { Progress } from '@pearson-incubator/aquila-js-core';
 import { pageDetails, customAttributes, pageLoadData, pageUnLoadData, mathJaxVersions, mathJaxCdnVersions } from '../../../../const/Mockdata';
 import { browserHistory } from 'react-router';
 import { getTotalAnnCallService, getAnnCallService, postAnnCallService, putAnnCallService, deleteAnnCallService, getTotalAnnotationData, deleteAnnotationData, annStructureChange, tagObjCallService } from '../../../actions/annotation';
+import { saveGroupService, unGroupService, renameGroupService} from '../../../actions/notebook';
 import { getBookPlayListCallService, getPlaylistCallService, getBookTocCallService, getCourseCallService, putCustomTocCallService, gotCustomPlaylistCompleteDetails, tocFlag, getAuthToken, getParameterByName, getCourseCallServiceForRedirect, updateProdType } from '../../../actions/playlist';
 import { resources, domain, typeConstants } from '../../../../const/Settings';
 import { getGotoPageCall } from '../../../actions/gotopage';
@@ -80,7 +81,9 @@ class Dashboard extends Component {
       expandedTagName : null,
       expandedTagId: null,
       groupModeFlag : false,
-      toolbarMode : {},
+      toolbarMode : {'groupMode' :'DEFAULT',
+                    'groupTitle' :null,
+                    'groupId' : null},
       coloums : 4,
       notes : [],
       originalNotesList : [],
@@ -172,6 +175,7 @@ class Dashboard extends Component {
      }
   }
   
+  //form Notelist object
   prepareNotes = (notes, tagAttributes) => {
     const notesList = [];
     const originalNotesList = [];
@@ -290,6 +294,47 @@ class Dashboard extends Component {
   handleBack = () => {
 
   }
+  refreshNotesList = (originalNotesList, tagObject) => {
+    const groups = [];
+    const notesList = [];
+
+    const mapGroupEle = _.groupBy(originalNotesList, function(i){
+      if(i.tags) { 
+        return i.tags[0].tagId; 
+      }
+      else{  return i.id;}})
+    const getOrderedArr = _.sortBy(mapGroupEle, function(i){return i[0].outsetSeq * -1});
+    const mapNotesObj = [];
+    let groupFlag;
+    
+    _.forEach(getOrderedArr, function(value) { 
+    if(value[0].tags){
+       value = _.sortBy([...value], function(j) {                   
+        return j.tags[0].insetSeq * -1
+       });
+       value[0].notes=[...value];
+       mapNotesObj.push(value[0]);
+       groupFlag = true;
+      }else{
+       _.forEach(value,(item)=>{mapNotesObj.push(item)})
+      }
+    });
+
+    if(groupFlag) {
+      tagObject.map((tag, i) => {
+        _.each(mapNotesObj, function (obj, index) {
+          if(obj.notes) {
+            if (obj.tags && obj.tags[0] && (obj.tags[0].tagId === tag.tagId)) {
+              obj.tags[0].tagName = tag.tagName;
+            }
+          }
+          
+        });
+      });
+    }
+    
+  return mapNotesObj;
+  }
   callback  = (msg, data) => {
     console.log("*********", this.bookDetailsData);
     let notesList = [...this.state.notes];
@@ -330,6 +375,202 @@ class Dashboard extends Component {
       this.setState({
           notes: notesList,
           originalNotesList: originalNotesList
+      });
+    }
+    else if (msg === "GROUP") {
+      notesList.forEach((item, i) => {
+        item.keyId = item.id + Date.now();
+        if (data === false) {
+          item.selected = false;
+        }
+      });
+
+      let toolbarMode = this.state.toolbarMode;
+      toolbarMode.groupMode = 'GROUPSELECT';
+      console.log("toolbarMode", toolbarMode);
+      this.setState({
+        notes: notesList,
+        toolbarMode: toolbarMode,
+        groupModeFlag: data
+      });
+    } 
+    else if (msg === "SELECTED") {
+
+      let toolbarMode = this.state.toolbarMode;
+      toolbarMode.groupMode = 'SELECTED'
+      toolbarMode.selectedCount = 0;
+      const notesList = [...this.state.notes];
+      notesList.forEach((item, i) => {
+        if (item.id === data.id) {
+          item.selected = true;
+        }
+        if (item.selected) {
+          toolbarMode.selectedCount++;
+        }
+      });
+
+
+      this.setState({
+        notes: notesList,
+        toolbarMode: toolbarMode,
+        groupModeFlag: true
+      });
+    } else if (msg === "UNSELECTED") {
+
+      let toolbarMode = this.state.toolbarMode;
+
+      //   var newArray = JSON.parse(JSON.stringify(notesList));
+      const notesList = [...this.state.notes];
+      let selectedCount = 0;
+      notesList.forEach((item, i) => {
+        if (item.id === data.id) {
+          item.selected = false;
+        }
+        if (item.selected == true) {
+          selectedCount++;
+        }
+      });
+
+      if (selectedCount > 0) {
+        toolbarMode.groupMode = 'SELECTED';
+        toolbarMode.selectedCount = selectedCount;
+      } else {
+        toolbarMode.groupMode = 'GROUPSELECT';
+        toolbarMode.selectedCount = selectedCount;
+      }
+
+      this.setState({
+        notes: notesList,
+        toolbarMode: toolbarMode,
+        groupModeFlag: true
+      });
+    } else if (msg === "SAVEGROUP") {
+      let toolbarMode = this.state.toolbarMode;
+      toolbarMode.groupMode = 'DEFAULT'
+      const notesList = [...this.state.notes];
+      const originalNotesList = [...this.state.originalNotesList];
+      const tempNotesList = [];
+      let tagId = Date.now();
+      let tagName = toolbarMode.groupTitle;
+
+      if (data.groupId !== null) {
+        tagId = data.groupId;
+        tagName = data.groupTitle;
+      }
+
+      if (!!!tagName) {
+        tagName = 'Untitled Group';
+      }
+      let filterList = _.cloneDeep(notesList);
+      let filterList1 = _.cloneDeep(notesList);
+      let filterList2 = _.cloneDeep(notesList);
+      let filterList3 = _.cloneDeep(notesList);
+
+      filterList1 = filterList1.filter(notesList => notesList.selected === true);
+      filterList2 = filterList2.filter(notesList => notesList.selected === true);
+      filterList3 = filterList3.filter(notesList => notesList.selected === false);
+      let groupPayload = {
+        "tagName": tagName,
+        "notes": []
+      };
+      filterList2.forEach((item, i) => {
+        let selectedObj = {
+          "id": item.id
+        }
+        groupPayload.notes.push(selectedObj);
+        item.selected = false;
+      });
+      this.bookDetailsData.payLoad = groupPayload;
+      this.props.dispatch(saveGroupService(this.bookDetailsData)).then((json) => {
+        debugger;
+        if(json && json.response && json.response[0].tags && json.response[0].tags[0] && json.response[0].tags[0].tagId)
+          tagId = json.response[0].tags[0].tagId;
+        filterList2.forEach((item, i) => {
+          const index = _.findIndex(originalNotesList, function (o) { return o.id === item.id; });
+          if (index != -1) {
+             originalNotesList[index].outsetSeq = json.response[0].outsetSeq;  
+            if (originalNotesList[index].tags) {
+              originalNotesList[index].tags[0].tagId = tagId;
+              originalNotesList[index].tags[0].tagName = tagName;
+            } else {
+               _.each(json.response, (notes) => {
+                 if( originalNotesList[index].id === notes.id){
+                    originalNotesList[index].tags = notes.tags;
+                 }              
+              })     
+            }
+          }
+          //    item.tagId = null;
+        });
+        let updatedObject = tagObject;
+        updatedObject.push({'tagId':tagId, 'tagName':tagName});
+        this.setState({
+          notes: this.refreshNotesList(originalNotesList, updatedObject),
+          originalNotesList: originalNotesList,
+          toolbarMode: toolbarMode,
+          tagAttributes: updatedObject,
+          groupModeFlag: false
+        });
+      });
+      //   filterList2.splice(0, 1);
+
+      filterList1[0].tagId = tagId;
+      filterList1[0].tagName = tagName;
+      filterList1[0].notes = filterList2;
+      filterList1[0].selected = false;
+
+      filterList3.push(filterList1[0]);
+    } else if (msg === "UNGROUP NOTES") { // ungroup all notes in a group
+      let tagId = data.tags[0].tagId;
+      this.ungroupNotes(msg, data);
+      const originalNotesList = [...this.state.originalNotesList];
+
+      originalNotesList.map((item, i) => {
+        if (item.tags && item.tags[0] && item.tags[0].tagId === tagId) {
+          originalNotesList[i].tags= null;
+        }
+      });
+
+      const index = _.findIndex(tagObject, function (o) { return o.tagId === tagId; });
+      if (index != -1) {
+        tagObject.splice(index, 1);
+      }
+      this.setState({
+        notes: this.refreshNotesList(originalNotesList, tagObject),
+        originalNotesList: originalNotesList,
+        tagAttributes: tagObject,
+        groupExpanded: false,
+        groupModeFlag: false,
+        expandedTagName: null,
+        expandedTagId: null
+      });
+
+    }
+    else if (msg === "RENAME") {
+      let tagId = (data.tags && data.tags[0].tagId) ? data.tags[0].tagId : '';
+      let tagName = (data.tags && data.tags[0].tagName) ? data.tags[0].tagName : '';
+      let renamePayLoad = {
+        "tagName": tagName,
+        "notes": []
+      }
+      this.bookDetailsData.tagId = tagId;
+      this.bookDetailsData.payLoad = payLoad;
+      this.props.dispatch(renameGroupService(this.bookDetailsData)).then((json) => {
+        let updatedtagObj = tagObject;
+        _.each(updatedtagObj, (obj, index) => {
+          if (updatedtagObj[index].tagId === tagId) {
+            updatedtagObj[index].tagName = tagName;
+          }
+        });
+        this.setState({
+          notes: this.refreshNotesList(originalNotesList, updatedtagObj),
+          originalNotesList: originalNotesList,
+          tagAttributes: updatedtagObj,
+          groupExpanded: false,
+          groupModeFlag: false,
+          expandedTagName: null,
+          expandedTagId: null
+        });
       });
     }
   }
@@ -410,17 +651,36 @@ class Dashboard extends Component {
     this.bookDetailsData.payLoad = payLoad;
     this.props.dispatch(deleteAnnCallService(this.bookDetailsData));
   };
+  ungroupNotes = (msg, data) => {
+    let tagId = null;
+    let tagName = null;
+    data.tags.map((tag, i) => {
+      tagId = tag.tagId;
+      tagName = tag.tagName;
+    });
+    const payLoad = {
+      'tagName': tagName,
+      'notes': []
+    };
+    this.bookDetailsData.tagId = tagId;
+    this.bookDetailsData.payLoad = payLoad;
+    this.props.dispatch(unGroupService(this.bookDetailsData)).then((json) => { 
+      console.log('Notes successfully ungrouped!');
+    });
+  }
   handleGroupClick = () => {
 
   }
   render() {
-     const { bookdetailsdata, tocData, tocReceived, notesList } = this.props;
+     const { bookdetailsdata, tocData, tocReceived, notesList, originalTocList } = this.props;
      const { groupExpanded, expandedTagName, tagAttributes, lastUsedFilters, expandedTagId, toolbarMode, groupModeFlag, pageSelected, notes, tagObject, tagAttrFlag} = this.state;
      
     // eslint-disable-line react/prop-types
     let title = '';
     let tocContent = {};
     let courseData = {};
+    // const getTocItems = originalTocList;
+    console.log("originalTocList", originalTocList);
     if(tocReceived){
       tocContent = tocData.content;
     }else {
@@ -477,7 +737,7 @@ class Dashboard extends Component {
           showCourse={false}
         /> 
       
-      </div>) : (<div><NoteBook notesList={notes} groupExpanded={groupExpanded} expandedTagName={expandedTagName} tagAttributes={tagObject} lastUsedFilters={lastUsedFilters} expandedTagId={expandedTagId} handleBack={this.handleBack} toolbarMode={toolbarMode} tocData={tocContent} groupModeFlag={groupModeFlag} callback={this.callback} handleGroupClick={this.handleGroupClick} coloums={3} /></div>)}
+      </div>) : (<div><NoteBook notesList={notes} groupExpanded={groupExpanded} expandedTagName={expandedTagName} tagAttributes={tagObject} lastUsedFilters={lastUsedFilters} expandedTagId={expandedTagId} handleBack={this.handleBack} toolbarMode={toolbarMode} tocData={originalTocList} groupModeFlag={groupModeFlag} callback={this.callback} handleGroupClick={this.handleGroupClick} coloums={3} /></div>)}
         </div> : null
         }
       </div>
@@ -516,7 +776,8 @@ const mapStateToProps = state => {
     notesList: state.annotationReducer.notesList,
     tagObject: state.annotationReducer.notesList,
     lastUsedFilters: state.annotationReducer.notesList, 
-    tagAttrFlag: state.annotationReducer.tagAttrFlag
+    tagAttrFlag: state.annotationReducer.tagAttrFlag,
+    originalTocList: state.playlistReducer.originalTocList
   }
 }; // eslint-disable-line max-len
 Dashboard = connect(mapStateToProps)(Dashboard); // eslint-disable-line no-class-assign

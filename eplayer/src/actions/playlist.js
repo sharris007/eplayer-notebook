@@ -64,6 +64,15 @@ const gettingTocResponse = () => ({
   updatedToc: false
 });
 
+const getOriginalTocList = json => {
+  console.log("redu", json);
+  return {
+    type: 'ORIGINAL_TOC',
+    data: json
+  }
+  
+}
+
 export const updateProdType = prodType => ({
   type: 'UPDATE_PROD_TYPE',
   prodType
@@ -117,6 +126,8 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
           PlaylistApi.doGetTocDetails(bookId, tocUrl, piToken, data).then(response => response.json())
           .then((response) => {
             // Changing content urls to secured url
+            console.log("TOCCCCCCCCCCCCCC", response);
+            dispatch(getOriginalTocList(response.content));
             response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
             response.provider = Utilities.changeContentUrlToSecured(response.provider);
 
