@@ -31,6 +31,13 @@ let annHeaders = {
   'X-Authorization': localStorage.getItem('secureToken'),
   'X-Caller': resources.links.xCaller[envType].ETEXT2_WEB['ETEXT2_PXE']
 };
+
+const redirectCourseUrl = window.location.href;
+const bundleIdVal = Utilities.getParameterByName('bundleId', redirectCourseUrl);
+let appendparam = 'includeBookData='+true;
+if(bundleIdVal) {
+  appendparam = 'bundleId='+bundleIdVal;
+}
 //export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
   export const getTotalAnndata = data => fetch(`${spectrumService[envType]}/${data.context}/identities/${data.user}/notesX`, {
   method: 'GET',
@@ -81,7 +88,7 @@ export const tagObjCall = data =>
 // ----Play list toc----------------------------------
 
 export const getBookDetails = bookDetails =>
- fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=${platformIdBackLink || ''}&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=${bookDetails.userName}&courseInfo=true&includeBookData=true`, // eslint-disable-line max-len
+ fetch(`${etextService[envType]}/nextext/books/${bookDetails.context}/details?platformId=${platformIdBackLink || ''}&profile=yes&backlinking=yes&includeEndpoints=true&moduleIds=all&includeRoles=true&userId=${bookDetails.userName}&courseInfo=true&${appendparam}`, // eslint-disable-line max-len
    {
      method: 'GET',
      headers: {

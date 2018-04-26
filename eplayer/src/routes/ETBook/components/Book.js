@@ -66,6 +66,8 @@ export class Book extends Component {
     this.environmentCode = '';
     this.personRoleCode = '';
     this.isTOCUpdated = false;
+    const queryParamsArr = redirectCourseUrl.split('?');
+    const queryParams = queryParamsArr[1];
     this.state = {
       classname: 'headerBar visible',
       viewerContent: true,
@@ -103,7 +105,8 @@ export class Book extends Component {
       idc:false,
       publishedToc:false,
       rederPage : true,
-      headerDataloaded: false
+      headerDataloaded: false,
+      queryParams: queryParams
     };
     this.divGlossaryRef = '';
     this.wrapper = '';
@@ -312,7 +315,10 @@ export class Book extends Component {
           browserHistory.replace(url+'launchLocale=' + window.annotationLocale);
         } else {
           // browserHistory.replace('/eplayer/ETbook/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
-           browserHistory.replace('/eplayer/book/${this.props.params.bookId}/page/${gotoPageData.id}?launchLocale=' + window.annotationLocale);
+           if (Utils.getParameterByName('launchLocale', this.state.queryParams))
+            browserHistory.replace('/eplayer/book/${this.props.params.bookId}/page/${gotoPageData.id}?'+ this.state.queryParams);
+           else
+            browserHistory.replace('/eplayer/book/${this.props.params.bookId}/page/${gotoPageData.id}?'+ this.state.queryParams + '&launchLocale=' + window.annotationLocale);
         }
         this.props.dispatch({
           type: "GOT_GOTOPAGE",
@@ -466,7 +472,10 @@ export class Book extends Component {
         browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
       } else {
         // browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
-        browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${data.id}?launchLocale=` + window.annotationLocale);
+        if (Utils.getParameterByName('launchLocale', this.state.queryParams))
+          browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${data.id}?${this.state.queryParams}`);
+        else
+          browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${data.id}?${this.state.queryParams}&launchLocale=` + window.annotationLocale);
       }
       let bookmarksParams = this.state.urlParams;
       bookmarksParams.xAuth = localStorage.getItem('secureToken');
@@ -704,7 +713,10 @@ export class Book extends Component {
           browserHistory.replace(url+`launchLocale=` + window.annotationLocale);
         } else {
           // browserHistory.replace(`/eplayer/ETbook/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
-           browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${id}?launchLocale=` + window.annotationLocale);
+           if (Utils.getParameterByName('launchLocale', this.state.queryParams))
+              browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${id}?${this.state.queryParams}`);
+           else
+              browserHistory.replace(`/eplayer/book/${this.props.params.bookId}/page/${id}?${this.state.queryParams}&launchLocale=` + window.annotationLocale);
         }
         let bookmarksParams = this.state.urlParams;
         bookmarksParams.xAuth = localStorage.getItem('secureToken');
@@ -1367,7 +1379,7 @@ export class Book extends Component {
     ];
 
     const locale = bootstrapParams.pageDetails.locale ? bootstrapParams.pageDetails.locale : 'en';
-    const hideIcons = {
+    let hideIcons = {
       backNav: false,
       hamburger: false,
       bookmark: false,
@@ -1376,6 +1388,12 @@ export class Book extends Component {
       audio: true,
       moreIcon: true
     };
+    
+    const bundleIdVal = Utils.getParameterByName('bundleId', this.state.queryParams);
+    if(bundleIdVal) {
+        hideIcons.backNav = true;
+        hideIcons.bookmark = true;
+    }
     
     const backlinkLaunchparamsClient = axios.create({
       baseURL: `${etextService[domain.getEnvType()]}/nextext/backlink/launchparams/book/${this.state.urlParams.context}`,
@@ -1415,7 +1433,7 @@ export class Book extends Component {
                   onSearchResultClick={this.onSearchResultClick.bind(this)}
                 /> }
                 {
-                  this.props.book.tocReceived &&
+                  (this.props.book.tocReceived || bundleIdVal) &&
                   <DrawerComponent
                     isDocked={false}
                     drawerWidth={400}

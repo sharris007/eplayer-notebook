@@ -108,8 +108,30 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
         .then(response => response.json())
         .then((response) => {
           // Changing content urls to secured url
-          response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
-          response.bookDetail.metadata.toc = Utilities.changeContentUrlToSecured(response.bookDetail.metadata.toc);
+          if (response.bundleDetails) {
+              //bundle details in case user has dis-aggregated access
+              response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+              dispatch(getBookDetails(response));
+              const items = response.bundleDetails.bundleUrls ? response.bundleDetails.bundleUrls : [];
+              const result = [];
+              _.forEach(items, (item, i) => {
+                  const idArr = item.split('/OPS');
+                  const href_id = 'OPS'+idArr[1]
+                  const newItem = {
+                    type: 'page',
+                    id: i.toString(),
+                    href: href_id
+                  };
+                  result.push(newItem);
+              });
+              const playlistData = {};
+              playlistData.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+              playlistData.content = result;
+              dispatch(getPlaylistCompleteDetails(playlistData));
+
+          } else {
+              response.baseUrl = Utilities.changeContentUrlToSecured(response.baseUrl);
+              response.bookDetail.metadata.toc = Utilities.changeContentUrlToSecured(response.bookDetail.metadata.toc);
 
           dispatch(getBookDetails(response));
           bookId = response.bookDetail.bookId;
@@ -215,28 +237,29 @@ export const getBookPlayListCallService = (data, isFromCustomToc) => dispatch =>
               dispatch(getCustomPlaylistCompleteDetails());
             }
 
-            let currentPageInfo = {};
-            if (data.pageId) {
-              currentPageInfo = find(playlistData.content, list => list.id === data.pageId);
-            } else {
-              currentPageInfo = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
-            }
-            let bookTitle = '';
-            if (courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
-              bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
-            }
-            const dataLayerObj = {
-              eventCategory: 'Chapter',
-              event: 'chapterStarted',
-              eventAction: 'Chapter Started',
-              href: currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
-              firstSectionEntered: currentPageInfo.title,
-              bookTitle,
-              playOrder: currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
-            };
-              // Custom dimension for initial Master Play List
-            dataLayer.push(dataLayerObj);
-          });
+                let currentPageInfo = {};
+                if (data.pageId) {
+                  currentPageInfo = find(playlistData.content, list => list.id === data.pageId);
+                } else {
+                  currentPageInfo = (playlistData.content[0].playOrder == 0) ? playlistData.content[1] : playlistData.content[0];
+                }
+                let bookTitle = '';
+                if (courseDetailInfo.userCourseSectionDetail && courseDetailInfo.userCourseSectionDetail.section && courseDetailInfo.userCourseSectionDetail.section.sectionTitle) {
+                  bookTitle = courseDetailInfo.userCourseSectionDetail.section.sectionTitle;
+                }
+                const dataLayerObj = {
+                  eventCategory: 'Chapter',
+                  event: 'chapterStarted',
+                  eventAction: 'Chapter Started',
+                  href: currentPageInfo && currentPageInfo.href ? currentPageInfo.href : '',
+                  firstSectionEntered: currentPageInfo.title,
+                  bookTitle,
+                  playOrder: currentPageInfo && currentPageInfo.playOrder ? currentPageInfo.playOrder : ''
+                };
+                  // Custom dimension for initial Master Play List
+                dataLayer.push(dataLayerObj);
+              });
+        }
         });
     });
 
